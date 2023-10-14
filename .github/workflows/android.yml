@@ -24,7 +24,7 @@ jobs:
         run: echo '${{secrets.GOOGLE_SERVICES_JSON}}' > ./app/google-service.json
 
       - name: Access Key SET
-        run: echo ${{secrets.API_KEY_SET}}  > ./local.properties
+        run: echo '${{secrets.API_KEY_SET}}'  > ./local.properties
 
       - name: Cache Gradle packages
         uses: actions/cache@v3
