@@ -12,7 +12,7 @@ object RetrofitModule {
     private fun buildOkHttpClient(): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(
-                //로깅 인터셉터
+                // 로깅 인터셉터
                 HttpLoggingInterceptor().apply {
                     level = if (BuildConfig.DEBUG) {
                         HttpLoggingInterceptor.Level.BODY

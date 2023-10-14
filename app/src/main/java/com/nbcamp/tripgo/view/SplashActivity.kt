@@ -1,7 +1,7 @@
 package com.nbcamp.tripgo.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.nbcamp.tripgo.R
 
 class SplashActivity : AppCompatActivity() {
