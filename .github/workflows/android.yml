@@ -19,6 +19,28 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Access Google Service
+      run: echo ${{secrets.GOOGLE_SERVICES_JSON}} > ./app/google-service.json
+
+    - name: Access KAKAO Key
+      env:
+        APOD_API_KEY: ${{secrets.KAKAO_API_KEY}}
+      run: echo KAKAO_API_KEY=\"$KAKAO_API_KEY\" > ./local.properties
+
+    - name: Access TOUR Key
+      env:
+        APOD_API_KEY: ${{secrets.TOUR_API_KEY}}
+      run: echo TOUR_API_KEY=\"$TOUR_API_KEY\" > ./local.properties
+
+    - name: Access SK Key
+      env:
+        APOD_API_KEY: ${{secrets.SK_OPEN_API_KEY}}
+      run: echo SK_OPEN_API_KEY=\"$SK_OPEN_API_KEY\" > ./local.properties
+
     - name: Cache Gradle packages
       uses: actions/cache@v2
       with:
@@ -28,9 +50,9 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/buildSrc/**/*.kt') }}
         restore-keys: |
                ${{ runner.os }}-gradle-
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+
     - name: Build with Gradle
       run: ./gradlew build
+
     - name: Check ktlint format
       run: ./gradlew ktlintCheck
