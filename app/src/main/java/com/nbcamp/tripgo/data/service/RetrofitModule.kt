@@ -1,6 +1,7 @@
 package com.nbcamp.tripgo.data.service
 
 import com.nbcamp.tripgo.BuildConfig
+import com.nbcamp.tripgo.util.URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -24,7 +25,7 @@ object RetrofitModule {
 
     fun create(): ExamService {
         return Retrofit.Builder()
-            .baseUrl("url")
+            .baseUrl(URL.TOUR_API_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(buildOkHttpClient())
             .build()

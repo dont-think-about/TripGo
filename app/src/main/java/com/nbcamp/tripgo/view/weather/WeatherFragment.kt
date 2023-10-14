@@ -1,10 +1,10 @@
 package com.nbcamp.tripgo.view.weather
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.nbcamp.tripgo.R
 
 class WeatherFragment : Fragment() {
@@ -13,5 +13,11 @@ class WeatherFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_weather, container, false)
+    }
+
+    companion object {
+        fun newInstance() = WeatherFragment()
+
+        const val TAG = "WEATHER_FRAGMENT"
     }
 }

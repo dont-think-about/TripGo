@@ -14,4 +14,10 @@ class MyPageFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_my_page, container, false)
     }
+
+    companion object {
+        fun newInstance() = MyPageFragment()
+
+        const val TAG = "MY_PAGE_FRAGMENT"
+    }
 }

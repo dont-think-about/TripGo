@@ -14,4 +14,10 @@ class ReviewFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_review, container, false)
     }
+
+    companion object {
+        fun newInstance() = ReviewFragment()
+
+        const val TAG = "REVIEW_FRAGMENT"
+    }
 }

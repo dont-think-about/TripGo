@@ -10,7 +10,7 @@ import com.nbcamp.tripgo.R
 
 class HomeFragment : Fragment() {
 
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels { HomeViewModelFactory() }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,5 +27,11 @@ class HomeFragment : Fragment() {
         homeViewModel.information.observe(viewLifecycleOwner) {
             // UI 로직 작성
         }
+    }
+
+    companion object {
+        fun newInstance() = HomeFragment()
+
+        const val TAG = "HOME_FRAGMENT"
     }
 }
