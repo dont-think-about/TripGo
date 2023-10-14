@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.weather.WeatherFragment">
+    tools:context=".view.weather.WeatherFragment"
+    android:background="#0000FF">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
