@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/selector_icon_home"
+        android:title="@string/home" />
+    <item
+        android:id="@+id/weather"
+        android:enabled="true"
+        android:icon="@drawable/selector_icon_weather"
+        android:title="@string/weather" />
+    <item
+        android:id="@+id/review"
+        android:enabled="true"
+        android:icon="@drawable/selector_icon_review"
+        android:title="@string/review" />
+    <item
+        android:id="@+id/my_page"
+        android:enabled="true"
+        android:icon="@drawable/selector_icon_my_page"
+        android:title="@string/my_page" />
+</menu>
