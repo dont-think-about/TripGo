@@ -34,14 +34,10 @@ jobs:
         run: echo '${{secrets.GOOGLE_SERVICES_JSON}}' > ./app/google-service.json
 
       - name: Access KAKAO Key
-        env:
-          APOD_API_KEY: ${{secrets.KAKAO_API_KEY}}
-        run: echo KAKAO_API_KEY=\"$KAKAO_API_KEY\" > ./local.properties
+        run: echo KAKAO_API_KEY='${{secrets.KAKAO_API_KEY}}' > ./local.properties
 
       - name: Access TOUR Key
-        env:
-          APOD_API_KEY: ${{secrets.TOUR_API_KEY}}
-        run: echo TOUR_API_KEY=\"$TOUR_API_KEY\" > ./local.properties
+        run: echo TOUR_API_KEY='${{secrets.TOUR_API_KEY}}' > ./local.properties
 
       - name: Access SK Key
         env:
