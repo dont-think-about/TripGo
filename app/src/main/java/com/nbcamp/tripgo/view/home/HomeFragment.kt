@@ -24,6 +24,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun initViewModel() {
+//        homeViewModel.getInfo()
         homeViewModel.information.observe(viewLifecycleOwner) {
             // UI 로직 작성
         }

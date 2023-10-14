@@ -6,4 +6,16 @@
     <string name="weather">날씨</string>
     <string name="review">리뷰</string>
     <string name="my_page">마이페이지</string>
+    <string name="by_popularity">인기순</string>
+    <string name="by_date">날짜순</string>
+    <string name="address">주소</string>
+    <string name="description">상세 설명</string>
+    <string name="more_description">내용 더보기 +</string>
+    <string name="help_information">문의 및 안내</string>
+    <string name="home_page">홈페이지</string>
+    <string name="move_to_home_page">홈페이지로 이동</string>
+    <string name="rating">평점</string>
+    <string name="find_road">길찾기</string>
+    <string name="move_to_tmap">TMAP으로 이동</string>
+    <string name="add_to_calendar">캘린더에 일정 추가하기</string>
 </resources>
