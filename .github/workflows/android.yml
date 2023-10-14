@@ -24,13 +24,19 @@ jobs:
         run: echo '${{secrets.GOOGLE_SERVICES_JSON}}' > ./app/google-service.json
 
       - name: Access KAKAO Key
-        run: echo KAKAO_API_KEY='${{secrets.KAKAO_API_KEY}}' > ./local.properties
+        env:
+          KAKAO_API_KEY: ${{secrets.KAKAO_API_KEY}}
+        run: echo KAKAO_API_KEY=\"$KAKAO_API_KEY\" > ./local.properties
 
       - name: Access SK Key
-        run: echo SK_OPEN_API_KEY='${{secrets.SK_OPEN_API_KEY}}' > ./local.properties
+        env:
+          SK_OPEN_API_KEY: ${{secrets.SK_OPEN_API_KEY}}
+        run: echo SK_OPEN_API_KEY=\"$SK_OPEN_API_KEY\" > ./local.properties
 
       - name: Access TOUR Key
-        run: echo TOUR_API_KEY='${{secrets.TOUR_API_KEY}}' > ./local.properties
+        env:
+          TOUR_API_KEY: ${{secrets.TOUR_API_KEY}}
+        run: echo TOUR_API_KEY=\"$TOUR_API_KEY\" > ./local.properties
 
       - name: Cache Gradle packages
         uses: actions/cache@v3
