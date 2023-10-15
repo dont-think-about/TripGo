@@ -11,7 +11,6 @@ class HomeViewModelFactory : ViewModelProvider.Factory {
         return if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             val repository = ExamRepositoryImpl(RetrofitModule.create())
             return HomeViewModel(repository) as T
-
         } else {
             throw IllegalArgumentException()
         }

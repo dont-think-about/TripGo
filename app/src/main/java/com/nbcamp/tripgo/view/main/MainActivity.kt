@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() = with(binding) {
-        mainBottomNavigation.itemIconTintList = null;
+        mainBottomNavigation.itemIconTintList = null
         mainBottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.home -> {
@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 
                 else -> false
             }
-
         }
         mainBottomNavigation.selectedItemId = R.id.home
     }
