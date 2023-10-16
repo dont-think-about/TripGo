@@ -6,10 +6,10 @@
         android:icon="@drawable/selector_icon_home"
         android:title="@string/home" />
     <item
-        android:id="@+id/weather"
+        android:id="@+id/calendar"
         android:enabled="true"
-        android:icon="@drawable/selector_icon_weather"
-        android:title="@string/weather" />
+        android:icon="@drawable/selector_icon_calendar"
+        android:title="@string/calendar" />
     <item
         android:id="@+id/review"
         android:enabled="true"

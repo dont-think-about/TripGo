@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.weather
+package com.nbcamp.tripgo.view.calendar
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,17 +7,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.nbcamp.tripgo.R
 
-class WeatherFragment : Fragment() {
+class CalendarFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_weather, container, false)
+        return inflater.inflate(R.layout.fragment_calendar, container, false)
     }
 
     companion object {
-        fun newInstance() = WeatherFragment()
+        fun newInstance() = CalendarFragment()
 
         const val TAG = "WEATHER_FRAGMENT"
     }
