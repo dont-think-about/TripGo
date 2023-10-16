@@ -39,7 +39,6 @@ class CalendarFragment : Fragment() {
                 addDecorators(SaturdayDecorator(date.month, 0), SundayDecorator(date.month, 0))
             }
         }
-
     }
 
 
