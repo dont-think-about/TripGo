@@ -19,7 +19,7 @@
     <string name="move_to_tmap">TMAP으로 이동</string>
     <string name="add_to_calendar">캘린더에 일정 추가하기</string>
     <string name="go_go">고민말GO 여행GO</string>
-    <string name="go_search_activity">검색어 입력하러 가기</string>
+    <string name="go_search_activity">검색하러 가기</string>
     <string name="chat_bot">chatbot</string>
     <string name="home_family_trip">가족여행</string>
     <string name="home_healing">힐링</string>
@@ -35,4 +35,23 @@
     <string name="age">나이</string>
     <string name="companion">동반인</string>
     <string name="review_detail">상세 후기</string>
+    <string name="review_writing">리뷰 작성</string>
+    <string name="calendar">캘린더</string>
+    <string name="man">남자</string>
+    <string name="woman">여자</string>
+    <string name="generation_10">10대</string>
+    <string name="generation_20">20대</string>
+    <string name="generation_30">30대</string>
+    <string name="generation_40">40대</string>
+    <string name="generation_50_over">50+</string>
+    <string name="with_whom">누구와 함께 갔나요?</string>
+    <string name="family">가족</string>
+    <string name="bf_gf">연인</string>
+    <string name="friends">친구</string>
+    <string name="solo">혼자</string>
+    <string name="pet">반려</string>
+    <string name="submit_visit_review">방문 후기를 남겨주세요</string>
+    <string name="review_photo">사진</string>
+    <string name="review_cancel">취소</string>
+    <string name="review_submit">등록</string>
 </resources>
