@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="main">#FFBAE7FC</color>
     <color name="deactivated">#FFD9D9D9</color>
+    <color name="light_deactivated">#FFEAEAEA</color>
 </resources>

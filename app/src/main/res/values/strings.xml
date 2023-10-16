@@ -29,4 +29,9 @@
     <string name="home_show_more">+ 더보기</string>
     <string name="home_nearby_attraction">주변에 있는 관광지</string>
     <string name="home_korea_attractions">전국 관광지</string>
+    <string name="reviews">후기</string>
+    <string name="region">지역</string>
+    <string name="gender">성별</string>
+    <string name="age">나이</string>
+    <string name="companion">동반인</string>
 </resources>
