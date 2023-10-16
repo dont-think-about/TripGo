@@ -34,7 +34,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_item_chip_group"
-        tools:src="@drawable/ic_launcher_foreground" />
+        tools:src="@tools:sample/avatars" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/review_item_title_text_view"
@@ -63,6 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:isIndicator="true"
+        android:progressTint="@color/dark_yellow"
         app:layout_constraintStart_toStartOf="@id/review_item_date_text_view"
         app:layout_constraintTop_toBottomOf="@id/review_item_date_text_view"
         tools:rating="3.5" />
