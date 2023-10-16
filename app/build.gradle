@@ -110,5 +110,6 @@ dependencies {
     implementation 'me.relex:circleindicator:2.1.6'
 
     // material calendar view
-    implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
+    implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.3.0'
 }
