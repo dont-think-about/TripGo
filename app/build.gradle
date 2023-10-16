@@ -108,4 +108,7 @@ dependencies {
 
     // view pager circle indicator
     implementation 'me.relex:circleindicator:2.1.6'
+
+    // material calendar view
+    implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
 }
