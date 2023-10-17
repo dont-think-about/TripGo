@@ -23,11 +23,11 @@
             android:name=".view.SplashActivity"
             android:exported="false" />
         <activity
-            android:name=".view.signin.SignInActivity"
-            android:exported="false" />
+            android:name=".view.signup.SignUpActivity"
+            android:exported="false"/>
         <activity
             android:name=".view.login.LogInActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".view.attraction.detail.AttractionsDetailActivity"
             android:exported="false" />
