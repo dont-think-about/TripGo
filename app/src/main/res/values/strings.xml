@@ -18,4 +18,6 @@
     <string name="find_road">길찾기</string>
     <string name="move_to_tmap">TMAP으로 이동</string>
     <string name="add_to_calendar">캘린더에 일정 추가하기</string>
+    <string name="search">검색</string>
+    <string name="tripRank">이번주 자주 찾는 여행지 순위</string>
 </resources>
