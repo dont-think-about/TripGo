@@ -5,10 +5,30 @@
     android:layout_height="match_parent"
     tools:context=".view.mypage.favorite.FavoriteFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <LinearLayout
+        android:id="@+id/favorite_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/favorite_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/favorite_zzim"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favorite_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"/>
+        
+    </LinearLayout>
 
 </FrameLayout>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/favorite_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/favorite_item_imageview"
+            android:layout_marginTop="15dp"
+            android:layout_width="0dp"
+            android:layout_height="67dp"
+            android:layout_weight="1"
+            android:src="@drawable/icon_user" />
+
+        <LinearLayout
+            android:id="@+id/favorite_item_region_inpo_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/favorite_item_region_name_textview"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/favorite_item_region_name"
+                android:textSize="27sp"
+
+                />
+
+            <TextView
+                android:id="@+id/favorite_item_region_explantion_textivew"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/favorite_item_region_explantion"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/favorite_item_region_distance_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/favorite_item_region_distance"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/favorite_item_zzim_imageview"
+            android:layout_gravity="center"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/icon_heart_button"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
