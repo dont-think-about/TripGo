@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="main">#FFBAE7FC</color>
     <color name="deactivated">#FFD9D9D9</color>
+    <color name="error">#FF0000</color>
+    <color name="background_light_blue">#f1fafe</color>
 </resources>
