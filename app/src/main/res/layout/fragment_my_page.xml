@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:ignore="MissingConstraints"
+        tools:ignore="MissingConstraints,RtlSymmetry"
         android:paddingTop="30dp"
         android:paddingStart="20dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -56,22 +56,22 @@
                     android:id="@+id/mypage_signin_up_text"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:text="회원가입 / 로그인"
-                    android:textSize="27dp"
+                    android:text="@string/mypage_signin_up"
+                    android:textSize="27sp"
                     />
 
                 <TextView
                     android:id="@+id/mypage_signin_up_inpo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="로그인을 하고 계획을 세워보세요"
-                    android:textSize="18dp" />
+                    android:text="@string/mypage_signin_up_inpor"
+                    android:textSize="18sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
     <View
-        android:id="@+id/view2"
+        android:id="@+id/inpo_review_view"
         android:layout_width="0dp"
         android:layout_height="3dp"
         android:background="@color/black"
@@ -82,80 +82,62 @@
         android:id="@+id/mypage_icon_gridlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="3"
-        android:paddingLeft="25dp"
+        android:columnCount="2"
+        android:paddingStart="25dp"
         android:paddingTop="10dp"
         android:rowCount="1"
-        app:layout_constraintTop_toBottomOf="@id/view2"
+        app:layout_constraintTop_toBottomOf="@id/inpo_review_view"
         tools:layout_editor_absoluteX="0dp">
 
-        <!-- 이미지 1 -->
+
         <LinearLayout
+            android:id="@+id/review_layout"
+            android:layout_marginStart="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/image1"
+                android:id="@+id/mypage_review_imageview"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_marginRight="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/icon_calendar" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="5dp"
-                android:text="캘린더"
-                android:textSize="20dp" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/image2"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginRight="30dp"
+                android:layout_marginEnd="30dp"
                 android:layout_weight="1"
                 android:src="@drawable/icon_review" />
 
             <TextView
+                android:id="@+id/mypage_review_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="5dp"
-                android:text="리뷰"
-                android:textSize="20dp" />
+                android:text="@string/mypage_review"
+                android:textSize="20sp" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/mypage_zzim_layout"
+            android:layout_marginStart="50dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/image3"
+                android:id="@+id/mypage_zzim_imageview"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_weight="1"
                 android:src="@drawable/icon_heart_button" />
 
             <TextView
+                android:id="@+id/mypage_zzim_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="5dp"
-                android:text="찜한 목록"
-                android:textSize="20dp" />
+                android:text="@string/mypage_zzim"
+                android:textSize="20sp" />
 
         </LinearLayout>
 
@@ -163,7 +145,7 @@
 
     <View
         android:layout_marginTop="10dp"
-        android:id="@+id/view3"
+        android:id="@+id/mypage_review_question_view"
         android:layout_width="0dp"
         android:layout_height="3dp"
         android:background="@color/black"
@@ -171,6 +153,7 @@
         tools:ignore="MissingConstraints" />
 
     <LinearLayout
+
         android:layout_marginTop="10dp"
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
@@ -181,80 +164,89 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
-            android:id="@+id/mypage_question_text"
+            android:id="@+id/mypage_question_textview"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:text="자주묻는질문"
-            android:textSize="20dp"
+            android:text="@string/mypage_question"
+            android:textSize="20sp"
             android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:textStyle="bold"/>
 
         <View
+            android:id="@+id/mypage_question_appinpo_view"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/black"
             app:layout_constraintTop_toBottomOf="@id/mypage_question_text"
             />
         <TextView
+            android:id="@+id/mypage_appinpo_textview"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:text="App 정보"
-            android:textSize="20dp"
+            android:text="@string/mypage_app_inpo"
+            android:textSize="20sp"
             android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:textStyle="bold"/>
 
         <View
+            android:id="@+id/mypage_appinpo_1dae1question_view"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/black"
             />
         <TextView
+            android:id="@+id/mypage_1dae1question_textview"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:text="1 : 1 문의하기"
-            android:textSize="20dp"
+            android:text="@string/mypage_1dae1_question"
+            android:textSize="20sp"
             android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:textStyle="bold"/>
 
         <View
+            android:id="@+id/mypage_1dae1question_uesrinpo_view"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/black"
               />
         <TextView
+            android:id="@+id/mypage_userinpo_textview"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:text="이용약관 및 개인정보 처리방침"
-            android:textSize="20dp"
+            android:text="@string/mypage_user_inpor_using_inpo"
+            android:textSize="20sp"
             android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:textStyle="bold"/>
 
         <View
+            android:id="@+id/mypage_userinpo_logout_view"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/black"
              />
 
         <Button
+            android:id="@+id/mypage_logout_button"
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:text="로그아웃"
+            android:text="@string/mypage_logout"
             android:textSize="20sp"
             android:layout_marginTop="30dp"
             />
         
         <TextView
+            android:id="@+id/mypage_withdrawal_textivew"
             android:layout_width="70dp"
             android:layout_height="30dp"
             android:textSize="15sp"
             android:layout_marginTop="50dp"
             android:layout_gravity="right"
-            android:text="회원탈퇴"/>
+            android:text="@string/mypage_withdrawal"/>
 
     </LinearLayout>
 

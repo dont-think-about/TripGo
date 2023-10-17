@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        tools:ignore="MissingConstraints"
+        tools:ignore="MissingConstraints,RtlSymmetry"
         android:paddingTop="30dp"
         android:paddingStart="20dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -18,29 +18,34 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
+            android:id="@+id/profile_back_imagebutton"
             android:layout_width="40dp"
             android:layout_height="40dp"
             />
 
         <TextView
+            android:id="@+id/profile_edit_textview"
             android:layout_width="150dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="30dp"
-            android:text="프로필 수정"
+            android:layout_marginStart="30dp"
+            android:text="@string/profile_modify"
             android:textSize="25sp"
             android:textStyle="bold"
             />
         <TextView
+            android:id="@+id/profile_edit_complete_textivew"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="right"
-            android:text="완료"
+            android:text="@string/profile_modify_complete"
             android:textSize="15sp"
-            android:layout_marginLeft="125dp"/>
+            android:layout_marginLeft="125dp"
+            tools:ignore="RtlHardcoded" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/profile_bottomlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -48,7 +53,8 @@
         app:layout_constraintTop_toBottomOf="@+id/profile_linearlayout">
 
 
-        <ImageButton
+        <ImageView
+            android:id="@+id/profile_edit_user_imageview"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
@@ -56,19 +62,21 @@
             android:src="@drawable/icon_user"/>
 
         <TextView
+            android:id="@+id/profile_username"
             android:layout_width="80dp"
             android:layout_height="30dp"
-            android:layout_marginLeft="50dp"
-            android:text="닉네임"
-            android:textSize="20dp"
+            android:layout_marginStart="50dp"
+            android:text="@string/profile_modify_nickname"
+            android:textSize="20sp"
             android:layout_marginTop="30dp"
             />
 
         <EditText
+            android:id="@+id/profile_edit_username"
             android:layout_width="250dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="45dp"
-            android:hint="닉네임을 입력하시오"
+            android:layout_marginStart="45dp"
+            android:hint="@string/profile_modify_push_nickname"
             android:layout_marginTop="10dp"/>
 
 
