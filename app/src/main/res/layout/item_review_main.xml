@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginVertical="5dp"
+    android:background="@drawable/shape_item_review_main_background"
+    android:padding="10dp">
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/review_item_chip_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <!--        <com.google.android.material.chip.Chip-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            style="@style/Widget.MaterialComponents.Chip.Action"-->
+        <!--            tools:text="서울"-->
+        <!--            />-->
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/review_item_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_item_chip_group"
+        tools:src="@tools:sample/avatars" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/review_item_title_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/review_item_image_view"
+        tools:text="광안리 해변 테마 거리" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/review_item_date_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/review_item_title_text_view"
+        app:layout_constraintTop_toBottomOf="@id/review_item_title_text_view"
+        tools:text="2023.10.12 ~ 2023.10.16" />
+
+    <RatingBar
+        android:id="@+id/review_item_rating_bar"
+        style="@style/Widget.AppCompat.RatingBar.Indicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:isIndicator="true"
+        android:progressTint="@color/dark_yellow"
+        app:layout_constraintStart_toStartOf="@id/review_item_date_text_view"
+        app:layout_constraintTop_toBottomOf="@id/review_item_date_text_view"
+        tools:rating="3.5" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/review_item_shorts_description_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintEnd_toStartOf="@id/review_item_image_view"
+        app:layout_constraintStart_toStartOf="@id/review_item_rating_bar"
+        app:layout_constraintTop_toBottomOf="@id/review_item_rating_bar"
+        tools:text="lorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

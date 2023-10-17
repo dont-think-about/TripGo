@@ -5,10 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityMainBinding
+import com.nbcamp.tripgo.view.calendar.CalendarFragment
 import com.nbcamp.tripgo.view.home.HomeFragment
 import com.nbcamp.tripgo.view.mypage.MyPageFragment
 import com.nbcamp.tripgo.view.review.ReviewFragment
-import com.nbcamp.tripgo.view.weather.WeatherFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -29,8 +29,8 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.weather -> {
-                    showFragment(WeatherFragment.newInstance(), WeatherFragment.TAG)
+                R.id.calendar -> {
+                    showFragment(CalendarFragment.newInstance(), CalendarFragment.TAG)
                     true
                 }
 
