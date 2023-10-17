@@ -20,4 +20,11 @@
     <string name="add_to_calendar">캘린더에 일정 추가하기</string>
     <string name="search">검색</string>
     <string name="tripRank">이번주 자주 찾는 여행지 순위</string>
+    <string name="main_title">메인 타이틀</string>
+    <string name="festival_of_the_month">이달의 축제</string>
+    <string name="wall">ㅣ</string>
+    <string name="sub_title">서브 타이틀</string>
+    <string name="date_time">202x.xx.xx ~ 202x.xx.xx</string>
+    <string name="travel_destination">여행지</string>
+    <string name="attractions">관광 명소</string>
 </resources>
