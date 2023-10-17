@@ -23,11 +23,11 @@
             android:name=".view.SplashActivity"
             android:exported="false" />
         <activity
-            android:name=".view.signin.SignInActivity"
-            android:exported="false" />
+            android:name=".view.signup.SignUpActivity"
+            android:exported="false"/>
         <activity
             android:name=".view.login.LogInActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".view.attraction.detail.AttractionsDetailActivity"
             android:exported="false" />
@@ -42,7 +42,13 @@
             android:exported="false" />
         <activity
             android:name=".view.search.SearchActivity"
-            android:exported="false" />
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
         <activity
             android:name=".view.festival.FestivalActivity"
             android:exported="false" />
@@ -51,13 +57,9 @@
             android:exported="false" />
         <activity
             android:name=".view.main.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="true" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+
     </application>
 
 </manifest>

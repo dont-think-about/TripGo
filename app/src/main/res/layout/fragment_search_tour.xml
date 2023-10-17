@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:background="@drawable/search_rounded_edit"
+        android:padding="8dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/tour_search_ok"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/icon_search_magnify"
+            android:layout_marginEnd="8dp"/>
+
+        <EditText
+            android:id="@+id/tour_search_edit"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="지역 검색"
+            android:background="@android:color/transparent"
+            android:inputType="text"
+            android:textSize="15sp"/>
+
+        <ImageView
+            android:id="@+id/tour_search_close_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/icon_search_close"
+            android:visibility="gone"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
