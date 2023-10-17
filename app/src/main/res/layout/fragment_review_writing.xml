@@ -7,7 +7,7 @@
     tools:context=".view.mypage.reviewwriting.ReviewWritingFragment">
 
     <LinearLayout
-        android:id="@+id/action_bar"
+        android:id="@+id/review_writing_action_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -20,7 +20,7 @@
         tools:layout_editor_absoluteX="0dp">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btn_back"
+            android:id="@+id/review_writing_button_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
@@ -40,7 +40,7 @@
             android:layout_weight="1" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btn_home"
+            android:id="@+id/review_writing_button_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
@@ -54,7 +54,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/action_bar">
+        app:layout_constraintTop_toBottomOf="@id/review_writing_action_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -234,7 +234,7 @@
                     android:textSize="12sp" />
 
                 <Button
-                    android:id="@+id/review_writing_toggle_animal_button"
+                    android:id="@+id/review_writing_toggle_pet_button"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -296,7 +296,7 @@
                 app:layout_constraintTop_toBottomOf="@id/review_writing_text_input_layout" />
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/review_writing_image_view"
+                android:id="@+id/review_writing_image_button"
                 android:layout_width="0dp"
                 android:layout_height="300dp"
                 android:layout_marginStart="20dp"
@@ -317,7 +317,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/review_writing_image_view" />
+                app:layout_constraintTop_toBottomOf="@id/review_writing_image_button" />
 
             <RatingBar
                 android:id="@+id/review_writing_rating_bar"
@@ -336,6 +336,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
+                android:background="@drawable/review_detail_button_round_background"
+                android:backgroundTint="@color/deactivated"
                 android:text="@string/review_cancel"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -347,7 +349,8 @@
                 android:id="@+id/review_writing_submit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/main"
+                android:background="@drawable/review_detail_button_round_background"
+                android:backgroundTint="@color/main"
                 android:text="@string/review_submit"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/review_writing_cancel_button"

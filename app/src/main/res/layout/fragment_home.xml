@@ -280,7 +280,6 @@
                     android:id="@+id/main_weather_event_title_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/main_weather_event_date_text_view"
@@ -354,6 +353,7 @@
 
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/main_all_tour_list_recycler_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"

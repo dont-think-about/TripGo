@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:id="@+id/action_bar"
+        android:id="@+id/review_detail_action_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btn_back"
+            android:id="@+id/review_detail_button_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
@@ -37,14 +37,14 @@
             android:layout_weight="1" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btn_home"
+            android:id="@+id/review_detail_button_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:src="@drawable/icon_home_button" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btn_share"
+            android:id="@+id/review_detail_button_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -60,7 +60,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/action_bar">
+        app:layout_constraintTop_toBottomOf="@id/review_detail_action_bar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -77,6 +77,7 @@
                 tools:src="@tools:sample/avatars" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/review_detail_title_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -85,6 +86,7 @@
                 tools:text="축제 or 장소 이름" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/review_detail_address_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -92,6 +94,7 @@
                 tools:text="주소" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/review_detail_festival_date_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -107,6 +110,7 @@
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/review_detail_description_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="4dp"
@@ -121,13 +125,13 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp">
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Action"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    tools:text="서울" />
                 <!-- addView()를 통해 동적으로 추가-->
+                <!-- <com.google.android.material.chip.Chip-->
+                <!--      style="@style/Widget.MaterialComponents.Chip.Action"-->
+                <!--      android:layout_width="wrap_content"-->
+                <!--      android:layout_height="wrap_content"-->
+                <!--      android:clickable="false"-->
+                <!--      tools:text="서울" />-->
             </com.google.android.material.chip.ChipGroup>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -139,6 +143,7 @@
                 android:textStyle="bold" />
 
             <RatingBar
+                android:id="@+id/review_detail_rating_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:isIndicator="true"
