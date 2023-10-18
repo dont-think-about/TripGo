@@ -2,6 +2,7 @@ package com.nbcamp.tripgo.view.home
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -67,6 +69,21 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // 오른쪽 끝일 때, 다음 페이지를 불러올 OnScrollListener
+    private val endScrollListener by lazy {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE
+                    && !binding.mainNearbyTourRecyclerView.canScrollHorizontally(1)
+                ) {
+                    homeViewModel.getNearbyPlaceList(locationForScrollListener, ++nearbyPageNumber)
+                }
+            }
+        }
+    }
+    private var nearbyPageNumber = 1
+    private lateinit var locationForScrollListener: Location
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -116,15 +133,16 @@ class HomeFragment : Fragment() {
         viewPagerCircleIndicator.setViewPager(mainFestivalViewPager)
         mainNearbyTourRecyclerView.run {
             adapter = nearbyPlaceAdapter
+            addOnScrollListener(endScrollListener)
         }
     }
 
     private fun initViewModel() = with(homeViewModel) {
         // viewpager 데이터 가져오기
         homeViewModel.run {
-//            fetchViewPagerData()
-//            autoSlideViewPager()
-//            getPlaceByTodayWeather()
+            fetchViewPagerData()
+            autoSlideViewPager()
+            getPlaceByTodayWeather()
         }
         checkLocationPermissions()
         festivalUiState.observe(viewLifecycleOwner) { state ->
@@ -159,12 +177,10 @@ class HomeFragment : Fragment() {
                 requireActivity().toast(getString(R.string.load_failed_data))
                 return@observe
             }
-            println(state.list)
             with(binding) {
                 nearbyProgressBar.isVisible = state.isLoading
-                mainNearbyTourRecyclerView.isVisible = state.isLoading.not()
             }
-            nearbyPlaceAdapter.submitList(state.list)
+            nearbyPlaceAdapter.setList(state.list)
         }
     }
 
@@ -245,7 +261,8 @@ class HomeFragment : Fragment() {
                     Priority.PRIORITY_HIGH_ACCURACY,
                     cancellationTokenSource!!.token
                 ).addOnSuccessListener { location ->
-                    homeViewModel.getNearbyPlaceList(location)
+                    locationForScrollListener = location
+                    homeViewModel.getNearbyPlaceList(location, nearbyPageNumber)
                 }
             }
             // 위치 권한 안내가 필요 하면
@@ -273,12 +290,10 @@ class HomeFragment : Fragment() {
             .show()
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
-//        homeViewModel.stopSlideViewPager()
+        homeViewModel.stopSlideViewPager()
     }
-
 
     companion object {
         fun newInstance() = HomeFragment()

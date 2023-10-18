@@ -107,12 +107,14 @@ class HomeRepositoryImpl(
     override suspend fun getNearbyPlaces(
         latitude: String,
         longitude: String,
-        radius: String
+        radius: String,
+        pageNumber: String
     ): APIResponse<List<NearbyPlaceEntity>> {
         val response = tourApiService.getNearbyPlace(
             latitude = latitude,
             longitude = longitude,
-            radius = radius
+            radius = radius,
+            pageNumber = pageNumber
         )
         if (response.isSuccessful) {
             val list = arrayListOf<NearbyPlaceEntity>()

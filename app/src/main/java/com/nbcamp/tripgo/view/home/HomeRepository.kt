@@ -34,6 +34,7 @@ interface HomeRepository {
     suspend fun getNearbyPlaces(
         latitude: String,
         longitude: String,
-        radius: String
+        radius: String,
+        pageNumber: String
     ): APIResponse<List<NearbyPlaceEntity>>
 }

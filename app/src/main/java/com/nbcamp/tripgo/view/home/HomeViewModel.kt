@@ -137,15 +137,14 @@ class HomeViewModel(
     }
 
 
-    fun getNearbyPlaceList(location: Location?) {
+    fun getNearbyPlaceList(location: Location?, pageNumber: Int) {
         _nearbyPlaceUiState.value = HomeNearbyPlaceUiState.initialize()
         viewModelScope.launch(Dispatchers.IO) {
-            println(location?.latitude)
-            println(location?.longitude)
             val nearbyPlaces = homeRepository.getNearbyPlaces(
                 latitude = location?.latitude.toString(),
                 longitude = location?.longitude.toString(),
-                radius = "10000" //10km 이내
+                radius = "10000", //10km 이내,
+                pageNumber = pageNumber.toString()
             )
             when (nearbyPlaces) {
                 is APIResponse.Error -> {

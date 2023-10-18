@@ -3,8 +3,6 @@ package com.nbcamp.tripgo.view.home.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
@@ -17,8 +15,18 @@ import com.nbcamp.tripgo.view.App
 class NearbyPlaceAdapter(
     private val context: Context,
     private val onClickItem: (String) -> Unit
-) :
-    ListAdapter<NearbyPlaceEntity, NearbyPlaceAdapter.NearbyPlaceViewHolder>(DIFF_CALLBACK) {
+) : RecyclerView.Adapter<NearbyPlaceAdapter.NearbyPlaceViewHolder>() {
+
+    private val list = arrayListOf<NearbyPlaceEntity>()
+
+    fun setList(items: List<NearbyPlaceEntity>?) {
+        if (items == null) {
+            return
+        }
+        list.addAll(items)
+        notifyItemRangeChanged(list.size - 10, list.size)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NearbyPlaceViewHolder {
         return NearbyPlaceViewHolder(
             ItemMainTourCardBinding.inflate(
@@ -30,8 +38,10 @@ class NearbyPlaceAdapter(
         )
     }
 
+    override fun getItemCount(): Int = list.size
+
     override fun onBindViewHolder(holder: NearbyPlaceViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(list[position])
     }
 
     inner class NearbyPlaceViewHolder(
@@ -56,21 +66,6 @@ class NearbyPlaceAdapter(
             itemView.setOnClickListener {
                 onClickItem(model.contentId)
             }
-        }
-    }
-
-    companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<NearbyPlaceEntity>() {
-            override fun areItemsTheSame(
-                oldItem: NearbyPlaceEntity,
-                newItem: NearbyPlaceEntity
-            ): Boolean = oldItem.contentId == newItem.contentId
-
-
-            override fun areContentsTheSame(
-                oldItem: NearbyPlaceEntity,
-                newItem: NearbyPlaceEntity
-            ): Boolean = oldItem == newItem
         }
     }
 }

@@ -45,7 +45,8 @@ interface TourApiService {
         @Query("mapY") latitude: String,
         @Query("mapX") longitude: String,
         @Query("radius") radius: String,
-        @Query("contentTypeId") typeId: String = "12"
+        @Query("contentTypeId") typeId: String = "12",
+        @Query("pageNo") pageNumber: String
     ): Response<NearbyPlaceResponseModel>
 
     companion object {
