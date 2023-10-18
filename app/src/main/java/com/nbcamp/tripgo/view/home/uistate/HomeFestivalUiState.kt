@@ -22,7 +22,6 @@ data class HomeFestivalUiState(
                     endDate = "error",
                     imageUrl = "error",
                     address = "error"
-
                 )
             ),
             isLoading = false
