@@ -1,18 +1,25 @@
 package com.nbcamp.tripgo.view.mypage.reviewwriting
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.nbcamp.tripgo.R
+import com.nbcamp.tripgo.view.review.ReviewFragment
 
 class MyPageDialog(context: Context) : Dialog(context) {
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_my_page_dialog)
@@ -27,12 +34,14 @@ class MyPageDialog(context: Context) : Dialog(context) {
         val mypage_dialog_total_count_textview = findViewById<TextView>(R.id.mypage_dialog_total_count_textview)
         val mypage_dialog_next_grage_count_textview = findViewById<TextView>(R.id.mypage_dialog_next_grage_count_textview)
 
-        // 각 뷰 요소에 대한 작업을 추가할 수 있습니다.
-        // 예를 들어, 이미지 설정, 텍스트 설정, 버튼 클릭 리스너 등을 추가할 수 있습니다.
-
         mypage_dialog_edit_userinpo_button.setOnClickListener {
+
             // 버튼 클릭 이벤트 처리
             // 원하는 동작을 추가하세요.
         }
+
+
+
+
     }
 }
