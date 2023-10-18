@@ -3,7 +3,7 @@ package com.nbcamp.tripgo.view.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.nbcamp.tripgo.util.SingleLiveEvent
-import com.nbcamp.tripgo.util.TourTheme
+import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 
 class MainViewModel : ViewModel() {
 

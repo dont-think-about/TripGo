@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.nbcamp.tripgo.databinding.FragmentHomeBinding
-import com.nbcamp.tripgo.util.TourTheme
 import com.nbcamp.tripgo.view.home.adapter.FestivalViewPagerAdapter
+import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.main.MainViewModel
 
 class HomeFragment : Fragment() {
