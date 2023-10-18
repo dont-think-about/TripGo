@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import coil.load
+import coil.request.CachePolicy
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -22,6 +23,7 @@ import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.mapper.WeatherType
 import com.nbcamp.tripgo.databinding.FragmentHomeBinding
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.home.adapter.FestivalViewPagerAdapter
 import com.nbcamp.tripgo.view.home.adapter.NearbyPlaceAdapter
 import com.nbcamp.tripgo.view.home.uistate.HomeFestivalUiState
@@ -167,7 +169,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun onBindWeatherSearch(state: HomeWeatherUiState?) = with(binding) {
-        mainWeatherEventImageView.load(state?.data?.imageUrl)
+        mainWeatherEventImageView.load(state?.data?.imageUrl, App.imageLoader) {
+            memoryCachePolicy(CachePolicy.ENABLED)
+            diskCachePolicy(CachePolicy.ENABLED)
+        }
         (state?.data?.temperature + getString(R.string.temperature_sign)).also {
             mainWeatherCelsiusTextView.text = it
         }
@@ -271,7 +276,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        homeViewModel.stopSlideViewPager()
+//        homeViewModel.stopSlideViewPager()
     }
 
 
