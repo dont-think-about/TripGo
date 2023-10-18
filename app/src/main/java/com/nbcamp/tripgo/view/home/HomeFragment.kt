@@ -113,7 +113,7 @@ class HomeFragment : Fragment() {
                 mainWeatherIcon.load(R.drawable.icon_sun)
             }
 
-            null -> requireActivity().toast("정보를 불러오는데 실패하였습니다.")
+            null -> requireActivity().toast(getString(R.string.load_failed_data))
             WeatherType.RAIN -> {
                 mainWeatherTextView.text = getString(R.string.bad_weather)
                 mainWeatherIcon.load(R.drawable.icon_rain)
