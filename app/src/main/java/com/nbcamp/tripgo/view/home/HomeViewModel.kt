@@ -243,7 +243,8 @@ class HomeViewModel(
             hour = "24"
             date = (date.toInt() - 1).toString()
         }
-        return date to "${hour.toInt() - 1}" + "00"
+        val strHour = if (hour.toInt() < 10) "0${hour.toInt() - 1}" else "${hour.toInt() - 1}"
+        return date to strHour + "00"
     }
 
     fun autoSlideViewPager() {
