@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId "com.nbcamp.tripgo"
-        minSdk 24
+        minSdk 26
         compileSdk 33
         targetSdk 33
         versionCode 1
