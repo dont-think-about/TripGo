@@ -22,5 +22,19 @@ data class HomeWeatherUiState(
             ),
             isLoading = true
         )
+
+        fun error() = HomeWeatherUiState(
+            data = KeywordSearchEntity(
+                contentId = "error",
+                title = "error",
+                address = "error",
+                imageUrl = "error",
+                latitude = "error",
+                longitude = "error",
+                weatherType = WeatherType.UNDEFINED,
+                temperature = "error"
+            ),
+            isLoading = false
+        )
     }
 }

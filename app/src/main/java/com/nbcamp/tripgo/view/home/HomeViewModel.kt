@@ -10,6 +10,7 @@ import com.nbcamp.tripgo.data.repository.mapper.WeatherType
 import com.nbcamp.tripgo.data.repository.model.FestivalEntity
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 import com.nbcamp.tripgo.data.repository.model.TravelerEntity
+import com.nbcamp.tripgo.util.APIResponse
 import com.nbcamp.tripgo.view.home.uistate.HomeFestivalUiState
 import com.nbcamp.tripgo.view.home.uistate.HomeWeatherUiState
 import kotlinx.coroutines.Dispatchers
@@ -51,29 +52,36 @@ class HomeViewModel(
                 startDate = getPastDateString.first,
                 endDate = getPastDateString.second
             )
-
-            // 많이 방문한 3개의 시도를 구함
-            val manyTravelersCountList = getHowManyTravelersByPlace(travelers.data)
-                ?.take(3)?.map { it.first }
-
-            val festivals = homeRepository.getFestivalsInThisMonth(
-                responseCount = 1000,
-                startDate = getPastDateString.third
-            )
-
-            val filteredFestival = getPopularFestival(
-                festivals.data,
-                manyTravelersCountList
-            )?.let { list ->
-                val randomList = arrayListOf<FestivalEntity>()
-                (0 until 10).forEach { _ ->
-                    val randomIndex = Random.nextInt(list.size)
-                    randomList.add(list[randomIndex])
+            when (travelers) {
+                is APIResponse.Error -> {
+                    _festivalUiState.postValue(HomeFestivalUiState.error())
                 }
-                randomList
-            }
 
-            _festivalUiState.postValue(HomeFestivalUiState(filteredFestival, false))
+                is APIResponse.Success -> {
+                    // 많이 방문한 3개의 시도를 구함
+                    val manyTravelersCountList = getHowManyTravelersByPlace(travelers.data)
+                        ?.take(3)?.map { it.first }
+
+                    val festivals = homeRepository.getFestivalsInThisMonth(
+                        responseCount = 1000,
+                        startDate = getPastDateString.third
+                    )
+
+                    val filteredFestival = getPopularFestival(
+                        festivals.data,
+                        manyTravelersCountList
+                    )?.let { list ->
+                        val randomList = arrayListOf<FestivalEntity>()
+                        (0 until 10).forEach { _ ->
+                            val randomIndex = Random.nextInt(list.size)
+                            randomList.add(list[randomIndex])
+                        }
+                        randomList
+                    }
+
+                    _festivalUiState.postValue(HomeFestivalUiState(filteredFestival, false))
+                }
+            }
         }
     }
 
@@ -83,33 +91,49 @@ class HomeViewModel(
             val today = getTodayInfo()
             val todayWeather =
                 homeRepository.getTodayWeather(today.first, today.second)
-            when (todayWeather.data?.weatherType) {
-                WeatherType.SUNNY -> {
-                    val entity = runSearchByKeyword(
-                        keyword = "외",
-                        contentTypeId = "15",
-                        responseCount = 1000,
-                    )?.apply {
-                        temperature = todayWeather.data.temperature
-                        weatherType = todayWeather.data.weatherType
-                    }
-
-                    _weatherSearchUiState.postValue(HomeWeatherUiState(entity, false))
+            when (todayWeather) {
+                is APIResponse.Error -> {
+                    _weatherSearchUiState.postValue(HomeWeatherUiState.error())
                 }
 
-                WeatherType.UNDEFINED -> Unit
-                else -> {
-                    val entity = runSearchByKeyword(
-                        keyword = "관",
-                        contentTypeId = "14",
-                        responseCount = 1000,
-                    )?.apply {
-                        temperature = todayWeather.data?.temperature ?: "0"
-                        weatherType = todayWeather.data?.weatherType ?: WeatherType.UNDEFINED
+                is APIResponse.Success -> {
+                    when (todayWeather.data?.weatherType) {
+                        WeatherType.SUNNY -> {
+                            val entity = runSearchByKeyword(
+                                keyword = "외",
+                                contentTypeId = "15",
+                                responseCount = 1000,
+                            )?.apply {
+                                temperature = todayWeather.data.temperature
+                                weatherType = todayWeather.data.weatherType
+                            }
+
+                            _weatherSearchUiState.postValue(HomeWeatherUiState(entity, false))
+                        }
+
+                        WeatherType.UNDEFINED -> Unit
+                        else -> {
+                            val entity = runSearchByKeyword(
+                                keyword = "관",
+                                contentTypeId = "14",
+                                responseCount = 1000,
+                            )?.apply {
+                                temperature = todayWeather.data?.temperature ?: "0"
+                                weatherType =
+                                    todayWeather.data?.weatherType ?: WeatherType.UNDEFINED
+                            }
+                            _weatherSearchUiState.postValue(HomeWeatherUiState(entity, false))
+                        }
                     }
-                    _weatherSearchUiState.postValue(HomeWeatherUiState(entity, false))
                 }
             }
+        }
+    }
+
+
+    fun getNearbyPlaceList() {
+        viewModelScope.launch(Dispatchers.IO) {
+//            val nearbyPlaces = homeRepository.getNearbyPlaces()
         }
     }
 

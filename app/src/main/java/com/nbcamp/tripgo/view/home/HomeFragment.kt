@@ -75,12 +75,17 @@ class HomeFragment : Fragment() {
             fetchViewPagerData()
             autoSlideViewPager()
             getPlaceByTodayWeather()
+            getNearbyPlaceList()
         }
     }
 
     private fun initViewModel() = with(homeViewModel) {
         festivalUiState.observe(viewLifecycleOwner) { state ->
             with(binding) {
+                if (state == HomeFestivalUiState.error()) {
+                    requireActivity().toast(getString(R.string.load_failed_data))
+                    return@observe
+                }
                 festivalProgressBar.isVisible = state.isLoading
                 mainFestivalViewPager.isVisible = state.isLoading.not()
                 viewPagerCircleIndicator.createIndicators(state.list?.size ?: 0, 0)
@@ -91,6 +96,10 @@ class HomeFragment : Fragment() {
             binding.mainFestivalViewPager.setCurrentItem(currentPage, true)
         }
         weatherSearchUiState.observe(viewLifecycleOwner) { state ->
+            if (state == HomeWeatherUiState.error()) {
+                requireActivity().toast(getString(R.string.load_failed_data))
+                return@observe
+            }
             with(binding) {
                 weatherEventProgressBar.isVisible = state.isLoading
                 mainWeatherEventImageView.isVisible = state.isLoading.not()
