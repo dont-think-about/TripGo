@@ -21,8 +21,8 @@ interface WeatherService {
         val DEFAULT_QUERY_SET = hashMapOf(
             "ServiceKey" to BuildConfig.TOUR_API_KEY,
             "dataType" to "JSON",
-            "nx" to "37",
-            "ny" to "127"
+            "nx" to "60",
+            "ny" to "126"
         )
     }
 }

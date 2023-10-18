@@ -9,7 +9,10 @@ import com.nbcamp.tripgo.data.service.RetrofitModule
 class HomeViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-            val repository = HomeRepositoryImpl(RetrofitModule.createTourApiService())
+            val repository = HomeRepositoryImpl(
+                RetrofitModule.createTourApiService(),
+                RetrofitModule.createWeatherApiService()
+            )
             return HomeViewModel(repository) as T
         } else {
             throw IllegalArgumentException()
