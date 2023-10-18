@@ -13,7 +13,8 @@ import com.nbcamp.tripgo.databinding.ItemMainTourCardBinding
 
 
 class NearbyPlaceAdapter(
-    private val context: Context
+    private val context: Context,
+    private val onClickItem: (String) -> Unit
 ) :
     ListAdapter<NearbyPlaceEntity, NearbyPlaceAdapter.NearbyPlaceViewHolder>(DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NearbyPlaceViewHolder {
@@ -22,7 +23,8 @@ class NearbyPlaceAdapter(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            onClickItem
         )
     }
 
@@ -31,7 +33,8 @@ class NearbyPlaceAdapter(
     }
 
     inner class NearbyPlaceViewHolder(
-        private val binding: ItemMainTourCardBinding
+        private val binding: ItemMainTourCardBinding,
+        private val onClickItem: (String) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(model: NearbyPlaceEntity) = with(binding) {
             val distance = model.distance.toDouble()
@@ -44,6 +47,9 @@ class NearbyPlaceAdapter(
             itemDescriptionTextView.text = outputDistance
             itemMainImageView.load(model.imageUrl) {
                 placeholder(R.drawable.icon_camping)
+            }
+            itemView.setOnClickListener {
+                onClickItem(model.contentId)
             }
         }
     }

@@ -60,7 +60,9 @@ class HomeFragment : Fragment() {
     private var cancellationTokenSource: CancellationTokenSource? = null
 
     private val nearbyPlaceAdapter by lazy {
-        NearbyPlaceAdapter(requireActivity())
+        NearbyPlaceAdapter(requireActivity()) { contentId ->
+            runTourDetailActivity(contentId)
+        }
     }
 
 
@@ -218,6 +220,10 @@ class HomeFragment : Fragment() {
 
     private fun runThemeTourActivity(themeId: TourTheme) {
         sharedViewModel.runThemeTourActivity(themeId)
+    }
+
+    private fun runTourDetailActivity(contentId: String) {
+        sharedViewModel.runTourDetailActivity(contentId)
     }
 
     private fun checkLocationPermissions() {

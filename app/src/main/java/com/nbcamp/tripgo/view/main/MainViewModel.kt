@@ -10,6 +10,10 @@ class MainViewModel : ViewModel() {
     private val _event: SingleLiveEvent<ThemeClickEvent> = SingleLiveEvent()
     val event: LiveData<ThemeClickEvent> get() = _event
     fun runThemeTourActivity(themeId: TourTheme) {
-        _event.value = ThemeClickEvent.RunActivity(themeId)
+        _event.value = ThemeClickEvent.RunTourThemeActivity(themeId)
+    }
+
+    fun runTourDetailActivity(contentId: String) {
+        _event.value = ThemeClickEvent.RunTourDetailActivity(contentId)
     }
 }
