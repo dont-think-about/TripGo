@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -34,7 +35,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="15dp">
+            android:paddingBottom="15dp"
+            >
 
             <ImageView
                 android:id="@+id/mypage_usericon"
@@ -55,7 +57,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:text="@string/mypage_signin_up"
-                    android:textSize="27sp" />
+                    android:textSize="27sp"
+                    />
 
                 <TextView
                     android:id="@+id/mypage_signin_up_inpo"
@@ -168,7 +171,7 @@
             android:textSize="20sp"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <View
             android:id="@+id/mypage_question_appinpo_view"
@@ -176,6 +179,7 @@
             android:layout_height="2dp"
             android:background="@color/black"
             app:layout_constraintTop_toBottomOf="@id/mypage_question_textview" />
+
 
         <TextView
             android:id="@+id/mypage_appinpo_textview"
@@ -185,14 +189,14 @@
             android:textSize="20sp"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <View
             android:id="@+id/mypage_appinpo_1dae1question_view"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@color/black" />
-
+            android:background="@color/black"
+            />
         <TextView
             android:id="@+id/mypage_1dae1question_textview"
             android:layout_width="match_parent"
@@ -201,14 +205,14 @@
             android:textSize="20sp"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <View
             android:id="@+id/mypage_1dae1question_uesrinpo_view"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@color/black" />
-
+            android:background="@color/black"
+            />
         <TextView
             android:id="@+id/mypage_userinpo_textview"
             android:layout_width="match_parent"
@@ -217,13 +221,14 @@
             android:textSize="20sp"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <View
             android:id="@+id/mypage_userinpo_logout_view"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@color/black" />
+            android:background="@color/black"
+            />
 
         <Button
             android:id="@+id/mypage_logout_button"
@@ -232,7 +237,8 @@
             android:layout_gravity="center"
             android:text="@string/mypage_logout"
             android:textSize="20sp"
-            android:layout_marginTop="30dp" />
+            android:layout_marginTop="30dp"
+            />
 
         <TextView
             android:id="@+id/mypage_withdrawal_textivew"
@@ -241,9 +247,10 @@
             android:textSize="15sp"
             android:layout_marginTop="50dp"
             android:layout_gravity="right"
-            android:text="@string/mypage_withdrawal" />
+            android:text="@string/mypage_withdrawal"/>
 
     </LinearLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
