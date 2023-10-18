@@ -5,30 +5,28 @@
     android:layout_height="match_parent"
     tools:context=".view.mypage.favorite.FavoriteFragment">
 
-
     <LinearLayout
         android:id="@+id/favorite_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/favorite_textview"
+            style="@style/Font.22.Bold.Black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/favorite_zzim"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="30dp"/>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/favorite_zzim" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/favorite_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="15dp"
-            android:layout_marginStart="10dp"/>
-        
+            tools:listitem="@layout/fragment_favorite_item" />
+
     </LinearLayout>
 
 </FrameLayout>
