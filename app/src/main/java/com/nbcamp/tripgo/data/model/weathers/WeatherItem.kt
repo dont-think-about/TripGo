@@ -3,7 +3,7 @@ package com.nbcamp.tripgo.data.model.weathers
 
 import com.google.gson.annotations.SerializedName
 
-data class Weatheritem(
+data class WeatherItem(
     @SerializedName("baseDate")
     val baseDate: String,
     @SerializedName("baseTime")
