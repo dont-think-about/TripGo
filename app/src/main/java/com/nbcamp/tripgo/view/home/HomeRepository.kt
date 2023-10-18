@@ -1,6 +1,7 @@
 package com.nbcamp.tripgo.view.home
 
 import com.nbcamp.tripgo.data.repository.model.FestivalEntity
+import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 import com.nbcamp.tripgo.data.repository.model.TravelerEntity
 import com.nbcamp.tripgo.data.repository.model.WeatherEntity
 import com.nbcamp.tripgo.util.APIResponse
@@ -22,4 +23,10 @@ interface HomeRepository {
         date: String,
         time: String
     ): APIResponse<WeatherEntity>
+
+    suspend fun getInformationByKeyword(
+        keyword: String,
+        contentTypeId: String,
+        responseCount: Int
+    ): APIResponse<List<KeywordSearchEntity>>
 }

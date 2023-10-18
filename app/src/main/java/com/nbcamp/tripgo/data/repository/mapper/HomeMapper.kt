@@ -1,9 +1,11 @@
 package com.nbcamp.tripgo.data.repository.mapper
 
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
+import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.model.travelers.TravlerItem
 import com.nbcamp.tripgo.data.model.weathers.WeatherItem
 import com.nbcamp.tripgo.data.repository.model.FestivalEntity
+import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 import com.nbcamp.tripgo.data.repository.model.TravelerEntity
 import com.nbcamp.tripgo.data.repository.model.WeatherEntity
 
@@ -21,6 +23,17 @@ object HomeMapper {
         imageUrl = firstimage,
         title = title,
         address = addr1
+    )
+
+    fun KeywordItem.toKeywordSearchEntity() = KeywordSearchEntity(
+        contentId = contentid,
+        title = title,
+        address = addr1,
+        imageUrl = firstimage,
+        latitude = mapy,
+        longitude = mapx,
+        weatherType = WeatherType.UNDEFINED,
+        temperature = "0",
     )
 
     fun List<WeatherItem>?.toWeatherEntity(): WeatherEntity {

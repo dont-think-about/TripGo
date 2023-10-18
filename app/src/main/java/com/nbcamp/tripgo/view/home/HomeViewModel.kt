@@ -6,11 +6,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nbcamp.tripgo.data.repository.mapper.WeatherType
 import com.nbcamp.tripgo.data.repository.model.FestivalEntity
+import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 import com.nbcamp.tripgo.data.repository.model.TravelerEntity
+import com.nbcamp.tripgo.view.home.uistate.HomeFestivalUiState
+import com.nbcamp.tripgo.view.home.uistate.HomeWeatherUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import kotlin.random.Random
 
 class HomeViewModel(
@@ -19,6 +26,11 @@ class HomeViewModel(
     private val _festivalUiState: MutableLiveData<HomeFestivalUiState> = MutableLiveData()
     val festivalUiState: LiveData<HomeFestivalUiState>
         get() = _festivalUiState
+
+    private val _weatherSearchUiState: MutableLiveData<HomeWeatherUiState> = MutableLiveData()
+    val weatherSearchUiState: LiveData<HomeWeatherUiState>
+        get() = _weatherSearchUiState
+
 
     private val handler = Handler(Looper.getMainLooper()) {
         setPage()
@@ -48,6 +60,7 @@ class HomeViewModel(
                 responseCount = 1000,
                 startDate = getPastDateString.third
             )
+
             val filteredFestival = getPopularFestival(
                 festivals.data,
                 manyTravelersCountList
@@ -63,6 +76,59 @@ class HomeViewModel(
             _festivalUiState.postValue(HomeFestivalUiState(filteredFestival, false))
         }
     }
+
+    fun getPlaceByTodayWeather() {
+        _weatherSearchUiState.value = HomeWeatherUiState.initialize()
+        viewModelScope.launch(Dispatchers.IO) {
+            val today = getTodayInfo()
+            val todayWeather =
+                homeRepository.getTodayWeather(today.first, today.second)
+            when (todayWeather.data?.weatherType) {
+                WeatherType.SUNNY -> {
+                    val entity = runSearchByKeyword(
+                        keyword = "외",
+                        contentTypeId = "15",
+                        responseCount = 1000,
+                    )?.apply {
+                        temperature = todayWeather.data.temperature
+                        weatherType = todayWeather.data.weatherType
+                    }
+
+                    _weatherSearchUiState.postValue(HomeWeatherUiState(entity, false))
+                }
+
+                WeatherType.UNDEFINED -> Unit
+                else -> {
+                    val entity = runSearchByKeyword(
+                        keyword = "관",
+                        contentTypeId = "14",
+                        responseCount = 1000,
+                    )?.apply {
+                        temperature = todayWeather.data?.temperature ?: "0"
+                        weatherType = todayWeather.data?.weatherType ?: WeatherType.UNDEFINED
+                    }
+                    _weatherSearchUiState.postValue(HomeWeatherUiState(entity, false))
+                }
+            }
+        }
+    }
+
+    private suspend fun runSearchByKeyword(
+        keyword: String,
+        contentTypeId: String,
+        responseCount: Int
+    ): KeywordSearchEntity? = homeRepository.getInformationByKeyword(
+        keyword = keyword,
+        contentTypeId = contentTypeId,
+        responseCount = responseCount
+    ).let { list ->
+        var randomIndex = 0
+        list.data?.let { searchList ->
+            randomIndex = searchList.size.let { Random.nextInt(it) }
+        }
+        list.data?.get(randomIndex)
+    }
+
 
     private fun getPopularFestival(
         data: List<FestivalEntity>?,
@@ -80,9 +146,8 @@ class HomeViewModel(
             group.key to group.value.sumOf { it.travelCount }
         }?.sortedByDescending { it.second }
 
-
     private fun getPastDateString(): Triple<String, String, String> {
-        val calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance(Locale.KOREAN)
         var year = calendar.get(Calendar.YEAR)
         var month = calendar.get(Calendar.MONTH)
         val thisMonth = month + 1
@@ -100,6 +165,17 @@ class HomeViewModel(
             "${year}${strMonth}30",
             "${year}${strThisMonth}01"
         )
+    }
+
+    private fun getTodayInfo(): Pair<String, String> {
+        val sdf = SimpleDateFormat("yyyyMMdd HH", Locale.KOREAN)
+        val day = Date(System.currentTimeMillis())
+        var (date, hour) = sdf.format(day).split(" ")
+        if (hour == "00") {
+            hour = "24"
+            date = (date.toInt() - 1).toString()
+        }
+        return date to "${hour.toInt() - 1}" + "00"
     }
 
     fun autoSlideViewPager() {

@@ -1,9 +1,11 @@
 package com.nbcamp.tripgo.data.repository
 
 import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toFestivalEntity
+import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toKeywordSearchEntity
 import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toTravelerEntity
 import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toWeatherEntity
 import com.nbcamp.tripgo.data.repository.model.FestivalEntity
+import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 import com.nbcamp.tripgo.data.repository.model.TravelerEntity
 import com.nbcamp.tripgo.data.repository.model.WeatherEntity
 import com.nbcamp.tripgo.data.service.TourApiService
@@ -73,6 +75,28 @@ class HomeRepositoryImpl(
                 val weatherInfo =
                     weatherModel.response.body.items.weatherItem
                 return APIResponse.Success(weatherInfo.toWeatherEntity())
+            }
+        }
+        return APIResponse.Error(response.message())
+    }
+
+    override suspend fun getInformationByKeyword(
+        keyword: String,
+        contentTypeId: String,
+        responseCount: Int
+    ): APIResponse<List<KeywordSearchEntity>> {
+        val response = tourApiService.getPlaceBySearch(
+            keyword = keyword,
+            contentTypeId = contentTypeId,
+            responseCount = responseCount
+        )
+        if (response.isSuccessful) {
+            val list = arrayListOf<KeywordSearchEntity>()
+            response.body()?.let { keywordModel ->
+                keywordModel.response.body.items.item.forEach { item ->
+                    list.add(item.toKeywordSearchEntity())
+                }
+                return APIResponse.Success(list)
             }
         }
         return APIResponse.Error(response.message())

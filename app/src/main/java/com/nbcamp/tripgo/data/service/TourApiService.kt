@@ -2,6 +2,7 @@ package com.nbcamp.tripgo.data.service
 
 import com.nbcamp.tripgo.BuildConfig
 import com.nbcamp.tripgo.data.model.festivals.FestivalResponseModel
+import com.nbcamp.tripgo.data.model.keywords.KeywordSearchResponseModel
 import com.nbcamp.tripgo.data.model.travelers.TravelersCountResponseModel
 import retrofit2.Response
 import retrofit2.http.GET
@@ -24,6 +25,14 @@ interface TourApiService {
         @Query("eventStartDate") startDate: String,
         @Query("numOfRows") responseCount: Int
     ): Response<FestivalResponseModel>
+
+    @GET("KorService1/searchKeyword1")
+    suspend fun getPlaceBySearch(
+        @QueryMap defaultQuerySet: HashMap<String, String> = DEFAULT_QUERY_SET,
+        @Query("keyword") keyword: String,
+        @Query("contentTypeId") contentTypeId: String,
+        @Query("numOfRows") responseCount: Int
+    ): Response<KeywordSearchResponseModel>
 
 
     companion object {
