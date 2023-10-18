@@ -2,10 +2,12 @@ package com.nbcamp.tripgo.data.repository
 
 import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toFestivalEntity
 import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toKeywordSearchEntity
+import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toNearbyPlaceEntity
 import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toTravelerEntity
 import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toWeatherEntity
 import com.nbcamp.tripgo.data.repository.model.FestivalEntity
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
+import com.nbcamp.tripgo.data.repository.model.NearbyPlaceEntity
 import com.nbcamp.tripgo.data.repository.model.TravelerEntity
 import com.nbcamp.tripgo.data.repository.model.WeatherEntity
 import com.nbcamp.tripgo.data.service.TourApiService
@@ -95,6 +97,28 @@ class HomeRepositoryImpl(
             response.body()?.let { keywordModel ->
                 keywordModel.response.body.items.item.forEach { item ->
                     list.add(item.toKeywordSearchEntity())
+                }
+                return APIResponse.Success(list)
+            }
+        }
+        return APIResponse.Error(response.message())
+    }
+
+    override suspend fun getNearbyPlaces(
+        latitude: String,
+        longitude: String,
+        radius: String
+    ): APIResponse<List<NearbyPlaceEntity>> {
+        val response = tourApiService.getNearbyPlace(
+            latitude = latitude,
+            longitude = longitude,
+            radius = radius
+        )
+        if (response.isSuccessful) {
+            val list = arrayListOf<NearbyPlaceEntity>()
+            response.body()?.let { nearbyModel ->
+                nearbyModel.response.body.items.item.forEach { item ->
+                    list.add(item.toNearbyPlaceEntity())
                 }
                 return APIResponse.Success(list)
             }

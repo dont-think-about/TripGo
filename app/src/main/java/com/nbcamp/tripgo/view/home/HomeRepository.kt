@@ -2,6 +2,7 @@ package com.nbcamp.tripgo.view.home
 
 import com.nbcamp.tripgo.data.repository.model.FestivalEntity
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
+import com.nbcamp.tripgo.data.repository.model.NearbyPlaceEntity
 import com.nbcamp.tripgo.data.repository.model.TravelerEntity
 import com.nbcamp.tripgo.data.repository.model.WeatherEntity
 import com.nbcamp.tripgo.util.APIResponse
@@ -29,4 +30,10 @@ interface HomeRepository {
         contentTypeId: String,
         responseCount: Int
     ): APIResponse<List<KeywordSearchEntity>>
+
+    suspend fun getNearbyPlaces(
+        latitude: String,
+        longitude: String,
+        radius: String
+    ): APIResponse<List<NearbyPlaceEntity>>
 }
