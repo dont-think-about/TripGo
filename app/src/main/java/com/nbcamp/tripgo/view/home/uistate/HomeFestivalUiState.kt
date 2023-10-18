@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.home
+package com.nbcamp.tripgo.view.home.uistate
 
 import com.nbcamp.tripgo.data.repository.model.FestivalEntity
 

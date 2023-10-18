@@ -7,9 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityMainBinding
-import com.nbcamp.tripgo.util.TourTheme
 import com.nbcamp.tripgo.view.calendar.CalendarFragment
 import com.nbcamp.tripgo.view.home.HomeFragment
+import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.mypage.MyPageFragment
 import com.nbcamp.tripgo.view.review.ReviewFragment
 import com.nbcamp.tripgo.view.search.SearchActivity

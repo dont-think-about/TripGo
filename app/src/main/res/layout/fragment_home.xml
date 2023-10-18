@@ -206,11 +206,11 @@
             android:id="@+id/festival_progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="100dp"
-            app:layout_goneMarginTop="50dp"
             app:layout_constraintBottom_toTopOf="@id/main_weather_event_card"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/main_popular_festival_text_view" />
+            app:layout_constraintTop_toBottomOf="@id/main_popular_festival_text_view"
+            app:layout_goneMarginTop="50dp" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/main_festival_view_pager"
@@ -228,16 +228,16 @@
             android:layout_width="match_parent"
             android:layout_height="20dp"
             app:ci_drawable="@drawable/indicator_circle_focus_color"
-            app:layout_constraintTop_toBottomOf="@id/main_festival_view_pager"
             app:layout_constraintEnd_toEndOf="@id/main_festival_view_pager"
-            app:layout_constraintStart_toStartOf="@id/main_festival_view_pager" />
+            app:layout_constraintStart_toStartOf="@id/main_festival_view_pager"
+            app:layout_constraintTop_toBottomOf="@id/main_festival_view_pager" />
 
 
         <androidx.cardview.widget.CardView
             android:id="@+id/main_weather_event_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_pager_circle_indicator">
@@ -250,6 +250,7 @@
                     android:id="@+id/main_weather_event_image_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:scaleType="fitXY"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -263,16 +264,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@id/main_weather_event_image_view"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/main_weather_event_image_view" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/main_weather_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
+                    android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -281,8 +283,9 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/main_weather_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="5dp"
                     app:layout_constraintBottom_toBottomOf="@id/main_weather_celsius_text_view"
                     app:layout_constraintEnd_toStartOf="@id/main_weather_celsius_text_view"
                     app:layout_constraintTop_toTopOf="@id/main_weather_celsius_text_view"
@@ -292,29 +295,34 @@
                     android:id="@+id/main_weather_celsius_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_margin="24dp"
+                    android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="27`C" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/main_weather_event_title_text_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/main_weather_event_date_text_view"
+                    app:layout_constraintEnd_toEndOf="@id/main_weather_event_date_text_view"
                     app:layout_constraintStart_toStartOf="@id/main_weather_event_date_text_view"
                     tools:text="세계문화축전" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/main_weather_event_date_text_view"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
-                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     tools:text="20231011 ~ 20231030" />
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,6 +26,7 @@ object RetrofitModule {
                 }
             )
             .readTimeout(5, TimeUnit.MINUTES)
+            .connectTimeout(5, TimeUnit.MINUTES)
             .build()
 
 
@@ -51,4 +52,12 @@ object RetrofitModule {
             .create(TourApiService::class.java)
     }
 
+    fun createWeatherApiService(): WeatherService {
+        return Retrofit.Builder()
+            .baseUrl(URL.WEATHER_API_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(buildOkHttpClient())
+            .build()
+            .create(WeatherService::class.java)
+    }
 }

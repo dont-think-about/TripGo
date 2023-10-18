@@ -1,6 +1,6 @@
 package com.nbcamp.tripgo.view.main
 
-import com.nbcamp.tripgo.util.TourTheme
+import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 
 sealed interface ThemeClickEvent {
 

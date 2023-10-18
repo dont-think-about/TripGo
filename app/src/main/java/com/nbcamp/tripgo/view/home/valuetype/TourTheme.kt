@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.util
+package com.nbcamp.tripgo.view.home.valuetype
 
 enum class TourTheme(val themeId: Int) {
     FAMILY(0),
