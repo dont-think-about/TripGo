@@ -71,6 +71,7 @@
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/sign_up_email_edit_text"
+                        style="@style/Font.16.Normal.Black"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_margin="10dp"
@@ -78,32 +79,30 @@
                         android:hint="@string/email"
                         android:imeOptions="actionNext"
                         android:inputType="textEmailAddress"
-                        android:maxLines="1"
-                        android:textSize="16sp" />
+                        android:maxLines="1" />
 
                 </LinearLayout>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/sign_up_email_auth_button"
+                    style="@style/Font.16.Normal.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_marginStart="10dp"
                     android:background="@color/main"
                     android:enabled="false"
-                    android:text="@string/double_check"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:text="@string/double_check" />
 
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/sign_up_email_error_text_view"
+                style="@style/Font.12.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="@string/email_error"
                 android:textColor="@color/error"
-                android:textSize="12sp"
                 android:visibility="visible" />
 
             <LinearLayout
@@ -123,37 +122,36 @@
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/sign_up_nick_name_edit_text"
+                        style="@style/Font.16.Normal.Black"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_margin="10dp"
                         android:background="@null"
                         android:hint="@string/nick_name"
-                        android:inputType="textEmailAddress"
-                        android:textSize="16sp" />
+                        android:inputType="textEmailAddress" />
 
                 </LinearLayout>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/sign_up_nick_name_auth_button"
+                    style="@style/Font.16.Normal.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_marginStart="10dp"
                     android:background="@color/main"
                     android:enabled="false"
-                    android:text="@string/double_check"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:text="@string/double_check" />
 
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/sign_up_nick_name_error_text_view"
+                style="@style/Font.12.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="@string/nick_name_error"
                 android:textColor="@color/error"
-                android:textSize="12sp"
                 android:visibility="visible" />
 
             <LinearLayout
@@ -167,6 +165,7 @@
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/sign_up_password_edit_text"
+                    style="@style/Font.16.Normal.Black"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_margin="10dp"
@@ -174,18 +173,17 @@
                     android:hint="@string/password"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:textSize="16sp" />
+                    android:maxLines="1" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/sign_up_password_error_text_view"
+                    style="@style/Font.12.Normal.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:paddingVertical="10dp"
                     android:text="@string/password_error"
                     android:textColor="@color/error"
-                    android:textSize="12sp"
                     android:visibility="visible" />
 
             </LinearLayout>
@@ -200,6 +198,7 @@
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/sign_up_correct_password_edit_text"
+                    style="@style/Font.16.Normal.Black"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_margin="10dp"
@@ -207,18 +206,17 @@
                     android:hint="@string/correct_password"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:textSize="16sp" />
+                    android:maxLines="1" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/sign_up_correct_password_error_text_view"
+                    style="@style/Font.12.Normal.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:paddingVertical="10dp"
                     android:text="@string/correct_password_error"
                     android:textColor="@color/error"
-                    android:textSize="12sp"
                     android:visibility="visible" />
 
             </LinearLayout>
@@ -245,21 +243,19 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        style="@style/Font.14.Bold.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/terms_and_conditions_agreement"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        style="@style/Font.14.Bold.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/full_agreement"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/sign_up_full_agreement_check_box"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -288,21 +284,21 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/sign_up_age_limit_text_view"
+                        style="@style/Font.14.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/age_limit"
-                        android:textColor="@color/black"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        style="@style/Font.12.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="3dp"
                         android:text="@string/essential"
                         android:textColor="@color/error"
-                        android:textSize="11sp"
                         app:layout_constraintBottom_toBottomOf="@+id/sign_up_age_limit_text_view"
                         app:layout_constraintStart_toEndOf="@+id/sign_up_age_limit_text_view" />
 
@@ -324,21 +320,21 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/sign_up_terms_of_use_text_view"
+                        style="@style/Font.14.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/terms_of_use"
-                        android:textColor="@color/black"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        style="@style/Font.12.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="3dp"
                         android:text="@string/essential"
                         android:textColor="@color/error"
-                        android:textSize="11sp"
                         app:layout_constraintBottom_toBottomOf="@+id/sign_up_terms_of_use_text_view"
                         app:layout_constraintStart_toEndOf="@+id/sign_up_terms_of_use_text_view" />
 
@@ -360,21 +356,21 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/sign_up_privacy_policy_text_view"
+                        style="@style/Font.14.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/privacy_policy"
-                        android:textColor="@color/black"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        style="@style/Font.12.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="3dp"
                         android:text="@string/essential"
                         android:textColor="@color/error"
-                        android:textSize="11sp"
                         app:layout_constraintBottom_toBottomOf="@+id/sign_up_privacy_policy_text_view"
                         app:layout_constraintStart_toEndOf="@+id/sign_up_privacy_policy_text_view" />
 
@@ -396,20 +392,20 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/sign_up_app_alarm_text_view"
+                        style="@style/Font.14.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/app_alarm"
-                        android:textColor="@color/black"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        style="@style/Font.12.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="3dp"
                         android:text="@string/select"
-                        android:textSize="11sp"
                         app:layout_constraintBottom_toBottomOf="@+id/sign_up_app_alarm_text_view"
                         app:layout_constraintStart_toEndOf="@+id/sign_up_app_alarm_text_view" />
 
@@ -419,20 +415,22 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/sign_up_essential_agreement_text_view"
+                style="@style/Font.12.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/essential_agreement"
                 android:textColor="@color/error"
-                android:textSize="12sp"
                 android:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/sign_up_sign_up_complete_button"
+                style="@style/Font.16.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginBottom="50dp"
+                android:background="@color/main"
                 android:enabled="false"
                 android:text="@string/sign_up_complete" />
 
