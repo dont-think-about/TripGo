@@ -32,9 +32,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(layoutInflater)
         return binding.root
@@ -96,10 +94,10 @@ class HomeFragment : Fragment() {
             with(binding) {
                 weatherEventProgressBar.isVisible = state.isLoading
                 mainWeatherEventImageView.isVisible = state.isLoading.not()
+                mainWeatherCelsiusTextView.isVisible = state.isLoading.not()
                 onBindWeatherSearch(state)
             }
         }
-
     }
 
     private fun onBindWeatherSearch(state: HomeWeatherUiState?) = with(binding) {
