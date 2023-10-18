@@ -51,4 +51,12 @@ object RetrofitModule {
             .create(TourApiService::class.java)
     }
 
+    fun createWeatherApiService(): WeatherService {
+        return Retrofit.Builder()
+            .baseUrl(URL.WEATHER_API_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(buildOkHttpClient())
+            .build()
+            .create(WeatherService::class.java)
+    }
 }
