@@ -202,10 +202,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/main_theme_button_set" />
 
+        <ProgressBar
+            android:id="@+id/festival_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            app:layout_goneMarginTop="50dp"
+            app:layout_constraintBottom_toTopOf="@id/main_weather_event_card"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/main_popular_festival_text_view" />
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/main_festival_view_pager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
@@ -216,11 +226,12 @@
         <me.relex.circleindicator.CircleIndicator3
             android:id="@+id/view_pager_circle_indicator"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            app:layout_constraintBottom_toBottomOf="@id/main_festival_view_pager"
+            android:layout_height="20dp"
+            app:ci_drawable="@drawable/indicator_circle_focus_color"
+            app:layout_constraintTop_toBottomOf="@id/main_festival_view_pager"
             app:layout_constraintEnd_toEndOf="@id/main_festival_view_pager"
             app:layout_constraintStart_toStartOf="@id/main_festival_view_pager" />
+
 
         <androidx.cardview.widget.CardView
             android:id="@+id/main_weather_event_card"
@@ -229,7 +240,7 @@
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/main_festival_view_pager">
+            app:layout_constraintTop_toBottomOf="@id/view_pager_circle_indicator">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -246,6 +257,16 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
                     tools:src="@drawable/icon_tasty" />
+
+                <ProgressBar
+                    android:id="@+id/weather_event_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/main_weather_event_image_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/main_weather_event_image_view" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/main_weather_text_view"
@@ -339,6 +360,16 @@
             app:layout_constraintTop_toBottomOf="@id/main_nearby_tour_list_text_view"
             tools:listitem="@layout/item_main_tour_card" />
 
+        <ProgressBar
+            android:id="@+id/nearby_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/main_nearby_tour_recycler_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/main_nearby_tour_recycler_view" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/main_all_tour_list_text_view"
             android:layout_width="wrap_content"
@@ -364,6 +395,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/main_all_tour_list_text_view"
             tools:listitem="@layout/item_main_tour_card" />
+
+        <ProgressBar
+            android:id="@+id/all_tour_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/main_all_tour_list_recycler_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/main_all_tour_list_recycler_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>
