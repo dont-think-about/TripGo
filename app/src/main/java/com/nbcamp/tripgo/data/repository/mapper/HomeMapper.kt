@@ -1,6 +1,6 @@
 package com.nbcamp.tripgo.data.repository.mapper
 
-import com.nbcamp.tripgo.data.model.festival.FestivalItem
+import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.travelers.TravlerItem
 import com.nbcamp.tripgo.data.repository.model.FestivalEntity
 import com.nbcamp.tripgo.data.repository.model.TravelerEntity

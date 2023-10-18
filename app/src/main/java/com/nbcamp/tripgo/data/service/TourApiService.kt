@@ -1,7 +1,7 @@
 package com.nbcamp.tripgo.data.service
 
 import com.nbcamp.tripgo.BuildConfig
-import com.nbcamp.tripgo.data.model.festival.FestivalResponseModel
+import com.nbcamp.tripgo.data.model.festivals.FestivalResponseModel
 import com.nbcamp.tripgo.data.model.travelers.TravelersCountResponseModel
 import retrofit2.Response
 import retrofit2.http.GET
