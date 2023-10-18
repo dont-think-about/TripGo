@@ -55,9 +55,13 @@ class MyPageFragment : Fragment() {
 
         return view
     }
+    companion object {
+        fun newInstance() = MyPageFragment()
 
-
+        const val TAG = "MY_PAGE_FRAGMENT"
+    }
 }
+
 
 //mvvm 모델을 적용시킨 Logout  수정해야됨
 
