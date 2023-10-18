@@ -11,30 +11,30 @@
         android:layout_height="match_parent"
         tools:context=".view.home.HomeFragment">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/main_app_title_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="60dp"
             android:layout_marginTop="40dp"
-            android:text="@string/go_go"
-            android:textSize="30sp"
-            android:textStyle="bold"
+            android:adjustViewBounds="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_logo_title" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/main_search_view"
+            style="@style/Font.18.Normal.Black"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="40dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/main_search_view_background_style"
             android:drawableEnd="@drawable/icon_search"
             android:gravity="center"
             android:hint="@string/go_search_activity"
-            android:padding="10dp"
-            android:textSize="18sp"
+            android:padding="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/main_app_title_text_view" />
@@ -43,7 +43,8 @@
             android:id="@+id/main_theme_button_set"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="30dp"
             android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +55,9 @@
                 android:id="@+id/main_family_card_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardElevation="@null">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -71,21 +74,31 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
+                        style="@style/Font.12.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:text="@string/home_family_trip"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/main_family_card_image_view" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/main_healing_card_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardElevation="@null">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -102,21 +115,31 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
+                        style="@style/Font.12.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:text="@string/home_healing"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/main_healing_card_image_view" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/main_camping_card_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardElevation="@null">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -133,8 +156,10 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
+                        style="@style/Font.12.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:text="@string/home_camping"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -143,11 +168,18 @@
 
             </androidx.cardview.widget.CardView>
 
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2" />
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/main_tasty_card_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardElevation="@null">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -164,8 +196,10 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
+                        style="@style/Font.12.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:text="@string/home_tasty_place"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -178,26 +212,27 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/main_popular_festival_text_view"
+            style="@style/Font.20.Bold.Black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="30dp"
             android:text="@string/home_top_ten_festival"
-            android:textSize="20sp"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/main_theme_button_set" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/main_more_popular_festival_text_view"
+            style="@style/Font.14.Normal.Black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:padding="5dp"
             android:text="@string/home_show_more"
             android:textColor="@color/deactivated"
-            android:textSize="14sp"
             app:layout_constraintBaseline_toBaselineOf="@id/main_popular_festival_text_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/main_theme_button_set" />
@@ -216,8 +251,8 @@
             android:id="@+id/main_festival_view_pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginHorizontal="30dp"
             android:layout_marginTop="10dp"
+            android:clipToPadding="false"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -226,18 +261,20 @@
         <me.relex.circleindicator.CircleIndicator3
             android:id="@+id/view_pager_circle_indicator"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="10dp"
             app:ci_drawable="@drawable/indicator_circle_focus_color"
             app:layout_constraintEnd_toEndOf="@id/main_festival_view_pager"
             app:layout_constraintStart_toStartOf="@id/main_festival_view_pager"
             app:layout_constraintTop_toBottomOf="@id/main_festival_view_pager" />
 
-
         <androidx.cardview.widget.CardView
             android:id="@+id/main_weather_event_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardElevation="@null"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_pager_circle_indicator">
@@ -250,6 +287,7 @@
                     android:id="@+id/main_weather_event_image_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -257,7 +295,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
-                    tools:src="@drawable/icon_tasty" />
+                    tools:src="@tools:sample/backgrounds/scenic" />
 
                 <ProgressBar
                     android:id="@+id/weather_event_progress_bar"
@@ -285,7 +323,7 @@
                     android:id="@+id/main_weather_icon"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintBottom_toBottomOf="@id/main_weather_celsius_text_view"
                     app:layout_constraintEnd_toStartOf="@id/main_weather_celsius_text_view"
                     app:layout_constraintTop_toTopOf="@id/main_weather_celsius_text_view"
@@ -331,27 +369,27 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/main_nearby_tour_list_text_view"
+            style="@style/Font.20.Bold.Black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="30dp"
             android:text="@string/home_nearby_attraction"
-            android:textSize="20sp"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/main_weather_event_card" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/main_more_nearby_tour_list_text_view"
+            style="@style/Font.14.Normal.Black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
+            android:padding="5dp"
             android:text="@string/home_show_more"
             android:textColor="@color/deactivated"
-            android:textSize="14sp"
             app:layout_constraintBaseline_toBaselineOf="@id/main_nearby_tour_list_text_view"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -359,8 +397,7 @@
             android:id="@+id/main_nearby_tour_recycler_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
@@ -380,13 +417,12 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/main_all_tour_list_text_view"
+            style="@style/Font.20.Bold.Black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="30dp"
             android:text="@string/home_korea_attractions"
-            android:textSize="20sp"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/main_nearby_tour_recycler_view" />
 
@@ -395,8 +431,7 @@
             android:id="@+id/main_all_tour_list_recycler_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
