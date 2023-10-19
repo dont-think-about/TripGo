@@ -286,9 +286,9 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/main_weather_event_image_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="350dp"
                     android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:tintMode="src_atop"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -311,12 +311,11 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/main_weather_text_view"
+                    style="@style/Font.20.Bold.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="날씨가 좋네요\n이런 곳은 어떤가요?" />
@@ -343,11 +342,10 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/main_weather_event_title_text_view"
+                    style="@style/Font.18.Bold.Black"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/main_weather_event_date_text_view"
                     app:layout_constraintEnd_toEndOf="@id/main_weather_event_date_text_view"
                     app:layout_constraintStart_toStartOf="@id/main_weather_event_date_text_view"
@@ -355,12 +353,11 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/main_weather_event_date_text_view"
+                    style="@style/Font.14.Normal.Black"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
