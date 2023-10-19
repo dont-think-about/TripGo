@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tour_recyclerview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp">
+    android:padding="16dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -27,25 +26,23 @@
 
     <TextView
         android:id="@+id/tour_title"
+        style="@style/Font.20.Bold.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
         android:layout_marginBottom="5dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/main_title"
-        android:textSize="16sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/tour_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tour_subtitle" />
 
     <TextView
         android:id="@+id/tour_subtitle"
+        style="@style/Font.16.Normal.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/sub_title"
@@ -56,13 +53,12 @@
 
     <TextView
         android:id="@+id/tour_address"
+        style="@style/Font.16.Normal.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/address"
-        android:textSize="12sp"
         android:textColor="@color/deactivated"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tour_subtitle"
