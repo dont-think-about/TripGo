@@ -14,6 +14,7 @@ import com.nbcamp.tripgo.view.mypage.MyPageFragment
 import com.nbcamp.tripgo.view.review.ReviewFragment
 import com.nbcamp.tripgo.view.search.SearchActivity
 import com.nbcamp.tripgo.view.tour.TourActivity
+import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
     private fun initViewModels() = with(sharedViewModel) {
         event.observe(this@MainActivity) { themeClickEvent ->
             when (themeClickEvent) {
-                is ThemeClickEvent.RunActivity -> {
+                is ThemeClickEvent.RunTourThemeActivity -> {
                     if (themeClickEvent.theme == TourTheme.SEARCH) {
                         startActivity(
                             Intent(
@@ -76,6 +77,17 @@ class MainActivity : AppCompatActivity() {
                             TourActivity::class.java
                         ).apply {
                             putExtra("theme", themeClickEvent.theme)
+                        }
+                    )
+                }
+
+                is ThemeClickEvent.RunTourDetailActivity -> {
+                    startActivity(
+                        Intent(
+                            this@MainActivity,
+                            TourDetailActivity::class.java
+                        ).apply {
+                            putExtra("contentId", themeClickEvent.contentId)
                         }
                     )
                 }
