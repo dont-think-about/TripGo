@@ -34,10 +34,14 @@ class HomeRepositoryImpl(
             val list = arrayListOf<TravelerEntity>()
             response.body()?.let { travelerCountModel ->
                 val resultCode = travelerCountModel.response.header.resultCode
+                val items = travelerCountModel.response.body.items.item
                 if (resultCode != "0000") {
                     return APIResponse.Error(response.message())
                 }
-                travelerCountModel.response.body.items.item.forEach { item ->
+                if (items.isEmpty()) {
+                    return APIResponse.Error(response.message())
+                }
+                items.forEach { item ->
                     list.add(item.toTravelerEntity())
                 }
                 return APIResponse.Success(list)
@@ -59,10 +63,14 @@ class HomeRepositoryImpl(
             val list = arrayListOf<FestivalEntity>()
             response.body()?.let { festivalModel ->
                 val resultCode = festivalModel.response.header.resultCode
+                val items = festivalModel.response.body.items.item
                 if (resultCode != "0000") {
                     return APIResponse.Error(response.message())
                 }
-                festivalModel.response.body.items.item.forEach { item ->
+                if (items.isEmpty()) {
+                    return APIResponse.Error(response.message())
+                }
+                items.forEach { item ->
                     list.add(item.toFestivalEntity())
                 }
                 return APIResponse.Success(list)
@@ -83,11 +91,14 @@ class HomeRepositoryImpl(
         if (response.isSuccessful) {
             response.body()?.let { weatherModel ->
                 val resultCode = weatherModel.response.header.resultCode
+                val weatherInfo =
+                    weatherModel.response.body.items.weatherItem
                 if (resultCode != "00") {
                     return APIResponse.Error(response.message())
                 }
-                val weatherInfo =
-                    weatherModel.response.body.items.weatherItem
+                if (weatherInfo.isEmpty()) {
+                    return APIResponse.Error(response.message())
+                }
                 return APIResponse.Success(weatherInfo.toWeatherEntity())
             }
         }
@@ -108,10 +119,14 @@ class HomeRepositoryImpl(
             val list = arrayListOf<KeywordSearchEntity>()
             response.body()?.let { keywordModel ->
                 val resultCode = keywordModel.response.header.resultCode
+                val items = keywordModel.response.body.items.item
                 if (resultCode != "0000") {
                     return APIResponse.Error(response.message())
                 }
-                keywordModel.response.body.items.item.forEach { item ->
+                if (items.isEmpty()) {
+                    return APIResponse.Error(response.message())
+                }
+                items.forEach { item ->
                     list.add(item.toKeywordSearchEntity())
                 }
                 return APIResponse.Success(list)
@@ -136,10 +151,14 @@ class HomeRepositoryImpl(
             val list = arrayListOf<NearbyPlaceEntity>()
             response.body()?.let { nearbyModel ->
                 val resultCode = nearbyModel.response.header.resultCode
+                val items = nearbyModel.response.body.items.item
                 if (resultCode != "0000") {
                     return APIResponse.Error(response.message())
                 }
-                nearbyModel.response.body.items.item.forEach { item ->
+                if (items.isEmpty()) {
+                    return APIResponse.Error(response.message())
+                }
+                items.forEach { item ->
                     list.add(item.toNearbyPlaceEntity())
                 }
                 return APIResponse.Success(list)
