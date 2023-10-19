@@ -33,6 +33,10 @@ class HomeRepositoryImpl(
         if (response.isSuccessful) {
             val list = arrayListOf<TravelerEntity>()
             response.body()?.let { travelerCountModel ->
+                val resultCode = travelerCountModel.response.header.resultCode
+                if (resultCode != "0000") {
+                    return APIResponse.Error(response.message())
+                }
                 travelerCountModel.response.body.items.item.forEach { item ->
                     list.add(item.toTravelerEntity())
                 }
@@ -54,6 +58,10 @@ class HomeRepositoryImpl(
         if (response.isSuccessful) {
             val list = arrayListOf<FestivalEntity>()
             response.body()?.let { festivalModel ->
+                val resultCode = festivalModel.response.header.resultCode
+                if (resultCode != "0000") {
+                    return APIResponse.Error(response.message())
+                }
                 festivalModel.response.body.items.item.forEach { item ->
                     list.add(item.toFestivalEntity())
                 }
@@ -74,6 +82,10 @@ class HomeRepositoryImpl(
 
         if (response.isSuccessful) {
             response.body()?.let { weatherModel ->
+                val resultCode = weatherModel.response.header.resultCode
+                if (resultCode != "00") {
+                    return APIResponse.Error(response.message())
+                }
                 val weatherInfo =
                     weatherModel.response.body.items.weatherItem
                 return APIResponse.Success(weatherInfo.toWeatherEntity())
@@ -95,6 +107,10 @@ class HomeRepositoryImpl(
         if (response.isSuccessful) {
             val list = arrayListOf<KeywordSearchEntity>()
             response.body()?.let { keywordModel ->
+                val resultCode = keywordModel.response.header.resultCode
+                if (resultCode != "0000") {
+                    return APIResponse.Error(response.message())
+                }
                 keywordModel.response.body.items.item.forEach { item ->
                     list.add(item.toKeywordSearchEntity())
                 }
@@ -119,6 +135,10 @@ class HomeRepositoryImpl(
         if (response.isSuccessful) {
             val list = arrayListOf<NearbyPlaceEntity>()
             response.body()?.let { nearbyModel ->
+                val resultCode = nearbyModel.response.header.resultCode
+                if (resultCode != "0000") {
+                    return APIResponse.Error(response.message())
+                }
                 nearbyModel.response.body.items.item.forEach { item ->
                     list.add(item.toNearbyPlaceEntity())
                 }
