@@ -12,18 +12,17 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/review_title_text_view"
+            style="@style/Font.22.Bold.Black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_margin="24dp"
             android:text="@string/reviews"
-            android:textSize="30sp"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/review_chip_group"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"

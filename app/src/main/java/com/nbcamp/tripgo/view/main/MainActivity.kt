@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityMainBinding
+import com.nbcamp.tripgo.view.attraction.AttractionsActivity
 import com.nbcamp.tripgo.view.calendar.CalendarFragment
 import com.nbcamp.tripgo.view.home.HomeFragment
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
@@ -14,6 +15,7 @@ import com.nbcamp.tripgo.view.mypage.MyPageFragment
 import com.nbcamp.tripgo.view.review.ReviewFragment
 import com.nbcamp.tripgo.view.search.SearchActivity
 import com.nbcamp.tripgo.view.tour.TourActivity
+import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -29,38 +31,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViews() = with(binding) {
         mainBottomNavigation.itemIconTintList = null
-        mainBottomNavigation.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.home -> {
-                    showFragment(HomeFragment.newInstance(), HomeFragment.TAG)
-                    true
-                }
-
-                R.id.calendar -> {
-                    showFragment(CalendarFragment.newInstance(), CalendarFragment.TAG)
-                    true
-                }
-
-                R.id.review -> {
-                    showFragment(ReviewFragment.newInstance(), ReviewFragment.TAG)
-                    true
-                }
-
-                R.id.my_page -> {
-                    showFragment(MyPageFragment.newInstance(), MyPageFragment.TAG)
-                    true
-                }
-
-                else -> false
-            }
+        mainBottomNavigation.setOnItemSelectedListener { item ->
+            sharedViewModel.setCurrentPage(item.itemId)
+            true
         }
-        mainBottomNavigation.selectedItemId = R.id.home
+        changeFragment(FragmentPageType.PAGE_HOME)
     }
 
     private fun initViewModels() = with(sharedViewModel) {
+        currentPageType.observe(this@MainActivity) { currentPageType ->
+            changeFragment(currentPageType)
+        }
+
         event.observe(this@MainActivity) { themeClickEvent ->
             when (themeClickEvent) {
-                is ThemeClickEvent.RunActivity -> {
+                is ThemeClickEvent.RunTourThemeActivity -> {
                     if (themeClickEvent.theme == TourTheme.SEARCH) {
                         startActivity(
                             Intent(
@@ -79,13 +64,57 @@ class MainActivity : AppCompatActivity() {
                         }
                     )
                 }
+
+                is ThemeClickEvent.RunTourDetailActivity -> {
+                    startActivity(
+                        Intent(
+                            this@MainActivity,
+                            TourDetailActivity::class.java
+                        ).apply {
+                            putExtra("contentId", themeClickEvent.contentId)
+                        }
+                    )
+                }
+
+                is ThemeClickEvent.RunAttractionActivity -> {
+                    startActivity(
+                        Intent(
+                            this@MainActivity,
+                            AttractionsActivity::class.java
+                        ).apply {
+                            putExtra("provinceModel", themeClickEvent.model)
+                        }
+                    )
+                }
             }
         }
     }
 
-    private fun showFragment(fragment: Fragment, tag: String) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment_container, fragment, tag)
-            .commit()
+    private fun changeFragment(pageType: FragmentPageType) {
+        val transaction = supportFragmentManager.beginTransaction()
+        var targetFragment = supportFragmentManager.findFragmentByTag(pageType.tag)
+
+        if (targetFragment == null) {
+            targetFragment = getFragment(pageType)
+            transaction.add(R.id.main_fragment_container, targetFragment, pageType.tag)
+        }
+
+        transaction.show(targetFragment)
+        FragmentPageType.values()
+            .filterNot { it == pageType }
+            .forEach { type ->
+                supportFragmentManager.findFragmentByTag(type.tag)?.let {
+                    transaction.hide(it)
+                }
+            }
+
+        transaction.commitAllowingStateLoss()
+    }
+
+    private fun getFragment(pageType: FragmentPageType): Fragment = when (pageType) {
+        FragmentPageType.PAGE_HOME -> HomeFragment.newInstance()
+        FragmentPageType.PAGE_CALENDAR -> CalendarFragment.newInstance()
+        FragmentPageType.PAGE_REVIEW -> ReviewFragment.newInstance()
+        FragmentPageType.PAGE_MY -> MyPageFragment.newInstance()
     }
 }

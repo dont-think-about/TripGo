@@ -2,10 +2,12 @@ package com.nbcamp.tripgo.data.repository.mapper
 
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
+import com.nbcamp.tripgo.data.model.nearby.NearbyItem
 import com.nbcamp.tripgo.data.model.travelers.TravlerItem
 import com.nbcamp.tripgo.data.model.weathers.WeatherItem
 import com.nbcamp.tripgo.data.repository.model.FestivalEntity
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
+import com.nbcamp.tripgo.data.repository.model.NearbyPlaceEntity
 import com.nbcamp.tripgo.data.repository.model.TravelerEntity
 import com.nbcamp.tripgo.data.repository.model.WeatherEntity
 
@@ -34,6 +36,14 @@ object HomeMapper {
         longitude = mapx,
         weatherType = WeatherType.UNDEFINED,
         temperature = "0",
+    )
+
+    fun NearbyItem.toNearbyPlaceEntity() = NearbyPlaceEntity(
+        contentId = contentid,
+        latitude = mapy,
+        longitude = mapx,
+        title = title,
+        imageUrl = firstimage
     )
 
     fun List<WeatherItem>?.toWeatherEntity(): WeatherEntity {

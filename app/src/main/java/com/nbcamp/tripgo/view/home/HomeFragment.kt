@@ -1,21 +1,38 @@
 package com.nbcamp.tripgo.view.home
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.request.CachePolicy
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.mapper.WeatherType
 import com.nbcamp.tripgo.databinding.FragmentHomeBinding
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.home.adapter.FestivalViewPagerAdapter
+import com.nbcamp.tripgo.view.home.adapter.NearbyPlaceAdapter
+import com.nbcamp.tripgo.view.home.adapter.ProvincePlaceListAdapter
 import com.nbcamp.tripgo.view.home.uistate.HomeFestivalUiState
+import com.nbcamp.tripgo.view.home.uistate.HomeNearbyPlaceUiState
 import com.nbcamp.tripgo.view.home.uistate.HomeWeatherUiState
+import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.main.MainViewModel
 
@@ -31,6 +48,50 @@ class HomeFragment : Fragment() {
         FestivalViewPagerAdapter()
     }
 
+    // 위치 정보 획득에 관한 변수 모음
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ),
+                    LOCATION_REQUEST_PERMISSION_CODE
+                )
+                checkLocationPermissions()
+            }
+        }
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private var cancellationTokenSource: CancellationTokenSource? = null
+
+    private val nearbyPlaceAdapter by lazy {
+        NearbyPlaceAdapter(requireActivity()) { contentId ->
+            runTourDetailActivity(contentId)
+        }
+    }
+    private val provincePlaceListAdapter by lazy {
+        ProvincePlaceListAdapter(requireActivity()) { model ->
+            runAttractionActivity(model)
+        }
+    }
+
+    // 오른쪽 끝일 때, 다음 페이지를 불러올 OnScrollListener
+    private val endScrollListener by lazy {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE
+                    && !binding.mainNearbyTourRecyclerView.canScrollHorizontally(1)
+                ) {
+                    homeViewModel.getNearbyPlaceList(locationForScrollListener, ++nearbyPageNumber)
+                }
+            }
+        }
+    }
+    private var nearbyPageNumber = 1
+    private lateinit var locationForScrollListener: Location
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -40,8 +101,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initVariables()
         initViewModel()
         initViews()
+    }
+
+    private fun initVariables() {
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
+        cancellationTokenSource = CancellationTokenSource()
     }
 
     private fun initViews() = with(binding) {
@@ -70,22 +138,33 @@ class HomeFragment : Fragment() {
             adapter = festivalViewPagerAdapter
         }
         viewPagerCircleIndicator.setViewPager(mainFestivalViewPager)
-        // viewpager 데이터 가져오기
+        mainNearbyTourRecyclerView.run {
+            adapter = nearbyPlaceAdapter
+            addOnScrollListener(endScrollListener)
+        }
+        mainAllTourListRecyclerView.run {
+            adapter = provincePlaceListAdapter
+        }
+    }
 
+    private fun initViewModel() = with(homeViewModel) {
+        // viewpager 데이터 가져오기
        homeViewModel.run {
           /*
             fetchViewPagerData()
             autoSlideViewPager()
             getPlaceByTodayWeather()
             */
-
+            getProvincePlace()
         }
+        checkLocationPermissions()
 
-    }
-
-    private fun initViewModel() = with(homeViewModel) {
         festivalUiState.observe(viewLifecycleOwner) { state ->
             with(binding) {
+                if (state == HomeFestivalUiState.error()) {
+                    requireActivity().toast(getString(R.string.load_failed_data))
+                    return@observe
+                }
                 festivalProgressBar.isVisible = state.isLoading
                 mainFestivalViewPager.isVisible = state.isLoading.not()
                 viewPagerCircleIndicator.createIndicators(state.list?.size ?: 0, 0)
@@ -96,6 +175,10 @@ class HomeFragment : Fragment() {
             binding.mainFestivalViewPager.setCurrentItem(currentPage, true)
         }
         weatherSearchUiState.observe(viewLifecycleOwner) { state ->
+            if (state == HomeWeatherUiState.error()) {
+                requireActivity().toast(getString(R.string.load_failed_data))
+                return@observe
+            }
             with(binding) {
                 weatherEventProgressBar.isVisible = state.isLoading
                 mainWeatherEventImageView.isVisible = state.isLoading.not()
@@ -103,10 +186,25 @@ class HomeFragment : Fragment() {
                 onBindWeatherSearch(state)
             }
         }
+        nearbyPlaceUiState.observe(viewLifecycleOwner) { state ->
+            if (state == HomeNearbyPlaceUiState.error()) {
+                requireActivity().toast(getString(R.string.load_failed_data))
+                return@observe
+            }
+            binding.nearbyProgressBar.isVisible = state.isLoading
+            nearbyPlaceAdapter.setList(state.list)
+        }
+        provincePlaceUiState.observe(viewLifecycleOwner) { state ->
+            binding.allTourProgressBar.isVisible = state.isLoading
+            provincePlaceListAdapter.submitList(state.list)
+        }
     }
 
     private fun onBindWeatherSearch(state: HomeWeatherUiState?) = with(binding) {
-        mainWeatherEventImageView.load(state?.data?.imageUrl)
+        mainWeatherEventImageView.load(state?.data?.imageUrl, App.imageLoader) {
+            memoryCachePolicy(CachePolicy.ENABLED)
+            diskCachePolicy(CachePolicy.ENABLED)
+        }
         (state?.data?.temperature + getString(R.string.temperature_sign)).also {
             mainWeatherCelsiusTextView.text = it
         }
@@ -161,6 +259,57 @@ class HomeFragment : Fragment() {
         sharedViewModel.runThemeTourActivity(themeId)
     }
 
+    private fun runTourDetailActivity(contentId: String) {
+        sharedViewModel.runTourDetailActivity(contentId)
+    }
+
+    private fun runAttractionActivity(model: ProvincePlaceEntity) {
+        sharedViewModel.runAttractionActivity(model)
+    }
+
+    private fun checkLocationPermissions() {
+        when {
+            // 위치 권환이 확인 되어 있지 않으면
+            ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                fusedLocationProviderClient.getCurrentLocation(
+                    Priority.PRIORITY_HIGH_ACCURACY,
+                    cancellationTokenSource!!.token
+                ).addOnSuccessListener { location ->
+                    locationForScrollListener = location
+                    homeViewModel.getNearbyPlaceList(location, nearbyPageNumber)
+                }
+            }
+            // 위치 권한 안내가 필요 하면
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) -> {
+                showPermissionContextPopUp()
+            }
+            // 그외
+            else -> {
+                permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
+    }
+
+    private fun showPermissionContextPopUp() {
+        AlertDialog.Builder(requireActivity())
+            .setTitle(getString(R.string.need_permission))
+            .setMessage(getString(R.string.for_load_nearby_place))
+            .setPositiveButton(getString(R.string.agree_permission)) { _, _ ->
+                permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }.setNegativeButton(getString(R.string.disagree_permission)) { _, _ -> }
+            .create()
+            .show()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
      //   homeViewModel.stopSlideViewPager()
@@ -170,5 +319,6 @@ class HomeFragment : Fragment() {
         fun newInstance() = HomeFragment()
 
         const val TAG = "HOME_FRAGMENT"
+        const val LOCATION_REQUEST_PERMISSION_CODE = 100
     }
 }
