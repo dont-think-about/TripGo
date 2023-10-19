@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityMainBinding
 import com.nbcamp.tripgo.view.attraction.AttractionsActivity
@@ -32,6 +33,10 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() = with(binding) {
         mainBottomNavigation.itemIconTintList = null
         mainBottomNavigation.setOnItemSelectedListener { item ->
+            supportFragmentManager.popBackStackImmediate(
+                null,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
             sharedViewModel.setCurrentPage(item.itemId)
             true
         }
