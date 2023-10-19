@@ -114,4 +114,10 @@
     <string name="bad_weather">날씨가 별로예요…\n이런 곳은 어떨까요?</string>
     <string name="temperature_sign">℃</string>
     <string name="load_failed_data">정보를 불러오는데 실패하였습니다.</string>
+    <string name="need_permission">권한이 필요합니다.</string>
+    <string name="for_load_nearby_place">내 근처 여행지 목록을 불러오기 위해 권한이 필요합니다.</string>
+    <string name="agree_permission">동의</string>
+    <string name="disagree_permission">취소</string>
+    <string name="in_1km">1km 이내</string>
+    <string name="in_km">km 이내</string>
 </resources>
