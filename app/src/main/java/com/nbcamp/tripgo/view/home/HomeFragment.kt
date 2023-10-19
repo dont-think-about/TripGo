@@ -149,13 +149,16 @@ class HomeFragment : Fragment() {
 
     private fun initViewModel() = with(homeViewModel) {
         // viewpager 데이터 가져오기
-        homeViewModel.run {
+       homeViewModel.run {
+          /*
             fetchViewPagerData()
             autoSlideViewPager()
             getPlaceByTodayWeather()
+            */
             getProvincePlace()
         }
         checkLocationPermissions()
+
         festivalUiState.observe(viewLifecycleOwner) { state ->
             with(binding) {
                 if (state == HomeFestivalUiState.error()) {
@@ -309,7 +312,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        homeViewModel.stopSlideViewPager()
+     //   homeViewModel.stopSlideViewPager()
     }
 
     companion object {
