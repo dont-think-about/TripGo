@@ -8,11 +8,15 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.nbcamp.tripgo.R
+import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.databinding.FragmentCalendarBinding
 import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
+import com.nbcamp.tripgo.util.calendar.SelectedDayDecorator
 import com.nbcamp.tripgo.util.calendar.SundayDecorator
+import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
+import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.util.Calendar
 
 class CalendarFragment : Fragment() {
@@ -30,11 +34,8 @@ class CalendarFragment : Fragment() {
         }
     }
 
-
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCalendarBinding.inflate(layoutInflater)
         return binding.root
@@ -62,6 +63,7 @@ class CalendarFragment : Fragment() {
             }
             myScheduleState.observe(viewLifecycleOwner) { state ->
                 if (state == CalendarScheduleUiState.error(state.message)) {
+                    println(state.data)
                     state.message?.let {
                         requireActivity().toast(it)
                     }
@@ -73,9 +75,32 @@ class CalendarFragment : Fragment() {
                 }
                 calendarNoticeTextView.isVisible = false
                 calendarProgressBar.isVisible = state.isLoading
+                showScheduleInCalendarView(state.data)
                 scheduleListAdapter.submitList(state.data)
             }
+
+            schedulesDateState.observe(viewLifecycleOwner) { dateList ->
+                val mcv = calendarMainView.state().edit()
+                dateList.forEach { date ->
+                    calendarMainView.setDateSelected(
+                        CalendarDay.from(
+                            date.first,
+                            date.second,
+                            date.third
+                        ),
+                        true
+                    )
+                }
+                mcv.commit()
+            }
+            changedMonthState.observe(viewLifecycleOwner) { changedList ->
+                scheduleListAdapter.submitList(changedList)
+            }
         }
+    }
+
+    private fun showScheduleInCalendarView(data: List<CalendarEntity>?) = with(binding) {
+        calendarViewModel.setSelectedDate(data)
     }
 
     private fun getSchedulesFromFireStore() {
@@ -89,7 +114,13 @@ class CalendarFragment : Fragment() {
             setOnMonthChangedListener { _, date ->
                 removeDecorators()
                 invalidateDecorators()
-                addDecorators(SaturdayDecorator(date.month, 0), SundayDecorator(date.month, 0))
+                addDecorators(
+                    SaturdayDecorator(date.month, 0),
+                    SundayDecorator(date.month, 0),
+                    TodayDecorator(requireActivity()),
+                    SelectedDayDecorator(requireActivity())
+                )
+                calendarViewModel.changeScheduleListForThisMonth(date)
             }
         }
         calendarScheduleRecyclerView.run {
