@@ -71,11 +71,16 @@ class HomeFragment : Fragment() {
         }
         viewPagerCircleIndicator.setViewPager(mainFestivalViewPager)
         // viewpager 데이터 가져오기
-        homeViewModel.run {
+
+       homeViewModel.run {
+          /*
             fetchViewPagerData()
             autoSlideViewPager()
             getPlaceByTodayWeather()
+            */
+
         }
+
     }
 
     private fun initViewModel() = with(homeViewModel) {
@@ -158,7 +163,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        homeViewModel.stopSlideViewPager()
+     //   homeViewModel.stopSlideViewPager()
     }
 
     companion object {

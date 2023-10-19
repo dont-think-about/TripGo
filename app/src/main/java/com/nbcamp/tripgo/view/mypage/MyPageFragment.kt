@@ -15,9 +15,9 @@ import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.mypage.favorite.FavoriteFragment
 import com.nbcamp.tripgo.view.review.ReviewFragment
 
+// MVVM 패턴 적용 해야됨
 class MyPageFragment : Fragment() {
 
-    private lateinit var myPageViewModel: MyPageViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,7 +25,6 @@ class MyPageFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_my_page, container, false)
 
-        myPageViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
 
         // review_layout 클릭 이벤트 처리
         val reviewLayout = view.findViewById<LinearLayout>(R.id.review_layout)
@@ -48,7 +47,6 @@ class MyPageFragment : Fragment() {
         // Logout 클릭 이벤트 처리
         val mypage_logout_button = view.findViewById<Button>(R.id.mypage_logout_button)
         mypage_logout_button.setOnClickListener {
-            myPageViewModel.logout()
             val intent = Intent(context, LogInActivity::class.java)
             startActivity(intent)
         }
@@ -59,23 +57,6 @@ class MyPageFragment : Fragment() {
         fun newInstance() = MyPageFragment()
 
         const val TAG = "MY_PAGE_FRAGMENT"
-    }
-}
-
-
-//mvvm 모델을 적용시킨 Logout  수정해야됨
-
-class MyPageViewModel(private val userRepository: UserRepository) : ViewModel() {
-    class UserRepository {
-        fun logout() {
-            TODO("Not yet implemented")
-        }
-
-    }
-
-    // 로그아웃 메서드
-    fun logout() {
-        userRepository.logout()
     }
 }
 

@@ -13,7 +13,6 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 android {
     namespace 'com.nbcamp.tripgo'
     compileSdk 33
-
     defaultConfig {
         applicationId "com.nbcamp.tripgo"
         minSdk 24
@@ -49,6 +48,8 @@ android {
 }
 
 dependencies {
+
+
 
     def coroutines_version = "1.6.4"
     def retrofit_version = "2.9.0"
@@ -98,13 +99,12 @@ dependencies {
     // 마지막 위치 정보 얻기
     implementation 'com.google.android.gms:play-services-location:21.0.0'
 
-    // firebase
-    implementation platform('com.google.firebase:firebase-bom:32.3.1')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-auth-ktx'
-    implementation 'com.google.firebase:firebase-database-ktx'
-    implementation 'com.google.firebase:firebase-storage-ktx'
-    implementation 'com.google.firebase:firebase-firestore-ktx'
+    //firebase
+    implementation 'com.google.firebase:firebase-analytics:21.4.0'
+    implementation 'com.google.firebase:firebase-auth:22.2.0'
+    implementation 'com.google.firebase:firebase-database:20.3.0'
+    implementation 'com.google.firebase:firebase-firestore:24.9.0'
+    implementation 'com.google.firebase:firebase-storage:20.3.0'
 
     // view pager circle indicator
     implementation 'me.relex:circleindicator:2.1.6'
@@ -112,4 +112,5 @@ dependencies {
     // material calendar view
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.3.0'
+
 }
