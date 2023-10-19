@@ -1,22 +1,112 @@
 package com.nbcamp.tripgo.view.home.valuetype
 
 @Suppress("SpellCheckingInspection")
-enum class AreaCode(areaCode: String, name: String, tourListCount: Int) {
-    SEOUL("1", "서울시", 737),
-    INCHEON("2", "인천광역시", 423),
-    DAEJEON("3", "대전광역시", 132),
-    DAEGU("4", " 대구광역시", 312),
-    GWANGJU("5", "광주광역시", 161),
-    BUSAN("6", "부산광역시", 327),
-    ULSAN("7", "울산광역시", 172),
-    SEJONG("8", "세종시", 52),
-    GYEONGGI("31", " 경기도", 1548),
-    GANGWON("32", "강원도", 1371),
-    CHUNGBUK("33", "충청북도", 734),
-    CHUNGNAM("34", "충청남도", 855),
-    GYEONGBUK("35", "경상북도", 1290),
-    GYEONGNAM("36", "경상남도", 1372),
-    JEONBUK("37", " 전라북도", 976),
-    JEONNAM("38", " 전라남도", 1295),
-    JEJU("39", "제주도", 519),
+enum class AreaCode(
+    val areaCode: String,
+    val sido: String,
+    val tourListCount: Int,
+    val defaultImageUrl: String
+) {
+    SEOUL(
+        "1",
+        "서울시",
+        737,
+        "http://tong.visitkorea.or.kr/cms/resource/61/2780561_image2_1.png"
+    ),
+    INCHEON(
+        "2",
+        "인천광역시",
+        423,
+        "http://tong.visitkorea.or.kr/cms/resource/58/2781358_image2_1.jpg"
+    ),
+    DAEJEON(
+        "3",
+        "대전광역시",
+        132,
+        "http://tong.visitkorea.or.kr/cms/resource/71/1585671_image2_1.jpg"
+    ),
+    DAEGU(
+        "4",
+        "대구광역시",
+        312,
+        "http://tong.visitkorea.or.kr/cms/resource/70/1876170_image2_1.jpg"
+    ),
+    GWANGJU(
+        "5",
+        "광주광역시",
+        161,
+        "http://tong.visitkorea.or.kr/cms/resource/19/1587419_image2_1.jpg"
+    ),
+    BUSAN(
+        "6",
+        "부산광역시",
+        327,
+        "http://tong.visitkorea.or.kr/cms/resource/61/2716261_image2_1.jpg"
+    ),
+    ULSAN(
+        "7",
+        "울산광역시",
+        172,
+        "http://tong.visitkorea.or.kr/cms/resource/17/2038117_image2_1.jpg"
+    ),
+    SEJONG(
+        "8",
+        "세종시",
+        52,
+        "http://tong.visitkorea.or.kr/cms/resource/57/2812357_image2_1.jpg"
+    ),
+    GYEONGGI(
+        "31",
+        "경기도",
+        1548,
+        "http://tong.visitkorea.or.kr/cms/resource/46/2010746_image2_1.jpg"
+    ),
+    GANGWON(
+        "32",
+        "강원도",
+        1371,
+        "http://tong.visitkorea.or.kr/cms/resource/54/2994054_image2_1.jpg"
+    ),
+    CHUNGBUK(
+        "33",
+        "충청북도",
+        734,
+        "http://tong.visitkorea.or.kr/cms/resource/92/1075092_image2_1.jpg"
+    ),
+    CHUNGNAM(
+        "34",
+        "충청남도",
+        855,
+        "http://tong.visitkorea.or.kr/cms/resource/87/2648687_image2_1.jpg"
+    ),
+    GYEONGBUK(
+        "35",
+        "경상북도",
+        1290,
+        "http://tong.visitkorea.or.kr/cms/resource/86/2687486_image2_1.jpg"
+    ),
+    GYEONGNAM(
+        "36",
+        "경상남도",
+        1372,
+        "http://tong.visitkorea.or.kr/cms/resource/55/2033255_image2_1.jpg"
+    ),
+    JEONBUK(
+        "37",
+        "전라북도",
+        976,
+        "http://tong.visitkorea.or.kr/cms/resource/72/1604272_image2_1.jpg"
+    ),
+    JEONNAM(
+        "38",
+        "전라남도",
+        1295,
+        "http://tong.visitkorea.or.kr/cms/resource/17/1608017_image2_1.jpg"
+    ),
+    JEJU(
+        "39",
+        "제주도",
+        519,
+        "http://tong.visitkorea.or.kr/cms/resource/01/1884201_image2_1.jpg"
+    ),
 }
