@@ -28,9 +28,11 @@ import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.home.adapter.FestivalViewPagerAdapter
 import com.nbcamp.tripgo.view.home.adapter.NearbyPlaceAdapter
+import com.nbcamp.tripgo.view.home.adapter.ProvincePlaceListAdapter
 import com.nbcamp.tripgo.view.home.uistate.HomeFestivalUiState
 import com.nbcamp.tripgo.view.home.uistate.HomeNearbyPlaceUiState
 import com.nbcamp.tripgo.view.home.uistate.HomeWeatherUiState
+import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.main.MainViewModel
 
@@ -66,6 +68,11 @@ class HomeFragment : Fragment() {
     private val nearbyPlaceAdapter by lazy {
         NearbyPlaceAdapter(requireActivity()) { contentId ->
             runTourDetailActivity(contentId)
+        }
+    }
+    private val provincePlaceListAdapter by lazy {
+        ProvincePlaceListAdapter(requireActivity()) { model ->
+            runAttractionActivity(model)
         }
     }
 
@@ -135,6 +142,9 @@ class HomeFragment : Fragment() {
             adapter = nearbyPlaceAdapter
             addOnScrollListener(endScrollListener)
         }
+        mainAllTourListRecyclerView.run {
+            adapter = provincePlaceListAdapter
+        }
     }
 
     private fun initViewModel() = with(homeViewModel) {
@@ -143,6 +153,7 @@ class HomeFragment : Fragment() {
             fetchViewPagerData()
             autoSlideViewPager()
             getPlaceByTodayWeather()
+            getProvincePlace()
         }
         checkLocationPermissions()
         festivalUiState.observe(viewLifecycleOwner) { state ->
@@ -177,10 +188,12 @@ class HomeFragment : Fragment() {
                 requireActivity().toast(getString(R.string.load_failed_data))
                 return@observe
             }
-            with(binding) {
-                nearbyProgressBar.isVisible = state.isLoading
-            }
+            binding.nearbyProgressBar.isVisible = state.isLoading
             nearbyPlaceAdapter.setList(state.list)
+        }
+        provincePlaceUiState.observe(viewLifecycleOwner) { state ->
+            binding.allTourProgressBar.isVisible = state.isLoading
+            provincePlaceListAdapter.submitList(state.list)
         }
     }
 
@@ -245,6 +258,10 @@ class HomeFragment : Fragment() {
 
     private fun runTourDetailActivity(contentId: String) {
         sharedViewModel.runTourDetailActivity(contentId)
+    }
+
+    private fun runAttractionActivity(model: ProvincePlaceEntity) {
+        sharedViewModel.runAttractionActivity(model)
     }
 
     private fun checkLocationPermissions() {

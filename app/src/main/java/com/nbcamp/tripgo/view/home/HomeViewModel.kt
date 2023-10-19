@@ -14,7 +14,10 @@ import com.nbcamp.tripgo.data.repository.model.TravelerEntity
 import com.nbcamp.tripgo.util.APIResponse
 import com.nbcamp.tripgo.view.home.uistate.HomeFestivalUiState
 import com.nbcamp.tripgo.view.home.uistate.HomeNearbyPlaceUiState
+import com.nbcamp.tripgo.view.home.uistate.HomeProvincePlaceUiState
 import com.nbcamp.tripgo.view.home.uistate.HomeWeatherUiState
+import com.nbcamp.tripgo.view.home.valuetype.AreaCode
+import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -41,6 +44,10 @@ class HomeViewModel(
     private val _nearbyPlaceUiState: MutableLiveData<HomeNearbyPlaceUiState> = MutableLiveData()
     val nearbyPlaceUiState: LiveData<HomeNearbyPlaceUiState>
         get() = _nearbyPlaceUiState
+
+    private val _provincePlaceUiState: MutableLiveData<HomeProvincePlaceUiState> = MutableLiveData()
+    val provincePlaceUiState: LiveData<HomeProvincePlaceUiState>
+        get() = _provincePlaceUiState
 
     private val handler = Handler(Looper.getMainLooper()) {
         setPage()
@@ -136,7 +143,6 @@ class HomeViewModel(
         }
     }
 
-
     fun getNearbyPlaceList(location: Location?, pageNumber: Int) {
         _nearbyPlaceUiState.value = HomeNearbyPlaceUiState.initialize()
         viewModelScope.launch(Dispatchers.IO) {
@@ -171,6 +177,23 @@ class HomeViewModel(
                 }
             }
         }
+    }
+
+    fun getProvincePlace() {
+        _provincePlaceUiState.value = HomeProvincePlaceUiState.initialize()
+        val list = AreaCode.values().toList()
+        val provinceInfo = arrayListOf<ProvincePlaceEntity>()
+        list.forEach { areaCode ->
+            provinceInfo.add(
+                ProvincePlaceEntity(
+                    areaCode = areaCode.areaCode,
+                    name = areaCode.sido,
+                    tourListCount = areaCode.tourListCount,
+                    imageUrl = areaCode.defaultImageUrl
+                )
+            )
+        }
+        _provincePlaceUiState.value = HomeProvincePlaceUiState(provinceInfo, false)
     }
 
     // 위도 경도 사이 거리 계산 (m)

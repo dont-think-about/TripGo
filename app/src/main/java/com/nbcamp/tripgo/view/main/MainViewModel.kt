@@ -3,6 +3,7 @@ package com.nbcamp.tripgo.view.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.nbcamp.tripgo.util.SingleLiveEvent
+import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 
 class MainViewModel : ViewModel() {
@@ -15,5 +16,9 @@ class MainViewModel : ViewModel() {
 
     fun runTourDetailActivity(contentId: String) {
         _event.value = ThemeClickEvent.RunTourDetailActivity(contentId)
+    }
+
+    fun runAttractionActivity(model: ProvincePlaceEntity) {
+        _event.value = ThemeClickEvent.RunAttractionActivity(model)
     }
 }

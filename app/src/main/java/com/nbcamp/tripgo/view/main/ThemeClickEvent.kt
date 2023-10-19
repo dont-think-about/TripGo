@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.main
 
+import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 
 sealed interface ThemeClickEvent {
@@ -10,5 +11,9 @@ sealed interface ThemeClickEvent {
 
     data class RunTourDetailActivity(
         val contentId: String
+    ) : ThemeClickEvent
+
+    data class RunAttractionActivity(
+        val model: ProvincePlaceEntity
     ) : ThemeClickEvent
 }
