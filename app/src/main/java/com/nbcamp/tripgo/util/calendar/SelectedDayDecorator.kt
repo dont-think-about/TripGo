@@ -14,6 +14,6 @@ class SelectedDayDecorator(private val dates: Collection<CalendarDay>) :
     }
 
     override fun decorate(view: DayViewFacade) {
-        view.addSpan(DotSpan(5f, Color.parseColor("#FF008000")))
+        view.addSpan(DotSpan(10f, Color.parseColor("#FF008000")))
     }
 }

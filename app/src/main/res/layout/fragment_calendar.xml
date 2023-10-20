@@ -51,6 +51,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
         android:text="@string/my_current_schedule"
         app:layout_constraintBottom_toTopOf="@id/calendar_schedule_recycler_view"
         app:layout_constraintStart_toStartOf="parent"

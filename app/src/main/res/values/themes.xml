@@ -15,7 +15,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="calendar_text_view_day_custom" parent="android:TextAppearance.DeviceDefault.Small">
+    <style name="calendar_day_custom" parent="Theme.AppCompat">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="calendar_text_view_day_custom" parent="android:TextAppearance.DeviceDefault.Medium">
         <item name="android:textColor">@color/black</item>
     </style>
 
@@ -23,8 +27,7 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="calendar_header">
-        <item name="android:textSize">20sp</item>
+    <style name="calendar_header" parent="android:TextAppearance.DeviceDefault.Medium">
         <item name="android:textColor">@color/black</item>
     </style>
 </resources>
