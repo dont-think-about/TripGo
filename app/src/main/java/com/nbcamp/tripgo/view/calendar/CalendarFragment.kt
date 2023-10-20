@@ -35,10 +35,10 @@ class CalendarFragment : Fragment() {
     private val sharedViewModel: MainViewModel by activityViewModels()
     private val scheduleListAdapter by lazy {
         ScheduleListAdapter {
-            // TODO 리뷰작성 다이얼로그 띄우기
-
+            runDialogForReviewWriting()
         }
     }
+
     private val thisMonthScheduleList = arrayListOf<CalendarEntity>()
     private var thisMonth: Int = 0
     private val selectedDayList = arrayListOf<CalendarDay>()
@@ -157,7 +157,7 @@ class CalendarFragment : Fragment() {
                 calendarViewModel.changeScheduleListForThisMonth(date)
             }
             setOnDateLongClickListener { widget, date ->
-                // TODO 리뷰작성 다이얼로그 띄우기
+                runDialogForReviewWriting()
             }
 
             // 로그인 안 되었을 떄, 스낵바 띄우는 리스너
@@ -171,6 +171,10 @@ class CalendarFragment : Fragment() {
         calendarScheduleRecyclerView.run {
             adapter = scheduleListAdapter
         }
+    }
+
+    private fun runDialogForReviewWriting() {
+        TODO("Not yet implemented")
     }
 
     override fun onResume() {
