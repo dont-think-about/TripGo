@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseUser
+import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -35,34 +37,72 @@ class CalendarViewModel(
 
     fun getLoginStatus() {
         val currentUser = calendarRepository.getCurrentUser()
-        println(currentUser?.email)
-        println(currentUser?.isEmailVerified)
+        when (currentUser) {
+            is FirebaseUser -> {
+                println(currentUser.email)
+                println(currentUser.isEmailVerified)
+            }
+
+            is Account -> {
+                println(currentUser.email)
+                println(currentUser.isEmailVerified)
+            }
+        }
+
         _loginStatus.value = currentUser != null
     }
 
     fun getSchedulesFromFireStoreDatabase() {
         _myScheduleState.value = CalendarScheduleUiState.initialize()
-        val currentUser = calendarRepository.getCurrentUser()
-        if (currentUser?.email == null) {
-            _myScheduleState.value = CalendarScheduleUiState.error("로그인이 되어있지 않습니다.")
-            return
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            runCatching {
-                val mySchedules = calendarRepository.getMySchedules(currentUser.email!!)
-                cachingSchedule = mySchedules
-                if (mySchedules.isEmpty()) {
-                    _myScheduleState.postValue(CalendarScheduleUiState.error("일정을 추가하고 관리해보세요!"))
+        when (val currentUser = calendarRepository.getCurrentUser()) {
+            is FirebaseUser -> {
+                if (currentUser.email == null) {
+                    _myScheduleState.value = CalendarScheduleUiState.error("로그인이 되어있지 않습니다.")
+                    return
                 }
-                _myScheduleState.postValue(
-                    CalendarScheduleUiState(
-                        mySchedules,
-                        "",
-                        false
-                    )
-                )
-            }.onFailure {
-                _myScheduleState.postValue(CalendarScheduleUiState.error("오류가 발생했습니다."))
+                viewModelScope.launch(Dispatchers.IO) {
+                    runCatching {
+                        val mySchedules = calendarRepository.getMySchedules(currentUser.email!!)
+                        cachingSchedule = mySchedules
+                        if (mySchedules.isEmpty()) {
+                            _myScheduleState.postValue(CalendarScheduleUiState.error("일정을 추가하고 관리해보세요!"))
+                        }
+                        _myScheduleState.postValue(
+                            CalendarScheduleUiState(
+                                mySchedules,
+                                "",
+                                false
+                            )
+                        )
+                    }.onFailure {
+                        _myScheduleState.postValue(CalendarScheduleUiState.error("오류가 발생했습니다."))
+                    }
+                }
+            }
+
+            is Account -> {
+                if (currentUser.email == null) {
+                    _myScheduleState.value = CalendarScheduleUiState.error("로그인이 되어있지 않습니다.")
+                    return
+                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    runCatching {
+                        val mySchedules = calendarRepository.getMySchedules(currentUser.email!!)
+                        cachingSchedule = mySchedules
+                        if (mySchedules.isEmpty()) {
+                            _myScheduleState.postValue(CalendarScheduleUiState.error("일정을 추가하고 관리해보세요!"))
+                        }
+                        _myScheduleState.postValue(
+                            CalendarScheduleUiState(
+                                mySchedules,
+                                "",
+                                false
+                            )
+                        )
+                    }.onFailure {
+                        _myScheduleState.postValue(CalendarScheduleUiState.error("오류가 발생했습니다."))
+                    }
+                }
             }
         }
     }
