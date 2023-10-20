@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
+import com.nbcamp.tripgo.view.calendar.uistate.RunDialogUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,10 +36,11 @@ class CalendarViewModel(
     val changedMonthState: LiveData<List<CalendarEntity>?>
         get() = _changedMonthState
 
-    private val _runDialogState: MutableLiveData<Boolean> = MutableLiveData()
-    val runDialogState: LiveData<Boolean>
+    private val _runDialogState: MutableLiveData<RunDialogUiState> = MutableLiveData()
+    val runDialogState: LiveData<RunDialogUiState>
         get() = _runDialogState
 
+    // 원본으로 하기 힘든 위치에 추가적인 날짜 필터링을 위해 캐싱 데이터를 생성
     private var cachingSchedule: List<CalendarEntity>? = null
 
     fun getLoginStatus() {
@@ -112,7 +114,9 @@ class CalendarViewModel(
                         }
                         _myScheduleState.postValue(
                             CalendarScheduleUiState(
-                                mySchedules, "", false
+                                mySchedules,
+                                "",
+                                false
                             )
                         )
                     }.onFailure {
@@ -123,6 +127,7 @@ class CalendarViewModel(
         }
     }
 
+    // startDate ~ endDate 사이의 날짜를 달력을 표시 하기 위해 날짜 데이터를 만드는 함수
     fun setSelectedDate(data: List<CalendarEntity>?) {
         val dateList = arrayListOf<Triple<Int, Int, Int>>()
         data?.forEach { calendarEntity ->
@@ -144,7 +149,7 @@ class CalendarViewModel(
                 ?.first() == changedMonth.toString() || it.endDate?.chunked(4)?.last()?.chunked(2)
                 ?.first() == changedMonth.toString()
         }
-        _changedMonthState.value = filteredSchedule
+        _changedMonthState.value = filteredSchedule?.sortedBy { it.startDate?.toInt() }
     }
 
     fun runDialogForReviewWriting(
@@ -164,6 +169,19 @@ class CalendarViewModel(
             selectedDayList.map {
                 "${it.year}${it.month}${if (it.day < 10) "0${it.day}" else it.day}".toInt()
             }
-        _runDialogState.value = todayInt >= nowDate && list.contains(nowDate)
+
+        val getDateRangeValidEntity =
+            cachingSchedule?.filter {
+                it.startDate.toString() <= nowDate.toString() && nowDate.toString() <= it.endDate.toString()
+            }
+
+        if (getDateRangeValidEntity?.size == 1) {
+            _runDialogState.value = RunDialogUiState(
+                getDateRangeValidEntity.first(),
+                todayInt >= nowDate && list.contains(nowDate)
+            )
+            return
+        }
+        _runDialogState.value = RunDialogUiState.error()
     }
 }
