@@ -12,7 +12,6 @@ import com.nbcamp.tripgo.data.repository.model.TravelerEntity
 import com.nbcamp.tripgo.data.repository.model.WeatherEntity
 import com.nbcamp.tripgo.data.service.TourApiService
 import com.nbcamp.tripgo.data.service.WeatherService
-import com.nbcamp.tripgo.util.APIResponse
 import com.nbcamp.tripgo.view.home.HomeRepository
 
 class HomeRepositoryImpl(
@@ -23,7 +22,7 @@ class HomeRepositoryImpl(
         startDate: String,
         endDate: String,
         responseCount: Int
-    ): APIResponse<List<TravelerEntity>> {
+    ): List<TravelerEntity>? {
         val response = tourApiService.getCalculationTravelers(
             startDate = startDate,
             endDate = endDate,
@@ -36,24 +35,24 @@ class HomeRepositoryImpl(
                 val resultCode = travelerCountModel.response.header.resultCode
                 val items = travelerCountModel.response.body.items.item
                 if (resultCode != "0000") {
-                    return APIResponse.Error(response.message())
+                    return null
                 }
                 if (items.isEmpty()) {
-                    return APIResponse.Error(response.message())
+                    return emptyList()
                 }
                 items.forEach { item ->
                     list.add(item.toTravelerEntity())
                 }
-                return APIResponse.Success(list)
+                return list
             }
         }
-        return APIResponse.Error(response.message())
+        return emptyList()
     }
 
     override suspend fun getFestivalsInThisMonth(
         startDate: String,
         responseCount: Int
-    ): APIResponse<List<FestivalEntity>> {
+    ): List<FestivalEntity>? {
         val response = tourApiService.getFestivalInThisMonth(
             startDate = startDate,
             responseCount = responseCount
@@ -65,24 +64,24 @@ class HomeRepositoryImpl(
                 val resultCode = festivalModel.response.header.resultCode
                 val items = festivalModel.response.body.items.item
                 if (resultCode != "0000") {
-                    return APIResponse.Error(response.message())
+                    return null
                 }
                 if (items.isEmpty()) {
-                    return APIResponse.Error(response.message())
+                    return emptyList()
                 }
                 items.forEach { item ->
                     list.add(item.toFestivalEntity())
                 }
-                return APIResponse.Success(list)
+                return list
             }
         }
-        return APIResponse.Error(response.message())
+        return emptyList()
     }
 
     override suspend fun getTodayWeather(
         date: String,
         time: String
-    ): APIResponse<WeatherEntity> {
+    ): WeatherEntity? {
         val response = weatherApiService.getTodayWeather(
             date = date,
             time = time
@@ -94,22 +93,22 @@ class HomeRepositoryImpl(
                 val weatherInfo =
                     weatherModel.response.body.items.weatherItem
                 if (resultCode != "00") {
-                    return APIResponse.Error(response.message())
+                    return null
                 }
                 if (weatherInfo.isEmpty()) {
-                    return APIResponse.Error(response.message())
+                    return null
                 }
-                return APIResponse.Success(weatherInfo.toWeatherEntity())
+                return weatherInfo.toWeatherEntity()
             }
         }
-        return APIResponse.Error(response.message())
+        return null
     }
 
     override suspend fun getInformationByKeyword(
         keyword: String,
         contentTypeId: String,
         responseCount: Int
-    ): APIResponse<List<KeywordSearchEntity>> {
+    ): List<KeywordSearchEntity>? {
         val response = tourApiService.getPlaceBySearch(
             keyword = keyword,
             contentTypeId = contentTypeId,
@@ -121,18 +120,18 @@ class HomeRepositoryImpl(
                 val resultCode = keywordModel.response.header.resultCode
                 val items = keywordModel.response.body.items.item
                 if (resultCode != "0000") {
-                    return APIResponse.Error(response.message())
+                    return null
                 }
                 if (items.isEmpty()) {
-                    return APIResponse.Error(response.message())
+                    return emptyList()
                 }
                 items.forEach { item ->
                     list.add(item.toKeywordSearchEntity())
                 }
-                return APIResponse.Success(list)
+                return list
             }
         }
-        return APIResponse.Error(response.message())
+        return emptyList()
     }
 
     override suspend fun getNearbyPlaces(
@@ -140,7 +139,7 @@ class HomeRepositoryImpl(
         longitude: String,
         radius: String,
         pageNumber: String
-    ): APIResponse<List<NearbyPlaceEntity>> {
+    ): List<NearbyPlaceEntity>? {
         val response = tourApiService.getNearbyPlace(
             latitude = latitude,
             longitude = longitude,
@@ -153,17 +152,17 @@ class HomeRepositoryImpl(
                 val resultCode = nearbyModel.response.header.resultCode
                 val items = nearbyModel.response.body.items.item
                 if (resultCode != "0000") {
-                    return APIResponse.Error(response.message())
+                    return null
                 }
                 if (items.isEmpty()) {
-                    return APIResponse.Error(response.message())
+                    return emptyList()
                 }
                 items.forEach { item ->
                     list.add(item.toNearbyPlaceEntity())
                 }
-                return APIResponse.Success(list)
+                return list
             }
         }
-        return APIResponse.Error(response.message())
+        return emptyList()
     }
 }
