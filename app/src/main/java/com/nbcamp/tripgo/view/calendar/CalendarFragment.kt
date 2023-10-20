@@ -17,6 +17,7 @@ import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
 import com.nbcamp.tripgo.util.calendar.SelectedDayDecorator
 import com.nbcamp.tripgo.util.calendar.SundayDecorator
 import com.nbcamp.tripgo.util.calendar.TodayDecorator
+import com.nbcamp.tripgo.util.setFancyDialog
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
 import com.nbcamp.tripgo.view.main.MainViewModel
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -174,7 +175,9 @@ class CalendarFragment : Fragment() {
     }
 
     private fun runDialogForReviewWriting() {
-        TODO("Not yet implemented")
+        setFancyDialog(requireActivity()) {
+
+        }.show()
     }
 
     override fun onResume() {
