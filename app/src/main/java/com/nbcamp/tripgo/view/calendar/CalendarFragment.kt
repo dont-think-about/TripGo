@@ -73,6 +73,7 @@ class CalendarFragment : Fragment() {
                     state.data?.isEmpty() == true
                 ) {
                     calendarNoticeTextView.isVisible = true
+                    calendarProgressBar.isVisible = state.isLoading
                     calendarNoticeTextView.text = state.message
                     return@observe
                 }

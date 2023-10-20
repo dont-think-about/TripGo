@@ -61,8 +61,8 @@ class CalendarViewModel(
                     _myScheduleState.value = CalendarScheduleUiState.error("로그인이 되어있지 않습니다.")
                     return
                 }
-                viewModelScope.launch(Dispatchers.IO) {
-                    runCatching {
+                runCatching {
+                    viewModelScope.launch(Dispatchers.IO) {
                         val mySchedules = calendarRepository.getMySchedules(currentUser.email!!)
                         cachingSchedule = mySchedules
                         if (mySchedules.isEmpty()) {
@@ -81,9 +81,9 @@ class CalendarViewModel(
                                 false
                             )
                         )
-                    }.onFailure {
-                        _myScheduleState.postValue(CalendarScheduleUiState.error("오류가 발생했습니다."))
                     }
+                }.onFailure {
+                    _myScheduleState.postValue(CalendarScheduleUiState.error("오류가 발생했습니다."))
                 }
             }
 
@@ -92,8 +92,8 @@ class CalendarViewModel(
                     _myScheduleState.value = CalendarScheduleUiState.error("로그인이 되어있지 않습니다.")
                     return
                 }
-                viewModelScope.launch(Dispatchers.IO) {
-                    runCatching {
+                runCatching {
+                    viewModelScope.launch(Dispatchers.IO) {
                         val mySchedules = calendarRepository.getMySchedules(currentUser.email!!)
                         cachingSchedule = mySchedules
                         if (mySchedules.isEmpty()) {
@@ -113,9 +113,9 @@ class CalendarViewModel(
                                 false
                             )
                         )
-                    }.onFailure {
-                        _myScheduleState.postValue(CalendarScheduleUiState.error("오류가 발생했습니다."))
                     }
+                }.onFailure {
+                    _myScheduleState.postValue(CalendarScheduleUiState.error("오류가 발생했습니다."))
                 }
             }
         }
