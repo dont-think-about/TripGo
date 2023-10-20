@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SearchActivity : AppCompatActivity(), AttractionsFragment.OnSearchListener {
+class SearchActivity : AppCompatActivity(){
 
     lateinit var mViewPagerAdapter: ViewPagerAdapter
     private lateinit var binding: ActivitySearchBinding
@@ -33,25 +33,6 @@ class SearchActivity : AppCompatActivity(), AttractionsFragment.OnSearchListener
         val searchBackImageView = findViewById<ImageView>(R.id.search_back)
         searchBackImageView.setOnClickListener {
             finish() // 뒤로 가기 버튼을 클릭하면 Activity 종료
-        }
-    }
-    override fun onSearch(text: String) {
-        getSearchResults(text)
-    }
-
-    private fun getSearchResults(query: String) {
-        val arraylist = arrayListOf<KeywordSearchEntity>()
-        CoroutineScope(Dispatchers.IO).launch {
-//            val response = RetrofitModule.createTourApiService(query)
-//            response.body()?.let { searchResults ->
-//                searchResults.items.forEach { item ->
-//                    arraylist.add(
-//                        KeywordSearchEntity(
-//                        title = item.bo
-//                        )
-//                    )
-//                }
-//            }
         }
     }
 }
