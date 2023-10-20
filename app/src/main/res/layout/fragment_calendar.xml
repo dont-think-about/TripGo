@@ -6,17 +6,74 @@
     android:layout_height="match_parent"
     tools:context=".view.calendar.CalendarFragment">
 
+    <LinearLayout
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tour_main_title"
+            style="@style/Font.20.Bold.Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="@string/calendar" />
+
+    </LinearLayout>
+
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calendar_main_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:theme="@style/calendar_view_day_custom"
+        app:layout_constraintBottom_toTopOf="@id/calendar_schedule_recycler_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/action_bar"
+        app:layout_constraintVertical_weight="2"
+        app:mcv_allowClickDaysOutsideCurrentMonth="false"
+        app:mcv_dateTextAppearance="@style/calendar_text_view_day_custom"
+        app:mcv_headerTextAppearance="@style/calendar_header"
+        app:mcv_selectionColor="@color/main"
+        app:mcv_selectionMode="none"
+        app:mcv_showOtherDates="all"
+        app:mcv_weekDayTextAppearance="@style/calendar_text_view_week_custom" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/calendar_schedule_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:mcv_selectionColor="@color/main"
-        app:mcv_selectionMode="range"
-        app:mcv_showOtherDates="all" />
+        app:layout_constraintTop_toBottomOf="@id/calendar_main_view"
+        app:layout_constraintVertical_weight="1" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/calendar_notice_text_view"
+        style="@style/Font.20.Bold.Black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/calendar_schedule_recycler_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/calendar_schedule_recycler_view" />
+
+    <ProgressBar
+        android:id="@+id/calendar_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/calendar_schedule_recycler_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/calendar_schedule_recycler_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
