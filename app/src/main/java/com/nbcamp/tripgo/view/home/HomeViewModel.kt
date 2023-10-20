@@ -61,8 +61,8 @@ class HomeViewModel(
     fun fetchViewPagerData() {
         val getPastDateString = getPastDateString()
         _festivalUiState.value = HomeFestivalUiState.initialize()
-        runCatching {
-            viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
                 val travelers = homeRepository.getCalculationTravelers(
                     responseCount = 1000,
                     startDate = getPastDateString.first,
@@ -91,9 +91,9 @@ class HomeViewModel(
                     randomList
                 }
                 _festivalUiState.postValue(HomeFestivalUiState(filteredFestival, false))
+            }.onFailure {
+                _festivalUiState.postValue(HomeFestivalUiState.error())
             }
-        }.onFailure {
-            _festivalUiState.postValue(HomeFestivalUiState.error())
         }
     }
 
@@ -140,8 +140,8 @@ class HomeViewModel(
 
     fun getNearbyPlaceList(location: Location?, pageNumber: Int) {
         _nearbyPlaceUiState.value = HomeNearbyPlaceUiState.initialize()
-        runCatching {
-            viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
                 val nearbyPlaces = homeRepository.getNearbyPlaces(
                     latitude = location?.latitude.toString(),
                     longitude = location?.longitude.toString(),
@@ -164,11 +164,10 @@ class HomeViewModel(
                         false
                     )
                 )
+            }.onFailure {
+                _nearbyPlaceUiState.postValue(HomeNearbyPlaceUiState.error())
             }
-        }.onFailure {
-            _nearbyPlaceUiState.postValue(HomeNearbyPlaceUiState.error())
         }
-
     }
 
 

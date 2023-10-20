@@ -61,8 +61,9 @@ class CalendarViewModel(
                     _myScheduleState.value = CalendarScheduleUiState.error("로그인이 되어있지 않습니다.")
                     return
                 }
-                runCatching {
-                    viewModelScope.launch(Dispatchers.IO) {
+
+                viewModelScope.launch(Dispatchers.IO) {
+                    runCatching {
                         val mySchedules = calendarRepository.getMySchedules(currentUser.email!!)
                         cachingSchedule = mySchedules
                         if (mySchedules.isEmpty()) {
@@ -76,14 +77,12 @@ class CalendarViewModel(
                         // 정상적으로 가져 왔을 때 myScheduleState livedata에 제공
                         _myScheduleState.postValue(
                             CalendarScheduleUiState(
-                                mySchedules,
-                                "",
-                                false
+                                mySchedules, "", false
                             )
                         )
+                    }.onFailure {
+                        _myScheduleState.postValue(CalendarScheduleUiState.error("오류가 발생했습니다."))
                     }
-                }.onFailure {
-                    _myScheduleState.postValue(CalendarScheduleUiState.error("오류가 발생했습니다."))
                 }
             }
 
@@ -92,30 +91,27 @@ class CalendarViewModel(
                     _myScheduleState.value = CalendarScheduleUiState.error("로그인이 되어있지 않습니다.")
                     return
                 }
-                runCatching {
-                    viewModelScope.launch(Dispatchers.IO) {
+
+                viewModelScope.launch(Dispatchers.IO) {
+                    runCatching {
                         val mySchedules = calendarRepository.getMySchedules(currentUser.email!!)
                         cachingSchedule = mySchedules
                         if (mySchedules.isEmpty()) {
                             _myScheduleState.postValue(
                                 CalendarScheduleUiState(
-                                    emptyList(),
-                                    "일정을 추가하고 관리해보세요!",
-                                    false
+                                    emptyList(), "일정을 추가하고 관리해보세요!", false
                                 )
                             )
                             return@launch
                         }
                         _myScheduleState.postValue(
                             CalendarScheduleUiState(
-                                mySchedules,
-                                "",
-                                false
+                                mySchedules, "", false
                             )
                         )
+                    }.onFailure {
+                        _myScheduleState.postValue(CalendarScheduleUiState.error("오류가 발생했습니다."))
                     }
-                }.onFailure {
-                    _myScheduleState.postValue(CalendarScheduleUiState.error("오류가 발생했습니다."))
                 }
             }
         }
@@ -138,8 +134,9 @@ class CalendarViewModel(
     fun changeScheduleListForThisMonth(date: CalendarDay?) {
         val changedMonth = date?.month
         val filteredSchedule = cachingSchedule?.filter {
-            it.startDate?.chunked(4)?.last()?.chunked(2)?.first() == changedMonth.toString() ||
-                    it.endDate?.chunked(4)?.last()?.chunked(2)?.first() == changedMonth.toString()
+            it.startDate?.chunked(4)?.last()?.chunked(2)
+                ?.first() == changedMonth.toString() || it.endDate?.chunked(4)?.last()?.chunked(2)
+                ?.first() == changedMonth.toString()
         }
         _changedMonthState.value = filteredSchedule
     }
