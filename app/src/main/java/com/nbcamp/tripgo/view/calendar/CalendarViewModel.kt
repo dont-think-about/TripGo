@@ -52,6 +52,7 @@ class CalendarViewModel(
         _loginStatus.value = currentUser != null
     }
 
+    // 파이어스토어로 부터 데이터를 가져오고, 데이터의 상태에 따라 state 분기 처리 - CalendarScheduleUiState
     fun getSchedulesFromFireStoreDatabase() {
         _myScheduleState.value = CalendarScheduleUiState.initialize()
         when (val currentUser = calendarRepository.getCurrentUser()) {
@@ -72,6 +73,7 @@ class CalendarViewModel(
                             )
                             return@launch
                         }
+                        // 정상적으로 가져 왔을 때 myScheduleState livedata에 제공
                         _myScheduleState.postValue(
                             CalendarScheduleUiState(
                                 mySchedules,
@@ -132,6 +134,7 @@ class CalendarViewModel(
         _schedulesDateState.value = dateList
     }
 
+    // 날짜 필터링을 통해 현재 달의 일정만 제공
     fun changeScheduleListForThisMonth(date: CalendarDay?) {
         val changedMonth = date?.month
         val filteredSchedule = cachingSchedule?.filter {
