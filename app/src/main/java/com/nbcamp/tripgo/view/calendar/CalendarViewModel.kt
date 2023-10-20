@@ -65,7 +65,12 @@ class CalendarViewModel(
                         val mySchedules = calendarRepository.getMySchedules(currentUser.email!!)
                         cachingSchedule = mySchedules
                         if (mySchedules.isEmpty()) {
-                            _myScheduleState.postValue(CalendarScheduleUiState.error("일정을 추가하고 관리해보세요!"))
+                            _myScheduleState.postValue(
+                                CalendarScheduleUiState.error(
+                                    "일정을 추가하고 관리해보세요!",
+                                )
+                            )
+                            return@launch
                         }
                         _myScheduleState.postValue(
                             CalendarScheduleUiState(
@@ -90,7 +95,14 @@ class CalendarViewModel(
                         val mySchedules = calendarRepository.getMySchedules(currentUser.email!!)
                         cachingSchedule = mySchedules
                         if (mySchedules.isEmpty()) {
-                            _myScheduleState.postValue(CalendarScheduleUiState.error("일정을 추가하고 관리해보세요!"))
+                            _myScheduleState.postValue(
+                                CalendarScheduleUiState(
+                                    emptyList(),
+                                    "일정을 추가하고 관리해보세요!",
+                                    false
+                                )
+                            )
+                            return@launch
                         }
                         _myScheduleState.postValue(
                             CalendarScheduleUiState(

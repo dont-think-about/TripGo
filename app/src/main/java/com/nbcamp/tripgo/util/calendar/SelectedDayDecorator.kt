@@ -16,6 +16,5 @@ class SelectedDayDecorator(context: Context) : DayViewDecorator {
 
     override fun decorate(view: DayViewFacade) {
         view.setSelectionDrawable(drawable!!)
-        view.setDaysDisabled(true)
     }
 }
