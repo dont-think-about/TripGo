@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.google.android.material.snackbar.Snackbar
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.databinding.FragmentCalendarBinding
@@ -16,7 +18,9 @@ import com.nbcamp.tripgo.util.calendar.SelectedDayDecorator
 import com.nbcamp.tripgo.util.calendar.SundayDecorator
 import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
+import com.nbcamp.tripgo.view.main.MainViewModel
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.util.Calendar
 
 class CalendarFragment : Fragment() {
@@ -28,6 +32,7 @@ class CalendarFragment : Fragment() {
             requireActivity()
         )
     }
+    private val sharedViewModel: MainViewModel by activityViewModels()
     private val scheduleListAdapter by lazy {
         ScheduleListAdapter {
 
@@ -57,11 +62,13 @@ class CalendarFragment : Fragment() {
                 when (state) {
                     // 로그인이 되어있으면 파이어스토어로 부터 데이터를 가져옴
                     true -> {
+                        calendarMainView.selectionMode = MaterialCalendarView.SELECTION_MODE_NONE
                         getSchedulesFromFireStore()
                     }
 
-                    // 돠어 있지 않으면 하단에 안내 메세지 띄움
+                    // 돠어 있지 않으면 하단에 안내 메세지 띄움 + 캘린더 선택하면 스낵바 띄울 수 있도록 모드 변경
                     false -> {
+                        calendarMainView.selectionMode = MaterialCalendarView.SELECTION_MODE_SINGLE
                         calendarNoticeTextView.text = getString(R.string.log_in_and_submit_review)
                     }
                 }
@@ -129,7 +136,6 @@ class CalendarFragment : Fragment() {
     private fun initViews() = with(binding) {
         calendarMainView.run {
             val month = Calendar.getInstance().get(Calendar.MONTH)
-            thisMonth = month + 1
             addDecorators(SaturdayDecorator(month, 1), SundayDecorator(month, 1))
             // 상단 바 월 이동 버튼 클릭 리스너
             setOnMonthChangedListener { _, date ->
@@ -145,6 +151,17 @@ class CalendarFragment : Fragment() {
                 thisMonth = date.month
                 // 하단 리사이클러뷰의 리스트를 현재 달에 바꾸어줌
                 calendarViewModel.changeScheduleListForThisMonth(date)
+            }
+            setOnDateLongClickListener { widget, date ->
+                println(date) // TODO
+            }
+
+            // 로그인 안 되었을 떄, 스낵바 띄우는 리스너
+            setOnDateChangedListener { _, _, _ ->
+                Snackbar.make(binding.root, "로그인 페이지로 이동", 5000)
+                    .setAction("LOGIN") {
+                        sharedViewModel.runLoginActivity()
+                    }.show()
             }
         }
         calendarScheduleRecyclerView.run {

@@ -31,6 +31,10 @@ class MainViewModel : ViewModel() {
         _event.value = ThemeClickEvent.RunAttractionActivity(model)
     }
 
+    fun runLoginActivity() {
+        _event.value = ThemeClickEvent.RunLogInActivity
+    }
+
     fun setCurrentPage(menuItemId: Int): Boolean {
         val pageType = getPageType(menuItemId)
         changeCurrentPage(pageType)

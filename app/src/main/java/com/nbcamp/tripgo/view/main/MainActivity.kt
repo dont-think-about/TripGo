@@ -12,6 +12,7 @@ import com.nbcamp.tripgo.view.attraction.AttractionsActivity
 import com.nbcamp.tripgo.view.calendar.CalendarFragment
 import com.nbcamp.tripgo.view.home.HomeFragment
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
+import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.mypage.MyPageFragment
 import com.nbcamp.tripgo.view.review.ReviewFragment
 import com.nbcamp.tripgo.view.search.SearchActivity
@@ -90,6 +91,10 @@ class MainActivity : AppCompatActivity() {
                             putExtra("provinceModel", themeClickEvent.model)
                         }
                     )
+                }
+
+                is ThemeClickEvent.RunLogInActivity -> {
+                    startActivity(Intent(this@MainActivity, LogInActivity::class.java))
                 }
             }
         }

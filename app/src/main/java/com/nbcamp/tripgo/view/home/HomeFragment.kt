@@ -157,9 +157,9 @@ class HomeFragment : Fragment() {
               autoSlideViewPager()
               getPlaceByTodayWeather()
               */
-            getProvincePlace()
+//            getProvincePlace()
         }
-        checkLocationPermissions()
+//        checkLocationPermissions()
 
         festivalUiState.observe(viewLifecycleOwner) { state ->
             with(binding) {
