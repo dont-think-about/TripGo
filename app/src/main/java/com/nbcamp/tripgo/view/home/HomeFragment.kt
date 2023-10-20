@@ -315,6 +315,7 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         //   homeViewModel.stopSlideViewPager()
+        _binding = null
     }
 
     companion object {
