@@ -120,4 +120,9 @@
     <string name="disagree_permission">취소</string>
     <string name="in_1km">1km 이내</string>
     <string name="in_km">km 이내</string>
+    <string name="many_tour_place">곳 이상의 관광지</string>
+    <string name="not_logged_in">로그인이 되어 있지 않습니다.</string>
+    <string name="no_data">데이터가 없습니다.</string>
+    <string name="log_in_and_submit_review">로그인을 하고 일정을 관리하고\n리뷰를 남겨보세요</string>
+    <string name="add_schedule_and_submit_review">일정을 추가하고 리뷰를 남겨보세요</string>
 </resources>
