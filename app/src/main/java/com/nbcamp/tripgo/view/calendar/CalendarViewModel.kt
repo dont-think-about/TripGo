@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.calendar
 
+import android.icu.util.Calendar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,7 @@ import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 
 class CalendarViewModel(
@@ -32,6 +34,10 @@ class CalendarViewModel(
     private val _changedMonthState: MutableLiveData<List<CalendarEntity>?> = MutableLiveData()
     val changedMonthState: LiveData<List<CalendarEntity>?>
         get() = _changedMonthState
+
+    private val _runDialogState: MutableLiveData<Boolean> = MutableLiveData()
+    val runDialogState: LiveData<Boolean>
+        get() = _runDialogState
 
     private var cachingSchedule: List<CalendarEntity>? = null
 
@@ -139,5 +145,25 @@ class CalendarViewModel(
                 ?.first() == changedMonth.toString()
         }
         _changedMonthState.value = filteredSchedule
+    }
+
+    fun runDialogForReviewWriting(
+        clickDate: CalendarDay,
+        selectedDayList: ArrayList<CalendarDay>
+    ) {
+        // 우선 오늘 보다는 작아야함
+        val today = Calendar.getInstance(Locale.KOREA)
+        val year = today.get(Calendar.YEAR)
+        val month = today.get(Calendar.MONTH) + 1
+        val day = today.get(Calendar.DATE)
+        val todayInt =
+            "$year${if (month < 10) "0${month}" else "$month"}$day".toInt()
+        val nowDate =
+            "${clickDate.year}${clickDate.month}${if (clickDate.day < 10) "0${clickDate.day}" else clickDate.day}".toInt()
+        val list =
+            selectedDayList.map {
+                "${it.year}${it.month}${if (it.day < 10) "0${it.day}" else it.day}".toInt()
+            }
+        _runDialogState.value = todayInt >= nowDate && list.contains(nowDate)
     }
 }

@@ -17,6 +17,7 @@ import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
 import com.nbcamp.tripgo.util.calendar.SelectedDayDecorator
 import com.nbcamp.tripgo.util.calendar.SundayDecorator
 import com.nbcamp.tripgo.util.calendar.TodayDecorator
+import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.util.setFancyDialog
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
 import com.nbcamp.tripgo.view.main.MainViewModel
@@ -42,6 +43,7 @@ class CalendarFragment : Fragment() {
 
     private val thisMonthScheduleList = arrayListOf<CalendarEntity>()
     private var thisMonth: Int = 0
+    private var isLoggedIn = false
     private val selectedDayList = arrayListOf<CalendarDay>()
 
     override fun onCreateView(
@@ -62,6 +64,7 @@ class CalendarFragment : Fragment() {
         getLoginStatus()
         with(binding) {
             loginStatus.observe(viewLifecycleOwner) { state ->
+                isLoggedIn = state
                 when (state) {
                     // 로그인이 되어있으면 파이어스토어로 부터 데이터를 가져옴
                     true -> {
@@ -127,10 +130,17 @@ class CalendarFragment : Fragment() {
                 // 리사이클러 뷰 어댑터에 보내기
                 scheduleListAdapter.submitList(changedList)
             }
+
+            runDialogState.observe(viewLifecycleOwner) { isValidRange ->
+                if (isValidRange)
+                    runDialogForReviewWriting()
+                else
+                    requireActivity().toast("일정이 없거나 이후의 일정은 리뷰를 적을 수 없습니다.")
+            }
         }
     }
 
-    private fun showScheduleInCalendarView(data: List<CalendarEntity>?) = with(binding) {
+    private fun showScheduleInCalendarView(data: List<CalendarEntity>?) {
         calendarViewModel.setSelectedDate(data)
     }
 
@@ -157,16 +167,17 @@ class CalendarFragment : Fragment() {
                 // 하단 리사이클러뷰의 리스트를 현재 달에 바꾸어줌
                 calendarViewModel.changeScheduleListForThisMonth(date)
             }
-            setOnDateLongClickListener { widget, date ->
-                runDialogForReviewWriting()
+            setOnDateLongClickListener { _, date ->
+                if (isLoggedIn) {
+                    calendarViewModel.runDialogForReviewWriting(date, selectedDayList)
+                }
             }
 
             // 로그인 안 되었을 떄, 스낵바 띄우는 리스너
             setOnDateChangedListener { _, _, _ ->
-                Snackbar.make(binding.root, "로그인 페이지로 이동", 5000)
-                    .setAction("LOGIN") {
-                        sharedViewModel.runLoginActivity()
-                    }.show()
+                Snackbar.make(binding.root, "로그인 페이지로 이동", 5000).setAction("LOGIN") {
+                    sharedViewModel.runLoginActivity()
+                }.show()
             }
         }
         calendarScheduleRecyclerView.run {

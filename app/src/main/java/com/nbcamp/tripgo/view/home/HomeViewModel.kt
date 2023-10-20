@@ -138,7 +138,10 @@ class HomeViewModel(
         }
     }
 
-    fun getNearbyPlaceList(location: Location?, pageNumber: Int) {
+    fun getNearbyPlaceList(
+        location: Location?,
+        pageNumber: Int
+    ) {
         _nearbyPlaceUiState.value = HomeNearbyPlaceUiState.initialize()
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
@@ -190,7 +193,10 @@ class HomeViewModel(
 
     // 위도 경도 사이 거리 계산 (m)
     private fun getDistance(
-        myLatitude: Double, myLongitude: Double, placeLatitude: Double, placeLongitude: Double
+        myLatitude: Double,
+        myLongitude: Double,
+        placeLatitude: Double,
+        placeLongitude: Double
     ): Double {
         val distanceLatitude = Math.toRadians(placeLatitude - myLatitude)
         val distanceLongitude = Math.toRadians(placeLongitude - myLongitude)
@@ -204,7 +210,9 @@ class HomeViewModel(
     }
 
     private suspend fun runSearchByKeyword(
-        keyword: String, contentTypeId: String, responseCount: Int
+        keyword: String,
+        contentTypeId: String,
+        responseCount: Int
     ): KeywordSearchEntity? = homeRepository.getInformationByKeyword(
         keyword = keyword, contentTypeId = contentTypeId, responseCount = responseCount
     ).let { list ->
@@ -217,7 +225,8 @@ class HomeViewModel(
 
 
     private fun getPopularFestival(
-        data: List<FestivalEntity>?, manyTravelersCountList: List<String>?
+        data: List<FestivalEntity>?,
+        manyTravelersCountList: List<String>?
     ) = data?.filter {
         it.address.contains(
             """${manyTravelersCountList?.get(0)}|${manyTravelersCountList?.get(1)}|${
@@ -226,10 +235,11 @@ class HomeViewModel(
         )
     }
 
-    private fun getHowManyTravelersByPlace(data: List<TravelerEntity>?) =
-        data?.groupBy { it.districtName }?.map { group ->
-            group.key to group.value.sumOf { it.travelCount }
-        }?.sortedByDescending { it.second }
+    private fun getHowManyTravelersByPlace(
+        data: List<TravelerEntity>?
+    ) = data?.groupBy { it.districtName }?.map { group ->
+        group.key to group.value.sumOf { it.travelCount }
+    }?.sortedByDescending { it.second }
 
     private fun getPastDateString(): Triple<String, String, String> {
         val calendar = Calendar.getInstance(Locale.KOREAN)
