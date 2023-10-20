@@ -35,11 +35,13 @@ class CalendarFragment : Fragment() {
     private val sharedViewModel: MainViewModel by activityViewModels()
     private val scheduleListAdapter by lazy {
         ScheduleListAdapter {
+            // TODO 리뷰작성 다이얼로그 띄우기
 
         }
     }
     private val thisMonthScheduleList = arrayListOf<CalendarEntity>()
     private var thisMonth: Int = 0
+    private val selectedDayList = arrayListOf<CalendarDay>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -100,16 +102,18 @@ class CalendarFragment : Fragment() {
             schedulesDateState.observe(viewLifecycleOwner) { dateList ->
                 val mcv = calendarMainView.state().edit()
                 dateList.forEach { date ->
-                    calendarMainView.setDateSelected(
-                        CalendarDay.from(
-                            date.first,
-                            date.second,
-                            date.third
-                        ),
-                        true
+                    val selectedDay = CalendarDay.from(
+                        date.first,
+                        date.second,
+                        date.third
                     )
+                    selectedDayList.add(selectedDay)
+                    calendarMainView.setDateSelected(selectedDay, true)
                 }
                 mcv.commit()
+                calendarMainView.addDecorator(
+                    SelectedDayDecorator(selectedDayList)
+                )
             }
 
             // 달력을 넘겼을 때 관찰되는 livedata
@@ -145,7 +149,7 @@ class CalendarFragment : Fragment() {
                     SaturdayDecorator(date.month, 0),
                     SundayDecorator(date.month, 0),
                     TodayDecorator(requireActivity()),
-                    SelectedDayDecorator(requireActivity()),
+                    SelectedDayDecorator(selectedDayList),
                     OutDateMonthDecorator(requireActivity(), date.month)
                 )
                 thisMonth = date.month
@@ -153,7 +157,7 @@ class CalendarFragment : Fragment() {
                 calendarViewModel.changeScheduleListForThisMonth(date)
             }
             setOnDateLongClickListener { widget, date ->
-                println(date) // TODO
+                // TODO 리뷰작성 다이얼로그 띄우기
             }
 
             // 로그인 안 되었을 떄, 스낵바 띄우는 리스너

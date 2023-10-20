@@ -1,20 +1,19 @@
 package com.nbcamp.tripgo.util.calendar
 
-import android.content.Context
-import androidx.core.content.ContextCompat
-import com.nbcamp.tripgo.R
+import android.graphics.Color
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
+import com.prolificinteractive.materialcalendarview.spans.DotSpan
 
-class SelectedDayDecorator(context: Context) : DayViewDecorator {
-    private val drawable = ContextCompat.getDrawable(context, R.drawable.calendar_selector)
+class SelectedDayDecorator(private val dates: Collection<CalendarDay>) :
+    DayViewDecorator {
 
     override fun shouldDecorate(day: CalendarDay): Boolean {
-        return true
+        return dates.contains(day)
     }
 
     override fun decorate(view: DayViewFacade) {
-        view.setSelectionDrawable(drawable!!)
+        view.addSpan(DotSpan(5f, Color.parseColor("#FF008000")))
     }
 }

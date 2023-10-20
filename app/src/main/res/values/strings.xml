@@ -125,4 +125,6 @@
     <string name="no_data">데이터가 없습니다.</string>
     <string name="log_in_and_submit_review">로그인을 하고 일정을 관리하고\n리뷰를 남겨보세요</string>
     <string name="add_schedule_and_submit_review">일정을 추가하고 리뷰를 남겨보세요</string>
+    <string name="my_current_schedule">내 최근 일정</string>
+    <string name="possible_write_review">리뷰 작성 가능</string>
 </resources>
