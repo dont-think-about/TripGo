@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nbcamp.tripgo.R
+import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
@@ -18,6 +19,10 @@ class MainViewModel : ViewModel() {
         MutableLiveData(FragmentPageType.PAGE_HOME)
     val currentPageType: LiveData<FragmentPageType>
         get() = _currentPageType
+
+    private val _calendarToReviewModel: MutableLiveData<CalendarEntity> = MutableLiveData()
+    val calendarToReviewModel: LiveData<CalendarEntity>
+        get() = _calendarToReviewModel
 
     fun runThemeTourActivity(themeId: TourTheme) {
         _event.value = ThemeClickEvent.RunTourThemeActivity(themeId)
@@ -55,5 +60,9 @@ class MainViewModel : ViewModel() {
         if (currentPageType.value == pageType)
             return
         _currentPageType.value = pageType
+    }
+
+    fun setBasicReviewModel(model: CalendarEntity) {
+        _calendarToReviewModel.value = model
     }
 }

@@ -21,6 +21,7 @@ import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.util.setFancyDialog
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
 import com.nbcamp.tripgo.view.main.MainViewModel
+import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingFragment
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.util.Calendar
@@ -36,8 +37,8 @@ class CalendarFragment : Fragment() {
     }
     private val sharedViewModel: MainViewModel by activityViewModels()
     private val scheduleListAdapter by lazy {
-        ScheduleListAdapter {
-            runDialogForReviewWriting()
+        ScheduleListAdapter { model ->
+            runDialogForReviewWriting(model)
         }
     }
 
@@ -99,10 +100,13 @@ class CalendarFragment : Fragment() {
                 // 뷰모델로 부터 관찰한 내 일정을 캘린더에 표시
                 showScheduleInCalendarView(state.data)
 
-                // 뷰모델로 부터 관찰한 내 일정을 리사이클러뷰에 표시 (단, 현재 달만)
-                scheduleListAdapter.submitList(state.data?.filter { it.startDate?.slice(4..5) == thisMonth.toString() })
+                // 뷰모델로 부터 관찰한 내 일정을 리사이클러뷰에 표시 (단, 현재 달만)  TODO 정렬을 뷰모델에서 하기
+                scheduleListAdapter.submitList(state.data?.filter {
+                    it.startDate?.slice(4..5) == thisMonth.toString()
+                }?.sortedBy { it.startDate?.toInt() }?.toMutableList())
             }
 
+            // start ~ end date 사이의 기간을 달력에 표시
             schedulesDateState.observe(viewLifecycleOwner) { dateList ->
                 val mcv = calendarMainView.state().edit()
                 dateList.forEach { date ->
@@ -120,9 +124,9 @@ class CalendarFragment : Fragment() {
                 )
             }
 
-            // 달력을 넘겼을 때 관찰되는 livedata
+            // 달력을 넘겼을 때 관찰 되는 livedata
             changedMonthState.observe(viewLifecycleOwner) { changedList ->
-                // 현재 달만 보여주기 위해 기존에 들어 있던 일정 정보를 지우고, 리스트에 추가
+                // 현재 달만 보여 주기 위해 기존에 들어 있던 일정 정보를 지우고, 리스트에 추가
                 thisMonthScheduleList.run {
                     clear()
                     changedList?.let { addAll(it) }
@@ -131,9 +135,10 @@ class CalendarFragment : Fragment() {
                 scheduleListAdapter.submitList(changedList)
             }
 
-            runDialogState.observe(viewLifecycleOwner) { isValidRange ->
-                if (isValidRange)
-                    runDialogForReviewWriting()
+            runDialogState.observe(viewLifecycleOwner) { state ->
+                // 모델을 넘겨 줘야 리뷰 작성 할 때 정보를 같이 넘겨 줄 수 있음
+                if (state.isValidRange)
+                    runDialogForReviewWriting(state?.data)
                 else
                     requireActivity().toast("일정이 없거나 이후의 일정은 리뷰를 적을 수 없습니다.")
             }
@@ -185,15 +190,32 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    private fun runDialogForReviewWriting() {
+    private fun runDialogForReviewWriting(model: CalendarEntity?) {
         setFancyDialog(requireActivity()) {
-
+            model?.let {
+                goToReviewFragment(model)
+            }
         }.show()
+    }
+
+    private fun goToReviewFragment(model: CalendarEntity) {
+        val transactionReviewWriting = parentFragmentManager.beginTransaction()
+        sharedViewModel.setBasicReviewModel(model)
+        transactionReviewWriting.replace(
+            R.id.main_fragment_container,
+            ReviewWritingFragment.newInstance()
+        ).addToBackStack(null)
+            .commit()
     }
 
     override fun onResume() {
         super.onResume()
         calendarViewModel.getLoginStatus()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
