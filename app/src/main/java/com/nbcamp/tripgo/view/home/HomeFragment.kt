@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.mapper.WeatherType
 import com.nbcamp.tripgo.databinding.FragmentHomeBinding
+import com.nbcamp.tripgo.util.FestivalTransformer
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.home.adapter.FestivalViewPagerAdapter
@@ -136,6 +137,7 @@ class HomeFragment : Fragment() {
         }
         mainFestivalViewPager.run {
             adapter = festivalViewPagerAdapter
+            setPageTransformer(FestivalTransformer())
         }
         viewPagerCircleIndicator.setViewPager(mainFestivalViewPager)
         mainNearbyTourRecyclerView.run {
@@ -149,12 +151,12 @@ class HomeFragment : Fragment() {
 
     private fun initViewModel() = with(homeViewModel) {
         // viewpager 데이터 가져오기
-       homeViewModel.run {
-          /*
-            fetchViewPagerData()
-            autoSlideViewPager()
-            getPlaceByTodayWeather()
-            */
+        homeViewModel.run {
+            /*
+              fetchViewPagerData()
+              autoSlideViewPager()
+              getPlaceByTodayWeather()
+              */
             getProvincePlace()
         }
         checkLocationPermissions()
@@ -312,7 +314,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-     //   homeViewModel.stopSlideViewPager()
+        //   homeViewModel.stopSlideViewPager()
     }
 
     companion object {
