@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.calendar
 
+import android.graphics.Color
 import android.icu.util.Calendar
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -42,14 +43,25 @@ class ScheduleListAdapter(
             val todayString =
                 "$year${if (month < 10) "0${month}" else "$month"}$day"
             val isValid = model.endDate?.toInt()!! < todayString.toInt()
+
             if (isValid) {
+                if (model.isReviewed == true) {
+                    itemCheckTextView.run {
+                        text = "리뷰 작성 됨"
+                        setTextColor(Color.RED)
+                    }
+                }
                 itemView.setOnClickListener {
                     onClickItem(model)
                 }
             }
+            itemCheckTextView.isVisible = isValid
+            defaultSetting(model)
+        }
+
+        private fun defaultSetting(model: CalendarEntity) = with(binding) {
             itemTitleTextView.text = model.title
             "${model.startDate} ~ ${model.endDate}".also { itemDateTextView.text = it }
-            itemCheckTextView.isVisible = isValid
         }
     }
 

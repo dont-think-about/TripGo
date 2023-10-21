@@ -206,11 +206,13 @@ class CalendarFragment : Fragment() {
     }
 
     private fun runDialogForReviewWriting(model: CalendarEntity?) {
-        setFancyDialog(requireActivity()) {
-            model?.let {
+        if (model?.isReviewed == false) {
+            setFancyDialog(requireActivity()) {
                 goToReviewFragment(model, currentUser)
-            }
-        }.show()
+            }.show()
+            return
+        }
+        requireActivity().toast(getString(R.string.already_write_review))
     }
 
     private fun goToReviewFragment(model: CalendarEntity, currentUser: Any?) {
