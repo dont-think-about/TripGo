@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import com.nbcamp.tripgo.data.repository.model.CalendarEntity
+import com.google.firebase.auth.FirebaseUser
 import com.nbcamp.tripgo.databinding.FragmentReviewWritingBinding
 import com.nbcamp.tripgo.view.main.MainViewModel
 
@@ -18,7 +18,7 @@ class ReviewWritingFragment : Fragment() {
         get() = _binding!!
 
     private val sharedViewModel: MainViewModel by activityViewModels()
-    private lateinit var calendarEntity: CalendarEntity
+    private lateinit var calendarUserEntity: CalendarUserEntity
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,8 +43,11 @@ class ReviewWritingFragment : Fragment() {
 
     private fun initSharedViewModel() = with(sharedViewModel) {
         calendarToReviewModel.observe(viewLifecycleOwner) { model ->
-            calendarEntity = model
-            println(calendarEntity)
+            calendarUserEntity = model
+            println("------------")
+            println(model.model)
+            println((model.currentUser as FirebaseUser).email)
+            println("------------")
         }
     }
 

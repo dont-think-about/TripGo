@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
+import com.nbcamp.tripgo.view.calendar.uistate.CalendarLogInUiState
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
 import com.nbcamp.tripgo.view.calendar.uistate.RunDialogUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -18,8 +19,8 @@ import java.util.Locale
 class CalendarViewModel(
     private val calendarRepository: CalendarRepository
 ) : ViewModel() {
-    private val _loginStatus: MutableLiveData<Boolean> = MutableLiveData(false)
-    val loginStatus: LiveData<Boolean>
+    private val _loginStatus: MutableLiveData<CalendarLogInUiState> = MutableLiveData()
+    val loginStatus: LiveData<CalendarLogInUiState>
         get() = _loginStatus
 
     private val _myScheduleState: MutableLiveData<CalendarScheduleUiState> = MutableLiveData()
@@ -48,15 +49,20 @@ class CalendarViewModel(
             is FirebaseUser -> {
                 println(currentUser.email)
                 println(currentUser.isEmailVerified)
+                _loginStatus.value = CalendarLogInUiState(currentUser, true)
+
             }
 
             is Account -> {
                 println(currentUser.email)
                 println(currentUser.isEmailVerified)
+                _loginStatus.value = CalendarLogInUiState(currentUser, true)
+            }
+
+            null -> {
+                _loginStatus.value = CalendarLogInUiState(null, false)
             }
         }
-
-        _loginStatus.value = currentUser != null
     }
 
     // 파이어스토어로 부터 데이터를 가져오고, 데이터의 상태에 따라 state 분기 처리 - CalendarScheduleUiState

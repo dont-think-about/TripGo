@@ -47,6 +47,7 @@ class CalendarFragment : Fragment() {
     private val thisMonthScheduleList = arrayListOf<CalendarEntity>()
     private var thisMonth: Int = 0
     private var isLoggedIn = false
+    private var currentUser: Any? = null
     private val selectedDayList = arrayListOf<CalendarDay>()
 
     override fun onCreateView(
@@ -67,8 +68,9 @@ class CalendarFragment : Fragment() {
         getLoginStatus()
         with(binding) {
             loginStatus.observe(viewLifecycleOwner) { state ->
-                isLoggedIn = state
-                when (state) {
+                isLoggedIn = state.isLoggedIn
+                currentUser = state.user
+                when (isLoggedIn) {
                     // 로그인이 되어있으면 파이어스토어로 부터 데이터를 가져옴
                     true -> {
                         calendarMainView.selectionMode = MaterialCalendarView.SELECTION_MODE_NONE
@@ -206,14 +208,14 @@ class CalendarFragment : Fragment() {
     private fun runDialogForReviewWriting(model: CalendarEntity?) {
         setFancyDialog(requireActivity()) {
             model?.let {
-                goToReviewFragment(model)
+                goToReviewFragment(model, currentUser)
             }
         }.show()
     }
 
-    private fun goToReviewFragment(model: CalendarEntity) {
+    private fun goToReviewFragment(model: CalendarEntity, currentUser: Any?) {
         val transactionReviewWriting = parentFragmentManager.beginTransaction()
-        sharedViewModel.setBasicReviewModel(model)
+        sharedViewModel.setBasicReviewModel(model, currentUser)
         transactionReviewWriting.replace(
             R.id.main_fragment_container,
             ReviewWritingFragment.newInstance()
