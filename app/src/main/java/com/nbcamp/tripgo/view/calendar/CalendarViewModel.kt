@@ -1,6 +1,5 @@
 package com.nbcamp.tripgo.view.calendar
 
-import android.icu.util.Calendar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,8 +12,8 @@ import com.nbcamp.tripgo.view.calendar.uistate.RunDialogUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import java.util.Locale
-
 
 class CalendarViewModel(
     private val calendarRepository: CalendarRepository
@@ -128,7 +127,9 @@ class CalendarViewModel(
     }
 
     // startDate ~ endDate 사이의 날짜를 달력을 표시 하기 위해 날짜 데이터를 만드는 함수
-    fun setSelectedDate(data: List<CalendarEntity>?) {
+    fun setSelectedDate(
+        data: List<CalendarEntity>?
+    ) {
         val dateList = arrayListOf<Triple<Int, Int, Int>>()
         data?.forEach { calendarEntity ->
             for (today in (calendarEntity.startDate?.toInt()
@@ -142,7 +143,9 @@ class CalendarViewModel(
     }
 
     // 날짜 필터링을 통해 현재 달의 일정만 제공
-    fun changeScheduleListForThisMonth(date: CalendarDay?) {
+    fun changeScheduleListForThisMonth(
+        date: CalendarDay?
+    ) {
         val changedMonth = date?.month
         val filteredSchedule = cachingSchedule?.filter {
             it.startDate?.chunked(4)?.last()?.chunked(2)
@@ -153,8 +156,8 @@ class CalendarViewModel(
     }
 
     fun runDialogForReviewWriting(
-        clickDate: CalendarDay,
-        selectedDayList: ArrayList<CalendarDay>
+        clickDate: CalendarDay?,
+        selectedDayList: ArrayList<CalendarDay>?
     ) {
         // 우선 오늘 보다는 작아야함
         val today = Calendar.getInstance(Locale.KOREA)
@@ -164,24 +167,30 @@ class CalendarViewModel(
         val todayInt =
             "$year${if (month < 10) "0${month}" else "$month"}$day".toInt()
         val nowDate =
-            "${clickDate.year}${clickDate.month}${if (clickDate.day < 10) "0${clickDate.day}" else clickDate.day}".toInt()
+            "${clickDate?.year ?: 100}${clickDate?.month ?: 100}${if ((clickDate?.day ?: 0) < 10) "0${clickDate?.day ?: 100}" else clickDate?.day ?: 100}".toInt()
         val list =
-            selectedDayList.map {
+            selectedDayList?.map {
                 "${it.year}${it.month}${if (it.day < 10) "0${it.day}" else it.day}".toInt()
-            }
+            } ?: emptyList()
 
         val getDateRangeValidEntity =
             cachingSchedule?.filter {
                 it.startDate.toString() <= nowDate.toString() && nowDate.toString() <= it.endDate.toString()
             }
 
-        if (getDateRangeValidEntity?.size == 1) {
+        if (getDateRangeValidEntity?.isNotEmpty() == true) {
             _runDialogState.value = RunDialogUiState(
                 getDateRangeValidEntity.first(),
+                "",
                 todayInt >= nowDate && list.contains(nowDate)
             )
             return
         }
         _runDialogState.value = RunDialogUiState.error()
+    }
+
+
+    fun setRemoveData() {
+        _runDialogState.value = RunDialogUiState.notOpenDialog()
     }
 }

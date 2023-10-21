@@ -37,6 +37,7 @@ class ReviewWritingFragment : Fragment() {
     private fun initViews() = with(binding) {
         reviewWritingButtonBack.setOnClickListener {
             parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            sharedViewModel.onClickBackButton()
         }
     }
 

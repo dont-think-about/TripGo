@@ -14,6 +14,9 @@ class MainViewModel : ViewModel() {
     private val _event: SingleLiveEvent<ThemeClickEvent> = SingleLiveEvent()
     val event: LiveData<ThemeClickEvent> get() = _event
 
+    private val _eventBackClick: SingleLiveEvent<BackClickEvent> = SingleLiveEvent()
+    val eventBackClick: SingleLiveEvent<BackClickEvent> get() = _eventBackClick
+
     // 현재 페이지를 바라볼 livedata
     private val _currentPageType: MutableLiveData<FragmentPageType> =
         MutableLiveData(FragmentPageType.PAGE_HOME)
@@ -64,5 +67,10 @@ class MainViewModel : ViewModel() {
 
     fun setBasicReviewModel(model: CalendarEntity) {
         _calendarToReviewModel.value = model
+    }
+
+    fun onClickBackButton() {
+        _eventBackClick.value = BackClickEvent.OpenDialog.initialize()
+        _eventBackClick.value = BackClickEvent.OpenDialog(false)
     }
 }

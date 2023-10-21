@@ -20,6 +20,7 @@ import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.util.setFancyDialog
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
+import com.nbcamp.tripgo.view.calendar.uistate.RunDialogUiState.Companion.NOT_OPEN
 import com.nbcamp.tripgo.view.main.MainViewModel
 import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingFragment
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -39,6 +40,7 @@ class CalendarFragment : Fragment() {
     private val scheduleListAdapter by lazy {
         ScheduleListAdapter { model ->
             runDialogForReviewWriting(model)
+            calendarViewModel.setRemoveData()
         }
     }
 
@@ -137,10 +139,21 @@ class CalendarFragment : Fragment() {
 
             runDialogState.observe(viewLifecycleOwner) { state ->
                 // 모델을 넘겨 줘야 리뷰 작성 할 때 정보를 같이 넘겨 줄 수 있음
-                if (state.isValidRange)
+                if (state.isValidRange) {
                     runDialogForReviewWriting(state?.data)
-                else
+                    /*
+                       runDialogState를 observing하기 때문에
+                       리뷰작성에서 취소를 누르거나, 다른 화면으로 이동하면 다이얼로그가 다시 뜨는데
+                       이를 방지하기 위해 한 번 다이얼로그를 띄웠으면 데이터를 없애준다. (null 처리)
+                     */
+                    calendarViewModel.setRemoveData()
+                    return@observe
+                }
+                // 데이터를 없앴을 땐, 아무 동작을 하지 않도록 한다.
+                if (state.message == NOT_OPEN) Unit
+                else {
                     requireActivity().toast("일정이 없거나 이후의 일정은 리뷰를 적을 수 없습니다.")
+                }
             }
         }
     }

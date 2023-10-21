@@ -10,6 +10,8 @@ import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityMainBinding
 import com.nbcamp.tripgo.view.attraction.AttractionsActivity
 import com.nbcamp.tripgo.view.calendar.CalendarFragment
+import com.nbcamp.tripgo.view.calendar.CalendarViewModel
+import com.nbcamp.tripgo.view.calendar.CalendarViewModelFactory
 import com.nbcamp.tripgo.view.home.HomeFragment
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.login.LogInActivity
@@ -22,6 +24,12 @@ import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val sharedViewModel: MainViewModel by viewModels()
+    private val calendarViewModel: CalendarViewModel by viewModels {
+        CalendarViewModelFactory(
+            this
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -39,6 +47,7 @@ class MainActivity : AppCompatActivity() {
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
             )
             sharedViewModel.setCurrentPage(item.itemId)
+            sharedViewModel.onClickBackButton()
             true
         }
         changeFragment(FragmentPageType.PAGE_HOME)
@@ -47,6 +56,14 @@ class MainActivity : AppCompatActivity() {
     private fun initViewModels() = with(sharedViewModel) {
         currentPageType.observe(this@MainActivity) { currentPageType ->
             changeFragment(currentPageType)
+        }
+
+        eventBackClick.observe(this@MainActivity) { backClicked ->
+            when (backClicked) {
+                is BackClickEvent.OpenDialog -> {
+                    calendarViewModel.runDialogForReviewWriting(null, null)
+                }
+            }
         }
 
         event.observe(this@MainActivity) { themeClickEvent ->
