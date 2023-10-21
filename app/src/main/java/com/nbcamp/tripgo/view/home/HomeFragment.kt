@@ -1,7 +1,6 @@
 package com.nbcamp.tripgo.view.home
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -25,6 +24,7 @@ import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.mapper.WeatherType
 import com.nbcamp.tripgo.databinding.FragmentHomeBinding
 import com.nbcamp.tripgo.util.FestivalTransformer
+import com.nbcamp.tripgo.util.checkPermission
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.home.adapter.FestivalViewPagerAdapter
@@ -270,15 +270,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun checkLocationPermissions() {
-        when {
-            // 위치 권환이 확인 되어 있지 않으면
-            ActivityCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
+        checkPermission(
+            context = requireActivity(),
+            permission = Manifest.permission.ACCESS_FINE_LOCATION,
+            permissionLauncher = permissionLauncher,
+            showPermissionContextPopUp = {
+                showPermissionContextPopUp()
+            },
+            runTaskAfterPermissionGranted = {
                 fusedLocationProviderClient.getCurrentLocation(
                     Priority.PRIORITY_HIGH_ACCURACY,
                     cancellationTokenSource!!.token
@@ -287,18 +286,7 @@ class HomeFragment : Fragment() {
                     homeViewModel.getNearbyPlaceList(location, nearbyPageNumber)
                 }
             }
-            // 위치 권한 안내가 필요 하면
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                requireActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) -> {
-                showPermissionContextPopUp()
-            }
-            // 그외
-            else -> {
-                permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
-        }
+        )
     }
 
     private fun showPermissionContextPopUp() {
