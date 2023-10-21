@@ -200,7 +200,14 @@ class CalendarFragment : Fragment() {
 
     private fun runDialogForReviewWriting(model: CalendarEntity?) {
         if (model?.isReviewed == false) {
-            setFancyDialog(requireActivity()) {
+            setFancyDialog(
+                context = requireActivity(),
+                title = getString(R.string.review_writing),
+                message = getString(R.string.want_review),
+                positiveText = getString(R.string.yes),
+                negativeText = getString(R.string.no),
+                icon = R.drawable.icon_alert_review
+            ) {
                 goToReviewFragment(model, currentUser)
             }.show()
             return

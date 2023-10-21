@@ -18,6 +18,12 @@ class MainViewModel : ViewModel() {
     private val _eventBackClick: SingleLiveEvent<BackClickEvent> = SingleLiveEvent()
     val eventBackClick: SingleLiveEvent<BackClickEvent> get() = _eventBackClick
 
+    private val _eventPermission: SingleLiveEvent<PermissionEvent> = SingleLiveEvent()
+    val eventPermission: SingleLiveEvent<PermissionEvent> get() = _eventPermission
+
+    private val _eventSetLocation: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val eventSetLocation: SingleLiveEvent<Boolean> get() = _eventSetLocation
+
     // 현재 페이지를 바라볼 livedata
     private val _currentPageType: MutableLiveData<FragmentPageType> =
         MutableLiveData(FragmentPageType.PAGE_HOME)
@@ -73,5 +79,17 @@ class MainViewModel : ViewModel() {
     fun onClickBackButton() {
         _eventBackClick.value = BackClickEvent.OpenDialog.initialize()
         _eventBackClick.value = BackClickEvent.OpenDialog(false)
+    }
+
+    fun getGalleryPermissionEvent(permission: String) {
+        _eventPermission.value = PermissionEvent.GetGalleryPermission(permission)
+    }
+
+    fun getLocationPermissionEvent(permission: String) {
+        _eventPermission.value = PermissionEvent.GetLocationPermission(permission)
+    }
+
+    fun setLocationEvent() {
+        _eventSetLocation.value = true
     }
 }

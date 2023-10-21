@@ -15,17 +15,14 @@ fun checkPermission(
 ) {
     when {
         ActivityCompat.checkSelfPermission(
-            context,
+            context as MainActivity,
             permission,
-        ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-            context,
-            permission
         ) == PackageManager.PERMISSION_GRANTED -> {
             runTaskAfterPermissionGranted()
         }
         // 위치 권한 안내가 필요 하면
         ActivityCompat.shouldShowRequestPermissionRationale(
-            context as MainActivity,
+            context,
             permission
         ) -> {
             showPermissionContextPopUp()

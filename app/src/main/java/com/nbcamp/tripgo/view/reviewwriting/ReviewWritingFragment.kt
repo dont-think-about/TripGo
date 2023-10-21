@@ -1,5 +1,7 @@
 package com.nbcamp.tripgo.view.reviewwriting
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -59,19 +61,32 @@ class ReviewWritingFragment : Fragment() {
                 return@addOnButtonCheckedListener
             reviewWritingViewModel.onClickGenderGroupEvent(checkedId)
         }
+
         reviewWritingAgeButtonGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
             if (!isChecked)
                 return@addOnButtonCheckedListener
             reviewWritingViewModel.onClickAgeGroupEvent(checkedId)
         }
+
         reviewWritingCompanionButtonGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
             if (!isChecked)
                 return@addOnButtonCheckedListener
             reviewWritingViewModel.onClickCompanionGroupEvent(checkedId)
         }
+
         reviewWritingTextInputEditText.doOnTextChanged { text, start, before, count ->
             reviewWritingViewModel.editReviewWriting(text)
         }
+
+        reviewWritingImageButton.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                sharedViewModel.getGalleryPermissionEvent(Manifest.permission.READ_MEDIA_IMAGES)
+            } else {
+                sharedViewModel.getGalleryPermissionEvent(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+//            checkGalleryPermissions()
+        }
+
         reviewWritingRatingBar.setOnRatingBarChangeListener { ratingBar, rating, isChecked ->
             reviewWritingViewModel.setRatingReview(rating)
         }
@@ -81,21 +96,12 @@ class ReviewWritingFragment : Fragment() {
                 requireActivity().toast("모든 항목을 입력해주세요")
                 return@setOnClickListener
             }
-            Log.e("", gender)
-            Log.e("", generation)
-            Log.e("", companion)
-            Log.e("", reviewText)
-            Log.e("", rating.toString())
         }
     }
 
     private fun initSharedViewModel() = with(sharedViewModel) {
         calendarToReviewModel.observe(viewLifecycleOwner) { model ->
             calendarUserEntity = model
-//            println("------------")
-//            println(model.model)
-//            println((model.currentUser as FirebaseUser).email)
-//            println("------------")
         }
     }
 
