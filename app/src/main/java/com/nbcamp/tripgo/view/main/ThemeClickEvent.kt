@@ -16,4 +16,6 @@ sealed interface ThemeClickEvent {
     data class RunAttractionActivity(
         val model: ProvincePlaceEntity
     ) : ThemeClickEvent
+
+    object RunLogInActivity : ThemeClickEvent
 }

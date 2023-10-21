@@ -61,8 +61,8 @@ class HomeViewModel(
     fun fetchViewPagerData() {
         val getPastDateString = getPastDateString()
         _festivalUiState.value = HomeFestivalUiState.initialize()
-        runCatching {
-            viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
                 val travelers = homeRepository.getCalculationTravelers(
                     responseCount = 1000,
                     startDate = getPastDateString.first,
@@ -91,9 +91,9 @@ class HomeViewModel(
                     randomList
                 }
                 _festivalUiState.postValue(HomeFestivalUiState(filteredFestival, false))
+            }.onFailure {
+                _festivalUiState.postValue(HomeFestivalUiState.error())
             }
-        }.onFailure {
-            _festivalUiState.postValue(HomeFestivalUiState.error())
         }
     }
 
@@ -138,10 +138,13 @@ class HomeViewModel(
         }
     }
 
-    fun getNearbyPlaceList(location: Location?, pageNumber: Int) {
+    fun getNearbyPlaceList(
+        location: Location?,
+        pageNumber: Int
+    ) {
         _nearbyPlaceUiState.value = HomeNearbyPlaceUiState.initialize()
-        runCatching {
-            viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
                 val nearbyPlaces = homeRepository.getNearbyPlaces(
                     latitude = location?.latitude.toString(),
                     longitude = location?.longitude.toString(),
@@ -164,11 +167,10 @@ class HomeViewModel(
                         false
                     )
                 )
+            }.onFailure {
+                _nearbyPlaceUiState.postValue(HomeNearbyPlaceUiState.error())
             }
-        }.onFailure {
-            _nearbyPlaceUiState.postValue(HomeNearbyPlaceUiState.error())
         }
-
     }
 
 
@@ -191,7 +193,10 @@ class HomeViewModel(
 
     // 위도 경도 사이 거리 계산 (m)
     private fun getDistance(
-        myLatitude: Double, myLongitude: Double, placeLatitude: Double, placeLongitude: Double
+        myLatitude: Double,
+        myLongitude: Double,
+        placeLatitude: Double,
+        placeLongitude: Double
     ): Double {
         val distanceLatitude = Math.toRadians(placeLatitude - myLatitude)
         val distanceLongitude = Math.toRadians(placeLongitude - myLongitude)
@@ -205,7 +210,9 @@ class HomeViewModel(
     }
 
     private suspend fun runSearchByKeyword(
-        keyword: String, contentTypeId: String, responseCount: Int
+        keyword: String,
+        contentTypeId: String,
+        responseCount: Int
     ): KeywordSearchEntity? = homeRepository.getInformationByKeyword(
         keyword = keyword, contentTypeId = contentTypeId, responseCount = responseCount
     ).let { list ->
@@ -218,7 +225,8 @@ class HomeViewModel(
 
 
     private fun getPopularFestival(
-        data: List<FestivalEntity>?, manyTravelersCountList: List<String>?
+        data: List<FestivalEntity>?,
+        manyTravelersCountList: List<String>?
     ) = data?.filter {
         it.address.contains(
             """${manyTravelersCountList?.get(0)}|${manyTravelersCountList?.get(1)}|${
@@ -227,10 +235,11 @@ class HomeViewModel(
         )
     }
 
-    private fun getHowManyTravelersByPlace(data: List<TravelerEntity>?) =
-        data?.groupBy { it.districtName }?.map { group ->
-            group.key to group.value.sumOf { it.travelCount }
-        }?.sortedByDescending { it.second }
+    private fun getHowManyTravelersByPlace(
+        data: List<TravelerEntity>?
+    ) = data?.groupBy { it.districtName }?.map { group ->
+        group.key to group.value.sumOf { it.travelCount }
+    }?.sortedByDescending { it.second }
 
     private fun getPastDateString(): Triple<String, String, String> {
         val calendar = Calendar.getInstance(Locale.KOREAN)

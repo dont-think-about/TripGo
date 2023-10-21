@@ -157,9 +157,9 @@ class HomeFragment : Fragment() {
               autoSlideViewPager()
               getPlaceByTodayWeather()
               */
-            getProvincePlace()
+//            getProvincePlace()
         }
-        checkLocationPermissions()
+//        checkLocationPermissions()
 
         festivalUiState.observe(viewLifecycleOwner) { state ->
             with(binding) {
@@ -315,6 +315,7 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         //   homeViewModel.stopSlideViewPager()
+        _binding = null
     }
 
     companion object {
