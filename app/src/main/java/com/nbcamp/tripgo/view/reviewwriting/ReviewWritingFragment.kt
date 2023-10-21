@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentReviewWritingBinding
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.main.MainViewModel
@@ -116,6 +117,9 @@ class ReviewWritingFragment : Fragment() {
 
                 is ReviewWritingEvent.EventReviewWriting -> {
                     reviewText = event.reviewText
+                    if (reviewText.length >= 100) {
+                        requireActivity().toast(getString(R.string.please_write_review_under_100))
+                    }
                 }
 
                 is ReviewWritingEvent.EventSetRating -> {
