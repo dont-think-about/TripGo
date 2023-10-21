@@ -1,9 +1,5 @@
 package com.nbcamp.tripgo.data.repository.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
 data class CalendarEntity(
     val contentId: String? = null,
     val startDate: String? = null,
@@ -13,4 +9,4 @@ data class CalendarEntity(
     val telPhone: String? = null,
     val address: String? = null,
     val homePage: String? = null
-) : Parcelable
+)
