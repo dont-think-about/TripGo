@@ -41,7 +41,7 @@
         app:mcv_allowClickDaysOutsideCurrentMonth="false"
         app:mcv_dateTextAppearance="@style/calendar_text_view_day_custom"
         app:mcv_headerTextAppearance="@style/calendar_header"
-        app:mcv_selectionColor="@color/white"
+        app:mcv_selectionColor="@color/main"
         app:mcv_showOtherDates="all"
         app:mcv_weekDayTextAppearance="@style/calendar_text_view_week_custom" />
 

@@ -44,8 +44,6 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    private val thisMonthScheduleList = arrayListOf<CalendarEntity>()
-    private var thisMonth: Int = 0
     private var isLoggedIn = false
     private var currentUser: Any? = null
     private val selectedDayList = arrayListOf<CalendarDay>()
@@ -88,7 +86,7 @@ class CalendarFragment : Fragment() {
             // 파이어 스토어로부터 데이터가 넘어 왔을 때, 관찰 되는 livedata
             myScheduleState.observe(viewLifecycleOwner) { state ->
                 if (state == CalendarScheduleUiState.error(state.message) ||
-                    state.data?.isEmpty() == true
+                    state.allSchedules?.isEmpty() == true
                 ) {
                     calendarNoticeTextView.isVisible = true
                     calendarProgressBar.isVisible = state.isLoading
@@ -97,17 +95,11 @@ class CalendarFragment : Fragment() {
                 }
                 calendarNoticeTextView.isVisible = false
                 calendarProgressBar.isVisible = state.isLoading
-                thisMonthScheduleList.run {
-                    clear()
-                    state.data?.let { addAll(it) }
-                }
                 // 뷰모델로 부터 관찰한 내 일정을 캘린더에 표시
-                showScheduleInCalendarView(state.data)
+                showScheduleInCalendarView(state.allSchedules)
 
                 // 뷰모델로 부터 관찰한 내 일정을 리사이클러뷰에 표시 (단, 현재 달만)  TODO 정렬을 뷰모델에서 하기
-                scheduleListAdapter.submitList(state.data?.filter {
-                    it.startDate?.slice(4..5) == thisMonth.toString()
-                }?.sortedBy { it.startDate?.toInt() }?.toMutableList())
+                scheduleListAdapter.submitList(state.monthSchedules)
             }
 
             // start ~ end date 사이의 기간을 달력에 표시
@@ -119,8 +111,8 @@ class CalendarFragment : Fragment() {
                         date.second,
                         date.third
                     )
+                    // 일정이 있는 날엔 달력에 따로 표시해 주기 위한 리스트
                     selectedDayList.add(selectedDay)
-                    calendarMainView.setDateSelected(selectedDay, true)
                 }
                 mcv.commit()
                 calendarMainView.addDecorator(
@@ -130,11 +122,6 @@ class CalendarFragment : Fragment() {
 
             // 달력을 넘겼을 때 관찰 되는 livedata
             changedMonthState.observe(viewLifecycleOwner) { changedList ->
-                // 현재 달만 보여 주기 위해 기존에 들어 있던 일정 정보를 지우고, 리스트에 추가
-                thisMonthScheduleList.run {
-                    clear()
-                    changedList?.let { addAll(it) }
-                }
                 // 리사이클러 뷰 어댑터에 보내기
                 scheduleListAdapter.submitList(changedList)
             }
@@ -171,7 +158,14 @@ class CalendarFragment : Fragment() {
     private fun initViews() = with(binding) {
         calendarMainView.run {
             val month = Calendar.getInstance().get(Calendar.MONTH)
-            addDecorators(SaturdayDecorator(month, 1), SundayDecorator(month, 1))
+            removeDecorators()
+            invalidateDecorators()
+            addDecorators(
+                SaturdayDecorator(month, 1),
+                SundayDecorator(month, 1),
+                OutDateMonthDecorator(requireActivity(), month + 1),
+                TodayDecorator(requireActivity())
+            )
             // 상단 바 월 이동 버튼 클릭 리스너
             setOnMonthChangedListener { _, date ->
                 removeDecorators()
@@ -183,7 +177,6 @@ class CalendarFragment : Fragment() {
                     SelectedDayDecorator(selectedDayList),
                     OutDateMonthDecorator(requireActivity(), date.month)
                 )
-                thisMonth = date.month
                 // 하단 리사이클러뷰의 리스트를 현재 달에 바꾸어줌
                 calendarViewModel.changeScheduleListForThisMonth(date)
             }
