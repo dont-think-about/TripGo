@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
+import com.nbcamp.tripgo.view.calendar.WritingType
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.reviewwriting.CalendarUserModel
@@ -75,8 +76,16 @@ class MainViewModel : ViewModel() {
         _currentPageType.value = pageType
     }
 
-    fun setBasicReviewModel(model: CalendarEntity, currentUser: Any?) {
-        _calendarToReviewModel.value = CalendarUserModel(model, currentUser)
+    fun setBasicReviewModel(
+        model: CalendarEntity,
+        currentUser: Any?,
+        writingType: WritingType
+    ) {
+        _calendarToReviewModel.value = CalendarUserModel(
+            model,
+            currentUser,
+            writingType
+        )
     }
 
     fun onClickBackButton() {

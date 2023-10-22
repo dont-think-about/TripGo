@@ -20,6 +20,7 @@ import com.nbcamp.tripgo.data.repository.model.GalleryPhotoEntity
 import com.nbcamp.tripgo.databinding.FragmentReviewWritingBinding
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.calendar.WritingType
 import com.nbcamp.tripgo.view.main.MainViewModel
 import com.nbcamp.tripgo.view.reviewwriting.gallery.GalleryActivity
 import com.nbcamp.tripgo.view.reviewwriting.gallery.GalleryActivity.Companion.URI_LIST_KEY
@@ -40,7 +41,7 @@ class ReviewWritingFragment : Fragment() {
     private lateinit var loadingDialog: LoadingDialog
     private var reviewText = ""
     private var rating: Float = 0f
-
+    private var writingType = WritingType.NEW
 
     // 갤러리 액티비티를 실행 하는 런처
     private val getGalleryImageLauncher =
@@ -76,8 +77,8 @@ class ReviewWritingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-        initSharedViewModel()
         initViewModel()
+        initSharedViewModel()
     }
 
     private fun initViews() = with(binding) {
@@ -130,13 +131,13 @@ class ReviewWritingFragment : Fragment() {
                 || ::generation.isInitialized.not()
                 || ::companion.isInitialized.not()
                 || ::imageUrl.isInitialized.not()
+                || imageUrl.isEmpty()
                 || reviewText.isEmpty()
             ) {
                 requireActivity().toast("모든 항목을 입력해주세요")
                 return@setOnClickListener
             }
-            // TODO 이미지를 파이어베이스 스토리지에 저장하고 그 downloadUrl을 가져와서 객체를 만들고 파이어 스토어에 저장하고, 캘린더의 해당 리뷰의 isReviewed 속성을 true로 바꿈
-            // TODO 스크롤 뷰 안에 리사이클러뷰 제어
+
             val reviewWritingModel = ReviewWritingModel(
                 gender = gender,
                 generation = generation,
@@ -145,13 +146,17 @@ class ReviewWritingFragment : Fragment() {
                 imageUrl = imageUrl,
                 rating = rating
             )
-            reviewWritingViewModel.saveReview(reviewWritingModel, calendarUserEntity)
+            reviewWritingViewModel.saveReview(reviewWritingModel, calendarUserEntity, writingType)
         }
     }
 
     private fun initSharedViewModel() = with(sharedViewModel) {
         calendarToReviewModel.observe(viewLifecycleOwner) { model ->
             calendarUserEntity = model
+            if (model.writingType == WritingType.MODIFY) {
+                reviewWritingViewModel.modifyReviewWriting(model)
+                writingType = WritingType.MODIFY
+            }
         }
         eventRunGallery.observe(viewLifecycleOwner) {
             navigatePhotos()
@@ -185,20 +190,59 @@ class ReviewWritingFragment : Fragment() {
                 }
 
                 is ReviewWritingEvent.EventSubmitReview -> {
-                    loadingDialog.setText(event.message)
-                    when (event.isLoading) {
-                        // 저장 로딩
-                        true -> loadingDialog.setVisible()
-                        // 성공 or 실패
-                        false -> {
-                            requireActivity().toast(event.message)
-                            loadingDialog.setInvisible()
-                            if (event.message.contains("실패").not()) {
-                                clickBackButton()
-                                return@observe
-                            }
-                        }
+                    invokeEventSubmitReview(event)
+                }
+
+                else -> Unit
+            }
+        }
+        eventLoadingReview.observe(viewLifecycleOwner) { event ->
+            when (event) {
+                is ReviewWritingEvent.EventLoadingPastReviewDetail -> {
+                    invokeLoadingPastReviewDetail(event)
+                }
+
+                else -> Unit
+            }
+        }
+    }
+
+    private fun invokeLoadingPastReviewDetail(event: ReviewWritingEvent.EventLoadingPastReviewDetail) {
+        with(binding) {
+            loadingDialog.setText(event.message)
+            when (event.isLoading) {
+                true -> {
+                    loadingDialog.setVisible()
+                }
+
+                false -> {
+                    loadingDialog.setInvisible()
+                    if (event.pastModel != null) {
+                        reviewText = event.pastModel.reviewText
+                        imageUrl = ""
+                        rating = event.pastModel.rating
+                        reviewWritingTextInputEditText.setText(event.pastModel.reviewText)
+                        reviewWritingRatingBar.rating = event.pastModel.rating
+                        // TODO 버튼 레이아웃 변경 회의 후 수정하기
+                        return
                     }
+                }
+            }
+        }
+    }
+
+    private fun invokeEventSubmitReview(event: ReviewWritingEvent.EventSubmitReview) {
+        loadingDialog.setText(event.message)
+        when (event.isLoading) {
+            // 저장 로딩
+            true -> loadingDialog.setVisible()
+            // 성공 or 실패
+            false -> {
+                requireActivity().toast(event.message)
+                loadingDialog.setInvisible()
+                if (event.message.contains("실패").not()) {
+                    clickBackButton()
+                    return
                 }
             }
         }

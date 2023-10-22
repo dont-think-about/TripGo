@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.util.SingleLiveEvent
+import com.nbcamp.tripgo.view.calendar.WritingType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -14,6 +15,10 @@ class ReviewWritingViewModel(
     private val _eventButtonClick: SingleLiveEvent<ReviewWritingEvent> = SingleLiveEvent()
     val eventButtonClick: SingleLiveEvent<ReviewWritingEvent>
         get() = _eventButtonClick
+
+    private val _eventLoadingReview: SingleLiveEvent<ReviewWritingEvent> = SingleLiveEvent()
+    val eventLoadingReview: SingleLiveEvent<ReviewWritingEvent>
+        get() = _eventLoadingReview
 
 
     fun onClickGenderGroupEvent(checkedId: Int) {
@@ -92,22 +97,25 @@ class ReviewWritingViewModel(
      */
     fun saveReview(
         reviewWritingViewModel: ReviewWritingModel,
-        calendarUserEntity: CalendarUserModel
+        calendarUserEntity: CalendarUserModel,
+        writingType: WritingType
     ) {
         _eventButtonClick.postValue(ReviewWritingEvent.EventSubmitReview("저장 시작..", true))
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
-                // 1
+                // 작성, 수정에 따라 분기 처리 - 수정이면 기존 사진 삭제 후 다시 넣기
                 val returnImageUrl =
                     reviewWritingRepository.saveToStorage(
                         reviewWritingViewModel,
-                        calendarUserEntity
+                        calendarUserEntity,
+                        writingType
                     )
                 // 2
                 updateReviewWritingModel(
                     reviewWritingViewModel,
                     returnImageUrl,
-                    calendarUserEntity.model?.id
+                    calendarUserEntity.model?.id,
+                    writingType
                 )
             }.onFailure {
                 _eventButtonClick.postValue(
@@ -123,7 +131,8 @@ class ReviewWritingViewModel(
     private fun updateReviewWritingModel(
         reviewWritingViewModel: ReviewWritingModel,
         returnImageUrl: String,
-        documentId: String?
+        documentId: String?,
+        writingType: WritingType
     ) {
         _eventButtonClick.postValue(ReviewWritingEvent.EventSubmitReview("저장 중..", true))
         viewModelScope.launch(Dispatchers.IO) {
@@ -136,9 +145,17 @@ class ReviewWritingViewModel(
                     imageUrl = returnImageUrl
                 )
                 // 3
-                reviewWritingRepository.saveReview(reviewedModel)
+                reviewWritingRepository.saveReview(
+                    reviewedModel,
+                    documentId,
+                    writingType
+                )
                 // 4
-                reviewWritingRepository.updateReviewStatus(reviewedModel, documentId)
+                reviewWritingRepository.updateReviewStatus(
+                    reviewedModel,
+                    documentId,
+                    writingType
+                )
                 _eventButtonClick.postValue(
                     ReviewWritingEvent.EventSubmitReview(
                         "리뷰 저장이 완료 되었습니다.",
@@ -149,6 +166,37 @@ class ReviewWritingViewModel(
                 _eventButtonClick.postValue(
                     ReviewWritingEvent.EventSubmitReview(
                         "리뷰 저장에 실패했습니다.",
+                        false
+                    )
+                )
+            }
+        }
+    }
+
+    // 리뷰 수정 시 정보 불러 오기
+    fun modifyReviewWriting(model: CalendarUserModel) {
+        _eventLoadingReview.postValue(
+            ReviewWritingEvent.EventLoadingPastReviewDetail(
+                "리뷰 로딩 중..",
+                null,
+                true
+            )
+        )
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                val response = reviewWritingRepository.setPastReviewForModifyReview(model)
+                _eventLoadingReview.postValue(
+                    ReviewWritingEvent.EventLoadingPastReviewDetail(
+                        "수정 할 리뷰 로딩 완료",
+                        response,
+                        false
+                    )
+                )
+            }.onFailure {
+                _eventLoadingReview.postValue(
+                    ReviewWritingEvent.EventLoadingPastReviewDetail(
+                        "수정 할 리뷰 로딩 실패",
+                        null,
                         false
                     )
                 )

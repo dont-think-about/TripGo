@@ -25,4 +25,11 @@ sealed interface ReviewWritingEvent {
         val message: String,
         val isLoading: Boolean
     ) : ReviewWritingEvent
+
+    data class EventLoadingPastReviewDetail(
+        val message: String,
+        val pastModel: ReviewWritingModel?,
+        val isLoading: Boolean
+    ) : ReviewWritingEvent
+
 }

@@ -7,4 +7,15 @@ data class ReviewWritingModel(
     val reviewText: String,
     var imageUrl: String = "",
     val rating: Float
-)
+) {
+    fun toMap(): Map<String, Any> {
+        return mapOf(
+            "companion" to companion,
+            "gender" to gender,
+            "generation" to generation,
+            "imageUrl" to imageUrl,
+            "rating" to rating,
+            "reviewText" to reviewText
+        )
+    }
+}

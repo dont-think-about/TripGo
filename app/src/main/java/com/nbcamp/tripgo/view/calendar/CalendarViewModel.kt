@@ -183,7 +183,7 @@ class CalendarViewModel(
         val day = today.get(Calendar.DATE)
         val todayInt =
             "$year${if (month < 10) "0${month}" else "$month"}$day".toInt()
-        val nowDate =
+        val clickedDate =
             "${clickDate?.year ?: 100}${clickDate?.month ?: 100}${if ((clickDate?.day ?: 0) < 10) "0${clickDate?.day ?: 100}" else clickDate?.day ?: 100}".toInt()
         val list =
             selectedDayList?.map {
@@ -192,14 +192,14 @@ class CalendarViewModel(
 
         val getDateRangeValidEntity =
             cachingSchedule?.filter {
-                it.startDate.toString() <= nowDate.toString() && nowDate.toString() <= it.endDate.toString()
+                it.startDate.toString() <= clickedDate.toString() && clickedDate.toString() <= it.endDate.toString()
             }
 
         if (getDateRangeValidEntity?.isNotEmpty() == true) {
             _runDialogState.value = RunDialogUiState(
                 getDateRangeValidEntity.first(),
                 "",
-                todayInt >= nowDate && list.contains(nowDate)
+                todayInt >= clickedDate && list.contains(clickedDate)
             )
             return
         }

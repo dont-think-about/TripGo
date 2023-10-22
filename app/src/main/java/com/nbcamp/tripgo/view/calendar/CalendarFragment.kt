@@ -41,6 +41,7 @@ class CalendarFragment : Fragment() {
     private val scheduleListAdapter by lazy {
         ScheduleListAdapter { model ->
             runDialogForReviewWriting(model)
+            // line 137
             calendarViewModel.setRemoveData()
         }
     }
@@ -211,16 +212,29 @@ class CalendarFragment : Fragment() {
                 negativeText = getString(R.string.no),
                 icon = R.drawable.icon_alert_review
             ) {
-                goToReviewFragment(model, currentUser)
+                goToReviewFragment(model, currentUser, WritingType.NEW)
             }.show()
             return
         }
-        requireActivity().toast(getString(R.string.already_write_review))
+        setFancyDialog(
+            context = requireActivity(),
+            title = "리뷰 수정",
+            message = "리뷰 수정을 하시겠나요?",
+            positiveText = getString(R.string.yes),
+            negativeText = getString(R.string.no),
+            icon = R.drawable.icon_alert_review
+        ) {
+            goToReviewFragment(model!!, currentUser, WritingType.MODIFY)
+        }.show()
     }
 
-    private fun goToReviewFragment(model: CalendarEntity, currentUser: Any?) {
+    private fun goToReviewFragment(
+        model: CalendarEntity,
+        currentUser: Any?,
+        writingType: WritingType
+    ) {
         val transactionReviewWriting = parentFragmentManager.beginTransaction()
-        sharedViewModel.setBasicReviewModel(model, currentUser)
+        sharedViewModel.setBasicReviewModel(model, currentUser, writingType)
         transactionReviewWriting.replace(
             R.id.main_fragment_container,
             ReviewWritingFragment.newInstance()
