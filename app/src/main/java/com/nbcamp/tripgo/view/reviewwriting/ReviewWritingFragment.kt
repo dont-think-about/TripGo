@@ -138,15 +138,23 @@ class ReviewWritingFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val reviewWritingModel = ReviewWritingModel(
-                gender = gender,
-                generation = generation,
-                companion = companion,
-                reviewText = reviewText,
-                imageUrl = imageUrl,
-                rating = rating
-            )
-            reviewWritingViewModel.saveReview(reviewWritingModel, calendarUserEntity, writingType)
+            val reviewWritingModel = calendarUserEntity.model?.contentId?.let { contentId ->
+                ReviewWritingModel(
+                    contentId = contentId,
+                    gender = gender,
+                    generation = generation,
+                    companion = companion,
+                    reviewText = reviewText,
+                    imageUrl = imageUrl,
+                    rating = rating
+                )
+            }
+            if (reviewWritingModel != null)
+                reviewWritingViewModel.saveReview(
+                    reviewWritingModel,
+                    calendarUserEntity,
+                    writingType
+                )
         }
     }
 

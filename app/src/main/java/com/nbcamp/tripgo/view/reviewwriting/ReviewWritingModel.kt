@@ -1,6 +1,7 @@
 package com.nbcamp.tripgo.view.reviewwriting
 
 data class ReviewWritingModel(
+    val contentId: String,
     val gender: String,
     val generation: String,
     val companion: String,
@@ -10,6 +11,7 @@ data class ReviewWritingModel(
 ) {
     fun toMap(): Map<String, Any> {
         return mapOf(
+            "contentId" to contentId,
             "companion" to companion,
             "gender" to gender,
             "generation" to generation,
