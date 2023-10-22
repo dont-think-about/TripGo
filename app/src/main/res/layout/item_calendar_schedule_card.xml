@@ -8,7 +8,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/item_title_text_view"
-        style="@style/Font.18.Bold.Black"
+        style="@style/Font.14.Bold.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -20,7 +20,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/item_date_text_view"
-        style="@style/Font.14.Normal.Black"
+        style="@style/Font.12.Normal.Black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -31,10 +31,10 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/item_check_text_view"
-        style="@style/Font.14.Normal.Black"
+        style="@style/Font.12.Normal.Black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
+        android:layout_marginEnd="20dp"
         android:text="@string/possible_write_review"
         android:textColor="@color/green"
         app:layout_constraintBottom_toBottomOf="parent"

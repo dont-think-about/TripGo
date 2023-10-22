@@ -87,25 +87,26 @@ class ReviewWritingFragment : Fragment() {
             clickBackButton()
         }
 
-        reviewWritingGenderButtonGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
+        // TODO 드롭다운(스피너로 변경?)
+        reviewWritingGenderButtonGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (!isChecked)
                 return@addOnButtonCheckedListener
             reviewWritingViewModel.onClickGenderGroupEvent(checkedId)
         }
 
-        reviewWritingAgeButtonGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
+        reviewWritingAgeButtonGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (!isChecked)
                 return@addOnButtonCheckedListener
             reviewWritingViewModel.onClickAgeGroupEvent(checkedId)
         }
 
-        reviewWritingCompanionButtonGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
+        reviewWritingCompanionButtonGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (!isChecked)
                 return@addOnButtonCheckedListener
             reviewWritingViewModel.onClickCompanionGroupEvent(checkedId)
         }
 
-        reviewWritingTextInputEditText.doOnTextChanged { text, start, before, count ->
+        reviewWritingTextInputEditText.doOnTextChanged { text, _, _, _ ->
             reviewWritingViewModel.editReviewWriting(text)
         }
 
@@ -117,7 +118,7 @@ class ReviewWritingFragment : Fragment() {
             }
         }
 
-        reviewWritingRatingBar.setOnRatingBarChangeListener { ratingBar, rating, isChecked ->
+        reviewWritingRatingBar.setOnRatingBarChangeListener { _, rating, _ ->
             reviewWritingViewModel.setRatingReview(rating)
         }
 
@@ -131,6 +132,9 @@ class ReviewWritingFragment : Fragment() {
                 requireActivity().toast("모든 항목을 입력해주세요")
                 return@setOnClickListener
             }
+            // TODO 이미지를 파이어베이스 스토리지에 저장하고 그 downloadUrl을 가져와서 객체를 만들고 파이어 스토어에 저장하고, 캘린더의 해당 리뷰의 isReviewed 속성을 true로 바꿈
+            // TODO 스크롤 뷰 안에 리사이클러뷰 제어
+
         }
     }
 

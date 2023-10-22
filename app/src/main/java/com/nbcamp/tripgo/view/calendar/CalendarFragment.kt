@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -78,6 +79,7 @@ class CalendarFragment : Fragment() {
                     // 돠어 있지 않으면 하단에 안내 메세지 띄움 + 캘린더 선택하면 스낵바 띄울 수 있도록 모드 변경
                     false -> {
                         calendarMainView.selectionMode = MaterialCalendarView.SELECTION_MODE_SINGLE
+                        calendarTitleTextView.isGone = true
                         calendarNoticeTextView.text = getString(R.string.log_in_and_submit_review)
                     }
                 }
@@ -156,6 +158,7 @@ class CalendarFragment : Fragment() {
     }
 
     private fun initViews() = with(binding) {
+        nestedScrollView.isNestedScrollingEnabled = false
         calendarMainView.run {
             val month = Calendar.getInstance().get(Calendar.MONTH)
             removeDecorators()
