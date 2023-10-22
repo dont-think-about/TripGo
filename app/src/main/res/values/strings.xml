@@ -129,4 +129,11 @@
     <string name="possible_write_review">리뷰 작성 가능</string>
     <string name="already_write_review">이미 리뷰를 작성 하신 일정입니다.</string>
     <string name="please_write_review_under_100">리뷰 글은 100자 이하로 작성해 주세요</string>
+    <string name="my_photos">내 갤러리</string>
+    <string name="yes">예</string>
+    <string name="no">아니오</string>
+    <string name="want_review">리뷰 작성을 하시겠나요?</string>
+    <string name="permission_for_gallery">갤러리 접근 권한</string>
+    <string name="need_permission_into_gallery">이미지를 가져오기 위해 갤러리 접근 권한이 필요합니다.</string>
+    <string name="cant_get_image_to_gallery">사진을 가져오지 못했습니다.</string>
 </resources>

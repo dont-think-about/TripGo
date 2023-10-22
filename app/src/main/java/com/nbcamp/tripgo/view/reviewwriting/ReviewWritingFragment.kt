@@ -1,21 +1,28 @@
 package com.nbcamp.tripgo.view.reviewwriting
 
 import android.Manifest
+import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isGone
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import coil.load
 import com.nbcamp.tripgo.R
+import com.nbcamp.tripgo.data.repository.model.GalleryPhotoEntity
 import com.nbcamp.tripgo.databinding.FragmentReviewWritingBinding
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.main.MainViewModel
+import com.nbcamp.tripgo.view.reviewwriting.gallery.GalleryActivity
+import com.nbcamp.tripgo.view.reviewwriting.gallery.GalleryActivity.Companion.URI_LIST_KEY
 
 class ReviewWritingFragment : Fragment() {
 
@@ -29,8 +36,32 @@ class ReviewWritingFragment : Fragment() {
     private lateinit var gender: String
     private lateinit var generation: String
     private lateinit var companion: String
+    private lateinit var imageUrl: String
     private var reviewText = ""
     private var rating: Float = 0f
+
+    // 갤러리 액티비티를 실행 하는 런처
+    private val getGalleryImageLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val entity = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    it.data?.getParcelableExtra(URI_LIST_KEY, GalleryPhotoEntity::class.java)
+                } else {
+                    it.data?.getParcelableExtra(URI_LIST_KEY)
+                }
+                if (entity != null) {
+                    binding.reviewWritingAddImageView.isGone = true
+                    imageUrl = entity.uri.toString()
+                    binding.reviewWritingImageButton.load(entity.uri)
+                } else {
+                    requireActivity().toast(getString(R.string.cant_get_image_to_gallery))
+                }
+            } else {
+                requireActivity().toast(getString(R.string.cant_get_image_to_gallery))
+                return@registerForActivityResult
+            }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -84,7 +115,6 @@ class ReviewWritingFragment : Fragment() {
             } else {
                 sharedViewModel.getGalleryPermissionEvent(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
-//            checkGalleryPermissions()
         }
 
         reviewWritingRatingBar.setOnRatingBarChangeListener { ratingBar, rating, isChecked ->
@@ -92,7 +122,12 @@ class ReviewWritingFragment : Fragment() {
         }
 
         reviewWritingSubmitButton.setOnClickListener {
-            if (::gender.isInitialized.not() || ::generation.isInitialized.not() || ::companion.isInitialized.not() || reviewText.isEmpty()) {
+            if (::gender.isInitialized.not()
+                || ::generation.isInitialized.not()
+                || ::companion.isInitialized.not()
+                || ::imageUrl.isInitialized.not()
+                || reviewText.isEmpty()
+            ) {
                 requireActivity().toast("모든 항목을 입력해주세요")
                 return@setOnClickListener
             }
@@ -102,6 +137,10 @@ class ReviewWritingFragment : Fragment() {
     private fun initSharedViewModel() = with(sharedViewModel) {
         calendarToReviewModel.observe(viewLifecycleOwner) { model ->
             calendarUserEntity = model
+            println(calendarToReviewModel.value)
+        }
+        eventRunGallery.observe(viewLifecycleOwner) {
+            navigatePhotos()
         }
     }
 
@@ -133,6 +172,10 @@ class ReviewWritingFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun navigatePhotos() {
+        getGalleryImageLauncher.launch(GalleryActivity.newIntent(requireActivity()))
     }
 
     private fun clickBackButton() {

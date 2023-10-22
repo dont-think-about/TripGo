@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentManager
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityMainBinding
 import com.nbcamp.tripgo.util.checkPermission
-import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.util.setFancyDialog
 import com.nbcamp.tripgo.view.attraction.AttractionsActivity
 import com.nbcamp.tripgo.view.calendar.CalendarFragment
@@ -206,7 +205,7 @@ class MainActivity : AppCompatActivity() {
                     showGalleryPermissionPopUp()
                 },
                 runTaskAfterPermissionGranted = {
-                    toast("갤러리 권한 요청 완료")
+                    sharedViewModel.runGalleryEvent()
                 })
             return
         }
@@ -218,7 +217,7 @@ class MainActivity : AppCompatActivity() {
                 showGalleryPermissionPopUp()
             },
             runTaskAfterPermissionGranted = {
-                toast("갤러리 권한 요청 완료")
+                sharedViewModel.runGalleryEvent()
             })
     }
 

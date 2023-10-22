@@ -24,6 +24,9 @@ class MainViewModel : ViewModel() {
     private val _eventSetLocation: SingleLiveEvent<Boolean> = SingleLiveEvent()
     val eventSetLocation: SingleLiveEvent<Boolean> get() = _eventSetLocation
 
+    private val _eventRunGallery: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val eventRunGallery: SingleLiveEvent<Boolean> get() = _eventRunGallery
+
     // 현재 페이지를 바라볼 livedata
     private val _currentPageType: MutableLiveData<FragmentPageType> =
         MutableLiveData(FragmentPageType.PAGE_HOME)
@@ -91,5 +94,9 @@ class MainViewModel : ViewModel() {
 
     fun setLocationEvent() {
         _eventSetLocation.value = true
+    }
+
+    fun runGalleryEvent() {
+        _eventRunGallery.value = true
     }
 }
