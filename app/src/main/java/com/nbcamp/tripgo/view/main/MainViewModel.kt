@@ -8,7 +8,7 @@ import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
-import com.nbcamp.tripgo.view.reviewwriting.CalendarUserEntity
+import com.nbcamp.tripgo.view.reviewwriting.CalendarUserModel
 
 class MainViewModel : ViewModel() {
 
@@ -33,8 +33,8 @@ class MainViewModel : ViewModel() {
     val currentPageType: LiveData<FragmentPageType>
         get() = _currentPageType
 
-    private val _calendarToReviewModel: MutableLiveData<CalendarUserEntity> = MutableLiveData()
-    val calendarToReviewModel: LiveData<CalendarUserEntity>
+    private val _calendarToReviewModel: MutableLiveData<CalendarUserModel> = MutableLiveData()
+    val calendarToReviewModel: LiveData<CalendarUserModel>
         get() = _calendarToReviewModel
 
     fun runThemeTourActivity(themeId: TourTheme) {
@@ -76,7 +76,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun setBasicReviewModel(model: CalendarEntity, currentUser: Any?) {
-        _calendarToReviewModel.value = CalendarUserEntity(model, currentUser)
+        _calendarToReviewModel.value = CalendarUserModel(model, currentUser)
     }
 
     fun onClickBackButton() {

@@ -11,4 +11,5 @@
     <color name="background_light_blue">#f1fafe</color>
     <color name="gray">#FFB9B9B9</color>
     <color name="green">#FF4CAF50</color>
+    <color name="loading_progress_color">#17BD7A</color>
 </resources>

@@ -21,4 +21,8 @@ sealed interface ReviewWritingEvent {
         val rating: Float
     ) : ReviewWritingEvent
 
+    data class EventSubmitReview(
+        val message: String,
+        val isLoading: Boolean
+    ) : ReviewWritingEvent
 }

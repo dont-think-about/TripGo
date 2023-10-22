@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ import coil.load
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.GalleryPhotoEntity
 import com.nbcamp.tripgo.databinding.FragmentReviewWritingBinding
+import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.main.MainViewModel
 import com.nbcamp.tripgo.view.reviewwriting.gallery.GalleryActivity
@@ -32,13 +32,15 @@ class ReviewWritingFragment : Fragment() {
 
     private val sharedViewModel: MainViewModel by activityViewModels()
     private val reviewWritingViewModel: ReviewWritingViewModel by viewModels { ReviewWritingViewModelFactory() }
-    private lateinit var calendarUserEntity: CalendarUserEntity
+    private lateinit var calendarUserEntity: CalendarUserModel
     private lateinit var gender: String
     private lateinit var generation: String
     private lateinit var companion: String
     private lateinit var imageUrl: String
+    private lateinit var loadingDialog: LoadingDialog
     private var reviewText = ""
     private var rating: Float = 0f
+
 
     // 갤러리 액티비티를 실행 하는 런처
     private val getGalleryImageLauncher =
@@ -79,6 +81,7 @@ class ReviewWritingFragment : Fragment() {
     }
 
     private fun initViews() = with(binding) {
+        loadingDialog = LoadingDialog(requireActivity())
         reviewWritingButtonBack.setOnClickListener {
             clickBackButton()
         }
@@ -134,14 +137,21 @@ class ReviewWritingFragment : Fragment() {
             }
             // TODO 이미지를 파이어베이스 스토리지에 저장하고 그 downloadUrl을 가져와서 객체를 만들고 파이어 스토어에 저장하고, 캘린더의 해당 리뷰의 isReviewed 속성을 true로 바꿈
             // TODO 스크롤 뷰 안에 리사이클러뷰 제어
-
+            val reviewWritingModel = ReviewWritingModel(
+                gender = gender,
+                generation = generation,
+                companion = companion,
+                reviewText = reviewText,
+                imageUrl = imageUrl,
+                rating = rating
+            )
+            reviewWritingViewModel.saveReview(reviewWritingModel, calendarUserEntity)
         }
     }
 
     private fun initSharedViewModel() = with(sharedViewModel) {
         calendarToReviewModel.observe(viewLifecycleOwner) { model ->
             calendarUserEntity = model
-            println(calendarToReviewModel.value)
         }
         eventRunGallery.observe(viewLifecycleOwner) {
             navigatePhotos()
@@ -150,7 +160,6 @@ class ReviewWritingFragment : Fragment() {
 
     private fun initViewModel() = with(reviewWritingViewModel) {
         eventButtonClick.observe(viewLifecycleOwner) { event ->
-            Log.e("", event.toString())
             when (event) {
                 is ReviewWritingEvent.EventCompanionClick -> {
                     companion = event.companion
@@ -173,6 +182,23 @@ class ReviewWritingFragment : Fragment() {
 
                 is ReviewWritingEvent.EventSetRating -> {
                     rating = event.rating
+                }
+
+                is ReviewWritingEvent.EventSubmitReview -> {
+                    loadingDialog.setText(event.message)
+                    when (event.isLoading) {
+                        // 저장 로딩
+                        true -> loadingDialog.setVisible()
+                        // 성공 or 실패
+                        false -> {
+                            requireActivity().toast(event.message)
+                            loadingDialog.setInvisible()
+                            if (event.message.contains("실패").not()) {
+                                clickBackButton()
+                                return@observe
+                            }
+                        }
+                    }
                 }
             }
         }

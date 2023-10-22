@@ -1,8 +1,11 @@
 package com.nbcamp.tripgo.view.reviewwriting
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.util.SingleLiveEvent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ReviewWritingViewModel(
     private val reviewWritingRepository: ReviewWritingRepository
@@ -11,6 +14,7 @@ class ReviewWritingViewModel(
     private val _eventButtonClick: SingleLiveEvent<ReviewWritingEvent> = SingleLiveEvent()
     val eventButtonClick: SingleLiveEvent<ReviewWritingEvent>
         get() = _eventButtonClick
+
 
     fun onClickGenderGroupEvent(checkedId: Int) {
         when (checkedId) {
@@ -80,4 +84,75 @@ class ReviewWritingViewModel(
         _eventButtonClick.value = ReviewWritingEvent.EventSetRating(rating)
     }
 
+    /**
+     * 1. 이미지를 파이어스토어에 저장한다.
+     * 2. 저장을 성공하면 ReviewWritingViewModel의 imageUrl 값을 업데이트한다.
+     * 3. 업데이트 성공하면 firestore에 ReviewWritingModel을 저장한다.(업데이트)
+     * 4. 저장을 성공하면 CalendarUserModel의 isReviewed 값을 업데이트 한다.
+     */
+    fun saveReview(
+        reviewWritingViewModel: ReviewWritingModel,
+        calendarUserEntity: CalendarUserModel
+    ) {
+        _eventButtonClick.postValue(ReviewWritingEvent.EventSubmitReview("저장 시작..", true))
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                // 1
+                val returnImageUrl =
+                    reviewWritingRepository.saveToStorage(
+                        reviewWritingViewModel,
+                        calendarUserEntity
+                    )
+                // 2
+                updateReviewWritingModel(
+                    reviewWritingViewModel,
+                    returnImageUrl,
+                    calendarUserEntity.model?.id
+                )
+            }.onFailure {
+                _eventButtonClick.postValue(
+                    ReviewWritingEvent.EventSubmitReview(
+                        "리뷰 저장에 실패했습니다.",
+                        false
+                    )
+                )
+            }
+        }
+    }
+
+    private fun updateReviewWritingModel(
+        reviewWritingViewModel: ReviewWritingModel,
+        returnImageUrl: String,
+        documentId: String?
+    ) {
+        _eventButtonClick.postValue(ReviewWritingEvent.EventSubmitReview("저장 중..", true))
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                if (documentId == null) {
+                    return@launch
+                }
+                // 2
+                val reviewedModel = reviewWritingViewModel.copy(
+                    imageUrl = returnImageUrl
+                )
+                // 3
+                reviewWritingRepository.saveReview(reviewedModel)
+                // 4
+                reviewWritingRepository.updateReviewStatus(reviewedModel, documentId)
+                _eventButtonClick.postValue(
+                    ReviewWritingEvent.EventSubmitReview(
+                        "리뷰 저장이 완료 되었습니다.",
+                        false
+                    )
+                )
+            }.onFailure {
+                _eventButtonClick.postValue(
+                    ReviewWritingEvent.EventSubmitReview(
+                        "리뷰 저장에 실패했습니다.",
+                        false
+                    )
+                )
+            }
+        }
+    }
 }
