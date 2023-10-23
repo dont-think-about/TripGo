@@ -18,11 +18,14 @@ import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.databinding.ActivityTourDetailBinding
 import com.nbcamp.tripgo.databinding.DialogCalendarBinding
 import com.nbcamp.tripgo.util.LoadingDialog
+import com.nbcamp.tripgo.util.calendar.CantSetDayDecorator
 import com.nbcamp.tripgo.util.calendar.OutDateMonthDecorator
 import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
 import com.nbcamp.tripgo.util.calendar.SundayDecorator
 import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
+import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.util.Calendar
 
 class TourDetailActivity : AppCompatActivity() {
@@ -31,12 +34,21 @@ class TourDetailActivity : AppCompatActivity() {
     private var nearbyContentId: String? = null
     private lateinit var binding: ActivityTourDetailBinding
     private lateinit var loadingDialog: LoadingDialog
+    private lateinit var selectedDayList: List<CalendarDay>
     private var calendarBinding: DialogCalendarBinding? = null
+    private var currentUser: Any? = null
 
-    private val tourDetailViewModel: TourDetailViewModel by viewModels { TourDetailViewModelFactory() }
+
+    private val tourDetailViewModel: TourDetailViewModel by viewModels {
+        TourDetailViewModelFactory(
+            this
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTourDetailBinding.inflate(layoutInflater)
+        loadingDialog = LoadingDialog(this)
         setContentView(binding.root)
 
         initVariables()
@@ -79,11 +91,10 @@ class TourDetailActivity : AppCompatActivity() {
             tourDetailViewModel.moveToHomePage()
         }
         moveToCalendar.setOnClickListener {
-            runCalendarDialog()
+            setUserOption()
         }
 
         runSearchDetailInformation(contentId)
-
     }
 
     private fun runSearchDetailInformation(contentId: String?) {
@@ -91,23 +102,22 @@ class TourDetailActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() = with(tourDetailViewModel) {
+        getLoginStatus()
         detailUiState.observe(this@TourDetailActivity) { state ->
-            with(binding) {
-                loadingDialog.setText(state.message)
-                if (state == DetailCommonUiState.error(state.message)) {
-                    loadingDialog.setInvisible()
-                    toast(state.message)
-                    finish()
-                    return@observe
-                }
-                if (state.isLoading) {
-                    loadingDialog.setVisible()
-                } else {
-                    loadingDialog.setInvisible()
-                }
-                state.detailInfo?.let { info ->
-                    bindingInfo(info)
-                }
+            loadingDialog.setText(state.message)
+            if (state == DetailCommonUiState.error(state.message)) {
+                loadingDialog.setInvisible()
+                toast(state.message)
+                finish()
+                return@observe
+            }
+            if (state.isLoading) {
+                loadingDialog.setVisible()
+            } else {
+                loadingDialog.setInvisible()
+            }
+            state.detailInfo?.let { info ->
+                bindingInfo(info)
             }
         }
 
@@ -130,7 +140,23 @@ class TourDetailActivity : AppCompatActivity() {
                     makePhoneCall(event.phoneNumber)
                 }
             }
+        }
 
+        loginStatus.observe(this@TourDetailActivity) { state ->
+            if (state.user != null)
+                currentUser = state.user
+        }
+
+        schedulesDateState.observe(this@TourDetailActivity) { dateList ->
+            val mcv = calendarBinding?.addScheduleCalendarView
+            selectedDayList = dateList
+            mcv?.addDecorator(
+                CantSetDayDecorator(this@TourDetailActivity, dateList)
+            )
+            loadingDialog.setInvisible()
+        }
+        myScheduleState.observe(this@TourDetailActivity) { state ->
+            state.message?.let { toast(it) }
         }
     }
 
@@ -197,11 +223,39 @@ class TourDetailActivity : AppCompatActivity() {
                     SaturdayDecorator(date.month, 0),
                     SundayDecorator(date.month, 0),
                     TodayDecorator(this@TourDetailActivity),
-//                    SelectedDayDecorator(selectedDayList),
-                    OutDateMonthDecorator(this@TourDetailActivity, date.month)
+                    OutDateMonthDecorator(this@TourDetailActivity, date.month),
+                    CantSetDayDecorator(this@TourDetailActivity, selectedDayList)
                 )
+            }
+            // TODO 사용자는 하루만 선택을 할 수도 있으므로 range가 끝나면 single도 생각해보기
+            setOnRangeSelectedListener { widget, dates ->
+                // TODO 선택한 일정 추가하기
+                println(dates)
             }
         }
     }
 
+    private fun setUserOption() {
+        loadingDialog.setVisible()
+        when {
+            currentUser == null -> {
+                toast("로그인 되어 있지 않아 일정을 추가할 수 없습니다.")
+                loadingDialog.setInvisible()
+            }
+
+//            (currentUser as FirebaseUser).isEmailVerified.not() || (currentUser as Account).isEmailVerified!!.not() -> {
+//                toast("이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.")
+            // 테스트 할 떄는 주석 풀고, 이메일 인증 기능이 완성 되면 주석 처리
+//                tourDetailViewModel.getMySchedules(currentUser)
+//                runCalendarDialog()
+//            }
+
+            else -> {
+                currentUser?.let {
+                    tourDetailViewModel.getMySchedules(it)
+                    runCalendarDialog()
+                }
+            }
+        }
+    }
 }

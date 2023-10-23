@@ -107,7 +107,7 @@ class CalendarFragment : Fragment() {
 
             // start ~ end date 사이의 기간을 달력에 표시
             schedulesDateState.observe(viewLifecycleOwner) { dateList ->
-                val mcv = calendarMainView.state().edit()
+//                val mcv = calendarMainView.state().edit()
                 dateList.forEach { date ->
                     val selectedDay = CalendarDay.from(
                         date.first,
@@ -117,7 +117,7 @@ class CalendarFragment : Fragment() {
                     // 일정이 있는 날엔 달력에 따로 표시해 주기 위한 리스트
                     selectedDayList.add(selectedDay)
                 }
-                mcv.commit()
+//                mcv.commit()
                 calendarMainView.addDecorator(
                     SelectedDayDecorator(selectedDayList)
                 )
