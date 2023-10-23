@@ -81,9 +81,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.button.MaterialButtonToggleGroup
+            <com.google.android.material.chip.ChipGroup
                 android:id="@+id/review_writing_gender_button_group"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -92,23 +92,29 @@
                 app:selectionRequired="true"
                 app:singleSelection="true">
 
-                <Button
+                <com.google.android.material.chip.Chip
                     android:id="@+id/review_writing_toggle_man_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="0dp"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/man" />
+                    android:text="@string/man"
+                    app:checkedIcon="@drawable/icon_check"
+                    app:checkedIconEnabled="true"
+                    app:chipEndPadding="15dp"
+                    app:chipStartPadding="15dp" />
 
-                <Button
+                <com.google.android.material.chip.Chip
                     android:id="@+id/review_writing_toggle_woman_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="0dp"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/woman" />
+                    android:text="@string/woman"
+                    app:checkedIcon="@drawable/icon_check"
+                    app:checkedIconEnabled="true"
+                    app:chipEndPadding="15dp"
+                    app:chipStartPadding="15dp" />
 
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+            </com.google.android.material.chip.ChipGroup>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_writing_age_text_view"
@@ -120,63 +126,81 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/review_writing_gender_button_group" />
 
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/review_writing_age_button_group"
-                android:layout_width="0dp"
+            <HorizontalScrollView
+                android:id="@+id/review_writing_age_button_group_scroll_view"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:scrollbars="none"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/review_writing_age_text_view"
-                app:layout_constraintTop_toBottomOf="@id/review_writing_age_text_view"
-                app:selectionRequired="true"
-                app:singleSelection="true">
+                app:layout_constraintTop_toBottomOf="@id/review_writing_age_text_view">
 
-                <Button
-                    android:id="@+id/review_writing_toggle_10s_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="0dp"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/review_writing_age_button_group"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/generation_10"
-                    android:textSize="12sp" />
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
 
-                <Button
-                    android:id="@+id/review_writing_toggle_20s_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/generation_20"
-                    android:textSize="12sp" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/review_writing_toggle_10s_button"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/generation_10"
+                        app:checkedIcon="@drawable/icon_check"
+                        app:checkedIconEnabled="true"
+                        app:chipEndPadding="15dp"
+                        app:chipStartPadding="15dp" />
 
-                <Button
-                    android:id="@+id/review_writing_toggle_30s_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/generation_30"
-                    android:textSize="12sp" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/review_writing_toggle_20s_button"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/generation_20"
+                        app:checkedIcon="@drawable/icon_check"
+                        app:checkedIconEnabled="true"
+                        app:chipEndPadding="15dp"
+                        app:chipStartPadding="15dp" />
 
-                <Button
-                    android:id="@+id/review_writing_toggle_40s_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/generation_40"
-                    android:textSize="12sp" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/review_writing_toggle_30s_button"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/generation_30"
+                        app:checkedIcon="@drawable/icon_check"
+                        app:checkedIconEnabled="true"
+                        app:chipEndPadding="15dp"
+                        app:chipStartPadding="15dp" />
 
-                <Button
-                    android:id="@+id/review_writing_toggle_50s_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/generation_50_over" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/review_writing_toggle_40s_button"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/generation_40"
+                        app:checkedIcon="@drawable/icon_check"
+                        app:checkedIconEnabled="true"
+                        app:chipEndPadding="15dp"
+                        app:chipStartPadding="15dp" />
 
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/review_writing_toggle_50s_over_button"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/generation_50_over"
+                        app:checkedIcon="@drawable/icon_check"
+                        app:checkedIconEnabled="true"
+                        app:chipEndPadding="15dp"
+                        app:chipStartPadding="15dp" />
 
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_writing_companion_text_view"
@@ -186,66 +210,83 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/with_whom"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/review_writing_age_button_group" />
+                app:layout_constraintTop_toBottomOf="@id/review_writing_age_button_group_scroll_view" />
 
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/review_writing_companion_button_group"
-                android:layout_width="0dp"
+            <HorizontalScrollView
+                android:id="@+id/review_writing_companion_button_group_scroll_view"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:scrollbars="none"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/review_writing_companion_text_view"
-                app:layout_constraintTop_toBottomOf="@id/review_writing_companion_text_view"
-                app:selectionRequired="true"
-                app:singleSelection="true">
+                app:layout_constraintTop_toBottomOf="@id/review_writing_companion_text_view">
 
-                <Button
-                    android:id="@+id/review_writing_toggle_family_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="0dp"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/review_writing_companion_button_group"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/family"
-                    android:textSize="12sp" />
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
 
-                <Button
-                    android:id="@+id/review_writing_toggle_bf_gf_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bf_gf"
-                    android:textSize="12sp" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/review_writing_toggle_family_button"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/family"
+                        app:checkedIcon="@drawable/icon_check"
+                        app:checkedIconEnabled="true"
+                        app:chipEndPadding="15dp"
+                        app:chipStartPadding="15dp" />
 
-                <Button
-                    android:id="@+id/review_writing_toggle_friends_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/friends"
-                    android:textSize="12sp" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/review_writing_toggle_bf_gf_button"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bf_gf"
+                        app:checkedIcon="@drawable/icon_check"
+                        app:checkedIconEnabled="true"
+                        app:chipEndPadding="15dp"
+                        app:chipStartPadding="15dp" />
 
-                <Button
-                    android:id="@+id/review_writing_toggle_solo_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/solo"
-                    android:textSize="12sp" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/review_writing_toggle_friends_button"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/friends"
+                        app:checkedIcon="@drawable/icon_check"
+                        app:checkedIconEnabled="true"
+                        app:chipEndPadding="15dp"
+                        app:chipStartPadding="15dp" />
 
-                <Button
-                    android:id="@+id/review_writing_toggle_pet_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/pet"
-                    android:textSize="12sp" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/review_writing_toggle_solo_button"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/solo"
+                        app:checkedIcon="@drawable/icon_check"
+                        app:checkedIconEnabled="true"
+                        app:chipEndPadding="15dp"
+                        app:chipStartPadding="15dp" />
 
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/review_writing_toggle_pet_button"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pet"
+                        app:checkedIcon="@drawable/icon_check"
+                        app:checkedIconEnabled="true"
+                        app:chipEndPadding="15dp"
+                        app:chipStartPadding="15dp" />
 
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_writing_description_text_view"
@@ -255,12 +296,13 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/reviews"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/review_writing_companion_button_group" />
+                app:layout_constraintTop_toBottomOf="@id/review_writing_companion_button_group_scroll_view" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/review_writing_text_input_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:hint="@string/submit_visit_review"
                 android:textColorHint="@color/deactivated"
                 app:boxStrokeColor="@color/main"
@@ -280,6 +322,7 @@
                     android:layout_height="match_parent"
                     android:lines="4"
                     android:maxLength="100"
+
                     android:textColorHint="@color/black" />
 
             </com.google.android.material.textfield.TextInputLayout>

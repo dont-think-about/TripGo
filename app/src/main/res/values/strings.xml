@@ -43,13 +43,13 @@
     <string name="generation_20">20대</string>
     <string name="generation_30">30대</string>
     <string name="generation_40">40대</string>
-    <string name="generation_50_over">50+</string>
+    <string name="generation_50_over">50대 이상</string>
     <string name="with_whom">누구와 함께 갔나요?</string>
     <string name="family">가족</string>
     <string name="bf_gf">연인</string>
     <string name="friends">친구</string>
     <string name="solo">혼자</string>
-    <string name="pet">펫</string>
+    <string name="pet">반려동물</string>
     <string name="submit_visit_review">방문 후기를 남겨주세요</string>
     <string name="review_photo">사진</string>
     <string name="review_cancel">취소</string>
