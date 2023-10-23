@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
             )
             sharedViewModel.setCurrentPage(item.itemId)
-            sharedViewModel.onClickBackButton()
+//            sharedViewModel.onClickBackButton()
             true
         }
         changeFragment(FragmentPageType.PAGE_HOME)
@@ -96,12 +96,8 @@ class MainActivity : AppCompatActivity() {
             changeFragment(currentPageType)
         }
 
-        eventBackClick.observe(this@MainActivity) { backClicked ->
-            when (backClicked) {
-                is BackClickEvent.OpenDialog -> {
-                    calendarViewModel.runDialogForReviewWriting(null, null)
-                }
-            }
+        eventBackClick.observe(this@MainActivity) {
+            calendarViewModel.runDialogForReviewWriting(null, null)
         }
 
         eventPermission.observe(this@MainActivity) { permissionState ->

@@ -16,17 +16,17 @@ class MainViewModel : ViewModel() {
     private val _event: SingleLiveEvent<ThemeClickEvent> = SingleLiveEvent()
     val event: LiveData<ThemeClickEvent> get() = _event
 
-    private val _eventBackClick: SingleLiveEvent<BackClickEvent> = SingleLiveEvent()
-    val eventBackClick: SingleLiveEvent<BackClickEvent> get() = _eventBackClick
+    private val _eventBackClick: SingleLiveEvent<Any?> = SingleLiveEvent()
+    val eventBackClick: SingleLiveEvent<Any?> get() = _eventBackClick
 
     private val _eventPermission: SingleLiveEvent<PermissionEvent> = SingleLiveEvent()
     val eventPermission: SingleLiveEvent<PermissionEvent> get() = _eventPermission
 
-    private val _eventSetLocation: SingleLiveEvent<Boolean> = SingleLiveEvent()
-    val eventSetLocation: SingleLiveEvent<Boolean> get() = _eventSetLocation
+    private val _eventSetLocation: SingleLiveEvent<Any?> = SingleLiveEvent()
+    val eventSetLocation: SingleLiveEvent<Any?> get() = _eventSetLocation
 
-    private val _eventRunGallery: SingleLiveEvent<Boolean> = SingleLiveEvent()
-    val eventRunGallery: SingleLiveEvent<Boolean> get() = _eventRunGallery
+    private val _eventRunGallery: SingleLiveEvent<Any?> = SingleLiveEvent()
+    val eventRunGallery: SingleLiveEvent<Any?> get() = _eventRunGallery
 
     // 현재 페이지를 바라볼 livedata
     private val _currentPageType: MutableLiveData<FragmentPageType> =
@@ -34,6 +34,7 @@ class MainViewModel : ViewModel() {
     val currentPageType: LiveData<FragmentPageType>
         get() = _currentPageType
 
+    // 캘린더에서 리뷰 작성으로 넘어갈 때 보내줄 livedata
     private val _calendarToReviewModel: MutableLiveData<CalendarUserModel> = MutableLiveData()
     val calendarToReviewModel: LiveData<CalendarUserModel>
         get() = _calendarToReviewModel
@@ -89,8 +90,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun onClickBackButton() {
-        _eventBackClick.value = BackClickEvent.OpenDialog.initialize()
-        _eventBackClick.value = BackClickEvent.OpenDialog(false)
+        _eventBackClick.call()
     }
 
     fun getGalleryPermissionEvent(permission: String) {
@@ -102,10 +102,10 @@ class MainViewModel : ViewModel() {
     }
 
     fun setLocationEvent() {
-        _eventSetLocation.value = true
+        _eventSetLocation.call()
     }
 
     fun runGalleryEvent() {
-        _eventRunGallery.value = true
+        _eventRunGallery.call()
     }
 }
