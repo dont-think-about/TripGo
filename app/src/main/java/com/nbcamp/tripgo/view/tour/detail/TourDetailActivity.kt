@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import coil.load
@@ -15,8 +16,14 @@ import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.databinding.ActivityTourDetailBinding
+import com.nbcamp.tripgo.databinding.DialogCalendarBinding
 import com.nbcamp.tripgo.util.LoadingDialog
+import com.nbcamp.tripgo.util.calendar.OutDateMonthDecorator
+import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
+import com.nbcamp.tripgo.util.calendar.SundayDecorator
+import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import java.util.Calendar
 
 class TourDetailActivity : AppCompatActivity() {
     private var festivalItem: FestivalItem? = null
@@ -24,6 +31,7 @@ class TourDetailActivity : AppCompatActivity() {
     private var nearbyContentId: String? = null
     private lateinit var binding: ActivityTourDetailBinding
     private lateinit var loadingDialog: LoadingDialog
+    private var calendarBinding: DialogCalendarBinding? = null
 
     private val tourDetailViewModel: TourDetailViewModel by viewModels { TourDetailViewModelFactory() }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,10 +62,10 @@ class TourDetailActivity : AppCompatActivity() {
     }
 
     private fun initViews() = with(binding) {
-        val contentId = if (festivalItem?.contentid == null) {
-            keywordItem?.contentid!!
-        } else if (keywordItem?.contentid == null) {
-            festivalItem?.contentid!!
+        val contentId = if (festivalItem?.contentid != null) {
+            festivalItem?.contentid
+        } else if (keywordItem?.contentid != null) {
+            keywordItem?.contentid
         } else {
             nearbyContentId
         }
@@ -70,7 +78,9 @@ class TourDetailActivity : AppCompatActivity() {
         moveToHomepage.setOnClickListener {
             tourDetailViewModel.moveToHomePage()
         }
-
+        moveToCalendar.setOnClickListener {
+            runCalendarDialog()
+        }
 
         runSearchDetailInformation(contentId)
 
@@ -153,4 +163,45 @@ class TourDetailActivity : AppCompatActivity() {
             )
         }
     }
+
+    private fun runCalendarDialog() {
+        calendarBinding = DialogCalendarBinding.inflate(layoutInflater)
+        setCalendarOption()
+        AlertDialog.Builder(this)
+            .setTitle("일정 추가")
+            .setView(calendarBinding?.root)
+            .setPositiveButton("저장") { _, _ ->
+                calendarBinding = null
+            }.setNegativeButton("취소") { _, _ ->
+                calendarBinding = null
+            }
+            .create()
+            .show()
+    }
+
+    private fun setCalendarOption() = with(calendarBinding!!) {
+        addScheduleCalendarView.run {
+            val month = Calendar.getInstance().get(Calendar.MONTH)
+            removeDecorators()
+            invalidateDecorators()
+            addDecorators(
+                SaturdayDecorator(month, 1),
+                SundayDecorator(month, 1),
+                OutDateMonthDecorator(this@TourDetailActivity, month + 1),
+                TodayDecorator(this@TourDetailActivity)
+            )
+            setOnMonthChangedListener { _, date ->
+                removeDecorators()
+                invalidateDecorators()
+                addDecorators(
+                    SaturdayDecorator(date.month, 0),
+                    SundayDecorator(date.month, 0),
+                    TodayDecorator(this@TourDetailActivity),
+//                    SelectedDayDecorator(selectedDayList),
+                    OutDateMonthDecorator(this@TourDetailActivity, date.month)
+                )
+            }
+        }
+    }
+
 }
