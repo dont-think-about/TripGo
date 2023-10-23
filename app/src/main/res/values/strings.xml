@@ -137,4 +137,5 @@
     <string name="need_permission_into_gallery">이미지를 가져오기 위해 갤러리 접근 권한이 필요합니다.</string>
     <string name="cant_get_image_to_gallery">사진을 가져오지 못했습니다.</string>
     <string name="how_feel">은 어떠셨나요?\n후기를 남겨주세요!</string>
+
 </resources>

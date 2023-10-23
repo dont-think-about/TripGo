@@ -1,8 +1,11 @@
 package com.nbcamp.tripgo.data.model.keywords
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class KeywordItem(
     @SerializedName("addr1")
     val addr1: String,
@@ -44,4 +47,4 @@ data class KeywordItem(
     val tel: String,
     @SerializedName("title")
     val title: String
-)
+):Parcelable
