@@ -161,6 +161,8 @@ class ReviewWritingFragment : Fragment() {
     private fun initSharedViewModel() = with(sharedViewModel) {
         calendarToReviewModel.observe(viewLifecycleOwner) { model ->
             calendarUserEntity = model
+            "${model.model?.title}${getString(R.string.how_feel)}"
+                .also { binding.reviewNoticeTextView.text = it }
             if (model.writingType == WritingType.MODIFY) {
                 reviewWritingViewModel.modifyReviewWriting(model)
                 writingType = WritingType.MODIFY
