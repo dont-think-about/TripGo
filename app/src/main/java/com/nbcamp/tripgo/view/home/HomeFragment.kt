@@ -1,15 +1,12 @@
 package com.nbcamp.tripgo.view.home
 
 import android.Manifest
-import android.content.pm.PackageManager
+import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -24,6 +21,7 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.mapper.WeatherType
 import com.nbcamp.tripgo.databinding.FragmentHomeBinding
+import com.nbcamp.tripgo.util.FestivalTransformer
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.home.adapter.FestivalViewPagerAdapter
@@ -49,19 +47,6 @@ class HomeFragment : Fragment() {
     }
 
     // 위치 정보 획득에 관한 변수 모음
-    private val permissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it) {
-                ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ),
-                    LOCATION_REQUEST_PERMISSION_CODE
-                )
-                checkLocationPermissions()
-            }
-        }
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private var cancellationTokenSource: CancellationTokenSource? = null
 
@@ -136,6 +121,7 @@ class HomeFragment : Fragment() {
         }
         mainFestivalViewPager.run {
             adapter = festivalViewPagerAdapter
+            setPageTransformer(FestivalTransformer())
         }
         viewPagerCircleIndicator.setViewPager(mainFestivalViewPager)
         mainNearbyTourRecyclerView.run {
@@ -147,17 +133,18 @@ class HomeFragment : Fragment() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun initViewModel() = with(homeViewModel) {
         // viewpager 데이터 가져오기
-       homeViewModel.run {
-          /*
-            fetchViewPagerData()
-            autoSlideViewPager()
-            getPlaceByTodayWeather()
-            */
-            getProvincePlace()
+        homeViewModel.run {
+            /*
+              fetchViewPagerData()
+              autoSlideViewPager()
+              getPlaceByTodayWeather()
+              */
+//            getProvincePlace()
         }
-        checkLocationPermissions()
+//        checkLocationPermissions()
 
         festivalUiState.observe(viewLifecycleOwner) { state ->
             with(binding) {
@@ -197,6 +184,22 @@ class HomeFragment : Fragment() {
         provincePlaceUiState.observe(viewLifecycleOwner) { state ->
             binding.allTourProgressBar.isVisible = state.isLoading
             provincePlaceListAdapter.submitList(state.list)
+        }
+
+        sharedViewModel.eventSetLocation.observe(viewLifecycleOwner) { isDone ->
+            when (isDone) {
+                true -> {
+                    fusedLocationProviderClient.getCurrentLocation(
+                        Priority.PRIORITY_HIGH_ACCURACY,
+                        cancellationTokenSource!!.token
+                    ).addOnSuccessListener { location ->
+                        locationForScrollListener = location
+                        homeViewModel.getNearbyPlaceList(location, nearbyPageNumber)
+                    }
+                }
+
+                false -> Unit
+            }
         }
     }
 
@@ -268,57 +271,23 @@ class HomeFragment : Fragment() {
     }
 
     private fun checkLocationPermissions() {
-        when {
-            // 위치 권환이 확인 되어 있지 않으면
-            ActivityCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                fusedLocationProviderClient.getCurrentLocation(
-                    Priority.PRIORITY_HIGH_ACCURACY,
-                    cancellationTokenSource!!.token
-                ).addOnSuccessListener { location ->
-                    locationForScrollListener = location
-                    homeViewModel.getNearbyPlaceList(location, nearbyPageNumber)
-                }
-            }
-            // 위치 권한 안내가 필요 하면
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                requireActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) -> {
-                showPermissionContextPopUp()
-            }
-            // 그외
-            else -> {
-                permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
-        }
+        sharedViewModel.getLocationPermissionEvent(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
-    private fun showPermissionContextPopUp() {
-        AlertDialog.Builder(requireActivity())
-            .setTitle(getString(R.string.need_permission))
-            .setMessage(getString(R.string.for_load_nearby_place))
-            .setPositiveButton(getString(R.string.agree_permission)) { _, _ ->
-                permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }.setNegativeButton(getString(R.string.disagree_permission)) { _, _ -> }
-            .create()
-            .show()
+    override fun onResume() {
+        super.onResume()
+        checkLocationPermissions()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-     //   homeViewModel.stopSlideViewPager()
+        //   homeViewModel.stopSlideViewPager()
+        _binding = null
     }
 
     companion object {
         fun newInstance() = HomeFragment()
 
         const val TAG = "HOME_FRAGMENT"
-        const val LOCATION_REQUEST_PERMISSION_CODE = 100
     }
 }

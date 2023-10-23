@@ -9,4 +9,25 @@
 
 
     <style name="Theme.TripGo" parent="Base.Theme.TripGo" />
+
+    <style name="calendar_view_day_custom" parent="Theme.AppCompat">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="calendar_day_custom" parent="Theme.AppCompat">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="calendar_text_view_day_custom" parent="android:TextAppearance.DeviceDefault.Medium">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="calendar_text_view_week_custom" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="calendar_header" parent="android:TextAppearance.DeviceDefault.Medium">
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>

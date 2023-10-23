@@ -9,4 +9,7 @@
     <color name="edit_closeBtn">#B8B8B8</color>
     <color name="error">#FF0000</color>
     <color name="background_light_blue">#f1fafe</color>
+    <color name="gray">#FFB9B9B9</color>
+    <color name="green">#FF4CAF50</color>
+    <color name="loading_progress_color">#17BD7A</color>
 </resources>
