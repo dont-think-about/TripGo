@@ -16,17 +16,17 @@ class MainViewModel : ViewModel() {
     private val _event: SingleLiveEvent<ThemeClickEvent> = SingleLiveEvent()
     val event: LiveData<ThemeClickEvent> get() = _event
 
-    private val _eventBackClick: SingleLiveEvent<Any?> = SingleLiveEvent()
-    val eventBackClick: SingleLiveEvent<Any?> get() = _eventBackClick
+    private val _eventBackClick: SingleLiveEvent<Unit?> = SingleLiveEvent()
+    val eventBackClick: SingleLiveEvent<Unit?> get() = _eventBackClick
 
     private val _eventPermission: SingleLiveEvent<PermissionEvent> = SingleLiveEvent()
     val eventPermission: SingleLiveEvent<PermissionEvent> get() = _eventPermission
 
-    private val _eventSetLocation: SingleLiveEvent<Any?> = SingleLiveEvent()
-    val eventSetLocation: SingleLiveEvent<Any?> get() = _eventSetLocation
+    private val _eventSetLocation: SingleLiveEvent<Unit?> = SingleLiveEvent()
+    val eventSetLocation: SingleLiveEvent<Unit?> get() = _eventSetLocation
 
-    private val _eventRunGallery: SingleLiveEvent<Any?> = SingleLiveEvent()
-    val eventRunGallery: SingleLiveEvent<Any?> get() = _eventRunGallery
+    private val _eventRunGallery: SingleLiveEvent<Unit?> = SingleLiveEvent()
+    val eventRunGallery: SingleLiveEvent<Unit?> get() = _eventRunGallery
 
     // 현재 페이지를 바라볼 livedata
     private val _currentPageType: MutableLiveData<FragmentPageType> =
