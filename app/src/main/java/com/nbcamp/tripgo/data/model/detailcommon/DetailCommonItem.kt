@@ -1,12 +1,8 @@
-package com.nbcamp.tripgo.data.model.festivals
+package com.nbcamp.tripgo.data.model.detailcommon
 
-
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
-data class FestivalItem(
+data class DetailCommonItem(
     @SerializedName("addr1")
     val addr1: String,
     @SerializedName("addr2")
@@ -15,12 +11,6 @@ data class FestivalItem(
     val areacode: String,
     @SerializedName("booktour")
     val booktour: String,
-    @SerializedName("cat1")
-    val cat1: String,
-    @SerializedName("cat2")
-    val cat2: String,
-    @SerializedName("cat3")
-    val cat3: String,
     @SerializedName("contentid")
     val contentid: String,
     @SerializedName("contenttypeid")
@@ -29,14 +19,12 @@ data class FestivalItem(
     val cpyrhtDivCd: String,
     @SerializedName("createdtime")
     val createdtime: String,
-    @SerializedName("eventenddate")
-    val eventenddate: String,
-    @SerializedName("eventstartdate")
-    val eventstartdate: String,
     @SerializedName("firstimage")
     val firstimage: String,
     @SerializedName("firstimage2")
     val firstimage2: String,
+    @SerializedName("homepage")
+    val homepage: String,
     @SerializedName("mapx")
     val mapx: String,
     @SerializedName("mapy")
@@ -45,10 +33,16 @@ data class FestivalItem(
     val mlevel: String,
     @SerializedName("modifiedtime")
     val modifiedtime: String,
+    @SerializedName("overview")
+    val overview: String,
     @SerializedName("sigungucode")
     val sigungucode: String,
     @SerializedName("tel")
     val tel: String,
+    @SerializedName("telname")
+    val telname: String,
     @SerializedName("title")
-    val title: String
-):Parcelable
+    val title: String,
+    @SerializedName("zipcode")
+    val zipcode: String
+)
