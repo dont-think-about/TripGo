@@ -31,4 +31,16 @@ class TourDetailViewModel(
             }
         }
     }
+
+    fun makeCall() {
+        val phoneNumber = detailUiState.value?.detailInfo?.telPhoneNumber
+        if (phoneNumber != null)
+            _textClickEvent.value = TextClickEvent.PhoneNumberClickEvent(phoneNumber)
+    }
+
+    fun moveToHomePage() {
+        val homePage = detailUiState.value?.detailInfo?.homePage
+        if (homePage != null)
+            _textClickEvent.value = TextClickEvent.HomePageClickEvent(homePage)
+    }
 }
