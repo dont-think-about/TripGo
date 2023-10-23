@@ -51,7 +51,7 @@ class ReviewWritingViewModel(
                 _eventButtonClick.value = ReviewWritingEvent.EventGenerationClick("40대")
             }
 
-            R.id.review_writing_toggle_50s_button -> {
+            R.id.review_writing_toggle_50s_over_button -> {
                 _eventButtonClick.value = ReviewWritingEvent.EventGenerationClick("50대 이상")
             }
         }

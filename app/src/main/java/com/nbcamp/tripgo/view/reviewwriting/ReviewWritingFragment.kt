@@ -34,13 +34,13 @@ class ReviewWritingFragment : Fragment() {
     private val sharedViewModel: MainViewModel by activityViewModels()
     private val reviewWritingViewModel: ReviewWritingViewModel by viewModels { ReviewWritingViewModelFactory() }
     private lateinit var calendarUserEntity: CalendarUserModel
-    private lateinit var gender: String
-    private lateinit var generation: String
-    private lateinit var companion: String
-    private lateinit var imageUrl: String
+    private lateinit var genderValue: String
+    private lateinit var generationValue: String
+    private lateinit var companionValue: String
+    private lateinit var imageUrlValue: String
     private lateinit var loadingDialog: LoadingDialog
-    private var reviewText = ""
-    private var rating: Float = 0f
+    private var reviewTextValue = ""
+    private var ratingValue: Float = 0f
     private var writingType = WritingType.NEW
 
     // 갤러리 액티비티를 실행 하는 런처
@@ -54,7 +54,7 @@ class ReviewWritingFragment : Fragment() {
                 }
                 if (entity != null) {
                     binding.reviewWritingAddImageView.isGone = true
-                    imageUrl = entity.uri.toString()
+                    imageUrlValue = entity.uri.toString()
                     binding.reviewWritingImageButton.load(entity.uri)
                 } else {
                     requireActivity().toast(getString(R.string.cant_get_image_to_gallery))
@@ -91,23 +91,20 @@ class ReviewWritingFragment : Fragment() {
             clickBackButton()
         }
 
-        // TODO 드롭다운(스피너로 변경?)
-        reviewWritingGenderButtonGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (!isChecked)
-                return@addOnButtonCheckedListener
-            reviewWritingViewModel.onClickGenderGroupEvent(checkedId)
+        // material toggle button group -> chip group 으로 변경
+        reviewWritingGenderButtonGroup.setOnCheckedStateChangeListener { group, _ ->
+            val selectedChip = group.checkedChipId
+            reviewWritingViewModel.onClickGenderGroupEvent(selectedChip)
         }
 
-        reviewWritingAgeButtonGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (!isChecked)
-                return@addOnButtonCheckedListener
-            reviewWritingViewModel.onClickAgeGroupEvent(checkedId)
+        reviewWritingAgeButtonGroup.setOnCheckedStateChangeListener { group, _ ->
+            val selectedChip = group.checkedChipId
+            reviewWritingViewModel.onClickAgeGroupEvent(selectedChip)
         }
 
-        reviewWritingCompanionButtonGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (!isChecked)
-                return@addOnButtonCheckedListener
-            reviewWritingViewModel.onClickCompanionGroupEvent(checkedId)
+        reviewWritingCompanionButtonGroup.setOnCheckedStateChangeListener { group, _ ->
+            val selectedChip = group.checkedChipId
+            reviewWritingViewModel.onClickCompanionGroupEvent(selectedChip)
         }
 
         reviewWritingTextInputEditText.doOnTextChanged { text, _, _, _ ->
@@ -127,12 +124,12 @@ class ReviewWritingFragment : Fragment() {
         }
 
         reviewWritingSubmitButton.setOnClickListener {
-            if (::gender.isInitialized.not()
-                || ::generation.isInitialized.not()
-                || ::companion.isInitialized.not()
-                || ::imageUrl.isInitialized.not()
-                || imageUrl.isEmpty()
-                || reviewText.isEmpty()
+            if (::genderValue.isInitialized.not()
+                || ::generationValue.isInitialized.not()
+                || ::companionValue.isInitialized.not()
+                || ::imageUrlValue.isInitialized.not()
+                || imageUrlValue.isEmpty()
+                || reviewTextValue.isEmpty()
             ) {
                 requireActivity().toast("모든 항목을 입력해주세요")
                 return@setOnClickListener
@@ -141,12 +138,12 @@ class ReviewWritingFragment : Fragment() {
             val reviewWritingModel = calendarUserEntity.model?.contentId?.let { contentId ->
                 ReviewWritingModel(
                     contentId = contentId,
-                    gender = gender,
-                    generation = generation,
-                    companion = companion,
-                    reviewText = reviewText,
-                    imageUrl = imageUrl,
-                    rating = rating
+                    gender = genderValue,
+                    generation = generationValue,
+                    companion = companionValue,
+                    reviewText = reviewTextValue,
+                    imageUrl = imageUrlValue,
+                    rating = ratingValue
                 )
             }
             if (reviewWritingModel != null)
@@ -177,26 +174,26 @@ class ReviewWritingFragment : Fragment() {
         eventButtonClick.observe(viewLifecycleOwner) { event ->
             when (event) {
                 is ReviewWritingEvent.EventCompanionClick -> {
-                    companion = event.companion
+                    companionValue = event.companion
                 }
 
                 is ReviewWritingEvent.EventGenderClick -> {
-                    gender = event.gender
+                    genderValue = event.gender
                 }
 
                 is ReviewWritingEvent.EventGenerationClick -> {
-                    generation = event.generation
+                    generationValue = event.generation
                 }
 
                 is ReviewWritingEvent.EventReviewWriting -> {
-                    reviewText = event.reviewText
-                    if (reviewText.length >= 100) {
+                    reviewTextValue = event.reviewText
+                    if (reviewTextValue.length >= 100) {
                         requireActivity().toast(getString(R.string.please_write_review_under_100))
                     }
                 }
 
                 is ReviewWritingEvent.EventSetRating -> {
-                    rating = event.rating
+                    ratingValue = event.rating
                 }
 
                 is ReviewWritingEvent.EventSubmitReview -> {
@@ -227,13 +224,19 @@ class ReviewWritingFragment : Fragment() {
 
                 false -> {
                     loadingDialog.setInvisible()
-                    if (event.pastModel != null) {
-                        reviewText = event.pastModel.reviewText
-                        imageUrl = ""
-                        rating = event.pastModel.rating
-                        reviewWritingTextInputEditText.setText(event.pastModel.reviewText)
-                        reviewWritingRatingBar.rating = event.pastModel.rating
-                        // TODO 버튼 레이아웃 변경 회의 후 수정하기
+                    val model = event.pastModel
+                    if (model != null) {
+                        model.run {
+                            reviewTextValue = reviewText
+                            imageUrl = ""
+                            ratingValue = rating
+                            genderValue = gender
+                            generationValue = generation
+                            companionValue = companion
+                            reviewWritingTextInputEditText.setText(event.pastModel.reviewText)
+                            reviewWritingRatingBar.rating = event.pastModel.rating
+                            chipSet(event.pastModel) // 기존 리뷰의 칩 값 세팅
+                        }
                         return
                     }
                 }
@@ -265,6 +268,28 @@ class ReviewWritingFragment : Fragment() {
     private fun clickBackButton() {
         parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         sharedViewModel.onClickBackButton()
+    }
+
+    private fun chipSet(pastModel: ReviewWritingModel) = with(binding) {
+        when (pastModel.gender) {
+            getString(R.string.man) -> reviewWritingToggleManButton.isChecked = true
+            getString(R.string.woman) -> reviewWritingToggleWomanButton.isChecked = true
+        }
+        when (pastModel.generation) {
+            getString(R.string.generation_10) -> reviewWritingToggle10sButton.isChecked = true
+            getString(R.string.generation_20) -> reviewWritingToggle20sButton.isChecked = true
+            getString(R.string.generation_30) -> reviewWritingToggle30sButton.isChecked = true
+            getString(R.string.generation_40) -> reviewWritingToggle40sButton.isChecked = true
+            getString(R.string.generation_50_over) -> reviewWritingToggle50sOverButton.isChecked =
+                true
+        }
+        when (pastModel.companion) {
+            getString(R.string.family) -> reviewWritingToggleFamilyButton.isChecked = true
+            getString(R.string.bf_gf) -> reviewWritingToggleBfGfButton.isChecked = true
+            getString(R.string.friends) -> reviewWritingToggleFriendsButton.isChecked = true
+            getString(R.string.solo) -> reviewWritingToggleSoloButton.isChecked = true
+            getString(R.string.pet) -> reviewWritingTogglePetButton.isChecked = true
+        }
     }
 
     companion object {
