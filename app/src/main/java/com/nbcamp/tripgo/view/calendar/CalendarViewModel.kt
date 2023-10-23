@@ -77,9 +77,15 @@ class CalendarViewModel(
 
                 viewModelScope.launch(Dispatchers.IO) {
                     runCatching {
-                        val mySchedules = calendarRepository.getMySchedules(currentUser.email!!)
-                        cachingSchedule = mySchedules
-                        if (mySchedules.isEmpty()) {
+                        // 달력에 보여줄 정보
+                        val myAllSchedules = calendarRepository.getMySchedules(currentUser.email!!)
+                        // 리사이클러 뷰에 보여줄 정보
+                        val monthSchedules = myAllSchedules.filter {
+                            it.startDate?.slice(4..5)?.toInt() == Calendar.getInstance()
+                                .get(Calendar.MONTH) + 1
+                        }.sortedBy { it.startDate?.toInt() }.toMutableList()
+                        cachingSchedule = myAllSchedules
+                        if (myAllSchedules.isEmpty()) {
                             _myScheduleState.postValue(
                                 CalendarScheduleUiState.error(
                                     "일정을 추가하고 관리해보세요!",
@@ -90,7 +96,7 @@ class CalendarViewModel(
                         // 정상적으로 가져 왔을 때 myScheduleState livedata에 제공
                         _myScheduleState.postValue(
                             CalendarScheduleUiState(
-                                mySchedules, "", false
+                                myAllSchedules, monthSchedules, "", false
                             )
                         )
                     }.onFailure {
@@ -107,19 +113,24 @@ class CalendarViewModel(
 
                 viewModelScope.launch(Dispatchers.IO) {
                     runCatching {
-                        val mySchedules = calendarRepository.getMySchedules(currentUser.email!!)
-                        cachingSchedule = mySchedules
-                        if (mySchedules.isEmpty()) {
+                        val myAllSchedules = calendarRepository.getMySchedules(currentUser.email!!)
+                        val monthSchedules = myAllSchedules.filter {
+                            it.startDate?.slice(4..5)?.toInt() == Calendar.getInstance()
+                                .get(Calendar.MONTH) + 1
+                        }.sortedBy { it.startDate?.toInt() }.toMutableList()
+                        cachingSchedule = myAllSchedules
+                        if (myAllSchedules.isEmpty()) {
                             _myScheduleState.postValue(
                                 CalendarScheduleUiState(
-                                    emptyList(), "일정을 추가하고 관리해보세요!", false
+                                    emptyList(), emptyList(), "일정을 추가하고 관리해보세요!", false
                                 )
                             )
                             return@launch
                         }
                         _myScheduleState.postValue(
                             CalendarScheduleUiState(
-                                mySchedules,
+                                myAllSchedules,
+                                monthSchedules,
                                 "",
                                 false
                             )
@@ -172,7 +183,7 @@ class CalendarViewModel(
         val day = today.get(Calendar.DATE)
         val todayInt =
             "$year${if (month < 10) "0${month}" else "$month"}$day".toInt()
-        val nowDate =
+        val clickedDate =
             "${clickDate?.year ?: 100}${clickDate?.month ?: 100}${if ((clickDate?.day ?: 0) < 10) "0${clickDate?.day ?: 100}" else clickDate?.day ?: 100}".toInt()
         val list =
             selectedDayList?.map {
@@ -181,20 +192,19 @@ class CalendarViewModel(
 
         val getDateRangeValidEntity =
             cachingSchedule?.filter {
-                it.startDate.toString() <= nowDate.toString() && nowDate.toString() <= it.endDate.toString()
+                it.startDate.toString() <= clickedDate.toString() && clickedDate.toString() <= it.endDate.toString()
             }
 
         if (getDateRangeValidEntity?.isNotEmpty() == true) {
             _runDialogState.value = RunDialogUiState(
                 getDateRangeValidEntity.first(),
                 "",
-                todayInt >= nowDate && list.contains(nowDate)
+                todayInt >= clickedDate && list.contains(clickedDate)
             )
             return
         }
         _runDialogState.value = RunDialogUiState.error()
     }
-
 
     fun setRemoveData() {
         _runDialogState.value = RunDialogUiState.notOpenDialog()

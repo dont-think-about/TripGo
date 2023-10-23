@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -40,12 +41,11 @@ class CalendarFragment : Fragment() {
     private val scheduleListAdapter by lazy {
         ScheduleListAdapter { model ->
             runDialogForReviewWriting(model)
+            // line 137
             calendarViewModel.setRemoveData()
         }
     }
 
-    private val thisMonthScheduleList = arrayListOf<CalendarEntity>()
-    private var thisMonth: Int = 0
     private var isLoggedIn = false
     private var currentUser: Any? = null
     private val selectedDayList = arrayListOf<CalendarDay>()
@@ -80,6 +80,7 @@ class CalendarFragment : Fragment() {
                     // 돠어 있지 않으면 하단에 안내 메세지 띄움 + 캘린더 선택하면 스낵바 띄울 수 있도록 모드 변경
                     false -> {
                         calendarMainView.selectionMode = MaterialCalendarView.SELECTION_MODE_SINGLE
+                        calendarTitleTextView.isGone = true
                         calendarNoticeTextView.text = getString(R.string.log_in_and_submit_review)
                     }
                 }
@@ -88,7 +89,7 @@ class CalendarFragment : Fragment() {
             // 파이어 스토어로부터 데이터가 넘어 왔을 때, 관찰 되는 livedata
             myScheduleState.observe(viewLifecycleOwner) { state ->
                 if (state == CalendarScheduleUiState.error(state.message) ||
-                    state.data?.isEmpty() == true
+                    state.allSchedules?.isEmpty() == true
                 ) {
                     calendarNoticeTextView.isVisible = true
                     calendarProgressBar.isVisible = state.isLoading
@@ -97,17 +98,11 @@ class CalendarFragment : Fragment() {
                 }
                 calendarNoticeTextView.isVisible = false
                 calendarProgressBar.isVisible = state.isLoading
-                thisMonthScheduleList.run {
-                    clear()
-                    state.data?.let { addAll(it) }
-                }
                 // 뷰모델로 부터 관찰한 내 일정을 캘린더에 표시
-                showScheduleInCalendarView(state.data)
+                showScheduleInCalendarView(state.allSchedules)
 
                 // 뷰모델로 부터 관찰한 내 일정을 리사이클러뷰에 표시 (단, 현재 달만)  TODO 정렬을 뷰모델에서 하기
-                scheduleListAdapter.submitList(state.data?.filter {
-                    it.startDate?.slice(4..5) == thisMonth.toString()
-                }?.sortedBy { it.startDate?.toInt() }?.toMutableList())
+                scheduleListAdapter.submitList(state.monthSchedules)
             }
 
             // start ~ end date 사이의 기간을 달력에 표시
@@ -119,8 +114,8 @@ class CalendarFragment : Fragment() {
                         date.second,
                         date.third
                     )
+                    // 일정이 있는 날엔 달력에 따로 표시해 주기 위한 리스트
                     selectedDayList.add(selectedDay)
-                    calendarMainView.setDateSelected(selectedDay, true)
                 }
                 mcv.commit()
                 calendarMainView.addDecorator(
@@ -130,11 +125,6 @@ class CalendarFragment : Fragment() {
 
             // 달력을 넘겼을 때 관찰 되는 livedata
             changedMonthState.observe(viewLifecycleOwner) { changedList ->
-                // 현재 달만 보여 주기 위해 기존에 들어 있던 일정 정보를 지우고, 리스트에 추가
-                thisMonthScheduleList.run {
-                    clear()
-                    changedList?.let { addAll(it) }
-                }
                 // 리사이클러 뷰 어댑터에 보내기
                 scheduleListAdapter.submitList(changedList)
             }
@@ -169,9 +159,17 @@ class CalendarFragment : Fragment() {
     }
 
     private fun initViews() = with(binding) {
+        nestedScrollView.isNestedScrollingEnabled = false
         calendarMainView.run {
             val month = Calendar.getInstance().get(Calendar.MONTH)
-            addDecorators(SaturdayDecorator(month, 1), SundayDecorator(month, 1))
+            removeDecorators()
+            invalidateDecorators()
+            addDecorators(
+                SaturdayDecorator(month, 1),
+                SundayDecorator(month, 1),
+                OutDateMonthDecorator(requireActivity(), month + 1),
+                TodayDecorator(requireActivity())
+            )
             // 상단 바 월 이동 버튼 클릭 리스너
             setOnMonthChangedListener { _, date ->
                 removeDecorators()
@@ -183,7 +181,6 @@ class CalendarFragment : Fragment() {
                     SelectedDayDecorator(selectedDayList),
                     OutDateMonthDecorator(requireActivity(), date.month)
                 )
-                thisMonth = date.month
                 // 하단 리사이클러뷰의 리스트를 현재 달에 바꾸어줌
                 calendarViewModel.changeScheduleListForThisMonth(date)
             }
@@ -207,17 +204,37 @@ class CalendarFragment : Fragment() {
 
     private fun runDialogForReviewWriting(model: CalendarEntity?) {
         if (model?.isReviewed == false) {
-            setFancyDialog(requireActivity()) {
-                goToReviewFragment(model, currentUser)
+            setFancyDialog(
+                context = requireActivity(),
+                title = getString(R.string.review_writing),
+                message = getString(R.string.want_review),
+                positiveText = getString(R.string.yes),
+                negativeText = getString(R.string.no),
+                icon = R.drawable.icon_alert_review
+            ) {
+                goToReviewFragment(model, currentUser, WritingType.NEW)
             }.show()
             return
         }
-        requireActivity().toast(getString(R.string.already_write_review))
+        setFancyDialog(
+            context = requireActivity(),
+            title = "리뷰 수정",
+            message = "리뷰 수정을 하시겠나요?",
+            positiveText = getString(R.string.yes),
+            negativeText = getString(R.string.no),
+            icon = R.drawable.icon_alert_review
+        ) {
+            goToReviewFragment(model!!, currentUser, WritingType.MODIFY)
+        }.show()
     }
 
-    private fun goToReviewFragment(model: CalendarEntity, currentUser: Any?) {
+    private fun goToReviewFragment(
+        model: CalendarEntity,
+        currentUser: Any?,
+        writingType: WritingType
+    ) {
         val transactionReviewWriting = parentFragmentManager.beginTransaction()
-        sharedViewModel.setBasicReviewModel(model, currentUser)
+        sharedViewModel.setBasicReviewModel(model, currentUser, writingType)
         transactionReviewWriting.replace(
             R.id.main_fragment_container,
             ReviewWritingFragment.newInstance()
