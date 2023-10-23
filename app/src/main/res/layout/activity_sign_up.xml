@@ -70,6 +70,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
+                        android:id="@+id/sign_up_email_layout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -122,6 +123,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
+                        android:id="@+id/sign_up_nick_name_layout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -166,6 +168,7 @@
                     android:visibility="gone" />
 
                 <LinearLayout
+                    android:id="@+id/sign_up_password_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -201,6 +204,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/sign_up_correct_password_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/background_edit_text"
@@ -437,7 +441,6 @@
                     android:visibility="gone" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:onClick="@{() -> viewModel.signUpComplete()}"
                     android:id="@+id/sign_up_sign_up_complete_button"
                     style="@style/Font.16.Normal.Black"
                     android:layout_width="match_parent"
@@ -445,6 +448,7 @@
                     android:layout_marginTop="25dp"
                     android:layout_marginBottom="50dp"
                     android:background="@color/main"
+                    android:onClick="@{() -> viewModel.signUpComplete()}"
                     android:text="@string/sign_up_complete" />
 
             </LinearLayout>
