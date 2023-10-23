@@ -1,6 +1,7 @@
 package com.nbcamp.tripgo.data.service
 
 import com.nbcamp.tripgo.BuildConfig
+import com.nbcamp.tripgo.data.model.detailcommon.DetailCommonResponseModel
 import com.nbcamp.tripgo.data.model.festivals.FestivalResponseModel
 import com.nbcamp.tripgo.data.model.keywords.KeywordSearchResponseModel
 import com.nbcamp.tripgo.data.model.nearby.NearbyPlaceResponseModel
@@ -49,12 +50,29 @@ interface TourApiService {
         @Query("pageNo") pageNumber: String
     ): Response<NearbyPlaceResponseModel>
 
+    // 공통 정보 조회
+    @GET("KorService1/detailCommon1")
+    suspend fun getDetailInformation(
+        @QueryMap defaultQuerySet: HashMap<String, String> = DEFAULT_QUERY_SET,
+        @QueryMap defaultCommonSet: HashMap<String, String> = DEFAULT_COMMON_SET,
+        @Query("contentId") contentId: String?,
+    ): Response<DetailCommonResponseModel>
+
     companion object {
         val DEFAULT_QUERY_SET = hashMapOf(
             "serviceKey" to BuildConfig.TOUR_API_KEY,
             "MobileOS" to "AND",
             "MobileApp" to "TripGo",
             "_type" to "json"
+        )
+
+        val DEFAULT_COMMON_SET = hashMapOf(
+            "defaultYN" to "Y",
+            "firstImageYN" to "Y",
+            "areacodeYN" to "Y",
+            "addrinfoYN" to "Y",
+            "mapinfoYN" to "Y",
+            "overviewYN" to "Y",
         )
     }
 }
