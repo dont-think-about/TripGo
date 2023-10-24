@@ -37,6 +37,7 @@ class TourDetailActivity : AppCompatActivity() {
     private lateinit var loadingDialog: LoadingDialog
     private lateinit var selectedDayList: List<CalendarDay>
     private lateinit var dialog: AlertDialog
+    private lateinit var detailInfo: DetailCommonEntity
     private var calendarBinding: DialogCalendarBinding? = null
     private var currentUser: Any? = null
 
@@ -125,6 +126,7 @@ class TourDetailActivity : AppCompatActivity() {
             }
             state.detailInfo?.let { info ->
                 bindingInfo(info)
+                detailInfo = info
             }
         }
 
@@ -160,14 +162,17 @@ class TourDetailActivity : AppCompatActivity() {
                 CantSetDayDecorator(this@TourDetailActivity, dateList)
             )
         }
+
         myScheduleState.observe(this@TourDetailActivity) { state ->
             state.message?.let { toast(it) }
             calendarBinding?.calendarProgressBar?.isVisible = state.isLoading
         }
+
         calendarClickEvent.observe(this@TourDetailActivity) {
             toast(getString(R.string.cant_select_duplicate_schedule))
             calendarBinding?.addScheduleCalendarView?.clearSelection()
         }
+
         calendarSubmitClickEvent.observe(this@TourDetailActivity) {
             if (!it) {
                 toast(getString(R.string.please_select_schedule))
@@ -175,6 +180,19 @@ class TourDetailActivity : AppCompatActivity() {
             }
             dialog.dismiss()
             calendarBinding = null
+        }
+
+        // 일정 저장 중 상태에 따른 Ui 업데이트
+        addScheduleState.observe(this@TourDetailActivity) { state ->
+            if (state.isLoading) {
+                loadingDialog.run {
+                    setVisible()
+                    setText(state.message)
+                }
+            } else {
+                toast(getString(R.string.done_save_schedule))
+                loadingDialog.setInvisible()
+            }
         }
     }
 
@@ -222,7 +240,11 @@ class TourDetailActivity : AppCompatActivity() {
         dialog.run {
             show()
             getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                tourDetailViewModel.saveMySchedule()
+                tourDetailViewModel.saveMySchedule(
+                    festivalItem,
+                    keywordItem,
+                    detailInfo
+                )
             }
         }
     }
