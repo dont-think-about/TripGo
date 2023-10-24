@@ -17,4 +17,8 @@ interface TourDetailRepository {
         email: String?
     )
 
+    suspend fun getAverageRatingThisPlace(
+        contentId: String?
+    ): List<Float>
+
 }

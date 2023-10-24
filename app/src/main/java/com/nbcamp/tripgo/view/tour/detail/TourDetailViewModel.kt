@@ -19,6 +19,7 @@ import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.floor
 
 class TourDetailViewModel(
     private val tourDetailRepository: TourDetailRepository,
@@ -57,13 +58,20 @@ class TourDetailViewModel(
     val addScheduleState: LiveData<AddScheduleUiState>
         get() = _addScheduleState
 
+    private val _countAndRating: MutableLiveData<Pair<Int, Float>> = MutableLiveData()
+    val countAndRatting: LiveData<Pair<Int, Float>>
+        get() = _countAndRating
+
     private val scheduleDates = arrayListOf<CalendarDay>()
 
     fun runSearchDetailInformation(contentId: String?) {
         _detailUiState.value = DetailCommonUiState.initialize("로딩 중..")
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
+                // 상세 정보 가져오기
                 val response = tourDetailRepository.getDetailInformation(contentId)
+                // 평점 및 리뷰 개수 가져오기
+                getAverageRatingThisPlace(contentId)
                 _detailUiState.postValue(DetailCommonUiState(response, "로딩 완료", false))
             }.onFailure {
                 println(it.localizedMessage)
@@ -258,6 +266,19 @@ class TourDetailViewModel(
                     _loginStatus.value = CalendarLogInUiState(currentUser, true)
                 }
             }
+        }
+    }
+
+    private fun getAverageRatingThisPlace(contentId: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = tourDetailRepository.getAverageRatingThisPlace(contentId)
+            val filteredList = response.filterNot { it == -1f }
+            // 적힌 리뷰의 숫자 및 평점
+            val reviewCount = filteredList.count()
+            val averageRating = filteredList.sum()
+            _countAndRating.postValue(
+                reviewCount to floor((averageRating / reviewCount) * 10) / 10f
+            )
         }
     }
 }

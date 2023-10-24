@@ -107,6 +107,7 @@ class TourDetailActivity : AppCompatActivity() {
     }
 
     private fun runSearchDetailInformation(contentId: String?) {
+        // 관광지 상세 정보 및 리뷰에서 평점 가져오기
         tourDetailViewModel.runSearchDetailInformation(contentId)
     }
 
@@ -195,6 +196,11 @@ class TourDetailActivity : AppCompatActivity() {
                 loadingDialog.setInvisible()
             }
         }
+
+        countAndRatting.observe(this@TourDetailActivity) { numSet ->
+            "${numSet.second}점".also { binding.evaluation.text = it }
+            "${numSet.first}개의 리뷰".also { binding.tourReview.text = it }
+        }
     }
 
     private fun bindingInfo(info: DetailCommonEntity) = with(binding) {
@@ -219,7 +225,6 @@ class TourDetailActivity : AppCompatActivity() {
         showMore.setOnClickListener {
             controlFoldTextView()
         }
-        // TODO 평점 및 길찾기
     }
 
     private fun controlFoldTextView() = with(binding) {
