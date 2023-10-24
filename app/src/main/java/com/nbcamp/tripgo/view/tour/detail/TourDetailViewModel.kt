@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
+import com.nbcamp.tripgo.view.calendar.CalendarRepository
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarLogInUiState
 import com.nbcamp.tripgo.view.tour.detail.uistate.CalendarSetScheduleUiState
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
@@ -16,7 +17,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class TourDetailViewModel(
-    private val tourDetailRepository: TourDetailRepository
+    private val tourDetailRepository: TourDetailRepository,
+    private val calendarRepository: CalendarRepository
 ) : ViewModel() {
     private val _detailUiState: MutableLiveData<DetailCommonUiState> = MutableLiveData()
     val detailUiState: LiveData<DetailCommonUiState>
@@ -64,10 +66,9 @@ class TourDetailViewModel(
                     runCatching {
                         // 달력에 보여줄 정보
                         val myAllSchedules =
-                            tourDetailRepository.getMySchedules(currentUser.email!!)
+                            calendarRepository.getMySchedules(currentUser.email!!)
                         setSelectedDate(myAllSchedules)
                     }.onFailure {
-                        println(it.localizedMessage)
                         _myScheduleState.postValue(CalendarSetScheduleUiState.error("오류가 발생했습니다."))
                     }
                 }
@@ -81,10 +82,9 @@ class TourDetailViewModel(
                 viewModelScope.launch(Dispatchers.IO) {
                     runCatching {
                         val myAllSchedules =
-                            tourDetailRepository.getMySchedules(currentUser.email!!)
+                            calendarRepository.getMySchedules(currentUser.email!!)
                         setSelectedDate(myAllSchedules)
                     }.onFailure {
-                        println(it.localizedMessage)
                         _myScheduleState.postValue(CalendarSetScheduleUiState.error("오류가 발생했습니다."))
                     }
                 }
@@ -128,7 +128,7 @@ class TourDetailViewModel(
     }
 
     fun getLoginStatus() {
-        val currentUser = tourDetailRepository.getCurrentUser()
+        val currentUser = calendarRepository.getCurrentUser()
         when (currentUser) {
             is FirebaseUser -> {
                 _loginStatus.value = CalendarLogInUiState(currentUser, true)

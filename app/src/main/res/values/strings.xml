@@ -138,5 +138,7 @@
     <string name="cant_get_image_to_gallery">사진을 가져오지 못했습니다.</string>
     <string name="how_feel">은 어떠셨나요?\n후기를 남겨주세요!</string>
     <string name="no_detail_info">정보가 없습니다.</string>
+    <string name="modfy_review">리뷰 수정</string>
+    <string name="want_modify_review">리뷰 수정을 하시겠나요?</string>
 
 </resources>
