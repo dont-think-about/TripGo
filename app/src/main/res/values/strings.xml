@@ -92,7 +92,7 @@
     <string name="nick_name">닉네임</string>
     <string name="nick_name_error">이미 존재하는 닉네임 입니다.</string>
     <string name="password">비밀번호</string>
-    <string name="password_error">영문, 숫자를 포함하여 8자 이상이어야 합니다.</string>
+    <string name="password_error">영문, 숫자를 포함하여 8~20글자 이어야 합니다.</string>
     <string name="correct_password">비밀번호 확인</string>
     <string name="correct_password_error">비밀번호가 일치하지 않습니다.</string>
     <string name="full_agreement">전체 동의</string>

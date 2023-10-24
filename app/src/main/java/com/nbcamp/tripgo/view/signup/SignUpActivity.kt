@@ -121,7 +121,6 @@ class SignUpActivity : AppCompatActivity() {
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {}
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     if (validation(text.toString())) {
                         hideError()
@@ -134,11 +133,14 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         signUpEmailEditText.addValidation { email ->
-            email.matches(Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$"))
+            email.matches(Regex("[0-9a-zA-Z]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$"))
+
         }
 
         signUpPasswordEditText.addValidation { password ->
-            password.length >= 8
+            password.matches(
+                Regex("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{8,20}$")
+            )
         }
 
         signUpCorrectPasswordEditText.addValidation { passwordRepeat ->
@@ -174,5 +176,11 @@ class SignUpActivity : AppCompatActivity() {
 //            signUpSignUpCompleteButton.isEnabled = false
         }
     }
+
+    fun text(){
+
+    }
+
+
 
 }
