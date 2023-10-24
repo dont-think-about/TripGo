@@ -2,6 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -19,6 +28,7 @@
         android:theme="@style/Theme.TripGo"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
         <activity
             android:name=".view.SplashActivity"
             android:exported="false" />
@@ -49,13 +59,33 @@
         <activity
             android:name=".view.tour.TourActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".view.reviewwriting.gallery.GalleryActivity"
+            android:exported="false" />
         <activity
             android:name=".view.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth" -->
+                <!-- scheme-example: "kakao{NATIVE_APP_KEY}" -->
+                <data
+                    android:host="oauth"
+                    android:scheme="kakaoeca5f404da5dbd4674ad38f22b89fe02" />
+
             </intent-filter>
         </activity>
 

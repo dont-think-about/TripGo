@@ -4,20 +4,40 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nbcamp.tripgo.R
+import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
+import com.nbcamp.tripgo.view.calendar.WritingType
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
+import com.nbcamp.tripgo.view.reviewwriting.CalendarUserModel
 
 class MainViewModel : ViewModel() {
 
     private val _event: SingleLiveEvent<ThemeClickEvent> = SingleLiveEvent()
     val event: LiveData<ThemeClickEvent> get() = _event
 
+    private val _eventBackClick: SingleLiveEvent<Unit?> = SingleLiveEvent()
+    val eventBackClick: SingleLiveEvent<Unit?> get() = _eventBackClick
+
+    private val _eventPermission: SingleLiveEvent<PermissionEvent> = SingleLiveEvent()
+    val eventPermission: SingleLiveEvent<PermissionEvent> get() = _eventPermission
+
+    private val _eventSetLocation: SingleLiveEvent<Unit?> = SingleLiveEvent()
+    val eventSetLocation: SingleLiveEvent<Unit?> get() = _eventSetLocation
+
+    private val _eventRunGallery: SingleLiveEvent<Unit?> = SingleLiveEvent()
+    val eventRunGallery: SingleLiveEvent<Unit?> get() = _eventRunGallery
+
     // 현재 페이지를 바라볼 livedata
     private val _currentPageType: MutableLiveData<FragmentPageType> =
         MutableLiveData(FragmentPageType.PAGE_HOME)
     val currentPageType: LiveData<FragmentPageType>
         get() = _currentPageType
+
+    // 캘린더에서 리뷰 작성으로 넘어갈 때 보내줄 livedata
+    private val _calendarToReviewModel: MutableLiveData<CalendarUserModel> = MutableLiveData()
+    val calendarToReviewModel: LiveData<CalendarUserModel>
+        get() = _calendarToReviewModel
 
     fun runThemeTourActivity(themeId: TourTheme) {
         _event.value = ThemeClickEvent.RunTourThemeActivity(themeId)
@@ -29,6 +49,10 @@ class MainViewModel : ViewModel() {
 
     fun runAttractionActivity(model: ProvincePlaceEntity) {
         _event.value = ThemeClickEvent.RunAttractionActivity(model)
+    }
+
+    fun runLoginActivity() {
+        _event.value = ThemeClickEvent.RunLogInActivity
     }
 
     fun setCurrentPage(menuItemId: Int): Boolean {
@@ -51,5 +75,37 @@ class MainViewModel : ViewModel() {
         if (currentPageType.value == pageType)
             return
         _currentPageType.value = pageType
+    }
+
+    fun setBasicReviewModel(
+        model: CalendarEntity,
+        currentUser: Any?,
+        writingType: WritingType
+    ) {
+        _calendarToReviewModel.value = CalendarUserModel(
+            model,
+            currentUser,
+            writingType
+        )
+    }
+
+    fun onClickBackButton() {
+        _eventBackClick.call()
+    }
+
+    fun getGalleryPermissionEvent(permission: String) {
+        _eventPermission.value = PermissionEvent.GetGalleryPermission(permission)
+    }
+
+    fun getLocationPermissionEvent(permission: String) {
+        _eventPermission.value = PermissionEvent.GetLocationPermission(permission)
+    }
+
+    fun setLocationEvent() {
+        _eventSetLocation.call()
+    }
+
+    fun runGalleryEvent() {
+        _eventRunGallery.call()
     }
 }

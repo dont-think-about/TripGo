@@ -130,6 +130,8 @@
                 style="@style/Font.16.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
                 android:paddingVertical="4dp"
                 tools:text="031-228-4672" />
 
@@ -145,6 +147,8 @@
                 style="@style/Font.16.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
                 android:paddingVertical="4dp"
                 android:paddingBottom="4dp"
                 android:text="@string/move_to_home_page" />
