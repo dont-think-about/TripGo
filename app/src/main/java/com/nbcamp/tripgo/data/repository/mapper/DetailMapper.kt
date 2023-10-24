@@ -2,6 +2,9 @@ package com.nbcamp.tripgo.data.repository.mapper
 
 import android.text.Html
 import com.nbcamp.tripgo.data.model.detailcommon.DetailCommonItem
+import com.nbcamp.tripgo.data.model.festivals.FestivalItem
+import com.nbcamp.tripgo.data.model.keywords.KeywordItem
+import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 
 object DetailMapper {
@@ -16,6 +19,40 @@ object DetailMapper {
         imageUrl = firstimage,
         latitude = mapy,
         longitude = mapx
+    )
+
+    fun KeywordItem.toCalendarEntity(
+        startDate: String,
+        endDate: String,
+        detailInfo: DetailCommonEntity
+    ) = CalendarEntity(
+        id = null,
+        contentId = contentid,
+        startDate = startDate,
+        endDate = endDate,
+        title = title,
+        description = detailInfo.description,
+        telPhone = detailInfo.telPhoneNumber,
+        address = addr1 + addr2,
+        homePage = detailInfo.homePage,
+        isReviewed = false
+    )
+
+    fun FestivalItem.toCalendarEntity(
+        startDate: String,
+        endDate: String,
+        detailInfo: DetailCommonEntity
+    ) = CalendarEntity(
+        id = null,
+        contentId = contentid,
+        startDate = startDate,
+        endDate = endDate,
+        title = title,
+        description = detailInfo.description,
+        telPhone = detailInfo.telPhoneNumber,
+        address = addr1 + addr2,
+        homePage = detailInfo.homePage,
+        isReviewed = false
     )
 
 }

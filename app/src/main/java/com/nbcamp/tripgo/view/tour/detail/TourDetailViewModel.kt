@@ -6,10 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.kakao.sdk.user.model.Account
+import com.nbcamp.tripgo.data.model.festivals.FestivalItem
+import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
+import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
 import com.nbcamp.tripgo.view.calendar.CalendarRepository
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarLogInUiState
+import com.nbcamp.tripgo.view.tour.detail.uistate.AddScheduleUiState
 import com.nbcamp.tripgo.view.tour.detail.uistate.CalendarSetScheduleUiState
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -48,6 +52,10 @@ class TourDetailViewModel(
     private val _myScheduleState: MutableLiveData<CalendarSetScheduleUiState> = MutableLiveData()
     val myScheduleState: LiveData<CalendarSetScheduleUiState>
         get() = _myScheduleState
+
+    private val _addScheduleState: MutableLiveData<AddScheduleUiState> = MutableLiveData()
+    val addScheduleState: LiveData<AddScheduleUiState>
+        get() = _addScheduleState
 
     private val scheduleDates = arrayListOf<CalendarDay>()
 
@@ -170,12 +178,65 @@ class TourDetailViewModel(
         scheduleDates.addAll(dates)
     }
 
-    fun saveMySchedule() {
+    fun saveMySchedule(
+        festivalItem: FestivalItem?,
+        keywordItem: KeywordItem?,
+        detailInfo: DetailCommonEntity
+    ) {
+        _addScheduleState.value = AddScheduleUiState.initialize()
         if (scheduleDates.isEmpty()) {
             _calendarSubmitClickEvent.value = false
             return
         }
-        _calendarSubmitClickEvent.value = true
+        // 시작, 끝 날짜 구하기
+        val (startDate, endDate) = convertDate(scheduleDates)
+
+        // 사용자 정보 구하기
+        val email = if (loginStatus.value?.user is FirebaseUser) {
+            (loginStatus.value?.user as FirebaseUser).email
+        } else {
+            (loginStatus.value?.user as Account).email
+        }
+
+        // 저장 시작
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                tourDetailRepository.setMySchedule(
+                    festivalItem,
+                    keywordItem,
+                    detailInfo,
+                    startDate,
+                    endDate,
+                    email
+                )
+                // 저장 성공 상태로 업데이트
+                _addScheduleState.postValue(AddScheduleUiState("저장 성공", false))
+                // 캘린더 다이얼로그를 지우기 위한 이벤트
+                _calendarSubmitClickEvent.postValue(true)
+            }.onFailure {
+                _addScheduleState.postValue(AddScheduleUiState.error("저장 중 오류가 발생하였습니다."))
+            }
+        }
+
+
+    }
+
+    private fun convertDate(scheduleDates: ArrayList<CalendarDay>): Pair<String, String> {
+        val startDate = scheduleDates.first()
+        val endDate = scheduleDates.last()
+        val (startYear, startMonth, startDay) = listOf(
+            startDate.year,
+            startDate.month,
+            startDate.day
+        )
+        val (endYear, endMonth, endDay) = listOf(endDate.year, endDate.month, endDate.day)
+        val startMonthWithZero = if (startMonth < 10) "0${startMonth}" else "$startMonth"
+        val endMonthWithZero = if (endMonth < 10) "0${endMonth}" else "$endMonth"
+        val startDayWithZero = if (startDay < 10) "0${startDay}" else "$startDay"
+        val endDayWithZero = if (endDay < 10) "0${endDay}" else "$endDay"
+
+        return "$startYear$startMonthWithZero$startDayWithZero" to "$endYear$endMonthWithZero$endDayWithZero"
+
     }
 
     fun setUserOption() {
