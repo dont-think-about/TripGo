@@ -8,6 +8,7 @@ import com.nbcamp.tripgo.view.tour.detail.TourDetailRepository
 class TourDetailRepositoryImpl(
     private val tourApiService: TourApiService
 ) : TourDetailRepository {
+
     override suspend fun getDetailInformation(contentId: String?): DetailCommonEntity? {
         if (contentId == null)
             return null
@@ -23,5 +24,4 @@ class TourDetailRepositoryImpl(
         }
         return null
     }
-
 }

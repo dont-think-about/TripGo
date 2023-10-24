@@ -27,9 +27,9 @@ class CalendarViewModel(
     val myScheduleState: LiveData<CalendarScheduleUiState>
         get() = _myScheduleState
 
-    private val _schedulesDateState: MutableLiveData<List<Triple<Int, Int, Int>>> =
+    private val _schedulesDateState: MutableLiveData<List<CalendarDay>> =
         MutableLiveData()
-    val schedulesDateState: LiveData<List<Triple<Int, Int, Int>>>
+    val schedulesDateState: LiveData<List<CalendarDay>>
         get() = _schedulesDateState
 
     private val _changedMonthState: MutableLiveData<List<CalendarEntity>?> = MutableLiveData()
@@ -156,7 +156,14 @@ class CalendarViewModel(
                 dateList.add(Triple(year.toInt(), month, day))
             }
         }
-        _schedulesDateState.value = dateList
+        val selectedDay = dateList.map { date ->
+            CalendarDay.from(
+                date.first,
+                date.second,
+                date.third
+            )
+        }
+        _schedulesDateState.value = selectedDay
     }
 
     // 날짜 필터링을 통해 현재 달의 일정만 제공

@@ -186,19 +186,13 @@ class HomeFragment : Fragment() {
             provincePlaceListAdapter.submitList(state.list)
         }
 
-        sharedViewModel.eventSetLocation.observe(viewLifecycleOwner) { isDone ->
-            when (isDone) {
-                true -> {
-                    fusedLocationProviderClient.getCurrentLocation(
-                        Priority.PRIORITY_HIGH_ACCURACY,
-                        cancellationTokenSource!!.token
-                    ).addOnSuccessListener { location ->
-                        locationForScrollListener = location
-                        homeViewModel.getNearbyPlaceList(location, nearbyPageNumber)
-                    }
-                }
-
-                false -> Unit
+        sharedViewModel.eventSetLocation.observe(viewLifecycleOwner) {
+            fusedLocationProviderClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                cancellationTokenSource!!.token
+            ).addOnSuccessListener { location ->
+                locationForScrollListener = location
+                homeViewModel.getNearbyPlaceList(location, nearbyPageNumber)
             }
         }
     }

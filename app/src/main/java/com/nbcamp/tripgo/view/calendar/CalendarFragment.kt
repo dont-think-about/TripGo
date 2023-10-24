@@ -107,17 +107,12 @@ class CalendarFragment : Fragment() {
 
             // start ~ end date 사이의 기간을 달력에 표시
             schedulesDateState.observe(viewLifecycleOwner) { dateList ->
-                val mcv = calendarMainView.state().edit()
-                dateList.forEach { date ->
-                    val selectedDay = CalendarDay.from(
-                        date.first,
-                        date.second,
-                        date.third
-                    )
-                    // 일정이 있는 날엔 달력에 따로 표시해 주기 위한 리스트
-                    selectedDayList.add(selectedDay)
-                }
-                mcv.commit()
+//                val mcv = calendarMainView.state().edit()
+
+                // 일정이 있는 날엔 달력에 따로 표시해 주기 위한 리스트
+                selectedDayList.addAll(dateList)
+
+//                mcv.commit()
                 calendarMainView.addDecorator(
                     SelectedDayDecorator(selectedDayList)
                 )
@@ -218,8 +213,8 @@ class CalendarFragment : Fragment() {
         }
         setFancyDialog(
             context = requireActivity(),
-            title = "리뷰 수정",
-            message = "리뷰 수정을 하시겠나요?",
+            title = getString(R.string.modfy_review),
+            message = getString(R.string.want_modify_review),
             positiveText = getString(R.string.yes),
             negativeText = getString(R.string.no),
             icon = R.drawable.icon_alert_review
@@ -234,6 +229,7 @@ class CalendarFragment : Fragment() {
         writingType: WritingType
     ) {
         val transactionReviewWriting = parentFragmentManager.beginTransaction()
+        // review writing fragment로 데이터 전달
         sharedViewModel.setBasicReviewModel(model, currentUser, writingType)
         transactionReviewWriting.replace(
             R.id.main_fragment_container,

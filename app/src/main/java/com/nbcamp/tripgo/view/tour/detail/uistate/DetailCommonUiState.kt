@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.tour.detail
+package com.nbcamp.tripgo.view.tour.detail.uistate
 
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 
