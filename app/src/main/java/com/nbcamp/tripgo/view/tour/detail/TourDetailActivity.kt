@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import coil.load
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
@@ -96,7 +97,7 @@ class TourDetailActivity : AppCompatActivity() {
                 tourDetailViewModel.getMySchedules(currentUser!!)
                 runCalendarDialog()
             } else {
-                toast("로그인 되어 있지 않아 일정을 추가할 수 없습니다.")
+                toast(getString(R.string.not_login_so_dont_add_schedule))
             }
         }
 
@@ -158,10 +159,10 @@ class TourDetailActivity : AppCompatActivity() {
             calendarBinding?.addScheduleCalendarView?.addDecorator(
                 CantSetDayDecorator(this@TourDetailActivity, dateList)
             )
-            loadingDialog.setInvisible()
         }
         myScheduleState.observe(this@TourDetailActivity) { state ->
             state.message?.let { toast(it) }
+            calendarBinding?.calendarProgressBar?.isVisible = state.isLoading
         }
         calendarClickEvent.observe(this@TourDetailActivity) {
             toast(getString(R.string.cant_select_duplicate_schedule))
@@ -251,8 +252,10 @@ class TourDetailActivity : AppCompatActivity() {
             setOnRangeSelectedListener { _, dates ->
                 tourDetailViewModel.selectScheduleRange(dates, selectedDayList)
             }
-            setOnDateChangedListener { widget, date, selected ->
-                // TODO 사용자는 하루만 선택을 할 수도 있으므로 range가 끝나면 single도 생각해보기 -> datechangedListener 사용
+            setOnDateChangedListener { _, date, _ ->
+                // 사용자는 하루만 선택을 할 수도 있으므로 단일 처리도 해야함
+                val dates = listOf(date, date)
+                tourDetailViewModel.selectScheduleRange(dates, selectedDayList)
             }
         }
     }

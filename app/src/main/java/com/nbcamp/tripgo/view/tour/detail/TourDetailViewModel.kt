@@ -68,6 +68,7 @@ class TourDetailViewModel(
     fun getMySchedules(currentUser: Any) {
         // 이전에 지정한 일정 우선 제거
         scheduleDates.clear()
+        _myScheduleState.value = CalendarSetScheduleUiState.initialize()
         when (currentUser) {
             is FirebaseUser -> {
                 if (currentUser.email == null) {
@@ -124,6 +125,7 @@ class TourDetailViewModel(
                 date.third
             )
         }
+        _myScheduleState.postValue(CalendarSetScheduleUiState(emptyList(), null, false))
         _schedulesDateState.postValue(selectedDateList)
     }
 
