@@ -145,5 +145,6 @@
     <string name="save">저장</string>
     <string name="not_login_so_dont_add_schedule">로그인 되어 있지 않아 일정을 추가할 수 없습니다.</string>
     <string name="done_save_schedule">일정 저장이 완료되었습니다.</string>
+    <string name="fold_description">접기 -</string>
 
 </resources>

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -205,7 +206,36 @@ class TourDetailActivity : AppCompatActivity() {
         addressTourDetail.text = info.description.ifEmpty { getString(R.string.no_detail_info) }
         phoneNumber.text = info.telPhoneNumber.ifEmpty { getString(R.string.no_detail_info) }
         moveToHomepage.text = info.homePage.ifEmpty { getString(R.string.no_detail_info) }
+        addressTourDetail.post {
+            with(addressTourDetail) {
+                if (addressTourDetail.lineCount > 5) {
+                    maxLines = 5
+                    ellipsize = TextUtils.TruncateAt.END
+                } else {
+                    showMore.isVisible = false
+                }
+            }
+        }
+        showMore.setOnClickListener {
+            controlFoldTextView()
+        }
         // TODO 평점 및 길찾기
+    }
+
+    private fun controlFoldTextView() = with(binding) {
+        when (showMore.text) {
+            getString(R.string.more_description) -> {
+                addressTourDetail.maxLines = Integer.MAX_VALUE
+                addressTourDetail.ellipsize = null
+                showMore.text = getString(R.string.fold_description)
+            }
+
+            else -> {
+                addressTourDetail.maxLines = 5
+                addressTourDetail.ellipsize = TextUtils.TruncateAt.END
+                showMore.text = getString(R.string.more_description)
+            }
+        }
     }
 
     private fun makePhoneCall(phoneNumber: String) {
