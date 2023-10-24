@@ -28,6 +28,14 @@ class TourDetailViewModel(
     val textClickEvent: SingleLiveEvent<TextClickEvent>
         get() = _textClickEvent
 
+    private val _calendarClickEvent: SingleLiveEvent<Unit?> = SingleLiveEvent()
+    val calendarClickEvent: SingleLiveEvent<Unit?>
+        get() = _calendarClickEvent
+
+    private val _calendarSubmitClickEvent: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val calendarSubmitClickEvent: SingleLiveEvent<Boolean>
+        get() = _calendarSubmitClickEvent
+
     private val _loginStatus: MutableLiveData<CalendarLogInUiState> = MutableLiveData()
     val loginStatus: LiveData<CalendarLogInUiState>
         get() = _loginStatus
@@ -40,6 +48,8 @@ class TourDetailViewModel(
     private val _myScheduleState: MutableLiveData<CalendarSetScheduleUiState> = MutableLiveData()
     val myScheduleState: LiveData<CalendarSetScheduleUiState>
         get() = _myScheduleState
+
+    private val scheduleDates = arrayListOf<CalendarDay>()
 
     fun runSearchDetailInformation(contentId: String?) {
         _detailUiState.value = DetailCommonUiState.initialize("로딩 중..")
@@ -56,6 +66,8 @@ class TourDetailViewModel(
 
 
     fun getMySchedules(currentUser: Any) {
+        // 이전에 지정한 일정 우선 제거
+        scheduleDates.clear()
         when (currentUser) {
             is FirebaseUser -> {
                 if (currentUser.email == null) {
@@ -140,6 +152,48 @@ class TourDetailViewModel(
 
             null -> {
                 _loginStatus.value = CalendarLogInUiState(null, false)
+            }
+        }
+    }
+
+    fun selectScheduleRange(dates: List<CalendarDay>, selectedDayList: List<CalendarDay>) {
+        if (dates.intersect(selectedDayList.toSet()).isNotEmpty()) {
+            // 겹치는 부분이 있으면 이전 저장 되어 있던 것 제거
+            // 제거 안하면 확인 클릭 했을 때 isEmpty를 통과 하여 이상 현상 발생
+            scheduleDates.clear()
+            _calendarClickEvent.call()
+            return
+        }
+        scheduleDates.clear()
+        scheduleDates.addAll(dates)
+    }
+
+    fun saveMySchedule() {
+        if (scheduleDates.isEmpty()) {
+            _calendarSubmitClickEvent.value = false
+            return
+        }
+        _calendarSubmitClickEvent.value = true
+    }
+
+    fun setUserOption() {
+        val currentUser = loginStatus.value?.user
+        when {
+            currentUser == null -> {
+                _loginStatus.value = CalendarLogInUiState(null, false)
+            }
+
+//            (currentUser as FirebaseUser).isEmailVerified.not() || (currentUser as Account).isEmailVerified!!.not() -> {
+//                toast("이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.")
+            // 테스트 할 떄는 주석 풀고, 이메일 인증 기능이 완성 되면 주석 처리
+//                tourDetailViewModel.getMySchedules(currentUser)
+//                runCalendarDialog()
+//            }
+
+            else -> {
+                currentUser.let {
+                    _loginStatus.value = CalendarLogInUiState(currentUser, true)
+                }
             }
         }
     }

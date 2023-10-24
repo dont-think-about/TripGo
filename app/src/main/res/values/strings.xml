@@ -140,5 +140,8 @@
     <string name="no_detail_info">정보가 없습니다.</string>
     <string name="modfy_review">리뷰 수정</string>
     <string name="want_modify_review">리뷰 수정을 하시겠나요?</string>
+    <string name="cant_select_duplicate_schedule">겹치는 일정이 있어 선택할 수 없습니다.</string>
+    <string name="please_select_schedule">일정을 선택해주세요</string>
+    <string name="save">저장</string>
 
 </resources>

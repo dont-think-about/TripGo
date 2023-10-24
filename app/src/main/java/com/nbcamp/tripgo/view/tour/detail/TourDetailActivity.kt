@@ -35,9 +35,9 @@ class TourDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTourDetailBinding
     private lateinit var loadingDialog: LoadingDialog
     private lateinit var selectedDayList: List<CalendarDay>
+    private lateinit var dialog: AlertDialog
     private var calendarBinding: DialogCalendarBinding? = null
     private var currentUser: Any? = null
-
 
     private val tourDetailViewModel: TourDetailViewModel by viewModels {
         TourDetailViewModelFactory(
@@ -91,7 +91,13 @@ class TourDetailActivity : AppCompatActivity() {
             tourDetailViewModel.moveToHomePage()
         }
         moveToCalendar.setOnClickListener {
-            setUserOption()
+            tourDetailViewModel.setUserOption()
+            if (currentUser != null) {
+                tourDetailViewModel.getMySchedules(currentUser!!)
+                runCalendarDialog()
+            } else {
+                toast("로그인 되어 있지 않아 일정을 추가할 수 없습니다.")
+            }
         }
 
         runSearchDetailInformation(contentId)
@@ -143,20 +149,31 @@ class TourDetailActivity : AppCompatActivity() {
         }
 
         loginStatus.observe(this@TourDetailActivity) { state ->
-            if (state.user != null)
-                currentUser = state.user
+            // 유저 정보 확인
+            currentUser = state.user
         }
 
         schedulesDateState.observe(this@TourDetailActivity) { dateList ->
-            val mcv = calendarBinding?.addScheduleCalendarView
             selectedDayList = dateList
-            mcv?.addDecorator(
+            calendarBinding?.addScheduleCalendarView?.addDecorator(
                 CantSetDayDecorator(this@TourDetailActivity, dateList)
             )
             loadingDialog.setInvisible()
         }
         myScheduleState.observe(this@TourDetailActivity) { state ->
             state.message?.let { toast(it) }
+        }
+        calendarClickEvent.observe(this@TourDetailActivity) {
+            toast(getString(R.string.cant_select_duplicate_schedule))
+            calendarBinding?.addScheduleCalendarView?.clearSelection()
+        }
+        calendarSubmitClickEvent.observe(this@TourDetailActivity) {
+            if (!it) {
+                toast(getString(R.string.please_select_schedule))
+                return@observe
+            }
+            dialog.dismiss()
+            calendarBinding = null
         }
     }
 
@@ -193,16 +210,20 @@ class TourDetailActivity : AppCompatActivity() {
     private fun runCalendarDialog() {
         calendarBinding = DialogCalendarBinding.inflate(layoutInflater)
         setCalendarOption()
-        AlertDialog.Builder(this)
+        dialog = AlertDialog.Builder(this)
             .setTitle("일정 추가")
             .setView(calendarBinding?.root)
-            .setPositiveButton("저장") { _, _ ->
-                calendarBinding = null
-            }.setNegativeButton("취소") { _, _ ->
+            .setPositiveButton(getString(R.string.save)) { _, _ -> }
+            .setNegativeButton(getString(R.string.disagree_permission)) { _, _ ->
                 calendarBinding = null
             }
             .create()
-            .show()
+        dialog.run {
+            show()
+            getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                tourDetailViewModel.saveMySchedule()
+            }
+        }
     }
 
     private fun setCalendarOption() = with(calendarBinding!!) {
@@ -227,34 +248,11 @@ class TourDetailActivity : AppCompatActivity() {
                     CantSetDayDecorator(this@TourDetailActivity, selectedDayList)
                 )
             }
-            // TODO 사용자는 하루만 선택을 할 수도 있으므로 range가 끝나면 single도 생각해보기
-            setOnRangeSelectedListener { widget, dates ->
-                // TODO 선택한 일정 추가하기
-                println(dates)
+            setOnRangeSelectedListener { _, dates ->
+                tourDetailViewModel.selectScheduleRange(dates, selectedDayList)
             }
-        }
-    }
-
-    private fun setUserOption() {
-        loadingDialog.setVisible()
-        when {
-            currentUser == null -> {
-                toast("로그인 되어 있지 않아 일정을 추가할 수 없습니다.")
-                loadingDialog.setInvisible()
-            }
-
-//            (currentUser as FirebaseUser).isEmailVerified.not() || (currentUser as Account).isEmailVerified!!.not() -> {
-//                toast("이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.")
-            // 테스트 할 떄는 주석 풀고, 이메일 인증 기능이 완성 되면 주석 처리
-//                tourDetailViewModel.getMySchedules(currentUser)
-//                runCalendarDialog()
-//            }
-
-            else -> {
-                currentUser?.let {
-                    tourDetailViewModel.getMySchedules(it)
-                    runCalendarDialog()
-                }
+            setOnDateChangedListener { widget, date, selected ->
+                // TODO 사용자는 하루만 선택을 할 수도 있으므로 range가 끝나면 single도 생각해보기 -> datechangedListener 사용
             }
         }
     }
