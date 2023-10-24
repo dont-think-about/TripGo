@@ -190,6 +190,7 @@ class TourDetailActivity : AppCompatActivity() {
                     setText(state.message)
                 }
             } else {
+                toast(getString(R.string.done_save_schedule))
                 loadingDialog.setInvisible()
             }
         }

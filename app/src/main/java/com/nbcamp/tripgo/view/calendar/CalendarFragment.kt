@@ -47,6 +47,7 @@ class CalendarFragment : Fragment() {
     private var isLoggedIn = false
     private var currentUser: Any? = null
     private val selectedDayList = arrayListOf<CalendarDay>()
+    private val month = Calendar.getInstance().get(Calendar.MONTH)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -97,19 +98,28 @@ class CalendarFragment : Fragment() {
                 calendarNoticeTextView.isVisible = false
                 calendarProgressBar.isVisible = state.isLoading
                 // 뷰모델로 부터 관찰한 내 일정을 캘린더에 표시
-                showScheduleInCalendarView(state.allSchedules)
+                showScheduleInCalendarView(state.allSchedules?.toMutableList())
 
                 // 뷰모델로 부터 관찰한 내 일정을 리사이클러뷰에 표시 (단, 현재 달만)
-                scheduleListAdapter.submitList(state.monthSchedules)
+                scheduleListAdapter.submitList(state.monthSchedules?.toMutableList())
             }
 
             // start ~ end date 사이의 기간을 달력에 표시
             schedulesDateState.observe(viewLifecycleOwner) { dateList ->
+
                 // 일정이 있는 날엔 달력에 따로 표시해 주기 위한 리스트
                 selectedDayList.addAll(dateList)
-                calendarMainView.addDecorator(
-                    SelectedDayDecorator(selectedDayList)
-                )
+                calendarMainView.run {
+                    removeDecorators()
+                    invalidateDecorators()
+                    addDecorators(
+                        SelectedDayDecorator(selectedDayList),
+                        SaturdayDecorator(month, 1),
+                        SundayDecorator(month, 1),
+                        OutDateMonthDecorator(requireActivity(), month + 1),
+                        TodayDecorator(requireActivity())
+                    )
+                }
             }
 
             // 달력을 넘겼을 때 관찰 되는 livedata
@@ -144,7 +154,6 @@ class CalendarFragment : Fragment() {
     private fun initViews() = with(binding) {
         nestedScrollView.isNestedScrollingEnabled = false
         calendarMainView.run {
-            val month = Calendar.getInstance().get(Calendar.MONTH)
             removeDecorators()
             invalidateDecorators()
             addDecorators(
