@@ -142,8 +142,8 @@
             android:text="@string/social_login"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/log_in_option_layout" />
-
-        <androidx.appcompat.widget.AppCompatImageView
+        
+        <com.google.android.gms.common.SignInButton
             android:id="@+id/log_in_google_login_button"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
@@ -153,7 +153,8 @@
             app:layout_constraintEnd_toStartOf="@id/log_in_kakao_login_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/log_in_social_login_text_view"
-            app:srcCompat="@drawable/icon_login_google" />
+            app:srcCompat="@drawable/icon_login_google"/>
+
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/log_in_kakao_login_button"
