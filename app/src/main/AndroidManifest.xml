@@ -28,6 +28,7 @@
         android:theme="@style/Theme.TripGo"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
         <activity
             android:name=".view.SplashActivity"
             android:exported="false" />
@@ -58,6 +59,7 @@
         <activity
             android:name=".view.tour.TourActivity"
             android:exported="false" />
+
         <activity
             android:name=".view.reviewwriting.gallery.GalleryActivity"
             android:exported="false" />
@@ -66,8 +68,24 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth" -->
+                <!-- scheme-example: "kakao{NATIVE_APP_KEY}" -->
+                <data
+                    android:host="oauth"
+                    android:scheme="kakaoeca5f404da5dbd4674ad38f22b89fe02" />
+
             </intent-filter>
         </activity>
 
