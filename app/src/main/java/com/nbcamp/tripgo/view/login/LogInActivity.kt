@@ -36,6 +36,7 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
+import com.nbcamp.tripgo.BuildConfig
 import com.nbcamp.tripgo.databinding.ActivityMainBinding
 
 class LogInActivity : AppCompatActivity() {
@@ -82,8 +83,9 @@ class LogInActivity : AppCompatActivity() {
 
         //kakao 선언 시작 ~
         /** KakaoSDK init */
-        KakaoSdk.init(this, this.getString(R.string.kakao_app_key))
-        Log.d("kakaoappkey",  "kakaoappkey" + R.string.kakao_app_key)
+
+        KakaoSdk.init(this, BuildConfig.KAKAO_API_KEY)
+        Log.d("kakaoappkey",  "kakaoappkey" + BuildConfig.KAKAO_API_KEY)
 
 
         kakaoLoginButton = findViewById(R.id.log_in_kakao_login_button)
