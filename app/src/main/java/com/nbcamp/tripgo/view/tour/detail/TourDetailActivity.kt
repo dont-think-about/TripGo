@@ -96,13 +96,22 @@ class TourDetailActivity : AppCompatActivity() {
         moveToHomepage.setOnClickListener {
             tourDetailViewModel.moveToHomePage()
         }
+        btnHeart.setOnClickListener {
+            it.isSelected = it.isSelected.not()
+            if (it.isSelected) {
+                // TODO 좋아요 정보 저장
+                tourDetailViewModel.saveLikePlace(detailInfo)
+                return@setOnClickListener
+            }
+            // TODO 좋아요 정보 삭제
+            tourDetailViewModel.removeLikePlace(detailInfo)
+        }
         moveToCalendar.setOnClickListener {
             tourDetailViewModel.setUserOption()
             if (currentUser != null) {
                 tourDetailViewModel.getMySchedules(currentUser!!)
                 runCalendarDialog()
             } else {
-//                toast(getString(R.string.not_login_so_dont_add_schedule))
                 Snackbar.make(
                     binding.root,
                     getString(R.string.not_login_so_dont_add_schedule),

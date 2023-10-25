@@ -303,4 +303,12 @@ class TourDetailViewModel(
             )
         }
     }
+
+    fun saveLikePlace(detailInfo: DetailCommonEntity) {
+        TODO("Not yet implemented")
+    }
+
+    fun removeLikePlace(detailInfo: DetailCommonEntity) {
+        TODO("Not yet implemented")
+    }
 }

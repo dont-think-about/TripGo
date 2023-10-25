@@ -1,20 +1,15 @@
 package com.nbcamp.tripgo.view.tour
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nbcamp.tripgo.BuildConfig
-import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
-import com.nbcamp.tripgo.data.service.ExamService
 import com.nbcamp.tripgo.data.service.RetrofitModule
-import com.nbcamp.tripgo.data.service.TourApiService
 import com.nbcamp.tripgo.databinding.ActivityTourBinding
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.tour.adapter.TourAdapter
@@ -23,7 +18,7 @@ import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 import kotlinx.coroutines.launch
 
 class TourActivity : AppCompatActivity() {
-    private lateinit var tourTheme: TourTheme
+    private var tourTheme: Int = 0
 
     private val binding: ActivityTourBinding by lazy {
         ActivityTourBinding.inflate(layoutInflater)
@@ -49,13 +44,13 @@ class TourActivity : AppCompatActivity() {
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            tourTheme = (intent?.getParcelableExtra("theme", TourTheme::class.java))!!
-
-        } else {
-            tourTheme = (intent?.getParcelableExtra("theme"))!!
-
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        tourTheme = intent.getIntExtra("theme", 0)
+//
+//        } else {
+//            tourTheme = intent.getIntExtra("theme")
+//
+//        }
 
         initView()
 
@@ -64,39 +59,40 @@ class TourActivity : AppCompatActivity() {
     private fun initView() {
 
         when (tourTheme) {
-            TourTheme.FAMILY -> {
+            TourTheme.FAMILY.themeId -> {
 
                 retrofitThemeSearch("가족")
 
             }
 
-            TourTheme.HEALING -> {
+            TourTheme.HEALING.themeId -> {
 
                 retrofitThemeSearch("힐링")
 
 
             }
 
-            TourTheme.CAMPING -> {
+            TourTheme.CAMPING.themeId -> {
                 retrofitThemeSearch("캠핑")
 
             }
 
-            TourTheme.TASTY -> {
+            TourTheme.TASTY.themeId -> {
 
                 retrofitThemeSearch("맛")
 
 
             }
 
-            TourTheme.POPULAR -> {
+            TourTheme.POPULAR.themeId -> {
 
                 retorifitwork()
 
             }
 
-            TourTheme.NEARBY -> Unit
-            TourTheme.SEARCH -> Unit
+            TourTheme.NEARBY.themeId -> Unit
+            TourTheme.SEARCH.themeId -> Unit
+            else -> {}
         }
 
     }
