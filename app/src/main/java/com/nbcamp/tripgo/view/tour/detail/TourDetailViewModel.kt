@@ -213,11 +213,11 @@ class TourDetailViewModel(
         keywordItem: KeywordItem?,
         detailInfo: DetailCommonEntity
     ) {
-        _addScheduleState.value = AddScheduleUiState.initialize()
         if (scheduleDates.isEmpty()) {
             _calendarSubmitClickEvent.value = false
             return
         }
+        _addScheduleState.value = AddScheduleUiState.initialize()
         // 시작, 끝 날짜 구하기
         val (startDate, endDate) = convertDate(scheduleDates)
 
