@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import coil.load
+import com.google.android.material.snackbar.Snackbar
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
@@ -26,6 +27,7 @@ import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
 import com.nbcamp.tripgo.util.calendar.SundayDecorator
 import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.main.MainViewModel
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.util.Calendar
@@ -47,6 +49,7 @@ class TourDetailActivity : AppCompatActivity() {
             this
         )
     }
+    private val sharedViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,7 +102,14 @@ class TourDetailActivity : AppCompatActivity() {
                 tourDetailViewModel.getMySchedules(currentUser!!)
                 runCalendarDialog()
             } else {
-                toast(getString(R.string.not_login_so_dont_add_schedule))
+//                toast(getString(R.string.not_login_so_dont_add_schedule))
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.not_login_so_dont_add_schedule),
+                    5000
+                ).setAction("LOGIN") {
+                    sharedViewModel.runLoginActivity()
+                }.show()
             }
         }
 
@@ -128,6 +138,7 @@ class TourDetailActivity : AppCompatActivity() {
             }
             state.detailInfo?.let { info ->
                 bindingInfo(info)
+                tourDetailViewModel.getRouteImage(info)
                 detailInfo = info
             }
         }
@@ -200,6 +211,10 @@ class TourDetailActivity : AppCompatActivity() {
         countAndRatting.observe(this@TourDetailActivity) { numSet ->
             "${numSet.second}점".also { binding.evaluation.text = it }
             "${numSet.first}개의 리뷰".also { binding.tourReview.text = it }
+        }
+
+        routeImage.observe(this@TourDetailActivity) {
+            binding.routeImage.load(it)
         }
     }
 

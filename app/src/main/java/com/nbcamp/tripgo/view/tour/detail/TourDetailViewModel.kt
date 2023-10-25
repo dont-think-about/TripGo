@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.tour.detail
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,7 @@ import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.calendar.CalendarRepository
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarLogInUiState
 import com.nbcamp.tripgo.view.tour.detail.uistate.AddScheduleUiState
@@ -62,6 +64,10 @@ class TourDetailViewModel(
     val countAndRatting: LiveData<Pair<Int, Float>>
         get() = _countAndRating
 
+    private val _routeImage: MutableLiveData<Bitmap?> = MutableLiveData()
+    val routeImage: LiveData<Bitmap?>
+        get() = _routeImage
+
     private val scheduleDates = arrayListOf<CalendarDay>()
 
     fun runSearchDetailInformation(contentId: String?) {
@@ -74,8 +80,23 @@ class TourDetailViewModel(
                 getAverageRatingThisPlace(contentId)
                 _detailUiState.postValue(DetailCommonUiState(response, "로딩 완료", false))
             }.onFailure {
-                println(it.localizedMessage)
                 _detailUiState.postValue(DetailCommonUiState.error("정보를 가져 오는데 실패했습니다."))
+            }
+        }
+    }
+
+    fun getRouteImage(info: DetailCommonEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                val response = tourDetailRepository.getRouteImage(
+                    App.latitude,
+                    App.longitude,
+                    info.latitude.toDouble(),
+                    info.longitude.toDouble(),
+                )
+                _routeImage.postValue(response)
+            }.onFailure {
+                _routeImage.postValue(null)
             }
         }
     }

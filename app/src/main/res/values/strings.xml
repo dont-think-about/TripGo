@@ -15,7 +15,7 @@
     <string name="home_page">홈페이지</string>
     <string name="move_to_home_page">홈페이지로 이동 - 터치 시 이동</string>
     <string name="rating">평점</string>
-    <string name="find_road">길찾기</string>
+    <string name="find_road">경로 안내</string>
     <string name="move_to_tmap">TMAP으로 이동</string>
     <string name="add_to_calendar">캘린더에 일정 추가하기</string>
     <string name="go_go">고민말GO 여행GO</string>

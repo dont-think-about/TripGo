@@ -1,17 +1,21 @@
 package com.nbcamp.tripgo.data.repository
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.repository.mapper.DetailMapper.toCalendarEntity
 import com.nbcamp.tripgo.data.repository.mapper.DetailMapper.toDetailCommonEntity
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
+import com.nbcamp.tripgo.data.service.TMapApiService
 import com.nbcamp.tripgo.data.service.TourApiService
 import com.nbcamp.tripgo.view.tour.detail.TourDetailRepository
 import kotlinx.coroutines.tasks.await
 
 class TourDetailRepositoryImpl(
-    private val tourApiService: TourApiService
+    private val tourApiService: TourApiService,
+    private val tMapApiService: TMapApiService
 ) : TourDetailRepository {
 
     private val fireStore = FirebaseFirestore.getInstance()
@@ -88,7 +92,6 @@ class TourDetailRepositoryImpl(
                     .get()
                     .await()
             reviewReference.documents.forEach { document ->
-                println(document.data?.entries)
                 if (document.data?.get("contentId") == contentId) {
                     ratingList.add(document.data?.get("rating").toString().toFloat())
                 } else {
@@ -98,6 +101,27 @@ class TourDetailRepositoryImpl(
             }
         }
         return ratingList
+    }
+
+    override suspend fun getRouteImage(
+        startLatitude: Double,
+        startLongitude: Double,
+        endLatitude: Double,
+        endLongitude: Double
+    ): Bitmap? {
+        val response = tMapApiService.getRouteImage(
+            startLatitude = startLatitude,
+            startLongitude = startLongitude,
+            endLatitude = endLatitude,
+            endLongitude = endLongitude
+        )
+        if (response.isSuccessful) {
+            response.body()?.let {
+                return BitmapFactory.decodeStream(it.byteStream())
+            }
+        }
+
+        return null
     }
 
 }
