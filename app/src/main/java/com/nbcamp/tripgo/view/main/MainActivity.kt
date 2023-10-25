@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.R
@@ -187,6 +188,10 @@ class MainActivity : AppCompatActivity() {
                         setText(setUserEvent.message)
                         setInvisible()
                     }
+                    Snackbar.make(binding.root, "회원 정보 확인이 실패했습니다\n 재로그인 해주세요", 5000)
+                        .setAction("LOGIN") {
+                            sharedViewModel.runLoginActivity()
+                        }.show()
                 }
 
                 is SetUserEvent.Success -> {

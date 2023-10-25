@@ -125,6 +125,7 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
                 UserApiClient.instance.me { user, error ->
+                    println("kakaoUser: $user")
                     user?.let {
                         _eventSetUser.postValue(
                             SetUserEvent.Success(
@@ -136,6 +137,7 @@ class MainViewModel : ViewModel() {
                 }
 
                 val firebaseUser = firebaseAuth.currentUser
+                println("firebaseUser: $firebaseUser")
                 firebaseUser?.let {
                     _eventSetUser.postValue(
                         SetUserEvent.Success(
@@ -144,7 +146,6 @@ class MainViewModel : ViewModel() {
                         )
                     )
                 }
-                _eventSetUser.postValue(SetUserEvent.Error("회원 정보 로딩 실패.."))
             }.onFailure {
                 _eventSetUser.postValue(SetUserEvent.Error("회원 정보 로딩 실패.."))
             }
