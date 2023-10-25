@@ -29,4 +29,15 @@ interface TourDetailRepository {
         endLongitude: Double,
     ): Bitmap?
 
+    suspend fun saveLikePlace(
+        detailInfo: DetailCommonEntity,
+        contentId: String,
+        currentUser: Any?
+    )
+
+    suspend fun removeLikePlace(
+        contentId: String,
+        currentUser: Any?
+    )
+
 }

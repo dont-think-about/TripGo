@@ -97,14 +97,19 @@ class TourDetailActivity : AppCompatActivity() {
             tourDetailViewModel.moveToHomePage()
         }
         btnHeart.setOnClickListener {
+            // 좋아요 버튼 상태 조작
             it.isSelected = it.isSelected.not()
-            if (it.isSelected) {
-                // TODO 좋아요 정보 저장
-                tourDetailViewModel.saveLikePlace(detailInfo)
-                return@setOnClickListener
+            // 저장 및 삭제
+            if (currentUser != null) {
+                if (it.isSelected) {
+                    tourDetailViewModel.saveLikePlace(detailInfo, contentId, currentUser!!)
+                    return@setOnClickListener
+                }
+                tourDetailViewModel.removeLikePlace(contentId, currentUser)
+            } else {
+                toast("로그인이 되어 있지 않아 찜 목록에 추가할 수 없습니다.")
             }
-            // TODO 좋아요 정보 삭제
-            tourDetailViewModel.removeLikePlace(detailInfo)
+
         }
         moveToCalendar.setOnClickListener {
             tourDetailViewModel.setUserOption()
@@ -239,6 +244,10 @@ class TourDetailActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+
+        likeClickEvent.observe(this@TourDetailActivity) {
+            Snackbar.make(binding.root, getString(R.string.like_place) + it, 2000).show()
         }
     }
 
