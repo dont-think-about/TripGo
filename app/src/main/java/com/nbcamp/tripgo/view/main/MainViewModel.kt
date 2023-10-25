@@ -3,6 +3,9 @@ package com.nbcamp.tripgo.view.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
@@ -10,23 +13,29 @@ import com.nbcamp.tripgo.view.calendar.WritingType
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.reviewwriting.CalendarUserModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
     private val _event: SingleLiveEvent<ThemeClickEvent> = SingleLiveEvent()
     val event: LiveData<ThemeClickEvent> get() = _event
 
-    private val _eventBackClick: SingleLiveEvent<BackClickEvent> = SingleLiveEvent()
-    val eventBackClick: SingleLiveEvent<BackClickEvent> get() = _eventBackClick
+    private val _eventBackClick: SingleLiveEvent<Unit?> = SingleLiveEvent()
+    val eventBackClick: SingleLiveEvent<Unit?> get() = _eventBackClick
 
     private val _eventPermission: SingleLiveEvent<PermissionEvent> = SingleLiveEvent()
     val eventPermission: SingleLiveEvent<PermissionEvent> get() = _eventPermission
 
-    private val _eventSetLocation: SingleLiveEvent<Boolean> = SingleLiveEvent()
-    val eventSetLocation: SingleLiveEvent<Boolean> get() = _eventSetLocation
+    private val _eventSetLocation: SingleLiveEvent<Unit?> = SingleLiveEvent()
+    val eventSetLocation: SingleLiveEvent<Unit?> get() = _eventSetLocation
 
-    private val _eventRunGallery: SingleLiveEvent<Boolean> = SingleLiveEvent()
-    val eventRunGallery: SingleLiveEvent<Boolean> get() = _eventRunGallery
+    private val _eventRunGallery: SingleLiveEvent<Unit?> = SingleLiveEvent()
+    val eventRunGallery: SingleLiveEvent<Unit?> get() = _eventRunGallery
+
+    private val _eventSetUser: MutableLiveData<SetUserEvent> = SingleLiveEvent()
+    val eventSetUser: LiveData<SetUserEvent>
+        get() = _eventSetUser
 
     // 현재 페이지를 바라볼 livedata
     private val _currentPageType: MutableLiveData<FragmentPageType> =
@@ -34,6 +43,7 @@ class MainViewModel : ViewModel() {
     val currentPageType: LiveData<FragmentPageType>
         get() = _currentPageType
 
+    // 캘린더에서 리뷰 작성으로 넘어갈 때 보내줄 livedata
     private val _calendarToReviewModel: MutableLiveData<CalendarUserModel> = MutableLiveData()
     val calendarToReviewModel: LiveData<CalendarUserModel>
         get() = _calendarToReviewModel
@@ -89,8 +99,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun onClickBackButton() {
-        _eventBackClick.value = BackClickEvent.OpenDialog.initialize()
-        _eventBackClick.value = BackClickEvent.OpenDialog(false)
+        _eventBackClick.call()
     }
 
     fun getGalleryPermissionEvent(permission: String) {
@@ -102,10 +111,40 @@ class MainViewModel : ViewModel() {
     }
 
     fun setLocationEvent() {
-        _eventSetLocation.value = true
+        _eventSetLocation.call()
     }
 
     fun runGalleryEvent() {
-        _eventRunGallery.value = true
+        _eventRunGallery.call()
+    }
+
+
+    fun setUserState() {
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseUser = firebaseAuth.currentUser
+        _eventSetUser.value = SetUserEvent.Loading("회원 정보 로딩 증..")
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                UserApiClient.instance.me { user, error ->
+                    user?.let {
+                        _eventSetUser.postValue(
+                            SetUserEvent.Success(
+                                user.kakaoAccount,
+                                "회원 정보 로딩 완료"
+                            )
+                        )
+                    }
+                }
+
+                _eventSetUser.postValue(
+                    SetUserEvent.Success(
+                        firebaseUser,
+                        "회원 정보 로딩 완료"
+                    )
+                )
+            }.onFailure {
+                _eventSetUser.postValue(SetUserEvent.Error("회원 정보 로딩 실패.."))
+            }
+        }
     }
 }

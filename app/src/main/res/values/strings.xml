@@ -15,7 +15,7 @@
     <string name="home_page">홈페이지</string>
     <string name="move_to_home_page">홈페이지로 이동 - 터치 시 이동</string>
     <string name="rating">평점</string>
-    <string name="find_road">길찾기</string>
+    <string name="find_road">경로 안내</string>
     <string name="move_to_tmap">TMAP으로 이동</string>
     <string name="add_to_calendar">캘린더에 일정 추가하기</string>
     <string name="go_go">고민말GO 여행GO</string>
@@ -138,5 +138,17 @@
     <string name="cant_get_image_to_gallery">사진을 가져오지 못했습니다.</string>
     <string name="how_feel">은 어떠셨나요?\n후기를 남겨주세요!</string>
     <string name="no_detail_info">정보가 없습니다.</string>
+    <string name="modfy_review">리뷰 수정</string>
+    <string name="want_modify_review">리뷰 수정을 하시겠나요?</string>
+    <string name="cant_select_duplicate_schedule">겹치는 일정이 있어 선택할 수 없습니다.</string>
+    <string name="please_select_schedule">일정을 선택해주세요</string>
+    <string name="save">저장</string>
+    <string name="not_login_so_dont_add_schedule">로그인 되어 있지 않아 일정을 추가할 수 없습니다.</string>
+    <string name="done_save_schedule">일정 저장이 완료되었습니다.</string>
+    <string name="fold_description">접기 -</string>
+    <string name="now_loading">불러오는 중…</string>
+    <string name="re_log_in">회원 정보 확인이 실패했습니다\n재로그인 해주세요</string>
+    <string name="by_distance">거리순</string>
+    <string name="like_place">좋아요 </string>
 
 </resources>

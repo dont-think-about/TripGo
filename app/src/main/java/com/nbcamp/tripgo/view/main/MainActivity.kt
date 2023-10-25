@@ -10,10 +10,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseUser
+import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityMainBinding
+import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.checkPermission
 import com.nbcamp.tripgo.util.setFancyDialog
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.attraction.AttractionsActivity
 import com.nbcamp.tripgo.view.calendar.CalendarFragment
 import com.nbcamp.tripgo.view.calendar.CalendarViewModel
@@ -35,6 +40,7 @@ class MainActivity : AppCompatActivity() {
             this
         )
     }
+    private lateinit var loadingDialog: LoadingDialog
 
     private val permissionGalleryLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
@@ -72,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        loadingDialog = LoadingDialog(this)
 
         initViews()
         initViewModels()
@@ -85,10 +92,15 @@ class MainActivity : AppCompatActivity() {
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
             )
             sharedViewModel.setCurrentPage(item.itemId)
-            sharedViewModel.onClickBackButton()
+//            sharedViewModel.onClickBackButton()
             true
         }
+        setUserState()
         changeFragment(FragmentPageType.PAGE_HOME)
+    }
+
+    private fun setUserState() {
+        sharedViewModel.setUserState()
     }
 
     private fun initViewModels() = with(sharedViewModel) {
@@ -96,12 +108,8 @@ class MainActivity : AppCompatActivity() {
             changeFragment(currentPageType)
         }
 
-        eventBackClick.observe(this@MainActivity) { backClicked ->
-            when (backClicked) {
-                is BackClickEvent.OpenDialog -> {
-                    calendarViewModel.runDialogForReviewWriting(null, null)
-                }
-            }
+        eventBackClick.observe(this@MainActivity) {
+            calendarViewModel.runDialogForReviewWriting(null, null)
         }
 
         eventPermission.observe(this@MainActivity) { permissionState ->
@@ -133,7 +141,7 @@ class MainActivity : AppCompatActivity() {
                             this@MainActivity,
                             TourActivity::class.java
                         ).apply {
-                            putExtra("theme", themeClickEvent.theme)
+                            putExtra("theme", themeClickEvent.theme.themeId)
                         }
                     )
                 }
@@ -165,6 +173,45 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        eventSetUser.observe(this@MainActivity) { setUserEvent ->
+            when (setUserEvent) {
+                is SetUserEvent.Loading -> {
+                    loadingDialog.run {
+                        setText(setUserEvent.message)
+                        setVisible()
+                    }
+                }
+
+                is SetUserEvent.Error -> {
+                    loadingDialog.run {
+                        setText(setUserEvent.message)
+                        setInvisible()
+                    }
+
+                    Snackbar.make(binding.root, getString(R.string.re_log_in), 3000)
+                        .setAction("LOGIN") {
+                            sharedViewModel.runLoginActivity()
+                        }.show()
+
+                }
+
+                is SetUserEvent.Success -> {
+                    when (setUserEvent.currentUser) {
+                        is FirebaseUser -> App.firebaseUser = setUserEvent.currentUser
+                        is Account -> App.kaKaoUser = setUserEvent.currentUser
+                    }
+                    loadingDialog.run {
+                        setText(setUserEvent.message)
+                        setInvisible()
+                    }
+                    println("firebaseUserMain:" + App.firebaseUser)
+                    println("kakaoUserMain: " + App.kaKaoUser)
+                }
+            }
+
+        }
+
     }
 
     private fun changeFragment(pageType: FragmentPageType) {
@@ -176,16 +223,25 @@ class MainActivity : AppCompatActivity() {
             transaction.add(R.id.main_fragment_container, targetFragment, pageType.tag)
         }
 
-        transaction.show(targetFragment)
-        FragmentPageType.values()
-            .filterNot { it == pageType }
-            .forEach { type ->
-                supportFragmentManager.findFragmentByTag(type.tag)?.let {
-                    transaction.hide(it)
+        // 데이터 정합성을 위해 캘린더에 들어 갈 때는 데이터를 실시간 업데이트 - 중요
+        if (targetFragment is CalendarFragment) {
+            transaction.replace(
+                R.id.main_fragment_container,
+                CalendarFragment.newInstance(),
+                pageType.tag
+            )
+        } else {
+            transaction.show(targetFragment)
+            FragmentPageType.values()
+                .filterNot { it == pageType }
+                .forEach { type ->
+                    supportFragmentManager.findFragmentByTag(type.tag)?.let {
+                        transaction.hide(it)
+                    }
                 }
-            }
+        }
 
-        transaction.commitAllowingStateLoss()
+        transaction.commit()
     }
 
     private fun getFragment(pageType: FragmentPageType): Fragment = when (pageType) {

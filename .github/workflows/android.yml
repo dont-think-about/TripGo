@@ -35,7 +35,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/buildSrc/**/*.kt') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -44,5 +43,3 @@ jobs:
 
       - name: Check ktlint format
         run: ./gradlew ktlintCheck
-
-
