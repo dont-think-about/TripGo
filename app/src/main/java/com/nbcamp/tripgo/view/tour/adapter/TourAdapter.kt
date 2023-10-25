@@ -10,12 +10,13 @@ import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.databinding.TourRecyclerviewItemBinding
 
 class TourAdapter(
-    private val onClickItem:(FestivalItem) -> Unit
+    private val onClickItem: (FestivalItem) -> Unit
 ) : ListAdapter<FestivalItem, TourAdapter.TourViewHolder>(TourDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TourViewHolder {
-        val binding = TourRecyclerviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return TourViewHolder(binding , onClickItem)
+        val binding =
+            TourRecyclerviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return TourViewHolder(binding, onClickItem)
     }
 
     override fun onBindViewHolder(holder: TourViewHolder, position: Int) {
@@ -23,8 +24,10 @@ class TourAdapter(
         holder.bind(item)
     }
 
-    class TourViewHolder(private val binding: TourRecyclerviewItemBinding ,
-    private val onClickItem: (FestivalItem) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+    class TourViewHolder(
+        private val binding: TourRecyclerviewItemBinding,
+        private val onClickItem: (FestivalItem) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FestivalItem) {
 
             itemView.setOnClickListener {
@@ -34,10 +37,10 @@ class TourAdapter(
 
             with(binding) {
                 tourTitle.text = item.title
-                tourSubtitle.text = item.contentid
+                tourSubtitle.text = ""
                 tourAddress.text = item.addr1
 
-               myImage.load(item.firstimage)
+                myImage.load(item.firstimage)
             }
         }
     }
