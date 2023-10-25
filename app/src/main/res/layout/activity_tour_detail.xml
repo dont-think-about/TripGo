@@ -177,7 +177,7 @@
                     style="@style/Font.16.Normal.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="3.0점" />
+                    android:text="@string/rating" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tour_review"
@@ -185,7 +185,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    tools:text="10개의 리뷰" />
+                    android:text="@string/now_loading" />
 
             </LinearLayout>
 

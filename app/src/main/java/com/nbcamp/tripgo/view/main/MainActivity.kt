@@ -10,10 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.google.firebase.auth.FirebaseUser
+import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityMainBinding
+import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.checkPermission
 import com.nbcamp.tripgo.util.setFancyDialog
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.attraction.AttractionsActivity
 import com.nbcamp.tripgo.view.calendar.CalendarFragment
 import com.nbcamp.tripgo.view.calendar.CalendarViewModel
@@ -35,6 +39,7 @@ class MainActivity : AppCompatActivity() {
             this
         )
     }
+    private lateinit var loadingDialog: LoadingDialog
 
     private val permissionGalleryLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
@@ -72,6 +77,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        loadingDialog = LoadingDialog(this)
 
         initViews()
         initViewModels()
@@ -88,7 +94,12 @@ class MainActivity : AppCompatActivity() {
 //            sharedViewModel.onClickBackButton()
             true
         }
+        setUserState()
         changeFragment(FragmentPageType.PAGE_HOME)
+    }
+
+    private fun setUserState() {
+        sharedViewModel.setUserState()
     }
 
     private fun initViewModels() = with(sharedViewModel) {
@@ -161,6 +172,39 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        eventSetUser.observe(this@MainActivity) { setUserEvent ->
+            when (setUserEvent) {
+                is SetUserEvent.Loading -> {
+                    loadingDialog.run {
+                        setText(setUserEvent.message)
+                        setVisible()
+                    }
+                }
+
+                is SetUserEvent.Error -> {
+                    loadingDialog.run {
+                        setText(setUserEvent.message)
+                        setInvisible()
+                    }
+                }
+
+                is SetUserEvent.Success -> {
+                    when (setUserEvent.currentUser) {
+                        is FirebaseUser -> App.firebaseUser = setUserEvent.currentUser
+                        is Account -> App.kaKaoUser = setUserEvent.currentUser
+                    }
+                    loadingDialog.run {
+                        setText(setUserEvent.message)
+                        setInvisible()
+                    }
+                    println("firebaseUser:" + App.firebaseUser)
+                    println("kakaoUser: " + App.kaKaoUser)
+                }
+            }
+
+        }
+
     }
 
     private fun changeFragment(pageType: FragmentPageType) {

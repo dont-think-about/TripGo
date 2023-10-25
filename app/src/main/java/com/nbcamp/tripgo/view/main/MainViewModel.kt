@@ -3,6 +3,9 @@ package com.nbcamp.tripgo.view.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
@@ -10,6 +13,8 @@ import com.nbcamp.tripgo.view.calendar.WritingType
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.reviewwriting.CalendarUserModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
@@ -27,6 +32,10 @@ class MainViewModel : ViewModel() {
 
     private val _eventRunGallery: SingleLiveEvent<Unit?> = SingleLiveEvent()
     val eventRunGallery: SingleLiveEvent<Unit?> get() = _eventRunGallery
+
+    private val _eventSetUser: SingleLiveEvent<SetUserEvent> = SingleLiveEvent()
+    val eventSetUser: SingleLiveEvent<SetUserEvent>
+        get() = _eventSetUser
 
     // 현재 페이지를 바라볼 livedata
     private val _currentPageType: MutableLiveData<FragmentPageType> =
@@ -107,5 +116,38 @@ class MainViewModel : ViewModel() {
 
     fun runGalleryEvent() {
         _eventRunGallery.call()
+    }
+
+
+    fun setUserState() {
+        val firebaseAuth = FirebaseAuth.getInstance()
+        _eventSetUser.value = SetUserEvent.Loading("회원 정보 로딩 증..")
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                UserApiClient.instance.me { user, error ->
+                    user?.let {
+                        _eventSetUser.postValue(
+                            SetUserEvent.Success(
+                                user.kakaoAccount,
+                                "회원 정보 로딩 완료"
+                            )
+                        )
+                    }
+                }
+
+                val firebaseUser = firebaseAuth.currentUser
+                firebaseUser?.let {
+                    _eventSetUser.postValue(
+                        SetUserEvent.Success(
+                            it,
+                            "회원 정보 로딩 완료"
+                        )
+                    )
+                }
+                _eventSetUser.postValue(SetUserEvent.Error("회원 정보 로딩 실패.."))
+            }.onFailure {
+                _eventSetUser.postValue(SetUserEvent.Error("회원 정보 로딩 실패.."))
+            }
+        }
     }
 }
