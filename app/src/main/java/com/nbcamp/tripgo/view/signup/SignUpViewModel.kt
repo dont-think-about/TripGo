@@ -24,27 +24,37 @@ class SignUpViewModel : ViewModel() {
         val password = password.value.toString()
         val nickname = nickname.value.toString()
 
-        if (email.trim().isNotEmpty() && password.trim().isNotEmpty() && nickname.trim().isNotEmpty()) {
+        if (email.trim().isNotEmpty() && password.trim().isNotEmpty() && nickname.trim()
+                .isNotEmpty()
+        ) {
             firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
                 if (it.isSuccessful) {
 
                     signUpButton.value = true
 
-                    val user = hashMapOf(
-                        "nickname" to nickname,
-                        "profileImage" to null,
-                    )
+                    // 자체 로그인 firestore 저장부분  users -> email -> uid,nickname,image
+                    val firebaseUID = FirebaseAuth.getInstance().currentUser?.uid
 
-                    fireStore.collection("users").document(email).set(user)
+                    if (firebaseUID != null) {
 
-                    Log.d(ContentValues.TAG, "createUserWithEmail:success")
+                        val user = hashMapOf(
+                            "Uid" to firebaseUID,
+                            "nickname" to nickname,
+                            "profileImage" to null,
+                        )
 
-                } else {
-                    //아이디가 있을 경우에! 로직 추가 ->다음 작업 시 진행
-                    Log.w(ContentValues.TAG, "createUserWithEmail:failure", it.exception)
+
+                        fireStore.collection("users").document(email).set(user)
+
+                        Log.d(ContentValues.TAG, "createUserWithEmail:success")
+
+                    } else {
+                        //아이디가 있을 경우에! 로직 추가 ->다음 작업 시 진행
+                        Log.w(ContentValues.TAG, "createUserWithEmail:failure", it.exception)
+                    }
                 }
-            }
 
+            }
         }
     }
 }
