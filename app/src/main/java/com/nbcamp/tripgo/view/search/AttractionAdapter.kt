@@ -4,10 +4,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 import com.nbcamp.tripgo.databinding.ItemSearchBinding
+import com.nbcamp.tripgo.view.App.Companion.imageLoader
 
 class AttractionAdapter(private val sContext: Context) :
     RecyclerView.Adapter<AttractionAdapter.SearchItemViewHolder>() {
@@ -41,9 +44,11 @@ class AttractionAdapter(private val sContext: Context) :
     }
 
     inner class SearchItemViewHolder(binding: ItemSearchBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
-        var title: TextView = binding.searchVideo
-        var url: TextView = binding.videoName
-        var dateTime: TextView = binding.dateTime
+        var longitudeEx: TextView = binding.longitude
+        var latitudeEx: TextView = binding.latitude
+        var titleEx: TextView = binding.title
+        var addressEx: TextView = binding.address
+        var imageEx: ImageView = binding.image
         var id: View = binding.root  // 혹시나 다른 변수를 받아올 때 사용할 수 있음
 
         init {
@@ -51,10 +56,13 @@ class AttractionAdapter(private val sContext: Context) :
         }
 
         fun bind(item: KeywordSearchEntity) {
-            title.text = item.longitude
-            url.text = item.latitude
-            dateTime.text = item.contentId
+            longitudeEx.text = item.longitude
+            latitudeEx.text = item.latitude
+            titleEx.text = item.title
+            addressEx.text = item.address
+            imageEx.load(item.imageUrl, imageLoader)
         }
+
 
         override fun onClick(v: View?) {
             val position = adapterPosition.takeIf { it != RecyclerView.NO_POSITION } ?: return
