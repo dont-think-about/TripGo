@@ -196,7 +196,10 @@ class TourDetailActivity : AppCompatActivity() {
         }
 
         calendarClickEvent.observe(this@TourDetailActivity) {
-            toast(getString(R.string.cant_select_duplicate_schedule))
+            when (it) {
+                true -> toast(getString(R.string.cant_select_duplicate_schedule))
+                false -> toast(getString(R.string.not_register_schedule_before_today))
+            }
             calendarBinding?.addScheduleCalendarView?.clearSelection()
         }
 
