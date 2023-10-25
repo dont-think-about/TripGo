@@ -150,5 +150,6 @@
     <string name="re_log_in">회원 정보 확인이 실패했습니다\n재로그인 해주세요</string>
     <string name="by_distance">거리순</string>
     <string name="like_place">좋아요 </string>
+    <string name="not_register_schedule_before_today">오늘 이전 날짜에는 일정을 등록할 수 없습니다.</string>
 
 </resources>
