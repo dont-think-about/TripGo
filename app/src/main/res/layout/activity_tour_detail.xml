@@ -190,6 +190,7 @@
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/notice_route"
                 style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -202,7 +203,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:paddingVertical="4dp"
-                android:paddingBottom="4dp" />
+                android:paddingBottom="4dp"
+                android:src="@drawable/icon_main_logo" />
 
             <Space
                 android:layout_width="0dp"

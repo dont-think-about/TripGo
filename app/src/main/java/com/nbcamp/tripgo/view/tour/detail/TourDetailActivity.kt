@@ -209,12 +209,27 @@ class TourDetailActivity : AppCompatActivity() {
         }
 
         countAndRatting.observe(this@TourDetailActivity) { numSet ->
-            "${numSet.second}점".also { binding.evaluation.text = it }
+            "${if (numSet.second.isNaN()) 0.0 else numSet.second}점".also {
+                binding.evaluation.text = it
+            }
             "${numSet.first}개의 리뷰".also { binding.tourReview.text = it }
         }
 
-        routeImage.observe(this@TourDetailActivity) {
-            binding.routeImage.load(it)
+        routeImage.observe(this@TourDetailActivity) { bitmap ->
+            with(binding) {
+                when (bitmap) {
+                    null -> {
+                        "${getString(R.string.find_road)} ${getString(R.string.now_loading)}".also {
+                            noticeRoute.text = it
+                        }
+                    }
+
+                    else -> {
+                        routeImage.load(bitmap)
+                        noticeRoute.text = getString(R.string.find_road)
+                    }
+                }
+            }
         }
     }
 

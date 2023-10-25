@@ -60,8 +60,8 @@ class TourDetailViewModel(
     val addScheduleState: LiveData<AddScheduleUiState>
         get() = _addScheduleState
 
-    private val _countAndRating: MutableLiveData<Pair<Int, Float>> = MutableLiveData()
-    val countAndRatting: LiveData<Pair<Int, Float>>
+    private val _countAndRating: MutableLiveData<Pair<Int, Double>> = MutableLiveData()
+    val countAndRatting: LiveData<Pair<Int, Double>>
         get() = _countAndRating
 
     private val _routeImage: MutableLiveData<Bitmap?> = MutableLiveData()
@@ -86,6 +86,7 @@ class TourDetailViewModel(
     }
 
     fun getRouteImage(info: DetailCommonEntity) {
+        _routeImage.value = null
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
                 val response = tourDetailRepository.getRouteImage(
@@ -298,7 +299,7 @@ class TourDetailViewModel(
             val reviewCount = filteredList.count()
             val averageRating = filteredList.sum()
             _countAndRating.postValue(
-                reviewCount to floor((averageRating / reviewCount) * 10) / 10f
+                reviewCount to floor(((averageRating / reviewCount) * 10.0) / 10.0)
             )
         }
     }
