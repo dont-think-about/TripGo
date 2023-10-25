@@ -10,6 +10,7 @@ import com.nbcamp.tripgo.data.repository.mapper.DetailMapper.toDetailCommonEntit
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.data.service.TMapApiService
 import com.nbcamp.tripgo.data.service.TourApiService
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.tour.detail.TourDetailRepository
 import kotlinx.coroutines.tasks.await
 
@@ -19,6 +20,7 @@ class TourDetailRepositoryImpl(
 ) : TourDetailRepository {
 
     private val fireStore = FirebaseFirestore.getInstance()
+    private lateinit var userInfo: String
 
     override suspend fun getDetailInformation(contentId: String?): DetailCommonEntity? {
         if (contentId == null)
@@ -122,6 +124,84 @@ class TourDetailRepositoryImpl(
         }
 
         return null
+    }
+
+    override suspend fun saveLikePlace(
+        detailInfo: DetailCommonEntity,
+        contentId: String,
+        currentUser: Any?
+    ) {
+        getUserInfo()
+        fireStore.runTransaction { transaction ->
+            val likedReference = fireStore.collection("liked")
+                .document(userInfo)
+                .collection("like")
+                .document()
+
+            val likedModel = hashMapOf(
+                "contentId" to contentId,
+                "title" to detailInfo.title,
+                "description" to detailInfo.description,
+                "telPhoneNumber" to detailInfo.telPhoneNumber,
+                "homePage" to detailInfo.homePage,
+                "mainAddress" to detailInfo.mainAddress,
+                "subAddress" to detailInfo.subAddress,
+                "imageUrl" to detailInfo.imageUrl,
+                "latitude" to detailInfo.latitude,
+                "longitude" to detailInfo.longitude
+            )
+
+            transaction.set(
+                likedReference,
+                likedModel
+            )
+
+        }.await()
+    }
+
+    override suspend fun removeLikePlace(contentId: String, currentUser: Any?) {
+        getUserInfo()
+        val usersLikedList = fireStore.collection("liked")
+            .document(userInfo)
+            .collection("like")
+
+        var documentId = ""
+        usersLikedList
+            .get()
+            .await()
+            .documents.forEach { document ->
+                if (document.data?.get("contentId") == contentId) {
+                    documentId = document.id
+                }
+            }
+        fireStore.runTransaction { transaction ->
+            val documentReference = usersLikedList.document(documentId)
+            transaction.delete(documentReference)
+        }
+    }
+
+    override suspend fun getLikedStatusThisContent(contentId: String): Boolean {
+        getUserInfo()
+        val usersLikedList = fireStore.collection("liked")
+            .document(userInfo)
+            .collection("like")
+        usersLikedList
+            .get()
+            .await()
+            .documents.forEach { document ->
+                if (document.data?.get("contentId") == contentId) {
+                    return true
+                }
+            }
+        return false
+    }
+
+    private fun getUserInfo() {
+        if (App.kaKaoUser == null) {
+            userInfo = App.firebaseUser?.email.toString()
+        } else if (App.firebaseUser == null) {
+            userInfo = App.kaKaoUser?.email.toString()
+        }
     }
 
 }
