@@ -20,25 +20,24 @@ class SearchRepositoryImpl(
             contentTypeId = contentTypeId,
             responseCount = responseCount
         )
-//        if (response.isSuccessful) {
-//            val list = arrayListOf<KeywordSearchEntity>()
-//            response.body()?.let { keywordSearchResponseModel ->
-//                val resultCode = keywordSearchResponseModel.response.header.resultCode
-////                val totalCount = keywordSearchResponseModel.response.body.totalCount
-//                val items = keywordSearchResponseModel.response.body.items.item
-//                if (resultCode != "0000") {
-//                    return null
-//                }
-////                {"response": {"header":{"resultCode":"0000","resultMsg":"OK"},"body": {"items": "","numOfRows":0,"pageNo":1,"totalCount":0}}}
-//                if (items.isEmpty()) {
-//                    return emptyList()
-//                }
-//                items.forEach { item ->
-//                    list.add(item.toKeywordSearchEntity())
-//                }
-//                return list
-//            }
-//        }
+        if (response.isSuccessful) {
+            val list = arrayListOf<KeywordSearchEntity>()
+            response.body()?.let { keywordSearchResponseModel ->
+                val resultCode = keywordSearchResponseModel.response.header.resultCode
+                val totalCount = keywordSearchResponseModel.response.body.totalCount
+                val items = keywordSearchResponseModel.response.body.items.item
+                if (resultCode != "0000") {
+                    return null
+                }
+                if (items.isEmpty()) {
+                    return emptyList()
+                }
+                items.forEach { item ->
+                    list.add(item.toKeywordSearchEntity())
+                }
+                return list
+            }
+        }
         return emptyList()
     }
 }

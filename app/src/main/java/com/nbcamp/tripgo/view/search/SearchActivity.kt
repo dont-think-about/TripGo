@@ -1,25 +1,30 @@
 package com.nbcamp.tripgo.view.search
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.nbcamp.tripgo.R
-import com.nbcamp.tripgo.data.repository.mapper.WeatherType
-import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
-import com.nbcamp.tripgo.data.service.RetrofitModule
 import com.nbcamp.tripgo.databinding.ActivitySearchBinding
 import com.nbcamp.tripgo.view.search.adapters.ViewPagerAdapter
-import com.nbcamp.tripgo.view.search.attaction.AttractionsFragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class SearchActivity : AppCompatActivity(){
+
+    private var searchItems = ArrayList<SearchItemModel>()
+    private var spinnerMap= ArrayList<HashMap<String,String>>()
+    private var categoryName = ArrayList<String>()
 
     lateinit var mViewPagerAdapter: ViewPagerAdapter
     private lateinit var binding: ActivitySearchBinding
     private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: AttractionAdapter
+    private val searchViewModel : SearchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,12 +33,22 @@ class SearchActivity : AppCompatActivity(){
         mViewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
         binding.searchViewpager.adapter = mViewPagerAdapter
         binding.searchTabLayout.setupWithViewPager(binding.searchViewpager)
-        recyclerView = findViewById(R.id.search_rank_recyclerview) // 리사이클러뷰 연결
+
+        // RecyclerView 초기화 및 어댑터 설정
+        recyclerView = binding.searchRankRecyclerview
+        recyclerView.layoutManager = LinearLayoutManager(this) // 리사이클러뷰 레이아웃 매니저 설정
+        adapter = AttractionAdapter(this) // YourAdapter에 맞게 수정
+        recyclerView.adapter = adapter
 
         val searchBackImageView = findViewById<ImageView>(R.id.search_back)
         searchBackImageView.setOnClickListener {
             finish() // 뒤로 가기 버튼을 클릭하면 Activity 종료
+
+
+        }
+        searchViewModel.pullData.observe(this){ pullDatalist ->
+            adapter.additem(pullDatalist)
+            Log.d("키워드 123", "값 = $pullDatalist")
         }
     }
 }
-

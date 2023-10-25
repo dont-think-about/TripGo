@@ -9,20 +9,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentSearchAttractionsBinding
-import com.nbcamp.tripgo.util.SingleLiveEvent
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.search.SearchKeywordUiState
+import com.nbcamp.tripgo.view.search.SearchViewModel
 
 class AttractionsFragment : Fragment() {
     private val viewModel: AttractionsViewModel by viewModels { AttractionsViewModelFactory() }
-
+    private val searchViewModel : SearchViewModel by activityViewModels()
     private var _binding: FragmentSearchAttractionsBinding? = null
     private val binding get() = _binding!!
 
@@ -72,6 +71,7 @@ class AttractionsFragment : Fragment() {
                 return@observe
             }
             Log.d("키워드", "값 = $state")
+            searchViewModel.sendSearchData(state.list)
         }
     }
 
