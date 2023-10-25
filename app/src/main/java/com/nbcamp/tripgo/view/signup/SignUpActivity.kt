@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivitySignUpBinding
 import com.nbcamp.tripgo.view.login.LogInActivity
+import java.util.regex.Pattern
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -31,9 +32,8 @@ class SignUpActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         initViewModel()
         initView()
-        editTextMemberInformation()
+//        editTextMemberInformation()
     }
-
 
     private fun initView() = binding.apply {
         signUpFullAgreementCheckBox.setOnClickListener {
@@ -177,10 +177,44 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    fun text(){
+    fun text() {
+        binding.signUpEmailEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                val ps: Pattern =
+                    Pattern.compile("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")
+
+                if (!ps.matcher(binding.signUpEmailEditText.text.toString()).matches()) {
+                    if (binding.signUpEmailEditText.text.toString().isEmpty()) {
+                        binding.signUpEmailErrorTextView.visibility = View.VISIBLE
+                        binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text_error)
+                        emailCheck = false
+                        binding.signUpSignUpCompleteButton.isEnabled = false
+                    } else {
+                        binding.signUpEmailErrorTextView.visibility = View.VISIBLE
+                        binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text_error)
+                        emailCheck = false
+                        binding.signUpSignUpCompleteButton.isEnabled = false
+                    }
+                } else {
+                    binding.signUpEmailErrorTextView.visibility = View.GONE
+                    binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text)
+                    emailCheck = true
+                    if (emailCheck and passwordCheck and passwordRepeatCheck and nicknameCheck and agreeCheck) {
+                        binding.signUpSignUpCompleteButton.isEnabled = true
+                        binding.signUpSignUpCompleteButton.setBackgroundResource(R.color.main)
+                    } else {
+                        binding.signUpSignUpCompleteButton.isEnabled = false
+                    }
+                }
+            }
+        })
 
     }
-
-
-
 }
