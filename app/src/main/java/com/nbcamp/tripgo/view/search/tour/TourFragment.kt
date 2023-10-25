@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentSearchTourBinding
 
+// 관광지
 class TourFragment : Fragment() {
 
     private var _binding: FragmentSearchTourBinding? = null
@@ -32,20 +33,17 @@ class TourFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.tourSearchCloseImage.visibility =
-                    if (s?.isNotEmpty() == true) View.VISIBLE
-                    else View.GONE
+                    if (s?.isNotEmpty() == true) View.VISIBLE else View.GONE
             }
+
             override fun afterTextChanged(s: Editable?) {}
-        }) //글자가 있으면 x 버튼 생성 , 없으면 x 버튼 없앰
-
-
+        })  // 텍스트가 비어 있지 않으면 x 버튼 보이게 하고, 비어 있으면 x 버튼이 안 보이게 함.
 
         binding.tourSearchCloseImage.setOnClickListener {
             binding.tourSearchEdit.text?.clear()
         }   // x 버튼 클릭시 글자 삭제
 
-
-
+        // edit_closeBtn 색상 변경
         val closeButtonColor = ContextCompat.getColor(requireContext(), R.color.edit_closeBtn)
         binding.tourSearchCloseImage.setColorFilter(closeButtonColor)  // x 버튼 색상 변경
     }

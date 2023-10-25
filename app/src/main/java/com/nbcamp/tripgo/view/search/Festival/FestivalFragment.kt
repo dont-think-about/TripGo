@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentSearchFestivalBinding
 
+// 축제
 class FestivalFragment : Fragment() {
-
 
     private var _binding: FragmentSearchFestivalBinding? = null
     private val binding get() = _binding!!
@@ -22,7 +22,6 @@ class FestivalFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         _binding = FragmentSearchFestivalBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -30,17 +29,15 @@ class FestivalFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         binding.festivalSearchEdit.addTextChangedListener(object : TextWatcher {
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.festivalSearchCloseImage.visibility =
                     if (s?.isNotEmpty() == true) View.VISIBLE else View.GONE
             }
+
             override fun afterTextChanged(s: Editable?) {}
         })  // 텍스트가 비어 있지 않으면 x 버튼 보이게 하고, 비어 있으면 x 버튼이 안 보이게 함.
-
 
         binding.festivalSearchCloseImage.setOnClickListener {
             binding.festivalSearchEdit.text?.clear()
