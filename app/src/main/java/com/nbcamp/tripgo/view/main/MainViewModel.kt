@@ -33,8 +33,8 @@ class MainViewModel : ViewModel() {
     private val _eventRunGallery: SingleLiveEvent<Unit?> = SingleLiveEvent()
     val eventRunGallery: SingleLiveEvent<Unit?> get() = _eventRunGallery
 
-    private val _eventSetUser: SingleLiveEvent<SetUserEvent> = SingleLiveEvent()
-    val eventSetUser: SingleLiveEvent<SetUserEvent>
+    private val _eventSetUser: MutableLiveData<SetUserEvent> = SingleLiveEvent()
+    val eventSetUser: LiveData<SetUserEvent>
         get() = _eventSetUser
 
     // 현재 페이지를 바라볼 livedata
@@ -121,11 +121,11 @@ class MainViewModel : ViewModel() {
 
     fun setUserState() {
         val firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseUser = firebaseAuth.currentUser
         _eventSetUser.value = SetUserEvent.Loading("회원 정보 로딩 증..")
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
                 UserApiClient.instance.me { user, error ->
-                    println("kakaoUser: $user")
                     user?.let {
                         _eventSetUser.postValue(
                             SetUserEvent.Success(
@@ -136,16 +136,12 @@ class MainViewModel : ViewModel() {
                     }
                 }
 
-                val firebaseUser = firebaseAuth.currentUser
-                println("firebaseUser: $firebaseUser")
-                firebaseUser?.let {
-                    _eventSetUser.postValue(
-                        SetUserEvent.Success(
-                            it,
-                            "회원 정보 로딩 완료"
-                        )
+                _eventSetUser.postValue(
+                    SetUserEvent.Success(
+                        firebaseUser,
+                        "회원 정보 로딩 완료"
                     )
-                }
+                )
             }.onFailure {
                 _eventSetUser.postValue(SetUserEvent.Error("회원 정보 로딩 실패.."))
             }

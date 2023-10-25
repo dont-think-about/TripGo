@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity() {
                             this@MainActivity,
                             TourActivity::class.java
                         ).apply {
-                            putExtra("theme", themeClickEvent.theme)
+                            putExtra("theme", themeClickEvent.theme.themeId)
                         }
                     )
                 }
@@ -188,10 +188,12 @@ class MainActivity : AppCompatActivity() {
                         setText(setUserEvent.message)
                         setInvisible()
                     }
-                    Snackbar.make(binding.root, "회원 정보 확인이 실패했습니다\n 재로그인 해주세요", 5000)
+
+                    Snackbar.make(binding.root, getString(R.string.re_log_in), 3000)
                         .setAction("LOGIN") {
                             sharedViewModel.runLoginActivity()
                         }.show()
+
                 }
 
                 is SetUserEvent.Success -> {
@@ -203,8 +205,8 @@ class MainActivity : AppCompatActivity() {
                         setText(setUserEvent.message)
                         setInvisible()
                     }
-                    println("firebaseUser:" + App.firebaseUser)
-                    println("kakaoUser: " + App.kaKaoUser)
+                    println("firebaseUserMain:" + App.firebaseUser)
+                    println("kakaoUserMain: " + App.kaKaoUser)
                 }
             }
 
