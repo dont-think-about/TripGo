@@ -6,12 +6,14 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import coil.load
+import com.google.android.material.snackbar.Snackbar
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
@@ -25,6 +27,7 @@ import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
 import com.nbcamp.tripgo.util.calendar.SundayDecorator
 import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.main.MainViewModel
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.util.Calendar
@@ -46,6 +49,7 @@ class TourDetailActivity : AppCompatActivity() {
             this
         )
     }
+    private val sharedViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,13 +96,29 @@ class TourDetailActivity : AppCompatActivity() {
         moveToHomepage.setOnClickListener {
             tourDetailViewModel.moveToHomePage()
         }
+        btnHeart.setOnClickListener {
+            it.isSelected = it.isSelected.not()
+            if (it.isSelected) {
+                // TODO 좋아요 정보 저장
+                tourDetailViewModel.saveLikePlace(detailInfo)
+                return@setOnClickListener
+            }
+            // TODO 좋아요 정보 삭제
+            tourDetailViewModel.removeLikePlace(detailInfo)
+        }
         moveToCalendar.setOnClickListener {
             tourDetailViewModel.setUserOption()
             if (currentUser != null) {
                 tourDetailViewModel.getMySchedules(currentUser!!)
                 runCalendarDialog()
             } else {
-                toast(getString(R.string.not_login_so_dont_add_schedule))
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.not_login_so_dont_add_schedule),
+                    5000
+                ).setAction("LOGIN") {
+                    sharedViewModel.runLoginActivity()
+                }.show()
             }
         }
 
@@ -106,6 +126,7 @@ class TourDetailActivity : AppCompatActivity() {
     }
 
     private fun runSearchDetailInformation(contentId: String?) {
+        // 관광지 상세 정보 및 리뷰에서 평점 가져오기
         tourDetailViewModel.runSearchDetailInformation(contentId)
     }
 
@@ -126,6 +147,7 @@ class TourDetailActivity : AppCompatActivity() {
             }
             state.detailInfo?.let { info ->
                 bindingInfo(info)
+                tourDetailViewModel.getRouteImage(info)
                 detailInfo = info
             }
         }
@@ -194,6 +216,30 @@ class TourDetailActivity : AppCompatActivity() {
                 loadingDialog.setInvisible()
             }
         }
+
+        countAndRatting.observe(this@TourDetailActivity) { numSet ->
+            "${if (numSet.second.isNaN()) 0.0 else numSet.second}점".also {
+                binding.evaluation.text = it
+            }
+            "${numSet.first}개의 리뷰".also { binding.tourReview.text = it }
+        }
+
+        routeImage.observe(this@TourDetailActivity) { bitmap ->
+            with(binding) {
+                when (bitmap) {
+                    null -> {
+                        "${getString(R.string.find_road)} ${getString(R.string.now_loading)}".also {
+                            noticeRoute.text = it
+                        }
+                    }
+
+                    else -> {
+                        routeImage.load(bitmap)
+                        noticeRoute.text = getString(R.string.find_road)
+                    }
+                }
+            }
+        }
     }
 
     private fun bindingInfo(info: DetailCommonEntity) = with(binding) {
@@ -205,7 +251,35 @@ class TourDetailActivity : AppCompatActivity() {
         addressTourDetail.text = info.description.ifEmpty { getString(R.string.no_detail_info) }
         phoneNumber.text = info.telPhoneNumber.ifEmpty { getString(R.string.no_detail_info) }
         moveToHomepage.text = info.homePage.ifEmpty { getString(R.string.no_detail_info) }
-        // TODO 평점 및 길찾기
+        addressTourDetail.post {
+            with(addressTourDetail) {
+                if (addressTourDetail.lineCount > 5) {
+                    maxLines = 5
+                    ellipsize = TextUtils.TruncateAt.END
+                } else {
+                    showMore.isVisible = false
+                }
+            }
+        }
+        showMore.setOnClickListener {
+            controlFoldTextView()
+        }
+    }
+
+    private fun controlFoldTextView() = with(binding) {
+        when (showMore.text) {
+            getString(R.string.more_description) -> {
+                addressTourDetail.maxLines = Integer.MAX_VALUE
+                addressTourDetail.ellipsize = null
+                showMore.text = getString(R.string.fold_description)
+            }
+
+            else -> {
+                addressTourDetail.maxLines = 5
+                addressTourDetail.ellipsize = TextUtils.TruncateAt.END
+                showMore.text = getString(R.string.more_description)
+            }
+        }
     }
 
     private fun makePhoneCall(phoneNumber: String) {

@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.tour.detail
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,7 @@ import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.calendar.CalendarRepository
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarLogInUiState
 import com.nbcamp.tripgo.view.tour.detail.uistate.AddScheduleUiState
@@ -19,6 +21,7 @@ import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.floor
 
 class TourDetailViewModel(
     private val tourDetailRepository: TourDetailRepository,
@@ -57,17 +60,44 @@ class TourDetailViewModel(
     val addScheduleState: LiveData<AddScheduleUiState>
         get() = _addScheduleState
 
+    private val _countAndRating: MutableLiveData<Pair<Int, Double>> = MutableLiveData()
+    val countAndRatting: LiveData<Pair<Int, Double>>
+        get() = _countAndRating
+
+    private val _routeImage: MutableLiveData<Bitmap?> = MutableLiveData()
+    val routeImage: LiveData<Bitmap?>
+        get() = _routeImage
+
     private val scheduleDates = arrayListOf<CalendarDay>()
 
     fun runSearchDetailInformation(contentId: String?) {
         _detailUiState.value = DetailCommonUiState.initialize("로딩 중..")
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
+                // 상세 정보 가져오기
                 val response = tourDetailRepository.getDetailInformation(contentId)
+                // 평점 및 리뷰 개수 가져오기
+                getAverageRatingThisPlace(contentId)
                 _detailUiState.postValue(DetailCommonUiState(response, "로딩 완료", false))
             }.onFailure {
-                println(it.localizedMessage)
                 _detailUiState.postValue(DetailCommonUiState.error("정보를 가져 오는데 실패했습니다."))
+            }
+        }
+    }
+
+    fun getRouteImage(info: DetailCommonEntity) {
+        _routeImage.value = null
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                val response = tourDetailRepository.getRouteImage(
+                    App.latitude,
+                    App.longitude,
+                    info.latitude.toDouble(),
+                    info.longitude.toDouble(),
+                )
+                _routeImage.postValue(response)
+            }.onFailure {
+                _routeImage.postValue(null)
             }
         }
     }
@@ -183,11 +213,11 @@ class TourDetailViewModel(
         keywordItem: KeywordItem?,
         detailInfo: DetailCommonEntity
     ) {
-        _addScheduleState.value = AddScheduleUiState.initialize()
         if (scheduleDates.isEmpty()) {
             _calendarSubmitClickEvent.value = false
             return
         }
+        _addScheduleState.value = AddScheduleUiState.initialize()
         // 시작, 끝 날짜 구하기
         val (startDate, endDate) = convertDate(scheduleDates)
 
@@ -259,5 +289,26 @@ class TourDetailViewModel(
                 }
             }
         }
+    }
+
+    private fun getAverageRatingThisPlace(contentId: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = tourDetailRepository.getAverageRatingThisPlace(contentId)
+            val filteredList = response.filterNot { it == -1f }
+            // 적힌 리뷰의 숫자 및 평점
+            val reviewCount = filteredList.count()
+            val averageRating = filteredList.sum()
+            _countAndRating.postValue(
+                reviewCount to floor(((averageRating / reviewCount) * 10.0) / 10.0)
+            )
+        }
+    }
+
+    fun saveLikePlace(detailInfo: DetailCommonEntity) {
+        TODO("Not yet implemented")
+    }
+
+    fun removeLikePlace(detailInfo: DetailCommonEntity) {
+        TODO("Not yet implemented")
     }
 }

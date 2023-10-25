@@ -14,7 +14,8 @@ class TourDetailViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(TourDetailViewModel::class.java)) {
             val tourDetailRepository = TourDetailRepositoryImpl(
-                RetrofitModule.createTourApiService()
+                RetrofitModule.createTourApiService(),
+                RetrofitModule.createTMapApiService()
             )
             val calendarRepository = CalendarRepositoryImpl(
                 context

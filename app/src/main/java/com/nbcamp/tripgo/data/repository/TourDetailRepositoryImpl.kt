@@ -1,17 +1,21 @@
 package com.nbcamp.tripgo.data.repository
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.repository.mapper.DetailMapper.toCalendarEntity
 import com.nbcamp.tripgo.data.repository.mapper.DetailMapper.toDetailCommonEntity
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
+import com.nbcamp.tripgo.data.service.TMapApiService
 import com.nbcamp.tripgo.data.service.TourApiService
 import com.nbcamp.tripgo.view.tour.detail.TourDetailRepository
 import kotlinx.coroutines.tasks.await
 
 class TourDetailRepositoryImpl(
-    private val tourApiService: TourApiService
+    private val tourApiService: TourApiService,
+    private val tMapApiService: TMapApiService
 ) : TourDetailRepository {
 
     private val fireStore = FirebaseFirestore.getInstance()
@@ -55,12 +59,69 @@ class TourDetailRepositoryImpl(
 
         fireStore.runTransaction { transaction ->
             val calendarScheduleReference =
-                fireStore.collection("calendar").document(email).collection("plans").document()
+                fireStore.collection("calendar")
+                    .document(email)
+                    .collection("plans")
+                    .document()
             transaction.set(
                 calendarScheduleReference,
                 plan
             )
         }.await()
+    }
+
+    override suspend fun getAverageRatingThisPlace(contentId: String?): List<Float> {
+        val userList = arrayListOf<String>()
+        val ratingList = arrayListOf<Float>()
+
+        // 유저 정보를 전부 가져와서
+        val userReference = fireStore.collection("user")
+            .get()
+            .await()
+
+        userReference.documents.forEach { documents ->
+            userList.add(documents.id)
+        }
+
+        // 유저가 작성한 모든 리뷰를 가져온다
+        userList.forEach {
+            val reviewReference =
+                fireStore.collection("reviews")
+                    .document(it)
+                    .collection("review")
+                    .get()
+                    .await()
+            reviewReference.documents.forEach { document ->
+                if (document.data?.get("contentId") == contentId) {
+                    ratingList.add(document.data?.get("rating").toString().toFloat())
+                } else {
+                    // 평점 리뷰가 없으면 -1로 저장 해서 구분
+                    ratingList.add(-1f)
+                }
+            }
+        }
+        return ratingList
+    }
+
+    override suspend fun getRouteImage(
+        startLatitude: Double,
+        startLongitude: Double,
+        endLatitude: Double,
+        endLongitude: Double
+    ): Bitmap? {
+        val response = tMapApiService.getRouteImage(
+            startLatitude = startLatitude,
+            startLongitude = startLongitude,
+            endLatitude = endLatitude,
+            endLongitude = endLongitude
+        )
+        if (response.isSuccessful) {
+            response.body()?.let {
+                return BitmapFactory.decodeStream(it.byteStream())
+            }
+        }
+
+        return null
     }
 
 }
