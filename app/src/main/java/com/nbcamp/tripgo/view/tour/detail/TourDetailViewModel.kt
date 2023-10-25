@@ -85,6 +85,11 @@ class TourDetailViewModel(
     val likeClickEvent: SingleLiveEvent<String>
         get() = _likeClickEvent
 
+    // 좋아요 상태를 표시하는 라이브 데이터
+    private val _likeStatus: MutableLiveData<Boolean> = MutableLiveData()
+    val likeStatus: LiveData<Boolean>
+        get() = _likeStatus
+
     private val scheduleDates = arrayListOf<CalendarDay>()
 
     fun runSearchDetailInformation(contentId: String?) {
@@ -95,6 +100,8 @@ class TourDetailViewModel(
                 val response = tourDetailRepository.getDetailInformation(contentId)
                 // 평점 및 리뷰 개수 가져오기
                 getAverageRatingThisPlace(contentId)
+                // 이 컨텐츠의 현재 사용자 좋아요 상태 가져오기
+                getLikedStatusThisContent(contentId)
                 _detailUiState.postValue(DetailCommonUiState(response, "로딩 완료", false))
             }.onFailure {
                 _detailUiState.postValue(DetailCommonUiState.error("정보를 가져 오는데 실패했습니다."))
@@ -321,6 +328,17 @@ class TourDetailViewModel(
         }
     }
 
+    private fun getLikedStatusThisContent(contentId: String?) {
+        if (contentId == null) {
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = tourDetailRepository.getLikedStatusThisContent(contentId)
+            _likeStatus.postValue(response)
+        }
+    }
+
+
     fun saveLikePlace(
         detailInfo: DetailCommonEntity,
         contentId: String?,
@@ -337,9 +355,9 @@ class TourDetailViewModel(
                     contentId,
                     currentUser
                 )
-                _likeClickEvent.postValue("저장 성공")
+                _likeClickEvent.postValue(" 저장 성공")
             }.onFailure {
-                _likeClickEvent.postValue("저장 실패")
+                _likeClickEvent.postValue(" 저장 실패")
             }
         }
     }
@@ -354,9 +372,9 @@ class TourDetailViewModel(
                     contentId,
                     currentUser
                 )
-                _likeClickEvent.postValue("삭제 성공")
+                _likeClickEvent.postValue(" 삭제 성공")
             }.onFailure {
-                _likeClickEvent.postValue("삭제 실패")
+                _likeClickEvent.postValue(" 삭제 실패")
             }
         }
     }

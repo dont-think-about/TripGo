@@ -249,6 +249,16 @@ class TourDetailActivity : AppCompatActivity() {
         likeClickEvent.observe(this@TourDetailActivity) {
             Snackbar.make(binding.root, getString(R.string.like_place) + it, 2000).show()
         }
+
+        likeStatus.observe(this@TourDetailActivity) {
+            with(binding) {
+                btnHeart.run {
+                    isEnabled = false
+                    isSelected = it
+                    isEnabled = true
+                }
+            }
+        }
     }
 
     private fun bindingInfo(info: DetailCommonEntity) = with(binding) {

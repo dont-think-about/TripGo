@@ -180,6 +180,22 @@ class TourDetailRepositoryImpl(
         }
     }
 
+    override suspend fun getLikedStatusThisContent(contentId: String): Boolean {
+        getUserInfo()
+        val usersLikedList = fireStore.collection("liked")
+            .document(userInfo)
+            .collection("like")
+        usersLikedList
+            .get()
+            .await()
+            .documents.forEach { document ->
+                if (document.data?.get("contentId") == contentId) {
+                    return true
+                }
+            }
+        return false
+    }
+
     private fun getUserInfo() {
         if (App.kaKaoUser == null) {
             userInfo = App.firebaseUser?.email.toString()

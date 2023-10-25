@@ -40,4 +40,8 @@ interface TourDetailRepository {
         currentUser: Any?
     )
 
+    suspend fun getLikedStatusThisContent(
+        contentId: String
+    ): Boolean
+
 }
