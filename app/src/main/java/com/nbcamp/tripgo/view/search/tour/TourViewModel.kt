@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.search.attaction
+package com.nbcamp.tripgo.view.search.tour
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -10,7 +10,7 @@ import com.nbcamp.tripgo.view.search.SearchKeywordUiState
 import com.nbcamp.tripgo.view.search.SearchRepository
 import kotlinx.coroutines.launch
 
-class AttractionsViewModel(
+class TourViewModel(
     private val searchRepository: SearchRepository
 ) : ViewModel() {
     lateinit var adapter: SearchAdapter
@@ -28,7 +28,7 @@ class AttractionsViewModel(
             runCatching {
                 val searchResult = searchRepository.getPlaceBySearch(
                     keyword = keyword,
-                    contentTypeId = "14",
+                    contentTypeId = "12",
                     responseCount = 20
                 )
                 println(searchResult)

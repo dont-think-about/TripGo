@@ -1,15 +1,12 @@
 package com.nbcamp.tripgo.view.search
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivitySearchBinding
 import com.nbcamp.tripgo.view.search.adapters.ViewPagerAdapter
@@ -23,7 +20,7 @@ class SearchActivity : AppCompatActivity(){
     lateinit var mViewPagerAdapter: ViewPagerAdapter
     private lateinit var binding: ActivitySearchBinding
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: AttractionAdapter
+    private lateinit var adapter: SearchAdapter
     private val searchViewModel : SearchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +34,7 @@ class SearchActivity : AppCompatActivity(){
         // RecyclerView 초기화 및 어댑터 설정
         recyclerView = binding.searchRankRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(this) // 리사이클러뷰 레이아웃 매니저 설정
-        adapter = AttractionAdapter(this) // YourAdapter에 맞게 수정
+        adapter = SearchAdapter(this) // YourAdapter에 맞게 수정
         recyclerView.adapter = adapter
 
         val searchBackImageView = findViewById<ImageView>(R.id.search_back)
@@ -47,6 +44,7 @@ class SearchActivity : AppCompatActivity(){
 
         }
         searchViewModel.pullData.observe(this){ pullDatalist ->
+            adapter.clearItem()
             adapter.additem(pullDatalist)
             Log.d("키워드 123", "값 = $pullDatalist")
         }

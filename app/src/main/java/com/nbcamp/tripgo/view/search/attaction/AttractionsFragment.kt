@@ -18,10 +18,11 @@ import com.nbcamp.tripgo.databinding.FragmentSearchAttractionsBinding
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.search.SearchKeywordUiState
 import com.nbcamp.tripgo.view.search.SearchViewModel
+
 // 문화생활
 class AttractionsFragment : Fragment() {
     private val viewModel: AttractionsViewModel by viewModels { AttractionsViewModelFactory() }
-    private val searchViewModel : SearchViewModel by activityViewModels()
+    private val searchViewModel: SearchViewModel by activityViewModels()
     private var _binding: FragmentSearchAttractionsBinding? = null
     private val binding get() = _binding!!
 

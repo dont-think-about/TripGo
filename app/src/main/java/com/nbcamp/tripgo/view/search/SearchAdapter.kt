@@ -12,8 +12,8 @@ import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 import com.nbcamp.tripgo.databinding.ItemSearchBinding
 import com.nbcamp.tripgo.view.App.Companion.imageLoader
 
-class AttractionAdapter(private val sContext: Context) :
-    RecyclerView.Adapter<AttractionAdapter.SearchItemViewHolder>() {
+class SearchAdapter(private val sContext: Context) :
+    RecyclerView.Adapter<SearchAdapter.SearchItemViewHolder>() {
     var items = arrayListOf<KeywordSearchEntity>()
 
     fun clearItem() {
