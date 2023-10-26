@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 
-class SearchViewModel () : ViewModel() {
+class SearchViewModel() : ViewModel() {
     private val _pullData: MutableLiveData<List<KeywordSearchEntity>> = MutableLiveData()
     val pullData: LiveData<List<KeywordSearchEntity>>
         get() = _pullData

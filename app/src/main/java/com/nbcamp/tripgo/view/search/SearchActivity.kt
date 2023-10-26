@@ -33,13 +33,13 @@ class SearchActivity : AppCompatActivity(){
 
         // RecyclerView 초기화 및 어댑터 설정
         recyclerView = binding.searchRankRecyclerview
-        recyclerView.layoutManager = LinearLayoutManager(this) // 리사이클러뷰 레이아웃 매니저 설정
-        adapter = SearchAdapter(this) // YourAdapter에 맞게 수정
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = SearchAdapter(this)
         recyclerView.adapter = adapter
 
         val searchBackImageView = findViewById<ImageView>(R.id.search_back)
         searchBackImageView.setOnClickListener {
-            finish() // 뒤로 가기 버튼을 클릭하면 Activity 종료
+            finish()
 
 
         }
