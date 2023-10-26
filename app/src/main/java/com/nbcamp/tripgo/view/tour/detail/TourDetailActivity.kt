@@ -27,6 +27,7 @@ import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
 import com.nbcamp.tripgo.util.calendar.SundayDecorator
 import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.main.MainViewModel
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -97,10 +98,10 @@ class TourDetailActivity : AppCompatActivity() {
             tourDetailViewModel.moveToHomePage()
         }
         btnHeart.setOnClickListener {
-            // 좋아요 버튼 상태 조작
-            it.isSelected = it.isSelected.not()
             // 저장 및 삭제
             if (currentUser != null) {
+                // 좋아요 버튼 상태 조작
+                it.isSelected = it.isSelected.not()
                 if (it.isSelected) {
                     tourDetailViewModel.saveLikePlace(detailInfo, contentId, currentUser!!)
                     return@setOnClickListener
@@ -122,7 +123,7 @@ class TourDetailActivity : AppCompatActivity() {
                     getString(R.string.not_login_so_dont_add_schedule),
                     5000
                 ).setAction("LOGIN") {
-                    sharedViewModel.runLoginActivity()
+                    startActivity(Intent(this@TourDetailActivity, LogInActivity::class.java))
                 }.show()
             }
         }
@@ -196,7 +197,10 @@ class TourDetailActivity : AppCompatActivity() {
         }
 
         calendarClickEvent.observe(this@TourDetailActivity) {
-            toast(getString(R.string.cant_select_duplicate_schedule))
+            when (it) {
+                true -> toast(getString(R.string.cant_select_duplicate_schedule))
+                false -> toast(getString(R.string.not_register_schedule_before_today))
+            }
             calendarBinding?.addScheduleCalendarView?.clearSelection()
         }
 

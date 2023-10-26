@@ -12,7 +12,10 @@ import com.nbcamp.tripgo.util.PreferenceUtils
 
 class App : Application() {
     override fun onCreate() {
+        // 자동 로그인 용 shared preference 세팅
         prefs = PreferenceUtils(applicationContext)
+
+        // 이미지 캐싱을 위한 coil imageLoader
         imageLoader = ImageLoader.Builder(baseContext)
             .memoryCache {
                 MemoryCache.Builder(baseContext)
@@ -26,6 +29,8 @@ class App : Application() {
                     .build()
             }
             .build()
+
+        // 카카오 sdk 초기화
         KakaoSdk.init(this, BuildConfig.KAKAO_API_KEY)
         super.onCreate()
     }

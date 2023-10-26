@@ -39,8 +39,8 @@ class TourDetailViewModel(
         get() = _textClickEvent
 
     // 일정 추가 시 캘린더 클릭 이벤트를 처리할 라이브 데이터
-    private val _calendarClickEvent: SingleLiveEvent<Unit?> = SingleLiveEvent()
-    val calendarClickEvent: SingleLiveEvent<Unit?>
+    private val _calendarClickEvent: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val calendarClickEvent: SingleLiveEvent<Boolean>
         get() = _calendarClickEvent
 
     // 일정 추가에서 저장 버튼 이벤트를 처리할 라이브데이터
@@ -223,9 +223,15 @@ class TourDetailViewModel(
     fun selectScheduleRange(dates: List<CalendarDay>, selectedDayList: List<CalendarDay>) {
         if (dates.intersect(selectedDayList.toSet()).isNotEmpty()) {
             // 겹치는 부분이 있으면 이전 저장 되어 있던 것 제거
-            // 제거 안하면 확인 클릭 했을 때 isEmpty를 통과 하여 이상 현상 발생
+            // 제거 안하면 확인 클릭 했을 때 isEmpty 를 통과 하여 이상 현상 발생
             scheduleDates.clear()
-            _calendarClickEvent.call()
+            _calendarClickEvent.value = true
+            return
+        }
+        if (dates.last().isBefore(CalendarDay.today())) {
+            // 선택한 범위가 오늘 보다 전이면, 선택을 못 하도록 막음
+            scheduleDates.clear()
+            _calendarClickEvent.value = false
             return
         }
         scheduleDates.clear()
