@@ -14,8 +14,8 @@ class TourSearchAdapter(
     private val onClickItem: (KeywordItem) -> Unit  //아이템 클릭시 실행할 콜백 함수
 ) : ListAdapter<KeywordItem, TourSearchAdapter.TourViewHolder>(TourViewHolder.TourDiffCallback) {
 
-    private var userLat = 0.0 // 사용자의 위도
-    private var userLon = 0.0 // 사용자의 경도
+    private var userLat = 0.0 // 사용자 위도
+    private var userLon = 0.0 // 사용자 경도
 
 
     fun setUserLocation(lat: Double, lon: Double) {
@@ -45,21 +45,21 @@ class TourSearchAdapter(
     }  // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 
 
-    fun sortItemsByDistance(recyclerView: RecyclerView) {
+    fun tourDistance(recyclerView: RecyclerView) {
         val sortedList = currentList.sortedBy { item ->
             calculateDistanceTo(item.mapx.toDouble(), item.mapy.toDouble(), userLat, userLon)
         }
         submitList(sortedList.toList()) {
             recyclerView.scrollToPosition(0)
         }
-    } // 아이템 거리순 으로 정렬
+    } // Tour 아이템 거리순 으로 정렬
 
-    fun sortItemsByDate(recyclerView: RecyclerView) {
+    fun tourDate(recyclerView: RecyclerView) {
         val sortedByDate = currentList.sortedBy { it.createdtime }
         submitList(sortedByDate) {
             recyclerView.scrollToPosition(0)
         }
-    } // 아이템 날짜순 으로 정렬
+    } // Tour 아이템 날짜순 으로 정렬
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TourViewHolder {
@@ -83,8 +83,8 @@ class TourSearchAdapter(
             itemView.setOnClickListener { onClickItem(item) }
             with(binding) {
                 tourTitle.text = item.title
-                tourSubtitle.text = item.addr1
-                tourAddress.text = "내 위치로 부터 ${
+                tourAddress.text = item.addr1
+                tourContent.text = "내 위치로 부터 ${
                     calculateDistance(
                         item.mapx.toDouble(),
                         item.mapy.toDouble(),

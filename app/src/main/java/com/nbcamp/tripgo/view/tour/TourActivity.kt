@@ -2,12 +2,10 @@ package com.nbcamp.tripgo.view.tour
 
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -52,22 +50,21 @@ class TourActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-
-
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
 
 
         binding.distance.setOnClickListener {
 
-            tourDistance()
+            tourSearchAdapter.tourDistance(binding.tourRecyclerview)
+            tourAdapter.popularDistance(binding.tourRecyclerview)
 
         } // 거리순 클릭시
 
         binding.date.setOnClickListener {
-            tourDate()
-        } // 거리순 클릭시
+            tourSearchAdapter.tourDate(binding.tourRecyclerview)
+            tourAdapter.popularDate(binding.tourRecyclerview)
+        } // 날짜순 클릭시
 
         binding.tourBackButton.setOnClickListener {
             finish()
@@ -212,14 +209,6 @@ class TourActivity : AppCompatActivity() {
         binding.tourRecyclerview.visibility = if (show) View.GONE else View.VISIBLE
     }  // ProgressBar 함수
 
-    private fun tourDistance() {
-        tourSearchAdapter.sortItemsByDistance(binding.tourRecyclerview)
-    } // 거리 검색
-
-    private fun tourDate() {
-        tourSearchAdapter.sortItemsByDate(binding.tourRecyclerview)
-
-    }  // 날짜 검색
 
     private fun getMyLocation() {
         if (ContextCompat.checkSelfPermission(
