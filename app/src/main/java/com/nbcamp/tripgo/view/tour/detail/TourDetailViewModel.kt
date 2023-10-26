@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.tour.detail
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,7 @@ import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.calendar.CalendarRepository
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarLogInUiState
 import com.nbcamp.tripgo.view.tour.detail.uistate.AddScheduleUiState
@@ -19,43 +21,74 @@ import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.floor
 
 class TourDetailViewModel(
     private val tourDetailRepository: TourDetailRepository,
     private val calendarRepository: CalendarRepository
 ) : ViewModel() {
+
+    // 디테일 페이지의 정보를 가져올 때 사용 되는 라이브 데이터
     private val _detailUiState: MutableLiveData<DetailCommonUiState> = MutableLiveData()
     val detailUiState: LiveData<DetailCommonUiState>
         get() = _detailUiState
 
+    // 홈페이지, 전화번호 등 텍스트 클릭 이벤트를 처리할 라이브 데이터
     private val _textClickEvent: SingleLiveEvent<TextClickEvent> = SingleLiveEvent()
     val textClickEvent: SingleLiveEvent<TextClickEvent>
         get() = _textClickEvent
 
+    // 일정 추가 시 캘린더 클릭 이벤트를 처리할 라이브 데이터
     private val _calendarClickEvent: SingleLiveEvent<Unit?> = SingleLiveEvent()
     val calendarClickEvent: SingleLiveEvent<Unit?>
         get() = _calendarClickEvent
 
+    // 일정 추가에서 저장 버튼 이벤트를 처리할 라이브데이터
     private val _calendarSubmitClickEvent: SingleLiveEvent<Boolean> = SingleLiveEvent()
     val calendarSubmitClickEvent: SingleLiveEvent<Boolean>
         get() = _calendarSubmitClickEvent
 
+    // 로그인 상태를 판단할 라이브 데이터
     private val _loginStatus: MutableLiveData<CalendarLogInUiState> = MutableLiveData()
     val loginStatus: LiveData<CalendarLogInUiState>
         get() = _loginStatus
 
+    // 일정 추가 시 이미 있는 일정을 표시 해주기 위한 라이브 데이터
     private val _schedulesDateState: MutableLiveData<List<CalendarDay>> =
         MutableLiveData()
     val schedulesDateState: LiveData<List<CalendarDay>>
         get() = _schedulesDateState
 
     private val _myScheduleState: MutableLiveData<CalendarSetScheduleUiState> = MutableLiveData()
+
+    // 사용자의 일정을 표시 해주기 위한 라이브 데이터
     val myScheduleState: LiveData<CalendarSetScheduleUiState>
         get() = _myScheduleState
 
+    // 일정 상태 저장중 UI를 변화를 하기 위한 라이브 데이터
     private val _addScheduleState: MutableLiveData<AddScheduleUiState> = MutableLiveData()
     val addScheduleState: LiveData<AddScheduleUiState>
         get() = _addScheduleState
+
+    // 평점 및 리뷰 개수를 가져오기 위한 라이브 데이터
+    private val _countAndRating: MutableLiveData<Pair<Int, Double>> = MutableLiveData()
+    val countAndRatting: LiveData<Pair<Int, Double>>
+        get() = _countAndRating
+
+    // 사용자의 위치에서 부터 관광지의 경로를 보여주기 위한 라이브 데이터
+    private val _routeImage: MutableLiveData<Bitmap?> = MutableLiveData()
+    val routeImage: LiveData<Bitmap?>
+        get() = _routeImage
+
+    // 좋아요 버튼을 클릭했을 때 이벤트를 처리하기 위한 라이브 데이터
+    private val _likeClickEvent: SingleLiveEvent<String> = SingleLiveEvent()
+    val likeClickEvent: SingleLiveEvent<String>
+        get() = _likeClickEvent
+
+    // 좋아요 상태를 표시하는 라이브 데이터
+    private val _likeStatus: MutableLiveData<Boolean> = MutableLiveData()
+    val likeStatus: LiveData<Boolean>
+        get() = _likeStatus
 
     private val scheduleDates = arrayListOf<CalendarDay>()
 
@@ -63,11 +96,32 @@ class TourDetailViewModel(
         _detailUiState.value = DetailCommonUiState.initialize("로딩 중..")
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
+                // 상세 정보 가져오기
                 val response = tourDetailRepository.getDetailInformation(contentId)
+                // 평점 및 리뷰 개수 가져오기
+                getAverageRatingThisPlace(contentId)
+                // 이 컨텐츠의 현재 사용자 좋아요 상태 가져오기
+                getLikedStatusThisContent(contentId)
                 _detailUiState.postValue(DetailCommonUiState(response, "로딩 완료", false))
             }.onFailure {
-                println(it.localizedMessage)
                 _detailUiState.postValue(DetailCommonUiState.error("정보를 가져 오는데 실패했습니다."))
+            }
+        }
+    }
+
+    fun getRouteImage(info: DetailCommonEntity) {
+        _routeImage.value = null
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                val response = tourDetailRepository.getRouteImage(
+                    App.latitude,
+                    App.longitude,
+                    info.latitude.toDouble(),
+                    info.longitude.toDouble(),
+                )
+                _routeImage.postValue(response)
+            }.onFailure {
+                _routeImage.postValue(null)
             }
         }
     }
@@ -183,11 +237,11 @@ class TourDetailViewModel(
         keywordItem: KeywordItem?,
         detailInfo: DetailCommonEntity
     ) {
-        _addScheduleState.value = AddScheduleUiState.initialize()
         if (scheduleDates.isEmpty()) {
             _calendarSubmitClickEvent.value = false
             return
         }
+        _addScheduleState.value = AddScheduleUiState.initialize()
         // 시작, 끝 날짜 구하기
         val (startDate, endDate) = convertDate(scheduleDates)
 
@@ -257,6 +311,70 @@ class TourDetailViewModel(
                 currentUser.let {
                     _loginStatus.value = CalendarLogInUiState(currentUser, true)
                 }
+            }
+        }
+    }
+
+    private fun getAverageRatingThisPlace(contentId: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = tourDetailRepository.getAverageRatingThisPlace(contentId)
+            val filteredList = response.filterNot { it == -1f }
+            // 적힌 리뷰의 숫자 및 평점
+            val reviewCount = filteredList.count()
+            val averageRating = filteredList.sum()
+            _countAndRating.postValue(
+                reviewCount to floor(((averageRating / reviewCount) * 10.0) / 10.0)
+            )
+        }
+    }
+
+    private fun getLikedStatusThisContent(contentId: String?) {
+        if (contentId == null) {
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = tourDetailRepository.getLikedStatusThisContent(contentId)
+            _likeStatus.postValue(response)
+        }
+    }
+
+
+    fun saveLikePlace(
+        detailInfo: DetailCommonEntity,
+        contentId: String?,
+        currentUser: Any
+    ) {
+        if (contentId == null) {
+            return
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                tourDetailRepository.saveLikePlace(
+                    detailInfo,
+                    contentId,
+                    currentUser
+                )
+                _likeClickEvent.postValue(" 저장 성공")
+            }.onFailure {
+                _likeClickEvent.postValue(" 저장 실패")
+            }
+        }
+    }
+
+    fun removeLikePlace(contentId: String?, currentUser: Any?) {
+        if (contentId == null) {
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                tourDetailRepository.removeLikePlace(
+                    contentId,
+                    currentUser
+                )
+                _likeClickEvent.postValue(" 삭제 성공")
+            }.onFailure {
+                _likeClickEvent.postValue(" 삭제 실패")
             }
         }
     }

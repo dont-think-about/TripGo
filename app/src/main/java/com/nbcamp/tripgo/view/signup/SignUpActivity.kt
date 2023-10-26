@@ -9,6 +9,8 @@ import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivitySignUpBinding
 import com.nbcamp.tripgo.view.login.LogInActivity

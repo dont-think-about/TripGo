@@ -9,6 +9,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.calendar.WritingType
 import com.nbcamp.tripgo.view.reviewwriting.CalendarUserModel
 import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingModel
@@ -27,14 +28,19 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
         calendarUserModel: CalendarUserModel,
         writingType: WritingType
     ): String {
-        when (val user = calendarUserModel.currentUser) {
-            is FirebaseUser -> {
-                userInfo = user.email.toString()
-            }
-
-            is Account -> {
-                userInfo = user.email.toString()
-            }
+//        when (val user = calendarUserModel.currentUser) {
+//            is FirebaseUser -> {
+//                userInfo = user.email.toString()
+//            }
+//
+//            is Account -> {
+//                userInfo = user.email.toString()
+//            }
+//        }
+        if (App.kaKaoUser == null) {
+            userInfo = App.firebaseUser?.email.toString()
+        } else if (App.firebaseUser == null) {
+            userInfo = App.kaKaoUser?.email.toString()
         }
 
         fileName = "${userInfo.split("@").first()}_${calendarUserModel.model?.id}.png"

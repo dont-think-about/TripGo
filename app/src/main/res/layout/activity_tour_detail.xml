@@ -103,8 +103,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:maxLines="5"
                 tools:text="수원화성은 조선왕조 제22대 정조대왕이 세자에  책봉되었으나 당쟁에 휘말려 왕위에 오르지 못하고 뒤주 속에서 생을 마감한 아버지 사도세자의 능침을 양주 배봉산에서 조선 최대의 명당인 수우너 화산으로 천봉하고 화산 부근에 있던 읍치를 수원 팔달산수원화성은 조선왕조 제22대 정조대왕이 세자에  책봉되었으나 당쟁에 휘말려 왕위에 오르지 못하고 뒤주 속에서 생을 마" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -114,6 +112,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginTop="5dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
                 android:padding="5dp"
                 android:text="@string/more_description"
                 android:textColor="@color/deactivated" />
@@ -176,7 +177,7 @@
                     style="@style/Font.16.Normal.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="3.0점" />
+                    android:text="@string/rating" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tour_review"
@@ -184,24 +185,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    tools:text="10개의 리뷰" />
+                    android:text="@string/now_loading" />
 
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/notice_route"
                 style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/find_road" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/route_image"
                 style="@style/Font.16.Normal.Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
                 android:paddingVertical="4dp"
                 android:paddingBottom="4dp"
-                android:text="@string/move_to_tmap" />
+                android:src="@drawable/icon_main_logo" />
 
             <Space
                 android:layout_width="0dp"
@@ -224,23 +227,20 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
+            android:clickable="true"
+            android:focusable="true"
             android:padding="16dp"
-            app:srcCompat="@drawable/icon_empty_favorite" />
+            app:srcCompat="@drawable/selector_button_heart" />
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/move_to_calendar"
             style="@style/Font.16.Bold.Black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:backgroundTint="@color/main"
             android:drawableStart="@drawable/icon_calendar_button"
-            android:drawablePadding="5dp"
+            android:drawablePadding="15dp"
             android:text="@string/add_to_calendar"
             android:textColor="@color/white"
             android:textStyle="bold" />
