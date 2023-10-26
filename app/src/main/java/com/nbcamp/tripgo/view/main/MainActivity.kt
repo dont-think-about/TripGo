@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityMainBinding
+import com.nbcamp.tripgo.util.DetectNetwork
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.checkPermission
 import com.nbcamp.tripgo.util.setFancyDialog
@@ -85,6 +86,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() = with(binding) {
+        // 인터넷 연결 감지 start - 좀 더 수정 해야 할 듯
+        DetectNetwork(this@MainActivity).detectNetworkStatus(this@MainActivity)
+        // 인터넷 연결 감지 end
+
         mainBottomNavigation.itemIconTintList = null
         mainBottomNavigation.setOnItemSelectedListener { item ->
             supportFragmentManager.popBackStackImmediate(
