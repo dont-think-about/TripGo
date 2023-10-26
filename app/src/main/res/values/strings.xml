@@ -151,5 +151,6 @@
     <string name="by_distance">거리순</string>
     <string name="like_place">좋아요 </string>
     <string name="not_register_schedule_before_today">오늘 이전 날짜에는 일정을 등록할 수 없습니다.</string>
+    <string name="not_writing_review">일정이 없거나 지나지 않은 일정은 리뷰를 적을 수 없습니다.</string>
 
 </resources>

@@ -18,6 +18,6 @@ class TodayDecorator(context: Context) : DayViewDecorator {
 
     override fun decorate(view: DayViewFacade?) {
         view?.setBackgroundDrawable(drawable!!)
-        view?.addSpan(DotSpan(7f, Color.parseColor("#FF008000")))
+        view?.addSpan(DotSpan(7f, Color.parseColor("#FFFF0000")))
     }
 }
