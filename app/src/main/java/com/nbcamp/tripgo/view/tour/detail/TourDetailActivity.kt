@@ -3,6 +3,7 @@ package com.nbcamp.tripgo.view.tour.detail
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -14,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import coil.load
 import com.google.android.material.snackbar.Snackbar
+import com.nbcamp.tripgo.BuildConfig
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
@@ -21,16 +23,20 @@ import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.databinding.ActivityTourDetailBinding
 import com.nbcamp.tripgo.databinding.DialogCalendarBinding
 import com.nbcamp.tripgo.util.LoadingDialog
+import com.nbcamp.tripgo.util.TMapFrameLayout
 import com.nbcamp.tripgo.util.calendar.CantSetDayDecorator
 import com.nbcamp.tripgo.util.calendar.OutDateMonthDecorator
 import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
 import com.nbcamp.tripgo.util.calendar.SundayDecorator
 import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.login.LogInActivity
-import com.nbcamp.tripgo.view.main.MainViewModel
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.skt.tmap.TMapPoint
+import com.skt.tmap.TMapView
+import com.skt.tmap.overlay.TMapMarkerItem
 import java.util.Calendar
 
 class TourDetailActivity : AppCompatActivity() {
@@ -42,20 +48,23 @@ class TourDetailActivity : AppCompatActivity() {
     private lateinit var selectedDayList: List<CalendarDay>
     private lateinit var dialog: AlertDialog
     private lateinit var detailInfo: DetailCommonEntity
+    private lateinit var container: TMapFrameLayout
+    private lateinit var tMapView: TMapView
     private var calendarBinding: DialogCalendarBinding? = null
     private var currentUser: Any? = null
+
 
     private val tourDetailViewModel: TourDetailViewModel by viewModels {
         TourDetailViewModelFactory(
             this
         )
     }
-    private val sharedViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTourDetailBinding.inflate(layoutInflater)
         loadingDialog = LoadingDialog(this)
+        container = binding.routeMap
         setContentView(binding.root)
 
         initVariables()
@@ -108,7 +117,7 @@ class TourDetailActivity : AppCompatActivity() {
                 }
                 tourDetailViewModel.removeLikePlace(contentId, currentUser)
             } else {
-                toast("로그인이 되어 있지 않아 찜 목록에 추가할 수 없습니다.")
+                toast(getString(R.string.not_login_then_not_submit_like))
             }
 
         }
@@ -122,12 +131,13 @@ class TourDetailActivity : AppCompatActivity() {
                     binding.root,
                     getString(R.string.not_login_so_dont_add_schedule),
                     5000
-                ).setAction("LOGIN") {
+                ).setAction(getString(R.string.login_en)) {
                     startActivity(Intent(this@TourDetailActivity, LogInActivity::class.java))
                 }.show()
             }
         }
-
+        // 지도 위에서 스크롤 뷰의 이벤트를 막기 위한 함수
+        doNotFrameScroll()
         runSearchDetailInformation(contentId)
     }
 
@@ -148,13 +158,11 @@ class TourDetailActivity : AppCompatActivity() {
             }
             if (state.isLoading) {
                 loadingDialog.setVisible()
-            } else {
-                loadingDialog.setInvisible()
             }
             state.detailInfo?.let { info ->
                 bindingInfo(info)
-                tourDetailViewModel.getRouteImage(info)
                 detailInfo = info
+                setTMap(info)
             }
         }
 
@@ -233,9 +241,9 @@ class TourDetailActivity : AppCompatActivity() {
             "${numSet.first}개의 리뷰".also { binding.tourReview.text = it }
         }
 
-        routeImage.observe(this@TourDetailActivity) { bitmap ->
+        routeMap.observe(this@TourDetailActivity) { polyLine ->
             with(binding) {
-                when (bitmap) {
+                when (polyLine) {
                     null -> {
                         "${getString(R.string.find_road)} ${getString(R.string.now_loading)}".also {
                             noticeRoute.text = it
@@ -243,8 +251,15 @@ class TourDetailActivity : AppCompatActivity() {
                     }
 
                     else -> {
-                        routeImage.load(bitmap)
+                        tMapView.run {
+                            addTMapPolyLine(polyLine)
+                            val info = tMapView.getDisplayTMapInfo(polyLine.linePointList)
+                            zoomLevel = info.zoom
+                            setCenterPoint(info.point.latitude, info.point.longitude, true)
+                        }
                         noticeRoute.text = getString(R.string.find_road)
+                        // 지도까지 로딩 다 되면 다이얼로그 끄기
+                        loadingDialog.setInvisible()
                     }
                 }
             }
@@ -262,6 +277,47 @@ class TourDetailActivity : AppCompatActivity() {
                     isEnabled = true
                 }
             }
+        }
+    }
+
+    private fun doNotFrameScroll() = with(binding) {
+        container.setTouchListener(object : TMapFrameLayout.OnTouchListener {
+            override fun onTouch() {
+                nestedScrollView.requestDisallowInterceptTouchEvent(true)
+            }
+        })
+    }
+
+    private fun setTMap(info: DetailCommonEntity) {
+        tMapView = TMapView(this)
+        container.addView(tMapView)
+        tMapView.setSKTMapApiKey(BuildConfig.SK_OPEN_API_KEY)
+        setRouteOnTMap(info)
+    }
+
+    private fun setRouteOnTMap(detailInfo: DetailCommonEntity) = with(tMapView) {
+        setOnMapReadyListener {
+            setUserScrollZoomEnable(true)
+            val startMarker = TMapMarkerItem().apply {
+                id = "startMarker"
+                visible = true
+                icon = BitmapFactory.decodeResource(resources, R.drawable.icon_start_marker)
+                setTMapPoint(App.latitude, App.longitude)
+            }
+            val endMarker = TMapMarkerItem().apply {
+                id = "endMarker"
+                visible = true
+                icon = BitmapFactory.decodeResource(resources, R.drawable.icon_end_marker)
+                setTMapPoint(detailInfo.latitude.toDouble(), detailInfo.longitude.toDouble())
+            }
+            addTMapMarkerItem(startMarker)
+            addTMapMarkerItem(endMarker)
+            val startPoint = TMapPoint(App.latitude, App.longitude)
+            val endPoint =
+                TMapPoint(detailInfo.latitude.toDouble(), detailInfo.longitude.toDouble())
+            loadingDialog.setText(getString(R.string.loading_route))
+            // 경로 찾기 시작
+            tourDetailViewModel.getRouteMap(startPoint, endPoint)
         }
     }
 
@@ -327,7 +383,7 @@ class TourDetailActivity : AppCompatActivity() {
         calendarBinding = DialogCalendarBinding.inflate(layoutInflater)
         setCalendarOption()
         dialog = AlertDialog.Builder(this)
-            .setTitle("일정 추가")
+            .setTitle(getString(R.string.add_schedule))
             .setView(calendarBinding?.root)
             .setPositiveButton(getString(R.string.save)) { _, _ -> }
             .setNegativeButton(getString(R.string.disagree_permission)) { _, _ ->
