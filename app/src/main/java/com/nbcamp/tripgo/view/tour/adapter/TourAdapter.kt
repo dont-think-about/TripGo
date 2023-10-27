@@ -26,14 +26,17 @@ class TourAdapter(
 
     private var userLat = 0.0 // 사용자 위도
     private var userLon = 0.0 // 사용자 경도
-
+    fun setUserLocation(lat: Double, lon: Double) {
+        userLat = lat
+        userLon = lon
+        notifyDataSetChanged()
+    } // 위치 정보 변경 후 , RecyclerView 갱신
 
     private fun calculateDistanceTo(
         mapx: Double,
         mapy: Double,
         userLat: Double,
         userLon: Double
-
     ): Double {
         val R = 6371.0
 
@@ -75,13 +78,11 @@ class TourAdapter(
 
                 onClickItem(item)
             }
-
             with(binding) {
                 tourTitle.text = item.title
                 tourAddress.text = item.addr1
                 tourContent.text =
                     "${formatDate(item.eventstartdate)} ~ ${formatDate(item.eventenddate)}"
-
 
                 myImage.load(item.firstimage)
             }
@@ -94,10 +95,7 @@ class TourAdapter(
                 date // 원래 형식이 잘못된 경우, 원래 문자열을 반환
             }
         } // 날짜 xx.xx.xx로 변경 시켜 주는 함수
-
-
     }
-
 
     companion object {
         private val TourDiffCallback = object : DiffUtil.ItemCallback<FestivalItem>() {

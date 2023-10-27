@@ -17,13 +17,11 @@ class TourSearchAdapter(
     private var userLat = 0.0 // 사용자 위도
     private var userLon = 0.0 // 사용자 경도
 
-
     fun setUserLocation(lat: Double, lon: Double) {
         userLat = lat
         userLon = lon
         notifyDataSetChanged()
     } // 위치 정보 변경 후 , RecyclerView 갱신
-
 
     private fun calculateDistanceTo(
         mapx: Double,
@@ -44,7 +42,6 @@ class TourSearchAdapter(
         return R * c
     }  // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 
-
     fun tourDistance(recyclerView: RecyclerView) {
         val sortedList = currentList.sortedBy { item ->
             calculateDistanceTo(item.mapx.toDouble(), item.mapy.toDouble(), userLat, userLon)
@@ -60,7 +57,6 @@ class TourSearchAdapter(
             recyclerView.scrollToPosition(0)
         }
     } // Tour 아이템 날짜순 으로 정렬
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TourViewHolder {
         val binding =
@@ -95,7 +91,6 @@ class TourSearchAdapter(
                 myImage.load(item.firstimage)
             }
         }
-
 
         companion object {
             val TourDiffCallback = object : DiffUtil.ItemCallback<KeywordItem>() {
