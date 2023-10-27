@@ -9,11 +9,16 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
+import com.nbcamp.tripgo.databinding.DialogCalendarBinding
 import com.nbcamp.tripgo.databinding.FragmentCalendarBinding
 import com.nbcamp.tripgo.util.LoadingDialog
+import com.nbcamp.tripgo.util.SwipeToEditCallback
 import com.nbcamp.tripgo.util.calendar.CalendarFragmentTodayDecorator
 import com.nbcamp.tripgo.util.calendar.OutDateMonthDecorator
 import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
@@ -34,11 +39,16 @@ class CalendarFragment : Fragment() {
     private var _binding: FragmentCalendarBinding? = null
     private val binding: FragmentCalendarBinding
         get() = _binding!!
+    private var calendarBinding: DialogCalendarBinding? = null
+
+    //    private lateinit var dialog: AlertDialog
+    private var forModifySchedule: List<CalendarEntity>? = null
     private val calendarViewModel: CalendarViewModel by viewModels {
         CalendarViewModelFactory(
             requireActivity()
         )
     }
+    private var isModify = true // 수정 캘린더를 띄울 때 본 캘린더에 변화를 주지 않기 위해 세운 플래그
     private val sharedViewModel: MainViewModel by activityViewModels()
     private val scheduleListAdapter by lazy {
         ScheduleListAdapter(
@@ -52,6 +62,45 @@ class CalendarFragment : Fragment() {
             }
         )
     }
+    private val modifyScheduleSwipeHandler by lazy {
+        object : SwipeToEditCallback(requireActivity()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val model = scheduleListAdapter.currentList[viewHolder.adapterPosition]
+                val bundle = Bundle().apply {
+                    putParcelable("model", model)
+                    putParcelableArrayList("selectedDayList", selectedDayList)
+                    putParcelableArrayList("forModifySchedule",
+                        forModifySchedule?.let { ArrayList(it) }
+                    )
+                }
+                ScheduleModifyFragment.newInstance().apply {
+                    arguments = bundle
+                }.show(parentFragmentManager, ScheduleModifyFragment.TAG)
+                binding.calendarScheduleRecyclerView.adapter = scheduleListAdapter
+//                calendarBinding = DialogCalendarBinding.inflate(layoutInflater)
+//                setCalendarOption(model)
+//                runModifySchedule()
+            }
+        }
+    }
+
+//    private fun runModifySchedule() {
+//        calendarBinding?.calendarProgressBar?.isVisible = false
+//        dialog = AlertDialog.Builder(requireActivity())
+//            .setTitle(getString(R.string.add_schedule))
+//            .setView(calendarBinding?.root)
+//            .setPositiveButton(getString(R.string.save)) { _, _ -> }
+//            .setNegativeButton(getString(R.string.disagree_permission)) { _, _ ->
+//                calendarBinding = null
+//            }
+//            .create()
+//        dialog.run {
+//            show()
+//            getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+//
+//            }
+//        }
+//    }
 
     private var isLoggedIn = false
     private var currentUser: Any? = null
@@ -107,16 +156,18 @@ class CalendarFragment : Fragment() {
                 // 일정이 있는 날엔 달력에 따로 표시해 주기 위한 리스트
                 selectedDayList.clear()
                 selectedDayList.addAll(dateList)
-                calendarMainView.run {
-                    removeDecorators()
-                    invalidateDecorators()
-                    addDecorators(
-                        SelectedDayDecorator(selectedDayList),
-                        SaturdayDecorator(month, 1),
-                        SundayDecorator(month, 1),
-                        OutDateMonthDecorator(requireActivity(), month + 1),
-                        CalendarFragmentTodayDecorator(requireActivity())
-                    )
+                if (isModify) {
+                    calendarMainView.run {
+                        removeDecorators()
+                        invalidateDecorators()
+                        addDecorators(
+                            SelectedDayDecorator(selectedDayList),
+                            SaturdayDecorator(month, 1),
+                            SundayDecorator(month, 1),
+                            OutDateMonthDecorator(requireActivity(), month + 1),
+                            CalendarFragmentTodayDecorator(requireActivity())
+                        )
+                    }
                 }
             }
 
@@ -143,6 +194,14 @@ class CalendarFragment : Fragment() {
                 if (state == null) return@observe
                 updateCalendarUi(state)
             }
+
+            calendarClickModifyEvent.observe(requireActivity()) {
+                when (it) {
+                    true -> requireActivity().toast(getString(R.string.cant_select_duplicate_schedule))
+                    false -> requireActivity().toast(getString(R.string.not_register_schedule_before_today))
+                }
+                calendarBinding?.addScheduleCalendarView?.clearSelection()
+            }
         }
     }
 
@@ -160,11 +219,14 @@ class CalendarFragment : Fragment() {
         // 뷰모델로 부터 관찰한 내 일정을 캘린더에 표시
         showScheduleInCalendarView(state.allSchedules?.toMutableList())
 
+        // 수정 시 해당 일정을 뺴고 보여주기 위한 임시 캘린더 배열
+        forModifySchedule = state.allSchedules
         // 뷰모델로 부터 관찰한 내 일정을 리사이클러뷰에 표시 (단, 현재 달만)
         scheduleListAdapter.submitList(state.monthSchedules?.toMutableList())
     }
 
     private fun showScheduleInCalendarView(data: List<CalendarEntity>?) {
+        isModify = true
         calendarViewModel.setSelectedDate(data)
     }
 
@@ -173,6 +235,7 @@ class CalendarFragment : Fragment() {
     }
 
     private fun initViews() = with(binding) {
+        val callSwipeHelper = ItemTouchHelper(modifyScheduleSwipeHandler)
         nestedScrollView.isNestedScrollingEnabled = false
         calendarMainView.run {
             removeDecorators()
@@ -212,7 +275,16 @@ class CalendarFragment : Fragment() {
         }
         calendarScheduleRecyclerView.run {
             adapter = scheduleListAdapter
+            addItemDecoration(
+                DividerItemDecoration(
+                    requireActivity(),
+                    DividerItemDecoration.VERTICAL
+                )
+            )
+            callSwipeHelper.attachToRecyclerView(this)
         }
+
+
     }
 
     private fun runDialogForReviewWriting(model: CalendarEntity?) {
@@ -275,6 +347,47 @@ class CalendarFragment : Fragment() {
             .commit()
     }
 
+//    private fun setCalendarOption(model: CalendarEntity) = with(calendarBinding!!) {
+//        // false를 줌으로써 캘린더 프래그먼트의 캘린더에는 변화가 없게 함
+//        isModify = false
+//        // 다이얼로그에 보여줄 스케줄은 현재 선택한 스케줄을 제외하고 선택할 수 있도록 함
+//        val filteredSchedule =
+//            forModifySchedule?.filter { it.endDate != model.endDate }
+//        calendarViewModel.setSelectedDate(filteredSchedule)
+//        addScheduleCalendarView.run {
+//            val month = Calendar.getInstance().get(Calendar.MONTH)
+//            removeDecorators()
+//            invalidateDecorators()
+//            addDecorators(
+//                SaturdayDecorator(month, 1),
+//                SundayDecorator(month, 1),
+//                OutDateMonthDecorator(requireActivity(), month + 1),
+//                TodayDecorator(requireActivity()),
+//                CantSetDayDecorator(requireActivity(), selectedDayList)
+//            )
+//            setOnMonthChangedListener { _, date ->
+//                removeDecorators()
+//                invalidateDecorators()
+//                addDecorators(
+//                    SaturdayDecorator(date.month, 0),
+//                    SundayDecorator(date.month, 0),
+//                    TodayDecorator(requireActivity()),
+//                    OutDateMonthDecorator(requireActivity(), date.month),
+//                    CantSetDayDecorator(requireActivity(), selectedDayList)
+//                )
+//            }
+//            setOnRangeSelectedListener { _, dates ->
+//                calendarViewModel.selectScheduleRange(dates, selectedDayList)
+//            }
+//            setOnDateChangedListener { _, date, _ ->
+//                // 사용자는 하루만 선택을 할 수도 있으므로 단일 처리도 해야함
+//                val dates = listOf(date, date)
+//                calendarViewModel.selectScheduleRange(dates, selectedDayList)
+//            }
+//        }
+//    }
+
+
     override fun onResume() {
         super.onResume()
         calendarViewModel.getLoginStatus()
@@ -284,6 +397,7 @@ class CalendarFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         loadingDialog = null
+        calendarBinding = null
     }
 
     companion object {
