@@ -2,6 +2,7 @@ package com.nbcamp.tripgo.view.login
 
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -29,6 +30,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.kakao.sdk.auth.AuthCodeClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
@@ -46,6 +49,11 @@ class LogInActivity : AppCompatActivity() {
     lateinit var emailpwd: AppCompatEditText
     lateinit var loginbtn: AppCompatButton
     lateinit var  kakaoLoginButton : AppCompatImageView
+    var fireStore: FirebaseFirestore = Firebase.firestore
+
+    //firestore 연결
+    val firestore = Firebase.firestore
+    //firebaseUID 가져오기
 
     //google login
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -79,7 +87,7 @@ class LogInActivity : AppCompatActivity() {
             val signInIntent = GoogleSignInClient.signInIntent
             startGoogleLoginForResult.launch(signInIntent)
 
-            }
+        }
 
         //kakao 선언 시작 ~
         /** KakaoSDK init */
@@ -129,14 +137,16 @@ class LogInActivity : AppCompatActivity() {
     //https://jgeun97.tistory.com/233
     //https://github.com/firebase/snippets-android/blob/b8f65e9150fe927a5f0473e15e16fa5803189b60/auth/app/src/main/java/com/google/firebase/quickstart/auth/kotlin/GoogleSignInActivity.kt#L43-L44
     private fun googleInit() {
-        val default_web_client_id = "1094795130006-9tkks7qfjnls7rtpijm4phspvurfscl0.apps.googleusercontent.com"; // Android id X
+        val default_web_client_id = "1094795130006-9tkks7qfjnls7rtpijm4phspvurfscl0.apps.googleusercontent.com" // Android id X
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(default_web_client_id)
             .requestEmail()
             .build()
 
+
         GoogleSignInClient = GoogleSignIn.getClient(this, gso)
+
 
         startGoogleLoginForResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -152,9 +162,19 @@ class LogInActivity : AppCompatActivity() {
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
 
-                            val keyHash = Utility.getKeyHash(this)
-                            Log.d("Hash", keyHash)
+                            //firestore google inpo 저장
+                            val user = hashMapOf(
+                                "Uid" to account.email,
+                                "nickname" to account.displayName,
+                                "profileImage" to null,
+                            )
 
+                            fireStore.collection("users").document(account.email.toString()).set(user)
+
+                            val keyHash = Utility.getKeyHash(this)
+                            /*   Log.d("Hash", keyHash)
+                               Log.d("Email", "this"+account.email)
+                               Log.d("displayname","this"+account.displayName) */
                             finish()
 
                             firebaseAuthWithGoogle(account.idToken!!)
@@ -169,6 +189,8 @@ class LogInActivity : AppCompatActivity() {
                 }
             }
     }
+
+
 
     // [START auth_with_google]
     private fun firebaseAuthWithGoogle(idToken: String) {
@@ -194,36 +216,40 @@ class LogInActivity : AppCompatActivity() {
                 setLogin(false)
             } else if (token != null) {
                 //TODO: 최종적으로 카카오로그인 및 유저정보 가져온 결과
-                UserApiClient.instance.me { user, error ->
-                    Log.d("카톡계정로그인 성공 @@@@@@@@", "카카오계정으로 로그인 성공 \n\n " +
-                            "token: ${token.accessToken} \n\n " +
-                            "me: ${user}")
+                UserApiClient.instance.me { user, userError ->
 
+                    if (userError != null) {
+                        // 사용자 정보 가져오기에 실패한 경우, 에러 처리를 수행
+                        Log.e("사용자 정보 가져오기 오류", userError.toString())
+                    } else if (user != null) {
+                        val email = user.kakaoAccount?.email
+                        val nickname = user.kakaoAccount?.profile?.nickname
+
+                        if (email != null) {
+                            val userDocument = hashMapOf(
+                                "Uid" to email,
+                                "nickname" to nickname
+                            )
+
+                            fireStore.collection("users").document(email)
+                                .set(userDocument)
+                                .addOnSuccessListener {
+                                    Log.d(ContentValues.TAG, "사용자 정보 Firestore에 저장 성공")
+                                    val intent = Intent(this, MainActivity::class.java)
+                                    startActivity(intent)
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(ContentValues.TAG, "사용자 정보 Firestore에 저장 실패", e)
+                                }
+                        }
+                    }
                 }
             }
         }
 
         // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
-                if (error != null) {
-                    Log.d("카톡로그인 실패", "카카오톡으로 로그인 실패 : ${error}")
-
-                    // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
-                    // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
-                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                        return@loginWithKakaoTalk
-                    }
-
-                    // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                    UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
-                } else if (token != null) {
-                    Log.d("카카오계정으로 로그인", "카카오톡으로 로그인 성공 ${token.accessToken}")
-                    setLogin(true)
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                }
-            }
+            UserApiClient.instance.loginWithKakaoTalk(this, callback = callback)
         } else {
             UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
         }
@@ -267,6 +293,4 @@ class LogInActivity : AppCompatActivity() {
 
 
 
-}
-
-
+} 
