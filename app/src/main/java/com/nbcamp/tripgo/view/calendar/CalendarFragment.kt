@@ -14,6 +14,7 @@ import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.databinding.FragmentCalendarBinding
 import com.nbcamp.tripgo.util.LoadingDialog
+import com.nbcamp.tripgo.util.calendar.CalendarFragmentTodayDecorator
 import com.nbcamp.tripgo.util.calendar.OutDateMonthDecorator
 import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
 import com.nbcamp.tripgo.util.calendar.SelectedDayDecorator
@@ -114,7 +115,7 @@ class CalendarFragment : Fragment() {
                         SaturdayDecorator(month, 1),
                         SundayDecorator(month, 1),
                         OutDateMonthDecorator(requireActivity(), month + 1),
-                        TodayDecorator(requireActivity())
+                        CalendarFragmentTodayDecorator(requireActivity())
                     )
                 }
             }
