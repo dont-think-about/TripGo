@@ -49,4 +49,37 @@ class CalendarRepositoryImpl(
         }
         return list
     }
+
+    override suspend fun deleteSchedule(id: String): List<CalendarEntity> {
+        val email = if (App.firebaseUser == null) {
+            App.kaKaoUser?.email
+        } else {
+            App.firebaseUser?.email
+        }
+        if (email == null) {
+            return emptyList()
+        }
+        // 삭제하고
+        fireStore.runTransaction { transaction ->
+            val scheduleDocument = fireStore.collection("calendar")
+                .document(email)
+                .collection("plans")
+                .document(id)
+
+            transaction.delete(scheduleDocument)
+        }.await()
+
+        // 다시 가져 와서 리스트 업데이트
+        val scheduleList = fireStore.collection("calendar")
+            .document(email)
+            .collection("plans")
+            .get()
+            .await()
+            .map { it.toObject<CalendarEntity>() }
+
+        if (scheduleList.isEmpty()) {
+            return emptyList()
+        }
+        return scheduleList
+    }
 }

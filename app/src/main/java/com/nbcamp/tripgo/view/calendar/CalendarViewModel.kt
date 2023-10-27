@@ -41,6 +41,10 @@ class CalendarViewModel(
     val runDialogState: SingleLiveEvent<RunDialogUiState?>
         get() = _runDialogState
 
+    private val _deleteScheduleUiState: MutableLiveData<CalendarScheduleUiState> = MutableLiveData()
+    val deleteScheduleUiState: MutableLiveData<CalendarScheduleUiState>
+        get() = _deleteScheduleUiState
+
     // 원본으로 하기 힘든 위치에 추가적인 날짜 필터링을 위해 캐싱 데이터를 생성
     private var cachingSchedule: List<CalendarEntity>? = null
 
@@ -215,5 +219,43 @@ class CalendarViewModel(
         }
         // 유효하지 않으면 리뷰를 작성 못하게 함
         _runDialogState.call()
+    }
+
+
+    // documentId 값을 통해 리뷰 삭제
+    fun deleteMySchedule(model: CalendarEntity) {
+        _deleteScheduleUiState.value = CalendarScheduleUiState.initialize()
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                if (model.id == null) {
+                    return@launch
+                }
+                val myAllSchedules = calendarRepository.deleteSchedule(model.id)
+                val monthSchedules = myAllSchedules.filter {
+                    it.startDate?.slice(4..5)?.toInt() == Calendar.getInstance()
+                        .get(Calendar.MONTH) + 1
+                }.sortedBy { it.startDate?.toInt() }.toMutableList()
+                cachingSchedule = myAllSchedules
+                if (myAllSchedules.isEmpty()) {
+                    _deleteScheduleUiState.postValue(
+                        CalendarScheduleUiState.error(
+                            "일정을 추가하고 관리해보세요!",
+                        )
+                    )
+                    return@launch
+                }
+                _deleteScheduleUiState.postValue(
+                    CalendarScheduleUiState(
+                        myAllSchedules,
+                        monthSchedules,
+                        "",
+                        false
+                    )
+                )
+
+            }.onFailure {
+                _deleteScheduleUiState.postValue(CalendarScheduleUiState.error("삭제에 실패하였습니다."))
+            }
+        }
     }
 }

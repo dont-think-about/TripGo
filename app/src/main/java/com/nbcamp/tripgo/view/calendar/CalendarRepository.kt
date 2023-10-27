@@ -14,4 +14,10 @@ interface CalendarRepository {
      *  @return 사용자의 일정 목록
      */
     suspend fun getMySchedules(email: String): List<CalendarEntity>
+
+    /**
+     * @param id 삭제할 일정 문서 아이디
+     * @return 사용자의 일정 목록
+     */
+    suspend fun deleteSchedule(id: String): List<CalendarEntity>
 }

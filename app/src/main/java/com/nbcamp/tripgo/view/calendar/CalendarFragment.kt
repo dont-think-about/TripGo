@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.databinding.FragmentCalendarBinding
+import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.calendar.OutDateMonthDecorator
 import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
 import com.nbcamp.tripgo.util.calendar.SelectedDayDecorator
@@ -39,20 +40,29 @@ class CalendarFragment : Fragment() {
     }
     private val sharedViewModel: MainViewModel by activityViewModels()
     private val scheduleListAdapter by lazy {
-        ScheduleListAdapter { model ->
-            runDialogForReviewWriting(model)
-        }
+        ScheduleListAdapter(
+            // 짧게 클릭 하면 리뷰 작성 or 수정
+            onClickItem = { model ->
+                runDialogForReviewWriting(model)
+            },
+            // 길게 클릭 하면 리뷰 삭제
+            onLongClickItem = { model ->
+                runDialogForScheduleDelete(model)
+            }
+        )
     }
 
     private var isLoggedIn = false
     private var currentUser: Any? = null
     private val selectedDayList = arrayListOf<CalendarDay>()
     private val month = Calendar.getInstance().get(Calendar.MONTH)
+    private var loadingDialog: LoadingDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCalendarBinding.inflate(layoutInflater)
+        loadingDialog = LoadingDialog(requireActivity())
         return binding.root
     }
 
@@ -87,27 +97,14 @@ class CalendarFragment : Fragment() {
 
             // 파이어 스토어로부터 데이터가 넘어 왔을 때, 관찰 되는 livedata
             myScheduleState.observe(viewLifecycleOwner) { state ->
-                if (state == CalendarScheduleUiState.error(state.message) ||
-                    state.allSchedules?.isEmpty() == true
-                ) {
-                    calendarNoticeTextView.isVisible = true
-                    calendarProgressBar.isVisible = state.isLoading
-                    calendarNoticeTextView.text = state.message
-                    return@observe
-                }
-                calendarNoticeTextView.isVisible = false
-                calendarProgressBar.isVisible = state.isLoading
-                // 뷰모델로 부터 관찰한 내 일정을 캘린더에 표시
-                showScheduleInCalendarView(state.allSchedules?.toMutableList())
-
-                // 뷰모델로 부터 관찰한 내 일정을 리사이클러뷰에 표시 (단, 현재 달만)
-                scheduleListAdapter.submitList(state.monthSchedules?.toMutableList())
+                if (state == null) return@observe
+                updateCalendarUi(state)
             }
 
             // start ~ end date 사이의 기간을 달력에 표시
             schedulesDateState.observe(viewLifecycleOwner) { dateList ->
-
                 // 일정이 있는 날엔 달력에 따로 표시해 주기 위한 리스트
+                selectedDayList.clear()
                 selectedDayList.addAll(dateList)
                 calendarMainView.run {
                     removeDecorators()
@@ -140,7 +137,30 @@ class CalendarFragment : Fragment() {
                     requireActivity().toast(getString(R.string.not_writing_review))
                 }
             }
+
+            deleteScheduleUiState.observe(viewLifecycleOwner) { state ->
+                if (state == null) return@observe
+                updateCalendarUi(state)
+            }
         }
+    }
+
+    private fun updateCalendarUi(state: CalendarScheduleUiState) = with(binding) {
+        if (state == CalendarScheduleUiState.error(state.message)
+            || state.allSchedules?.isEmpty() == true
+        ) {
+            calendarNoticeTextView.isVisible = true
+            calendarProgressBar.isVisible = state.isLoading
+            calendarNoticeTextView.text = state.message
+            return
+        }
+        calendarNoticeTextView.isVisible = false
+        calendarProgressBar.isVisible = state.isLoading == true
+        // 뷰모델로 부터 관찰한 내 일정을 캘린더에 표시
+        showScheduleInCalendarView(state.allSchedules?.toMutableList())
+
+        // 뷰모델로 부터 관찰한 내 일정을 리사이클러뷰에 표시 (단, 현재 달만)
+        scheduleListAdapter.submitList(state.monthSchedules?.toMutableList())
     }
 
     private fun showScheduleInCalendarView(data: List<CalendarEntity>?) {
@@ -220,6 +240,25 @@ class CalendarFragment : Fragment() {
         }.show()
     }
 
+
+    // 일정 삭제 다이얼로그
+    private fun runDialogForScheduleDelete(model: CalendarEntity) {
+        if (model.isReviewed == true) {
+            requireActivity().toast("리뷰를 작성하신 일정은 삭제하실 수 없습니다.")
+            return
+        }
+        setFancyDialog(
+            context = requireActivity(),
+            title = "일정 삭제",
+            message = "일정을 삭제하시겠나요?",
+            positiveText = getString(R.string.yes),
+            negativeText = getString(R.string.no),
+            icon = R.drawable.icon_alert_review
+        ) {
+            calendarViewModel.deleteMySchedule(model)
+        }.show()
+    }
+
     private fun goToReviewFragment(
         model: CalendarEntity,
         currentUser: Any?,
@@ -243,6 +282,7 @@ class CalendarFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        loadingDialog = null
     }
 
     companion object {
