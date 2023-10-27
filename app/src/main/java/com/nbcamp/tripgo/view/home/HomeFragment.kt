@@ -192,6 +192,8 @@ class HomeFragment : Fragment() {
                 cancellationTokenSource!!.token
             ).addOnSuccessListener { location ->
                 locationForScrollListener = location
+                App.latitude = location.latitude
+                App.longitude = location.longitude
                 homeViewModel.getNearbyPlaceList(location, nearbyPageNumber)
             }
         }

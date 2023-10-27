@@ -32,7 +32,7 @@ class SignUpViewModel : ViewModel() {
 
                     signUpButton.value = true
 
-                    // 자체 로그인 firestore 저장부분  users -> email -> email,nickname,image
+                    // 자체 로그인 firestore 저장부분  users -> email -> uid,nickname,image
                     val firebaseUID = FirebaseAuth.getInstance().currentUser?.uid
 
                     if (firebaseUID != null) {
@@ -42,7 +42,7 @@ class SignUpViewModel : ViewModel() {
                             "nickname" to nickname,
                             "profileImage" to null,
                         )
-
+                    // 자체 로그인 firestore 저장부분  users -> email -> email,nickname,image
 
                         fireStore.collection("users").document(email).set(user)
 
