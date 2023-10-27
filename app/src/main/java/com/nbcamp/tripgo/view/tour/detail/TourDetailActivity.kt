@@ -32,6 +32,7 @@ import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.login.LogInActivity
+import com.nbcamp.tripgo.view.main.MainActivity
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.skt.tmap.TMapPoint
@@ -107,7 +108,7 @@ class TourDetailActivity : AppCompatActivity() {
             tourDetailViewModel.moveToHomePage()
         }
         btnHeart.setOnClickListener {
-            // 저장 및 삭제
+            // 좋아요 저장 및 삭제
             if (currentUser != null) {
                 // 좋아요 버튼 상태 조작
                 it.isSelected = it.isSelected.not()
@@ -121,6 +122,7 @@ class TourDetailActivity : AppCompatActivity() {
             }
 
         }
+        // 일정 추가 캘린더 다이얼로그 실행
         moveToCalendar.setOnClickListener {
             tourDetailViewModel.setUserOption()
             if (currentUser != null) {
@@ -136,8 +138,20 @@ class TourDetailActivity : AppCompatActivity() {
                 }.show()
             }
         }
+        // 상단 홈 버튼 클릭 시 메인으로 이동
+        btnHome.setOnClickListener {
+            startActivity(Intent(this@TourDetailActivity, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            })
+        }
+        // 공유 버튼
+        btnShare.setOnClickListener {
+            sharingPlace()
+        }
+
         // 지도 위에서 스크롤 뷰의 이벤트를 막기 위한 함수
         doNotFrameScroll()
+        // 상세 정보 가져오기
         runSearchDetailInformation(contentId)
     }
 
@@ -433,5 +447,15 @@ class TourDetailActivity : AppCompatActivity() {
                 tourDetailViewModel.selectScheduleRange(dates, selectedDayList)
             }
         }
+    }
+
+    private fun sharingPlace() {
+        val placeInfo = "${detailInfo.title}\n${detailInfo.telPhoneNumber}\n${detailInfo.homePage}"
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_TEXT, placeInfo)
+            type = "text/plain"
+        }
+        val sharingIntent = Intent.createChooser(intent, "공유하기")
+        startActivity(sharingIntent)
     }
 }
