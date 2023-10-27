@@ -71,6 +71,7 @@
                 android:id="@+id/calendar_schedule_recycler_view"
                 android:layout_width="0dp"
                 android:layout_height="300dp"
+                android:nestedScrollingEnabled="true"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

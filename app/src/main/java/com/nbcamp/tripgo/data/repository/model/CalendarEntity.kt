@@ -1,7 +1,10 @@
 package com.nbcamp.tripgo.data.repository.model
 
+import android.os.Parcelable
 import com.google.firebase.firestore.DocumentId
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class CalendarEntity(
     @DocumentId
     val id: String? = null,
@@ -15,4 +18,4 @@ data class CalendarEntity(
     val homePage: String? = null,
     @field:JvmField
     val isReviewed: Boolean? = null
-)
+) : Parcelable
