@@ -8,6 +8,7 @@
         <variable
             name="viewModel"
             type="com.nbcamp.tripgo.view.signup.SignUpViewModel" />
+
     </data>
 
     <LinearLayout
@@ -99,9 +100,9 @@
                         style="@style/Font.16.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="60dp"
+                        android:backgroundTint="@color/main"
                         android:layout_marginStart="10dp"
-                        android:background="@color/main"
-                        android:enabled="false"
+                        android:enabled="true"
                         android:text="@string/double_check" />
 
                 </LinearLayout>
@@ -113,6 +114,16 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:text="@string/email_error"
+                    android:textColor="@color/error"
+                    android:visibility="gone" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/sign_up_email_error_duplication_text_view"
+                    style="@style/Font.12.Normal.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="@string/email_duplication"
                     android:textColor="@color/error"
                     android:visibility="gone" />
 
@@ -150,9 +161,9 @@
                         style="@style/Font.16.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="60dp"
+                        android:backgroundTint="@color/main"
                         android:layout_marginStart="10dp"
-                        android:background="@color/main"
-                        android:enabled="false"
+                        android:enabled="true"
                         android:text="@string/double_check" />
 
                 </LinearLayout>
@@ -182,12 +193,12 @@
                         style="@style/Font.16.Normal.Black"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
-                        android:maxLength="20"
                         android:layout_margin="10dp"
                         android:background="@null"
                         android:hint="@string/password"
                         android:imeOptions="actionNext"
                         android:inputType="textPassword"
+                        android:maxLength="20"
                         android:maxLines="1"
                         android:text="@={viewModel.password}" />
 
@@ -219,11 +230,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_margin="10dp"
-                        android:maxLength="20"
                         android:background="@null"
                         android:hint="@string/correct_password"
-                        android:imeOptions="actionNext"
                         android:inputType="textPassword"
+                        android:maxLength="20"
                         android:maxLines="1" />
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -254,6 +264,7 @@
 
                         <CheckBox
                             android:id="@+id/sign_up_full_agreement_check_box"
+                            style="@style/CheckBox.Color.Main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="false"
@@ -294,6 +305,7 @@
 
                         <CheckBox
                             android:id="@+id/sign_up_age_limit_check_box"
+                            style="@style/CheckBox.Color.Main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="false"
@@ -330,6 +342,7 @@
 
                         <CheckBox
                             android:id="@+id/sign_up_terms_of_use_check_box"
+                            style="@style/CheckBox.Color.Main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="false"
@@ -366,6 +379,7 @@
 
                         <CheckBox
                             android:id="@+id/sign_up_privacy_policy_check_box"
+                            style="@style/CheckBox.Color.Main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="false"
@@ -402,6 +416,7 @@
 
                         <CheckBox
                             android:id="@+id/sign_up_app_alarm_check_box"
+                            style="@style/CheckBox.Color.Main"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="false"
@@ -449,7 +464,7 @@
                     android:layout_height="60dp"
                     android:layout_marginTop="25dp"
                     android:layout_marginBottom="50dp"
-                    android:background="@color/main"
+                    android:backgroundTint="@color/main"
                     android:onClick="@{() -> viewModel.signUpComplete()}"
                     android:text="@string/sign_up_complete" />
 
