@@ -42,7 +42,7 @@ class ScheduleListAdapter(
         fun bind(model: CalendarEntity) = with(binding) {
             val todayString =
                 "$year${if (month < 10) "0${month}" else "$month"}$day"
-            val isValid = model.endDate?.toInt()!! < todayString.toInt()
+            val isValid = model.endDate?.toInt()!! <= todayString.toInt()
 
             if (isValid) {
                 if (model.isReviewed == true) {

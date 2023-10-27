@@ -33,12 +33,12 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/main_title"
-        app:layout_constraintBottom_toTopOf="@+id/tour_subtitle"
+        app:layout_constraintBottom_toTopOf="@+id/tour_address"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tour_subtitle" />
+        app:layout_constraintStart_toStartOf="@+id/tour_address" />
 
     <TextView
-        android:id="@+id/tour_subtitle"
+        android:id="@+id/tour_address"
         style="@style/Font.16.Normal.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -52,16 +52,17 @@
         app:layout_constraintTop_toTopOf="@+id/cardView" />
 
     <TextView
-        android:id="@+id/tour_address"
+        android:id="@+id/tour_content"
         style="@style/Font.16.Normal.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/address"
         android:textColor="@color/deactivated"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tour_subtitle"
-        app:layout_constraintTop_toBottomOf="@+id/tour_subtitle" />
+        app:layout_constraintStart_toStartOf="@+id/tour_address"
+        app:layout_constraintTop_toBottomOf="@+id/tour_address" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

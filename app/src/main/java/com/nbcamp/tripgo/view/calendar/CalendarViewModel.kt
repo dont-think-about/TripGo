@@ -37,8 +37,8 @@ class CalendarViewModel(
     val changedMonthState: LiveData<List<CalendarEntity>?>
         get() = _changedMonthState
 
-    private val _runDialogState: SingleLiveEvent<RunDialogUiState> = SingleLiveEvent()
-    val runDialogState: SingleLiveEvent<RunDialogUiState>
+    private val _runDialogState: SingleLiveEvent<RunDialogUiState?> = SingleLiveEvent()
+    val runDialogState: SingleLiveEvent<RunDialogUiState?>
         get() = _runDialogState
 
     // 원본으로 하기 힘든 위치에 추가적인 날짜 필터링을 위해 캐싱 데이터를 생성
@@ -198,11 +198,13 @@ class CalendarViewModel(
                 "${it.year}${it.month}${if (it.day < 10) "0${it.day}" else it.day}".toInt()
             } ?: emptyList()
 
+        // 유효한 범위의 객체를 필터링
         val getDateRangeValidEntity =
             cachingSchedule?.filter {
                 it.startDate.toString() <= clickedDate.toString() && clickedDate.toString() <= it.endDate.toString()
             }
 
+        // 유효한 범위라면 리뷰를 작성할 수 있도록 함
         if (getDateRangeValidEntity?.isNotEmpty() == true) {
             _runDialogState.value = RunDialogUiState(
                 getDateRangeValidEntity.first(),
@@ -211,6 +213,7 @@ class CalendarViewModel(
             )
             return
         }
+        // 유효하지 않으면 리뷰를 작성 못하게 함
         _runDialogState.call()
     }
 }

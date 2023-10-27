@@ -130,14 +130,14 @@ class CalendarFragment : Fragment() {
 
             runDialogState.observe(viewLifecycleOwner) { state ->
                 // 모델을 넘겨 줘야 리뷰 작성 할 때 정보를 같이 넘겨 줄 수 있음
-                if (state.isValidRange) {
+                if (state?.isValidRange == true) {
                     runDialogForReviewWriting(state.data)
                     return@observe
                 }
                 // 데이터를 없앴을 땐, 아무 동작을 하지 않도록 한다.
-                if (state.message == NOT_OPEN) Unit
+                if (state?.message == NOT_OPEN) Unit
                 else {
-                    requireActivity().toast("일정이 없거나 이후의 일정은 리뷰를 적을 수 없습니다.")
+                    requireActivity().toast(getString(R.string.not_writing_review))
                 }
             }
         }
