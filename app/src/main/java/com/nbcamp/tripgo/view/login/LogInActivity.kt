@@ -40,6 +40,7 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.BuildConfig
+import com.nbcamp.tripgo.databinding.ActivityLogInBinding
 import com.nbcamp.tripgo.databinding.ActivityMainBinding
 
 class LogInActivity : AppCompatActivity() {
@@ -48,7 +49,7 @@ class LogInActivity : AppCompatActivity() {
     lateinit var emailid: AppCompatEditText
     lateinit var emailpwd: AppCompatEditText
     lateinit var loginbtn: AppCompatButton
-    lateinit var  kakaoLoginButton : AppCompatImageView
+    lateinit var kakaoLoginButton: AppCompatImageView
     var fireStore: FirebaseFirestore = Firebase.firestore
 
     //firestore 연결
@@ -56,14 +57,14 @@ class LogInActivity : AppCompatActivity() {
     //firebaseUID 가져오기
 
     //google login
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val binding by lazy { ActivityLogInBinding.inflate(layoutInflater) }
     private lateinit var GoogleSignInClient: GoogleSignInClient
-    private lateinit var startGoogleLoginForResult : ActivityResultLauncher<Intent>
+    private lateinit var startGoogleLoginForResult: ActivityResultLauncher<Intent>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_log_in)
+        setContentView(binding.root)
 
         // Firebaseauth 로그인
         auth = FirebaseAuth.getInstance()
@@ -87,13 +88,13 @@ class LogInActivity : AppCompatActivity() {
             val signInIntent = GoogleSignInClient.signInIntent
             startGoogleLoginForResult.launch(signInIntent)
 
-            }
+        }
 
         //kakao 선언 시작 ~
         /** KakaoSDK init */
 
         KakaoSdk.init(this, BuildConfig.KAKAO_API_KEY)
-        Log.d("kakaoappkey",  "kakaoappkey" + BuildConfig.KAKAO_API_KEY)
+        Log.d("kakaoappkey", "kakaoappkey" + BuildConfig.KAKAO_API_KEY)
 
 
         kakaoLoginButton = findViewById(R.id.log_in_kakao_login_button)
@@ -101,11 +102,12 @@ class LogInActivity : AppCompatActivity() {
             kakaoLogin()
 
         }
+
+        passwordFind()
     }
 
 
-
-    private fun effectiveness(){
+    private fun effectiveness() {
         var email = emailid.text.toString()
         var password = emailpwd.text.toString()
 
@@ -137,7 +139,8 @@ class LogInActivity : AppCompatActivity() {
     //https://jgeun97.tistory.com/233
     //https://github.com/firebase/snippets-android/blob/b8f65e9150fe927a5f0473e15e16fa5803189b60/auth/app/src/main/java/com/google/firebase/quickstart/auth/kotlin/GoogleSignInActivity.kt#L43-L44
     private fun googleInit() {
-        val default_web_client_id = "1094795130006-9tkks7qfjnls7rtpijm4phspvurfscl0.apps.googleusercontent.com" // Android id X
+        val default_web_client_id =
+            "1094795130006-9tkks7qfjnls7rtpijm4phspvurfscl0.apps.googleusercontent.com" // Android id X
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(default_web_client_id)
@@ -161,20 +164,20 @@ class LogInActivity : AppCompatActivity() {
                             Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
-                                
+
                             //firestore google inpo 저장
-                                val user = hashMapOf(
-                                    "Uid" to account.email,
-                                    "nickname" to account.displayName,
-                                    "profileImage" to null,
-                                )
-                            
+                            val user = hashMapOf(
+                                "Uid" to account.email,
+                                "nickname" to account.displayName,
+                                "profileImage" to null,
+                            )
+
                             fireStore.collection("users").document(account.email.toString()).set(user)
 
                             val keyHash = Utility.getKeyHash(this)
-                         /*   Log.d("Hash", keyHash)
-                            Log.d("Email", "this"+account.email)
-                            Log.d("displayname","this"+account.displayName) */
+                            /*   Log.d("Hash", keyHash)
+                               Log.d("Email", "this"+account.email)
+                               Log.d("displayname","this"+account.displayName) */
                             finish()
 
                             firebaseAuthWithGoogle(account.idToken!!)
@@ -189,7 +192,6 @@ class LogInActivity : AppCompatActivity() {
                 }
             }
     }
-
 
 
     // [START auth_with_google]
@@ -255,42 +257,45 @@ class LogInActivity : AppCompatActivity() {
         }
     }
 
-    private fun kakaoLogout(){
+    private fun kakaoLogout() {
         // 로그아웃
         UserApiClient.instance.logout { error ->
             if (error != null) {
                 Log.d("this", "로그아웃 실패. SDK에서 토큰 삭제됨: ${error}")
-            }
-            else {
+            } else {
                 Log.d("this", "로그아웃 성공. SDK에서 토큰 삭제됨")
                 setLogin(false)
             }
         }
     }
 
-    private fun kakaoUnlink(){
+    private fun kakaoUnlink() {
         // 연결 끊기
         UserApiClient.instance.unlink { error ->
             if (error != null) {
                 Log.d("this", "연결 끊기 실패: ${error}")
-            }
-            else {
+            } else {
                 Log.d("this", "연결 끊기 성공. SDK에서 토큰 삭제 됨")
                 setLogin(false)
             }
         }
     }
 
+    private fun passwordFind() {
+        binding.logInFindPasswordTextView.setOnClickListener {
+            val fragment = PasswordFindFragment()
+            fragment.show(supportFragmentManager, null)
+        }
+    }
 
-    private fun setLogin(bool: Boolean){
-        kakaoLoginButton.visibility = if(bool) View.GONE else View.VISIBLE
+    private fun setLogin(bool: Boolean) {
+        kakaoLoginButton.visibility = if (bool) View.GONE else View.VISIBLE
 
     }
 
     companion object {
         const val TAG = "MainActivity"
     }
-
 
 
 }
