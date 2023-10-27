@@ -1,9 +1,7 @@
 package com.nbcamp.tripgo.view.login
 
 
-import android.app.Activity
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,32 +14,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
-import com.google.firebase.auth.FirebaseAuth
-import com.nbcamp.tripgo.R
-import com.nbcamp.tripgo.view.main.MainActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
-import com.google.android.gms.tasks.Task
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import com.kakao.sdk.auth.AuthCodeClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.BuildConfig
+import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityLogInBinding
-import com.nbcamp.tripgo.databinding.ActivityMainBinding
+import com.nbcamp.tripgo.view.main.MainActivity
+import com.nbcamp.tripgo.view.signup.SignUpActivity
 
 class LogInActivity : AppCompatActivity() {
 
@@ -102,8 +94,8 @@ class LogInActivity : AppCompatActivity() {
             kakaoLogin()
 
         }
-
         passwordFind()
+        signUp()
     }
 
 
@@ -285,6 +277,13 @@ class LogInActivity : AppCompatActivity() {
         binding.logInFindPasswordTextView.setOnClickListener {
             val fragment = PasswordFindFragment()
             fragment.show(supportFragmentManager, null)
+        }
+    }
+
+    private fun signUp() {
+        binding.logInSignUpTextView.setOnClickListener {
+            val intent = Intent(this, SignUpActivity::class.java)
+            startActivity(intent)
         }
     }
 
