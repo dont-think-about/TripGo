@@ -45,11 +45,12 @@ class SignUpViewModel : ViewModel() {
                     if (firebaseUID != null) {
 
                         val user = hashMapOf(
-                            "Uid" to firebaseUID,
+                            "email" to email,
                             "nickname" to nickname,
                             "profileImage" to null,
                         )
 
+                    // 자체 로그인 firestore 저장부분  users -> email -> email,nickname,image
                         fireStore.collection("users").document(email).set(user)
                         firebaseAuth.currentUser?.sendEmailVerification()
 
