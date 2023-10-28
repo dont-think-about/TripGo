@@ -169,8 +169,8 @@ class LogInActivity : AppCompatActivity() {
 
                             fireStore.collection("users").document(account.email.toString()).set(user)
 
-                            val keyHash = Utility.getKeyHash(this)
-                            Log.d("Hash", keyHash)
+                            //val keyHash = Utility.getKeyHash(this)
+                            //Log.d("Hash", keyHash)
 
                             finish()
 

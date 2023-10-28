@@ -42,8 +42,8 @@ class SignUpViewModel : ViewModel() {
                             "nickname" to nickname,
                             "profileImage" to null,
                         )
-                    // 자체 로그인 firestore 저장부분  users -> email -> email,nickname,image
 
+                    // 자체 로그인 firestore 저장부분  users -> email -> email,nickname,image
                         fireStore.collection("users").document(email).set(user)
 
                         Log.d(ContentValues.TAG, "createUserWithEmail:success")
