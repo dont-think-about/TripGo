@@ -222,7 +222,7 @@ class LogInActivity : AppCompatActivity() {
 
                         if (email != null) {
                             val userDocument = hashMapOf(
-                                "Uid" to email,
+                                "email" to email,
                                 "nickname" to nickname
                             )
 

@@ -36,6 +36,7 @@ class App : Application() {
     }
 
     companion object {
+        var kakaoUser: Account? = null
         lateinit var prefs: PreferenceUtils
         lateinit var imageLoader: ImageLoader
         var kaKaoUser: Account? = null
