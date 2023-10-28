@@ -71,4 +71,12 @@ object RetrofitModule {
             .build()
             .create(TMapApiService::class.java)
     }
+    fun createAreaApiService(): TourApiService {
+        return Retrofit.Builder()
+            .baseUrl(URL.DEFAULT_TOUR_API_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(buildOkHttpClient())
+            .build()
+            .create(TourApiService::class.java)
+    } // 지역 기반
 }

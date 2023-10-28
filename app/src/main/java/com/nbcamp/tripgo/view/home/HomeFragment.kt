@@ -142,7 +142,7 @@ class HomeFragment : Fragment() {
               autoSlideViewPager()
               getPlaceByTodayWeather()
               */
-//            getProvincePlace()
+            getProvincePlace()
         }
 //        checkLocationPermissions()
 

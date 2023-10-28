@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.tour.adapter
+package com.nbcamp.tripgo.view.attraction
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,13 +7,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.nbcamp.tripgo.R
-import com.nbcamp.tripgo.data.model.keywords.KeywordItem
-import com.nbcamp.tripgo.databinding.TourRecyclerviewItemBinding
+import com.nbcamp.tripgo.data.model.area.AreaItem
+import com.nbcamp.tripgo.databinding.AttractionRecyclerviewItemBinding
 
-class TourSearchAdapter(
+class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
+    ListAdapter<AreaItem, AttractionsAdapter.AttractionViewHolder>(AttractionDiffCallback) {
 
-    private val onClickItem: (KeywordItem) -> Unit  //아이템 클릭시 실행할 콜백 함수
-) : ListAdapter<KeywordItem, TourSearchAdapter.TourViewHolder>(TourViewHolder.TourDiffCallback) {
 
     private var userLat = 0.0 // 사용자 위도
     private var userLon = 0.0 // 사용자 경도
@@ -43,7 +42,7 @@ class TourSearchAdapter(
         return R * c
     }  // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 
-    fun tourDistance(recyclerView: RecyclerView) {
+    fun attractionDistance(recyclerView: RecyclerView) {
         val sortedList = currentList.sortedBy { item ->
             calculateDistanceTo(item.mapx.toDouble(), item.mapy.toDouble(), userLat, userLon)
         }
@@ -52,36 +51,40 @@ class TourSearchAdapter(
         }
     } // Tour 아이템 거리순 으로 정렬
 
-    fun tourDate(recyclerView: RecyclerView) {
+    fun attractionDate(recyclerView: RecyclerView) {
         val sortedByDate = currentList.sortedBy { it.createdtime }
         submitList(sortedByDate) {
             recyclerView.scrollToPosition(0)
         }
     } // Tour 아이템 날짜순 으로 정렬
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TourViewHolder {
-        val binding =
-            TourRecyclerviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return TourViewHolder(binding, onClickItem, ::calculateDistanceTo)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttractionViewHolder {
+        val binding = AttractionRecyclerviewItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return AttractionViewHolder(binding, onClickItem, ::calculateDistanceTo)
     }
 
-    override fun onBindViewHolder(holder: TourViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AttractionViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item, userLat, userLon)
     }
 
-    class TourViewHolder(
-        private val binding: TourRecyclerviewItemBinding,
-        private val onClickItem: (KeywordItem) -> Unit,
+    class AttractionViewHolder(
+        private val binding: AttractionRecyclerviewItemBinding,
+        private val onClickItem: (AreaItem) -> Unit,
         private val calculateDistance: (Double, Double, Double, Double) -> Double
     ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(item: KeywordItem, userLat: Double, userLon: Double) {
-            itemView.setOnClickListener { onClickItem(item) }
+        fun bind(item: AreaItem, userLat: Double, userLon: Double) {
+            itemView.setOnClickListener {
+                onClickItem(item)
+            }
             with(binding) {
-                tourTitle.text = item.title
-                tourAddress.text = item.addr1
-                tourContent.text = binding.root.context.getString(
+                attractionTitle.text = item.title
+                attractionAddress.text = item.addr1
+                attractionPosition.text = binding.root.context.getString(
                     R.string.distance_from_my_location,
                     calculateDistance(
                         item.mapx.toDouble(),
@@ -91,24 +94,21 @@ class TourSearchAdapter(
                     ).toInt()
                 )
 
+
+
                 myImage.load(item.firstimage)
             }
         }
+    }
 
-        companion object {
-            val TourDiffCallback = object : DiffUtil.ItemCallback<KeywordItem>() {
-                override fun areItemsTheSame(oldItem: KeywordItem, newItem: KeywordItem): Boolean {
-                    return oldItem.contentid == newItem.contentid
-                }
+    companion object AttractionDiffCallback : DiffUtil.ItemCallback<AreaItem>() {
+        override fun areItemsTheSame(oldItem: AreaItem, newItem: AreaItem): Boolean {
+            return oldItem.contentid == newItem.contentid  // contentid를 고유 식별자로 사용하여 비교
+        }
 
-                override fun areContentsTheSame(
-                    oldItem: KeywordItem,
-                    newItem: KeywordItem
-                ): Boolean {
-                    return oldItem == newItem
-                }
-
-            }
+        override fun areContentsTheSame(oldItem: AreaItem, newItem: AreaItem): Boolean {
+            return oldItem == newItem
         }
     }
 }
+
