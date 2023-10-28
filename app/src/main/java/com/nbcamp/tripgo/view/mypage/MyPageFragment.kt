@@ -80,7 +80,7 @@ class MyPageFragment : Fragment() {
 
 
         //kakao / google 자체로그인 구분자
-        val kakaouser = App.kaKaoUser?.email
+        val kakaouser = App.kakaoUser?.email
         if( kakaouser == null){
              dbinpo = firestoredb.collection("users")?.document(userEmail.toString())
         }

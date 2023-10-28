@@ -39,7 +39,7 @@ class App : Application() {
         var kakaoUser: Account? = null
         lateinit var prefs: PreferenceUtils
         lateinit var imageLoader: ImageLoader
-        var kaKaoUser: Account? = null
+
         var firebaseUser: FirebaseUser? = null
         var latitude: Double = 0.0
         var longitude: Double = 0.0
