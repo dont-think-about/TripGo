@@ -157,5 +157,11 @@
     <string name="add_schedule">일정 추가</string>
     <string name="not_login_then_not_submit_like">로그인이 되어 있지 않아 찜 목록에 추가할 수 없습니다.</string>
     <string name="login_en">LOGIN</string>
+    <string name="cancel">취소</string>
+    <string name="modify">수정</string>
+    <string name="modify_schedule">스케줄 수정</string>
+    <string name="now_doing_schedule_cant_modify">현재 진행 중인 일정은 수정할 수 없습니다.</string>
+    <string name="past_schedule_not_modify">이미 지난 일정은 수정할 수 없습니다.</string>
+    <string name="sharing_place">공유하기</string>
 
 </resources>

@@ -70,12 +70,50 @@ class CalendarRepositoryImpl(
         }.await()
 
         // 다시 가져 와서 리스트 업데이트
-        val scheduleList = fireStore.collection("calendar")
-            .document(email)
-            .collection("plans")
-            .get()
-            .await()
-            .map { it.toObject<CalendarEntity>() }
+        val scheduleList = getMySchedules(email)
+
+        if (scheduleList.isEmpty()) {
+            return emptyList()
+        }
+        return scheduleList
+    }
+
+    override suspend fun modifySchedule(
+        entity: CalendarEntity,
+        startDate: String,
+        endDate: String
+    ): List<CalendarEntity> {
+        val email = if (App.firebaseUser == null) {
+            App.kaKaoUser?.email
+        } else {
+            App.firebaseUser?.email
+        }
+        if (email == null) {
+            return emptyList()
+        }
+        if (entity.id == null) {
+            return emptyList()
+        }
+
+        fireStore.runTransaction { transaction ->
+            val modifyEntity = entity.copy(
+                startDate = startDate,
+                endDate = endDate
+            )
+
+            val modifyDocumentReference = fireStore.collection("calendar")
+                .document(email)
+                .collection("plans")
+                .document(entity.id)
+
+            transaction.update(
+                modifyDocumentReference,
+                modifyEntity.toMap()
+            )
+
+        }.await()
+        // 다시 가져 와서 리스트 업데이트
+        val scheduleList = getMySchedules(email)
 
         if (scheduleList.isEmpty()) {
             return emptyList()

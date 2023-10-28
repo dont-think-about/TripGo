@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.calendar
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,7 @@ import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.util.extension.StringExtension.toCalendarDay
 import com.nbcamp.tripgo.util.setFancyDialog
+import com.nbcamp.tripgo.view.calendar.modify.TourModifyDetailActivity
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
 import com.nbcamp.tripgo.view.calendar.uistate.RunDialogUiState.Companion.NOT_OPEN
 import com.nbcamp.tripgo.view.main.MainViewModel
@@ -60,6 +62,11 @@ class CalendarFragment : Fragment() {
             }
         )
     }
+
+    /**
+     *  스와이프를 했을 때 내가 일정 저장한 상세 페이지로 들어 갈 수 있도록 하고
+     *  그곳에서 일정을 수정 할 수 있도록 함
+     */
     private val modifyScheduleSwipeHandler by lazy {
         object : SwipeToEditCallback(requireActivity()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -67,27 +74,21 @@ class CalendarFragment : Fragment() {
                 val startDate = model.startDate?.toCalendarDay()
                 val endDate = model.endDate?.toCalendarDay()
                 binding.calendarScheduleRecyclerView.adapter = scheduleListAdapter
-                when {
-                    CalendarDay.today().isInRange(startDate, endDate) -> {
-                        requireActivity().toast("현재 진행 중인 일정은 수정할 수 없습니다.")
-                        return
-                    }
+                val intent = Intent(requireActivity(), TourModifyDetailActivity::class.java).apply {
+                    putExtra("contentId", model.contentId)
+                    // 일정 수정을 위해 startDate, endDate가 필요
+                    putExtra("startDate", startDate)
+                    putExtra("endDate", endDate)
+                    putExtra("model", model)
 
-                    endDate?.isBefore(CalendarDay.today()) == true -> {
-                        requireActivity().toast("이미 지난 일정은 수정할 수 없습니다.")
-                        return
-                    }
-                }
-                val bundle = Bundle().apply {
-                    putParcelable("model", model)
-                    putParcelableArrayList("selectedDayList", selectedDayList)
-                    putParcelableArrayList("forModifySchedule",
+                    // 수정 시 일정이 있는 날엔 달력에 따로 표시해 주기 위한 리스트
+                    putExtra("selectedDayList", selectedDayList)
+                    // 수정 시 해당 일정을 뺴고 보여주기 위한 임시 캘린더 배열
+                    putExtra("forModifySchedule",
                         forModifySchedule?.let { ArrayList(it) }
                     )
                 }
-                ScheduleModifyFragment.newInstance().apply {
-                    arguments = bundle
-                }.show(parentFragmentManager, ScheduleModifyFragment.TAG)
+                startActivity(intent)
             }
         }
     }
@@ -95,7 +96,7 @@ class CalendarFragment : Fragment() {
     private var isLoggedIn = false
     private var currentUser: Any? = null
     private val selectedDayList = arrayListOf<CalendarDay>()
-    private val month = Calendar.getInstance().get(Calendar.MONTH)
+    private var month = Calendar.getInstance().get(Calendar.MONTH)
     private var loadingDialog: LoadingDialog? = null
 
     override fun onCreateView(
@@ -184,12 +185,17 @@ class CalendarFragment : Fragment() {
                 updateCalendarUi(state)
             }
 
-            calendarClickModifyEvent.observe(requireActivity()) {
+            calendarClickModifyEvent.observe(viewLifecycleOwner) {
                 when (it) {
                     true -> requireActivity().toast(getString(R.string.cant_select_duplicate_schedule))
                     false -> requireActivity().toast(getString(R.string.not_register_schedule_before_today))
                 }
                 calendarBinding?.addScheduleCalendarView?.clearSelection()
+            }
+
+            // sharedViewModel을 통해 CalendarFragment - ScheduleModifyFragment 사이 데이터 전달
+            sharedViewModel.buttonClickModifyState.observe(viewLifecycleOwner) { state ->
+                updateCalendarUi(state)
             }
         }
     }
@@ -245,6 +251,7 @@ class CalendarFragment : Fragment() {
                     SelectedDayDecorator(selectedDayList),
                     OutDateMonthDecorator(requireActivity(), date.month)
                 )
+
                 // 하단 리사이클러뷰의 리스트를 현재 달에 바꾸어줌
                 calendarViewModel.changeScheduleListForThisMonth(date)
             }
@@ -335,9 +342,11 @@ class CalendarFragment : Fragment() {
             .commit()
     }
 
+
     override fun onResume() {
         super.onResume()
         calendarViewModel.getLoginStatus()
+        binding.calendarMainView.setCurrentDate(CalendarDay.today(), true)
     }
 
     override fun onDestroyView() {

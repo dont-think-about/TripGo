@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/title_text_view"
+        style="@style/Font.20.Bold.Black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="@string/modify_schedule"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        android:id="@+id/add_schedule_calendar_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:padding="10dp"
+        android:theme="@style/calendar_view_day_custom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/title_text_view"
+        app:layout_constraintTop_toBottomOf="@id/title_text_view"
+        app:mcv_allowClickDaysOutsideCurrentMonth="false"
+        app:mcv_dateTextAppearance="@style/calendar_text_view_day_custom"
+        app:mcv_headerTextAppearance="@style/calendar_header"
+        app:mcv_selectionColor="@color/main"
+        app:mcv_selectionMode="range"
+        app:mcv_showOtherDates="all"
+        app:mcv_weekDayTextAppearance="@style/calendar_text_view_week_custom" />
+
+    <TextView
+        android:id="@+id/positive_text_view"
+        style="@style/Font.16.Normal.Black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/modify"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/add_schedule_calendar_view"
+        app:layout_constraintTop_toBottomOf="@id/add_schedule_calendar_view" />
+
+    <TextView
+        android:id="@+id/negative_text_view"
+        style="@style/Font.16.Normal.Black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/cancel"
+        app:layout_constraintBottom_toBottomOf="@id/positive_text_view"
+        app:layout_constraintEnd_toStartOf="@id/positive_text_view"
+        app:layout_constraintTop_toTopOf="@id/positive_text_view" />
+
+    <ProgressBar
+        android:id="@+id/calendar_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/add_schedule_calendar_view"
+        app:layout_constraintEnd_toEndOf="@id/add_schedule_calendar_view"
+        app:layout_constraintStart_toStartOf="@id/add_schedule_calendar_view"
+        app:layout_constraintTop_toTopOf="@id/add_schedule_calendar_view" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

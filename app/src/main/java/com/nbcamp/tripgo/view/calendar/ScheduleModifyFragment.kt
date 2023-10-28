@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
-import com.nbcamp.tripgo.databinding.DialogCalendarBinding
+import com.nbcamp.tripgo.databinding.DialogCalendarModifyBinding
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.calendar.CalendarFragmentTodayDecorator
 import com.nbcamp.tripgo.util.calendar.CantSetDayDecorator
@@ -19,12 +20,13 @@ import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
 import com.nbcamp.tripgo.util.calendar.SundayDecorator
 import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.main.MainViewModel
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.util.Calendar
 
 class ScheduleModifyFragment : DialogFragment() {
-    private var _binding: DialogCalendarBinding? = null
-    private val binding: DialogCalendarBinding
+    private var _binding: DialogCalendarModifyBinding? = null
+    private val binding: DialogCalendarModifyBinding
         get() = _binding!!
     private var loadingDialog: LoadingDialog? = null
     private var entity: CalendarEntity? = null
@@ -36,13 +38,14 @@ class ScheduleModifyFragment : DialogFragment() {
             requireActivity()
         )
     }
+    private val sharedViewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogCalendarBinding.inflate(layoutInflater)
+        _binding = DialogCalendarModifyBinding.inflate(layoutInflater)
         loadingDialog = LoadingDialog(requireActivity())
         return binding.root
     }
@@ -72,11 +75,11 @@ class ScheduleModifyFragment : DialogFragment() {
 
     private fun initViews() = with(binding) {
         negativeTextView.setOnClickListener {
-            val fragment = parentFragmentManager.findFragmentByTag(TAG)
-            if (fragment != null) {
-                val dialogFragment = fragment as DialogFragment
-                dialogFragment.dismiss()
-            }
+            dismiss()
+        }
+        positiveTextView.setOnClickListener {
+            calendarViewModel.modifySchedule(entity)
+
         }
         entity?.let {
             setCalendarOption(it)
@@ -115,6 +118,25 @@ class ScheduleModifyFragment : DialogFragment() {
                     false -> requireActivity().toast(getString(R.string.not_register_schedule_before_today))
                 }
                 binding.addScheduleCalendarView.clearSelection()
+            }
+
+            // 수정 버튼을 눌렀을 떄 성공하면 밖으로 나가고, 캘린더 프래그먼트의 캘린더 업데이트
+            buttonClickModifyState.observe(viewLifecycleOwner) { state ->
+                if (state.allSchedules?.isEmpty() == true) {
+                    requireActivity().toast(getString(R.string.please_select_schedule))
+                    return@observe
+                }
+                if (state.isLoading) {
+                    loadingDialog?.run {
+                        setVisible()
+                        setText(state.message ?: "")
+                    }
+                } else {
+                    dismissDialogFragment()
+                    requireActivity().toast("일정 수정이 완료되었습니다.")
+                    sharedViewModel.updateModifiedCalendarUi(state)
+                    loadingDialog?.setInvisible()
+                }
             }
         }
     }
@@ -162,7 +184,14 @@ class ScheduleModifyFragment : DialogFragment() {
 
     private fun runModifySchedule() {
         binding.calendarProgressBar.isVisible = false
+    }
 
+    private fun dismissDialogFragment() {
+        val fragment = parentFragmentManager.findFragmentByTag(TAG)
+        if (fragment != null) {
+            val dialogFragment = fragment as DialogFragment
+            dialogFragment.dismiss()
+        }
     }
 
     override fun onDestroyView() {
