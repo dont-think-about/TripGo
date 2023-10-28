@@ -37,10 +37,10 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
 //                userInfo = user.email.toString()
 //            }
 //        }
-        if (App.kaKaoUser == null) {
+        if (App.kakaoUser == null) {
             userInfo = App.firebaseUser?.email.toString()
         } else if (App.firebaseUser == null) {
-            userInfo = App.kaKaoUser?.email.toString()
+            userInfo = App.kakaoUser?.email.toString()
         }
 
         fileName = "${userInfo.split("@").first()}_${calendarUserModel.model?.id}.png"

@@ -30,10 +30,10 @@ class CalendarRepositoryImpl(
 //        else if (firebaseAuth.currentUser == null && kaKaoAccount != null)
 //            return kaKaoAccount
 //        return null
-        if (App.kaKaoUser == null)
+        if (App.kakaoUser == null)
             return App.firebaseUser
         else if (App.firebaseUser == null)
-            return App.kaKaoUser
+            return App.kakaoUser
         return null
     }
 
@@ -52,7 +52,7 @@ class CalendarRepositoryImpl(
 
     override suspend fun deleteSchedule(id: String): List<CalendarEntity> {
         val email = if (App.firebaseUser == null) {
-            App.kaKaoUser?.email
+            App.kakaoUser?.email
         } else {
             App.firebaseUser?.email
         }
@@ -84,7 +84,7 @@ class CalendarRepositoryImpl(
         endDate: String
     ): List<CalendarEntity> {
         val email = if (App.firebaseUser == null) {
-            App.kaKaoUser?.email
+            App.kakaoUser?.email
         } else {
             App.firebaseUser?.email
         }
