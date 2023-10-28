@@ -174,10 +174,10 @@ class TourDetailRepositoryImpl(
     }
 
     private fun getUserInfo() {
-        if (App.kaKaoUser == null) {
+        if (App.kakaoUser == null) {
             userInfo = App.firebaseUser?.email.toString()
         } else if (App.firebaseUser == null) {
-            userInfo = App.kaKaoUser?.email.toString()
+            userInfo = App.kakaoUser?.email.toString()
         }
     }
 

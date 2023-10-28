@@ -87,7 +87,7 @@ class LogInActivity : AppCompatActivity() {
             val signInIntent = GoogleSignInClient.signInIntent
             startGoogleLoginForResult.launch(signInIntent)
 
-            }
+        }
 
         //kakao 선언 시작 ~
         /** KakaoSDK init */
@@ -144,9 +144,7 @@ class LogInActivity : AppCompatActivity() {
             .requestEmail()
             .build()
 
-
         GoogleSignInClient = GoogleSignIn.getClient(this, gso)
-
 
         startGoogleLoginForResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -161,20 +159,19 @@ class LogInActivity : AppCompatActivity() {
                             Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
-                                
+
                             //firestore google inpo 저장
-                                val user = hashMapOf(
-                                    "Uid" to account.email,
-                                    "nickname" to account.displayName,
-                                    "profileImage" to null,
-                                )
-                            
+                            val user = hashMapOf(
+                                "email" to account.email,
+                                "nickname" to account.displayName,
+                                "profileImage" to null,
+                            )
+
                             fireStore.collection("users").document(account.email.toString()).set(user)
 
-                            val keyHash = Utility.getKeyHash(this)
-                         /*   Log.d("Hash", keyHash)
-                            Log.d("Email", "this"+account.email)
-                            Log.d("displayname","this"+account.displayName) */
+                            //val keyHash = Utility.getKeyHash(this)
+                            //Log.d("Hash", keyHash)
+
                             finish()
 
                             firebaseAuthWithGoogle(account.idToken!!)
@@ -189,8 +186,6 @@ class LogInActivity : AppCompatActivity() {
                 }
             }
     }
-
-
 
     // [START auth_with_google]
     private fun firebaseAuthWithGoogle(idToken: String) {
@@ -227,7 +222,7 @@ class LogInActivity : AppCompatActivity() {
 
                         if (email != null) {
                             val userDocument = hashMapOf(
-                                "Uid" to email,
+                                "email" to email,
                                 "nickname" to nickname
                             )
 

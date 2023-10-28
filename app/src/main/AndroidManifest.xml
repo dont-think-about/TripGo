@@ -56,6 +56,9 @@
             android:name=".view.tour.detail.TourDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".view.calendar.modify.TourModifyDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.search.SearchActivity"
             android:exported="true" />
         <activity
