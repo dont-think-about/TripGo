@@ -1,11 +1,13 @@
 package com.nbcamp.tripgo.data.service
 
 import com.nbcamp.tripgo.BuildConfig
+import com.nbcamp.tripgo.data.model.area.AreaResponseModel
 import com.nbcamp.tripgo.data.model.detailcommon.DetailCommonResponseModel
 import com.nbcamp.tripgo.data.model.festivals.FestivalResponseModel
 import com.nbcamp.tripgo.data.model.keywords.KeywordSearchResponseModel
 import com.nbcamp.tripgo.data.model.nearby.NearbyPlaceResponseModel
 import com.nbcamp.tripgo.data.model.travelers.TravelersCountResponseModel
+import com.nbcamp.tripgo.view.home.valuetype.AreaCode
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -57,6 +59,14 @@ interface TourApiService {
         @QueryMap defaultCommonSet: HashMap<String, String> = DEFAULT_COMMON_SET,
         @Query("contentId") contentId: String?,
     ): Response<DetailCommonResponseModel>
+
+    // 지역 기반 조회
+    @GET("KorService1/areaBasedList1")
+    suspend fun getAreaInformation(
+        @QueryMap defaultQuerySet: HashMap<String, String> = DEFAULT_QUERY_SET,
+        @Query("areaCode") areaCode: String,
+        @Query("numOfRows") numOfRows: Int = 100
+    ):Response<AreaResponseModel>
 
     companion object {
         val DEFAULT_QUERY_SET = hashMapOf(

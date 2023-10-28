@@ -34,12 +34,12 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/main_title"
-        app:layout_constraintBottom_toTopOf="@+id/attraction_subtitle"
+        app:layout_constraintBottom_toTopOf="@+id/attraction_address"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/attraction_subtitle" />
+        app:layout_constraintStart_toStartOf="@+id/attraction_address" />
 
     <TextView
-        android:id="@+id/attraction_subtitle"
+        android:id="@+id/attraction_address"
         style="@style/Font.16.Normal.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -54,17 +54,18 @@
         app:layout_constraintTop_toTopOf="@+id/cardView" />
 
     <TextView
-        android:id="@+id/attraction_address"
+        android:id="@+id/attraction_position"
         style="@style/Font.16.Normal.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/address"
         android:textColor="@color/deactivated"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/attraction_subtitle"
-        app:layout_constraintTop_toBottomOf="@+id/attraction_subtitle" />
+        app:layout_constraintStart_toStartOf="@+id/attraction_address"
+        app:layout_constraintTop_toBottomOf="@+id/attraction_address" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

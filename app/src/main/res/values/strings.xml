@@ -157,11 +157,16 @@
     <string name="add_schedule">일정 추가</string>
     <string name="not_login_then_not_submit_like">로그인이 되어 있지 않아 찜 목록에 추가할 수 없습니다.</string>
     <string name="login_en">LOGIN</string>
+    <string name="tour_error">행사 정보를 가져 오는데 실패 했습니다.</string>
+    <string name="tour_exception_error">행사 정보를 가져 오는 도중 오류가 발생 했습니다.</string>
+    <string name="tourist_attractions">%1$s 관광 명소</string>
+    <string name="tour_location_error">위치 정보를 불러올 수 없습니다.</string>
+    <string name="permission_denide_location">권한 거부됨. 위치를 가져올 수 없습니다.</string>
+    <string name="distance_from_my_location">내 위치로 부터 %1$d km</string>
     <string name="cancel">취소</string>
     <string name="modify">수정</string>
     <string name="modify_schedule">스케줄 수정</string>
     <string name="now_doing_schedule_cant_modify">현재 진행 중인 일정은 수정할 수 없습니다.</string>
     <string name="past_schedule_not_modify">이미 지난 일정은 수정할 수 없습니다.</string>
     <string name="sharing_place">공유하기</string>
-
 </resources>
