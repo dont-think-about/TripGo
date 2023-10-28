@@ -92,7 +92,7 @@
     <string name="nick_name">닉네임</string>
     <string name="nick_name_error">이미 존재하는 닉네임 입니다.</string>
     <string name="password">비밀번호</string>
-    <string name="password_error">영문, 숫자를 포함하여 8자 이상이어야 합니다.</string>
+    <string name="password_error">영문, 숫자, 특수 문자를 포함하여 8~20글자 이어야 합니다.</string>
     <string name="correct_password">비밀번호 확인</string>
     <string name="correct_password_error">비밀번호가 일치하지 않습니다.</string>
     <string name="full_agreement">전체 동의</string>
@@ -152,5 +152,10 @@
     <string name="like_place">좋아요 </string>
     <string name="not_register_schedule_before_today">오늘 이전 날짜에는 일정을 등록할 수 없습니다.</string>
     <string name="not_writing_review">일정이 없거나 지나지 않은 일정은 리뷰를 적을 수 없습니다.</string>
+    <string name="email_duplication">이메일 중복되었습니다. 다시 작성해주세요.</string>
+    <string name="loading_route">경로 로딩 중..</string>
+    <string name="add_schedule">일정 추가</string>
+    <string name="not_login_then_not_submit_like">로그인이 되어 있지 않아 찜 목록에 추가할 수 없습니다.</string>
+    <string name="login_en">LOGIN</string>
 
 </resources>

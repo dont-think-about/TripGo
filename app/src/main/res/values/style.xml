@@ -83,11 +83,23 @@
 
     <style name="CheckBox.Color.Main" parent="Widget.Material3.CompoundButton.CheckBox">
         <item name="buttonTint">@color/main</item>
-        <item name="android:textStyle">normal</item>
         <item name="android:textSize">14sp</item>
         <item name="textFillColor">@color/black</item>
         <item name="android:fontFamily">@font/custom_font_type</item>
         <item name="android:includeFontPadding">false</item>
     </style>
 
+
+    <style name="CustomCheckbox01" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:colorControlNormal">#7a7a7a</item>
+        <item name="android:colorControlActivated">#3db5ea</item>
+        <item name="android:colorControlHighlight">#3db5ea</item>
+    </style>
+
+    <style name="Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+        <item name="android:windowFrame">@null</item>
+    </style>
 </resources>

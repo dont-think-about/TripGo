@@ -87,7 +87,7 @@ class LogInActivity : AppCompatActivity() {
             val signInIntent = GoogleSignInClient.signInIntent
             startGoogleLoginForResult.launch(signInIntent)
 
-            }
+        }
 
         //kakao 선언 시작 ~
         /** KakaoSDK init */
@@ -161,11 +161,11 @@ class LogInActivity : AppCompatActivity() {
                             startActivity(intent)
 
                             //firestore google inpo 저장
-                                val user = hashMapOf(
-                                    "email" to account.email,
-                                    "nickname" to account.displayName,
-                                    "profileImage" to null,
-                                )
+                            val user = hashMapOf(
+                                "email" to account.email,
+                                "nickname" to account.displayName,
+                                "profileImage" to null,
+                            )
 
                             fireStore.collection("users").document(account.email.toString()).set(user)
 
