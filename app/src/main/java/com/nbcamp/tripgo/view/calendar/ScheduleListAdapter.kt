@@ -13,7 +13,8 @@ import com.nbcamp.tripgo.databinding.ItemCalendarScheduleCardBinding
 import java.util.Locale
 
 class ScheduleListAdapter(
-    private val onClickItem: (CalendarEntity) -> Unit
+    private val onClickItem: (CalendarEntity) -> Unit,
+    private val onLongClickItem: (CalendarEntity) -> Unit,
 ) : ListAdapter<CalendarEntity, ScheduleListAdapter.ScheduleViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleViewHolder {
@@ -23,7 +24,8 @@ class ScheduleListAdapter(
                 parent,
                 false
             ),
-            onClickItem
+            onClickItem,
+            onLongClickItem
         )
     }
 
@@ -33,7 +35,8 @@ class ScheduleListAdapter(
 
     inner class ScheduleViewHolder(
         private val binding: ItemCalendarScheduleCardBinding,
-        private val onClickItem: (CalendarEntity) -> Unit
+        private val onClickItem: (CalendarEntity) -> Unit,
+        private val onLongClickItem: (CalendarEntity) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         private val today = Calendar.getInstance(Locale.KOREA)
         private val year = today.get(Calendar.YEAR)
@@ -54,6 +57,10 @@ class ScheduleListAdapter(
                 itemView.setOnClickListener {
                     onClickItem(model)
                 }
+            }
+            itemView.setOnLongClickListener {
+                onLongClickItem(model)
+                true
             }
             itemCheckTextView.isVisible = isValid
             defaultSetting(model)

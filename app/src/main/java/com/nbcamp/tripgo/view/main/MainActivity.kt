@@ -204,14 +204,14 @@ class MainActivity : AppCompatActivity() {
                 is SetUserEvent.Success -> {
                     when (setUserEvent.currentUser) {
                         is FirebaseUser -> App.firebaseUser = setUserEvent.currentUser
-                        is Account -> App.kaKaoUser = setUserEvent.currentUser
+                        is Account -> App.kakaoUser = setUserEvent.currentUser
                     }
                     loadingDialog.run {
                         setText(setUserEvent.message)
                         setInvisible()
                     }
                     println("firebaseUserMain:" + App.firebaseUser)
-                    println("kakaoUserMain: " + App.kaKaoUser)
+                    println("kakaoUserMain: " + App.kakaoUser)
                 }
             }
 

@@ -30,10 +30,10 @@ class CalendarRepositoryImpl(
 //        else if (firebaseAuth.currentUser == null && kaKaoAccount != null)
 //            return kaKaoAccount
 //        return null
-        if (App.kaKaoUser == null)
+        if (App.kakaoUser == null)
             return App.firebaseUser
         else if (App.firebaseUser == null)
-            return App.kaKaoUser
+            return App.kakaoUser
         return null
     }
 
@@ -48,5 +48,76 @@ class CalendarRepositoryImpl(
             return emptyList()
         }
         return list
+    }
+
+    override suspend fun deleteSchedule(id: String): List<CalendarEntity> {
+        val email = if (App.firebaseUser == null) {
+            App.kakaoUser?.email
+        } else {
+            App.firebaseUser?.email
+        }
+        if (email == null) {
+            return emptyList()
+        }
+        // 삭제하고
+        fireStore.runTransaction { transaction ->
+            val scheduleDocument = fireStore.collection("calendar")
+                .document(email)
+                .collection("plans")
+                .document(id)
+
+            transaction.delete(scheduleDocument)
+        }.await()
+
+        // 다시 가져 와서 리스트 업데이트
+        val scheduleList = getMySchedules(email)
+
+        if (scheduleList.isEmpty()) {
+            return emptyList()
+        }
+        return scheduleList
+    }
+
+    override suspend fun modifySchedule(
+        entity: CalendarEntity,
+        startDate: String,
+        endDate: String
+    ): List<CalendarEntity> {
+        val email = if (App.firebaseUser == null) {
+            App.kakaoUser?.email
+        } else {
+            App.firebaseUser?.email
+        }
+        if (email == null) {
+            return emptyList()
+        }
+        if (entity.id == null) {
+            return emptyList()
+        }
+
+        fireStore.runTransaction { transaction ->
+            val modifyEntity = entity.copy(
+                startDate = startDate,
+                endDate = endDate
+            )
+
+            val modifyDocumentReference = fireStore.collection("calendar")
+                .document(email)
+                .collection("plans")
+                .document(entity.id)
+
+            transaction.update(
+                modifyDocumentReference,
+                modifyEntity.toMap()
+            )
+
+        }.await()
+        // 다시 가져 와서 리스트 업데이트
+        val scheduleList = getMySchedules(email)
+
+        if (scheduleList.isEmpty()) {
+            return emptyList()
+        }
+        return scheduleList
     }
 }
