@@ -129,6 +129,7 @@ class CalendarFragment : Fragment() {
                     true -> {
                         calendarMainView.selectionMode = MaterialCalendarView.SELECTION_MODE_NONE
                         getSchedulesFromFireStore()
+                        loadingDialog?.setInvisible()
                     }
 
                     // 돠어 있지 않으면 하단에 안내 메세지 띄움 + 캘린더 선택하면 스낵바 띄울 수 있도록 모드 변경
@@ -136,6 +137,7 @@ class CalendarFragment : Fragment() {
                         calendarMainView.selectionMode = MaterialCalendarView.SELECTION_MODE_SINGLE
                         calendarTitleTextView.isGone = true
                         calendarNoticeTextView.text = getString(R.string.log_in_and_submit_review)
+                        loadingDialog?.setInvisible()
                     }
                 }
             }

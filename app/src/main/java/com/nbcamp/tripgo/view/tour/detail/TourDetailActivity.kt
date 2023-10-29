@@ -129,6 +129,8 @@ class TourDetailActivity : AppCompatActivity() {
         moveToCalendar.setOnClickListener {
             tourDetailViewModel.setUserOption()
             if (currentUser != null && isEmailVerified) {
+                // 영상 용 조건문
+//            if (currentUser != null) {
                 tourDetailViewModel.getMySchedules(currentUser!!)
                 runCalendarDialog()
             } else if (isEmailVerified.not()) {
@@ -213,6 +215,7 @@ class TourDetailActivity : AppCompatActivity() {
         loginStatus.observe(this@TourDetailActivity) { state ->
             // 유저 정보 확인
             currentUser = state.user
+            // 이메일 인증 확인
             isEmailVerified = if (state.user is FirebaseUser) {
                 state.user.isEmailVerified
             } else {
