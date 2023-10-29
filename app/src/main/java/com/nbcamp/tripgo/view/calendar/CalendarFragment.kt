@@ -186,6 +186,7 @@ class CalendarFragment : Fragment() {
 
             deleteScheduleUiState.observe(viewLifecycleOwner) { state ->
                 if (state == null) return@observe
+                calendarMainView.setCurrentDate(CalendarDay.today(), true)
                 updateCalendarUi(state)
             }
 
