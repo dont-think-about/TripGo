@@ -304,18 +304,37 @@ class TourDetailViewModel(
                 _loginStatus.value = CalendarLogInUiState(null, false)
             }
 
-//            (currentUser as FirebaseUser).isEmailVerified.not() || (currentUser as Account).isEmailVerified!!.not() -> {
-//                toast("이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.")
-            // 테스트 할 떄는 주석 풀고, 이메일 인증 기능이 완성 되면 주석 처리
-//                tourDetailViewModel.getMySchedules(currentUser)
-//                runCalendarDialog()
-//            }
-
-            else -> {
-                currentUser.let {
+            // 영상 찍을 때는 주석 --> 테스트 용
+            currentUser is FirebaseUser -> {
+                if (currentUser.isEmailVerified.not()) {
+                    _loginStatus.value = CalendarLogInUiState(currentUser, false)
+                } else {
                     _loginStatus.value = CalendarLogInUiState(currentUser, true)
                 }
             }
+
+            currentUser is Account -> {
+                if (currentUser.isEmailVerified?.not() == true) {
+                    _loginStatus.value = CalendarLogInUiState(currentUser, false)
+                } else {
+                    _loginStatus.value = CalendarLogInUiState(currentUser, true)
+                }
+            }
+            // 영상 찍을 때는 주석 --> 테스트 용
+
+//            (currentUser as FirebaseUser).isEmailVerified.not() || (currentUser as Account).isEmailVerified!!.not() -> {
+////                toast("이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.")
+//            // 테스트 할 떄는 주석 풀고, 이메일 인증 기능이 완성 되면 주석 처리
+////                tourDetailViewModel.getMySchedules(currentUser)
+////                runCalendarDialog()
+//            }
+
+            // 이메일 인증 기능 적용할 떄는 삭제 시킬 구문 -> 영상 찍을 때 사용
+//            else -> {
+//                currentUser.let {
+//                    _loginStatus.value = CalendarLogInUiState(currentUser, true)
+//                }
+//            }
         }
     }
 
