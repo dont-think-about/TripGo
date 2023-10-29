@@ -114,6 +114,10 @@ class CalendarFragment : Fragment() {
     }
 
     private fun initViewModel() = with(calendarViewModel) {
+        loadingDialog?.run {
+            setVisible()
+            setText(getString(R.string.getting_my_schedule))
+        }
         // 먼저 로그인 상태를 가져옴
         getLoginStatus()
         with(binding) {
@@ -125,6 +129,7 @@ class CalendarFragment : Fragment() {
                     true -> {
                         calendarMainView.selectionMode = MaterialCalendarView.SELECTION_MODE_NONE
                         getSchedulesFromFireStore()
+                        loadingDialog?.setInvisible()
                     }
 
                     // 돠어 있지 않으면 하단에 안내 메세지 띄움 + 캘린더 선택하면 스낵바 띄울 수 있도록 모드 변경
@@ -132,6 +137,7 @@ class CalendarFragment : Fragment() {
                         calendarMainView.selectionMode = MaterialCalendarView.SELECTION_MODE_SINGLE
                         calendarTitleTextView.isGone = true
                         calendarNoticeTextView.text = getString(R.string.log_in_and_submit_review)
+                        loadingDialog?.setInvisible()
                     }
                 }
             }
@@ -158,7 +164,7 @@ class CalendarFragment : Fragment() {
                         CalendarFragmentTodayDecorator(requireActivity())
                     )
                 }
-
+                loadingDialog?.setInvisible()
             }
 
             // 달력을 넘겼을 때 관찰 되는 livedata
@@ -182,6 +188,7 @@ class CalendarFragment : Fragment() {
 
             deleteScheduleUiState.observe(viewLifecycleOwner) { state ->
                 if (state == null) return@observe
+                calendarMainView.setCurrentDate(CalendarDay.today(), true)
                 updateCalendarUi(state)
             }
 
@@ -263,9 +270,10 @@ class CalendarFragment : Fragment() {
 
             // 로그인 안 되었을 떄, 스낵바 띄우는 리스너
             setOnDateChangedListener { _, _, _ ->
-                Snackbar.make(binding.root, "로그인 페이지로 이동", 5000).setAction("LOGIN") {
-                    sharedViewModel.runLoginActivity()
-                }.show()
+                Snackbar.make(binding.root, getString(R.string.move_to_log_in), 5000)
+                    .setAction("LOGIN") {
+                        sharedViewModel.runLoginActivity()
+                    }.show()
             }
         }
         calendarScheduleRecyclerView.run {
@@ -278,8 +286,6 @@ class CalendarFragment : Fragment() {
             )
             callSwipeHelper.attachToRecyclerView(this)
         }
-
-
     }
 
     private fun runDialogForReviewWriting(model: CalendarEntity?) {
@@ -312,13 +318,13 @@ class CalendarFragment : Fragment() {
     // 일정 삭제 다이얼로그
     private fun runDialogForScheduleDelete(model: CalendarEntity) {
         if (model.isReviewed == true) {
-            requireActivity().toast("리뷰를 작성하신 일정은 삭제하실 수 없습니다.")
+            requireActivity().toast(getString(R.string.cannot_delete_review_writted))
             return
         }
         setFancyDialog(
             context = requireActivity(),
-            title = "일정 삭제",
-            message = "일정을 삭제하시겠나요?",
+            title = getString(R.string.delete_schedule),
+            message = getString(R.string.confirm_delete_schedule),
             positiveText = getString(R.string.yes),
             negativeText = getString(R.string.no),
             icon = R.drawable.icon_alert_review

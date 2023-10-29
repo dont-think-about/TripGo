@@ -15,6 +15,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import coil.load
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseUser
+import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.BuildConfig
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
@@ -53,6 +55,7 @@ class TourDetailActivity : AppCompatActivity() {
     private lateinit var tMapView: TMapView
     private var calendarBinding: DialogCalendarBinding? = null
     private var currentUser: Any? = null
+    private var isEmailVerified = false
 
 
     private val tourDetailViewModel: TourDetailViewModel by viewModels {
@@ -125,9 +128,17 @@ class TourDetailActivity : AppCompatActivity() {
         // 일정 추가 캘린더 다이얼로그 실행
         moveToCalendar.setOnClickListener {
             tourDetailViewModel.setUserOption()
-            if (currentUser != null) {
+            if (currentUser != null && isEmailVerified) {
+                // 영상 용 조건문
+//            if (currentUser != null) {
                 tourDetailViewModel.getMySchedules(currentUser!!)
                 runCalendarDialog()
+            } else if (isEmailVerified.not()) {
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.not_email_verified_then_cant_add_schedule),
+                    2000
+                ).show()
             } else {
                 Snackbar.make(
                     binding.root,
@@ -204,6 +215,12 @@ class TourDetailActivity : AppCompatActivity() {
         loginStatus.observe(this@TourDetailActivity) { state ->
             // 유저 정보 확인
             currentUser = state.user
+            // 이메일 인증 확인
+            isEmailVerified = if (state.user is FirebaseUser) {
+                state.user.isEmailVerified
+            } else {
+                (state.user as Account).isEmailVerified ?: false
+            }
         }
 
         schedulesDateState.observe(this@TourDetailActivity) { dateList ->

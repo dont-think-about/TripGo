@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.calendar
+package com.nbcamp.tripgo.view.calendar.modify
 
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +20,8 @@ import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
 import com.nbcamp.tripgo.util.calendar.SundayDecorator
 import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.calendar.CalendarViewModel
+import com.nbcamp.tripgo.view.calendar.CalendarViewModelFactory
 import com.nbcamp.tripgo.view.main.MainViewModel
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.util.Calendar
@@ -56,17 +58,17 @@ class ScheduleModifyFragment : DialogFragment() {
         entity = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable("model", CalendarEntity::class.java)
         } else {
-            arguments?.getParcelable("model")
+            arguments?.getParcelable("model") as? CalendarEntity
         }
         selectedDayList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelableArrayList("selectedDayList", CalendarDay::class.java)
         } else {
-            arguments?.getParcelable("selectedDayList")
+            arguments?.getParcelableArrayList("selectedDayList")
         }
         forModifySchedule = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelableArrayList("forModifySchedule", CalendarEntity::class.java)
         } else {
-            arguments?.getParcelable("forModifySchedule")
+            arguments?.getParcelableArrayList("forModifySchedule")
         }
         initViews()
         initViewModel()

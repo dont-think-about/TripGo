@@ -303,12 +303,11 @@ class TourDetailViewModel(
             currentUser == null -> {
                 _loginStatus.value = CalendarLogInUiState(null, false)
             }
-
 //            (currentUser as FirebaseUser).isEmailVerified.not() || (currentUser as Account).isEmailVerified!!.not() -> {
-//                toast("이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.")
-            // 테스트 할 떄는 주석 풀고, 이메일 인증 기능이 완성 되면 주석 처리
-//                tourDetailViewModel.getMySchedules(currentUser)
-//                runCalendarDialog()
+////                toast("이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.")
+//            // 테스트 할 떄는 주석 풀고, 이메일 인증 기능이 완성 되면 주석 처리
+////                tourDetailViewModel.getMySchedules(currentUser)
+////                runCalendarDialog()
 //            }
 
             else -> {

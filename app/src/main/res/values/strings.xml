@@ -169,4 +169,10 @@
     <string name="now_doing_schedule_cant_modify">현재 진행 중인 일정은 수정할 수 없습니다.</string>
     <string name="past_schedule_not_modify">이미 지난 일정은 수정할 수 없습니다.</string>
     <string name="sharing_place">공유하기</string>
+    <string name="getting_my_schedule">일정 가져 오는 중…</string>
+    <string name="move_to_log_in">로그인 페이지로 이동</string>
+    <string name="cannot_delete_review_writted">리뷰를 작성하신 일정은 삭제하실 수 없습니다.</string>
+    <string name="delete_schedule">일정 삭제</string>
+    <string name="confirm_delete_schedule">일정을 삭제하시겠나요?</string>
+    <string name="not_email_verified_then_cant_add_schedule">이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.</string>
 </resources>

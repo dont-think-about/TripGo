@@ -24,7 +24,6 @@ import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.TMapFrameLayout
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
-import com.nbcamp.tripgo.view.calendar.ScheduleModifyFragment
 import com.nbcamp.tripgo.view.main.MainActivity
 import com.nbcamp.tripgo.view.tour.detail.TextClickEvent
 import com.nbcamp.tripgo.view.tour.detail.TourDetailViewModel
