@@ -230,21 +230,21 @@ class MainActivity : AppCompatActivity() {
 
         // 데이터 정합성을 위해 캘린더에 들어 갈 때는 데이터를 실시간 업데이트 - 중요
         if (targetFragment is CalendarFragment) {
-            transaction.replace(
+            transaction.remove(targetFragment)
+            transaction.add(
                 R.id.main_fragment_container,
                 CalendarFragment.newInstance(),
                 pageType.tag
             )
-        } else {
-            transaction.show(targetFragment)
-            FragmentPageType.values()
-                .filterNot { it == pageType }
-                .forEach { type ->
-                    supportFragmentManager.findFragmentByTag(type.tag)?.let {
-                        transaction.hide(it)
-                    }
-                }
         }
+        transaction.show(targetFragment)
+        FragmentPageType.values()
+            .filterNot { it == pageType }
+            .forEach { type ->
+                supportFragmentManager.findFragmentByTag(type.tag)?.let {
+                    transaction.hide(it)
+                }
+            }
 
         transaction.commit()
     }
