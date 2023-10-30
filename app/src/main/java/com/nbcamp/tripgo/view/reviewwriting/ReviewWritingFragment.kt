@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import coil.load
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.GalleryPhotoEntity
+import com.nbcamp.tripgo.data.repository.model.UserModel
 import com.nbcamp.tripgo.databinding.FragmentReviewWritingBinding
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
@@ -39,6 +40,7 @@ class ReviewWritingFragment : Fragment() {
     private lateinit var companionValue: String
     private lateinit var imageUrlValue: String
     private lateinit var loadingDialog: LoadingDialog
+    private var userModel: UserModel? = null
     private var reviewTextValue = ""
     private var ratingValue: Float = 0f
     private var writingType = WritingType.NEW
@@ -76,9 +78,14 @@ class ReviewWritingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getUserInfo()
         initViews()
         initViewModel()
         initSharedViewModel()
+    }
+
+    private fun getUserInfo() {
+        reviewWritingViewModel.getUserInfo()
     }
 
     private fun initViews() = with(binding) {
@@ -129,7 +136,8 @@ class ReviewWritingFragment : Fragment() {
                 ::companionValue.isInitialized.not() ||
                 ::imageUrlValue.isInitialized.not() ||
                 imageUrlValue.isEmpty() ||
-                reviewTextValue.isEmpty()
+                reviewTextValue.isEmpty() ||
+                userModel == null
             ) {
                 requireActivity().toast("모든 항목을 입력해주세요")
                 return@setOnClickListener
@@ -142,8 +150,15 @@ class ReviewWritingFragment : Fragment() {
                     generation = generationValue,
                     companion = companionValue,
                     reviewText = reviewTextValue,
-                    imageUrl = imageUrlValue,
-                    rating = ratingValue
+                    reviewImageUrl = imageUrlValue,
+                    rating = ratingValue,
+                    userNickName = userModel?.nickname ?: "NO NAME",
+                    tourTitle = calendarUserEntity.model?.title
+                        ?: getString(R.string.no_detail_info),
+                    address = calendarUserEntity.model?.address
+                        ?: getString(R.string.no_detail_info),
+                    userImageUrl = userModel?.profileImage ?: "",
+                    schedule = "${calendarUserEntity.model?.startDate} ~ ${calendarUserEntity.model?.endDate}",
                 )
             }
             if (reviewWritingModel != null)
@@ -212,6 +227,10 @@ class ReviewWritingFragment : Fragment() {
                 else -> Unit
             }
         }
+
+        userInfo.observe(viewLifecycleOwner) {
+            userModel = it
+        }
     }
 
     private fun invokeLoadingPastReviewDetail(event: ReviewWritingEvent.EventLoadingPastReviewDetail) {
@@ -228,7 +247,7 @@ class ReviewWritingFragment : Fragment() {
                     if (model != null) {
                         model.run {
                             reviewTextValue = reviewText
-                            imageUrl = ""
+                            reviewImageUrl = ""
                             ratingValue = rating
                             genderValue = gender
                             generationValue = generation

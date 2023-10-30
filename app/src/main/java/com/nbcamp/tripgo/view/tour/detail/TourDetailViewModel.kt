@@ -216,7 +216,7 @@ class TourDetailViewModel(
     }
 
     fun selectScheduleRange(dates: List<CalendarDay>, selectedDayList: List<CalendarDay>) {
-        if (dates.last().isBefore(CalendarDay.today())) {
+        if (CalendarDay.today().isAfter(dates.first())) {
             // 선택한 범위가 오늘 보다 전이면, 선택을 못 하도록 막음
             scheduleDates.clear()
             _calendarClickEvent.value = false

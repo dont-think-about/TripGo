@@ -6,9 +6,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
-import com.google.gson.Gson
 import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
+import com.nbcamp.tripgo.data.repository.model.UserModel
+import com.nbcamp.tripgo.util.MapConverter.toModelMap
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.calendar.WritingType
 import com.nbcamp.tripgo.view.reviewwriting.CalendarUserModel
@@ -130,13 +131,13 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
             .get()
             .await()
             .data
-            ?.toReviewWritingModel()
+            ?.toModelMap<ReviewWritingModel>()
     }
 
     private suspend fun saveNewImage(reviewWritingModel: ReviewWritingModel): String {
         return storage.reference.child("reviews/$userInfo")
             .child(fileName)
-            .putFile(reviewWritingModel.imageUrl.toUri())
+            .putFile(reviewWritingModel.reviewImageUrl.toUri())
             .await()
             .storage
             .downloadUrl
@@ -152,9 +153,21 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
         return saveNewImage(reviewWritingModel)
     }
 
-    private fun Map<String, Any>.toReviewWritingModel(): ReviewWritingModel {
-        val gson = Gson()
-        val gsonString = gson.toJson(this)
-        return gson.fromJson(gsonString, ReviewWritingModel::class.java)
+    override suspend fun getUserInfo(): UserModel? {
+        val email = if (App.firebaseUser != null) {
+            App.firebaseUser?.email
+        } else {
+            App.kakaoUser?.email
+        }
+        if (email == null) {
+            return null
+        }
+
+        return fireStore.collection("users")
+            .document(email)
+            .get()
+            .await()
+            .data
+            ?.toModelMap<UserModel>()
     }
 }

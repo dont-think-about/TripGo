@@ -1,8 +1,11 @@
 package com.nbcamp.tripgo.view.reviewwriting
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nbcamp.tripgo.R
+import com.nbcamp.tripgo.data.repository.model.UserModel
 import com.nbcamp.tripgo.util.SingleLiveEvent
 import com.nbcamp.tripgo.view.calendar.WritingType
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +22,10 @@ class ReviewWritingViewModel(
     private val _eventLoadingReview: SingleLiveEvent<ReviewWritingEvent> = SingleLiveEvent()
     val eventLoadingReview: SingleLiveEvent<ReviewWritingEvent>
         get() = _eventLoadingReview
+
+    private val _userInfo: MutableLiveData<UserModel?> = MutableLiveData()
+    val userInfo: LiveData<UserModel?>
+        get() = _userInfo
 
     fun onClickGenderGroupEvent(checkedId: Int) {
         when (checkedId) {
@@ -141,7 +148,7 @@ class ReviewWritingViewModel(
                 }
                 // 2
                 val reviewedModel = reviewWritingViewModel.copy(
-                    imageUrl = returnImageUrl
+                    reviewImageUrl = returnImageUrl
                 )
                 // 3
                 reviewWritingRepository.saveReview(
@@ -199,6 +206,17 @@ class ReviewWritingViewModel(
                         false
                     )
                 )
+            }
+        }
+    }
+
+    fun getUserInfo() {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                val response = reviewWritingRepository.getUserInfo()
+                _userInfo.postValue(response)
+            }.onFailure {
+                _userInfo.postValue(null)
             }
         }
     }
