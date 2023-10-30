@@ -107,14 +107,15 @@ class SignUpActivity : AppCompatActivity() {
             if (it == false) {
                 binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text_error)
                 binding.signUpNickNameErrorTextView.visibility = View.VISIBLE
-                binding.signUpNickNameEditText.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
-                    if (keyCode == KeyEvent.KEYCODE_DEL) {
-                        binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text)
-                        binding.signUpNickNameErrorTextView.visibility = View.GONE
+                binding.signUpNickNameEditText.setOnKeyListener(
+                    View.OnKeyListener { v, keyCode, event ->
+                        if (keyCode == KeyEvent.KEYCODE_DEL) {
+                            binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text)
+                            binding.signUpNickNameErrorTextView.visibility = View.GONE
+                        }
+                        false
                     }
-                    false
-                })
-
+                )
             } else {
                 binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text_correct)
                 binding.signUpNickNameErrorTextView.visibility = View.GONE
@@ -202,7 +203,6 @@ class SignUpActivity : AppCompatActivity() {
     private fun showError(errorText: () -> AppCompatTextView, background: () -> LinearLayout) {
         errorText().visibility = View.VISIBLE
         background().setBackgroundResource(R.drawable.background_edit_text_error)
-
     }
 
     private fun hideError(errorText: () -> AppCompatTextView, background: () -> LinearLayout) {

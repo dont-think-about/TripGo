@@ -59,7 +59,6 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
         }
     }
 
-
     override suspend fun saveReview(
         reviewedModel: ReviewWritingModel,
         documentId: String,

@@ -134,7 +134,6 @@ class TourActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 showError(getString(R.string.tour_exception_error))
-
             } finally {
                 showProgressBar(false)
             }
@@ -157,12 +156,8 @@ class TourActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val service = RetrofitModule.createTourApiService()
             val currentDate = Calendar.getInstance()
-            val startDate = "${currentDate.get(Calendar.YEAR)}${
-                String.format(
-                    "%02d",
-                    currentDate.get(Calendar.MONTH) + 1
-                )
-            }01"
+            val startDate = "${currentDate.get(Calendar.YEAR)}" +
+                    "${String.format("%02d", currentDate.get(Calendar.MONTH) + 1)}01"
 
             try {
                 val response = service.getFestivalInThisMonth(
@@ -179,7 +174,6 @@ class TourActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 showError(getString(R.string.tour_exception_error))
-
             } finally {
                 showProgressBar(false) //API 응답 후 로딩 비활성화
             }
@@ -197,7 +191,7 @@ class TourActivity : AppCompatActivity() {
                 putExtra("keywordItem", keywordItem)
             }
         startActivity(myIntent)
-    }  // Detail Activity로 넘어 가는 함수
+    } // Detail Activity로 넘어 가는 함수
 
     private fun showProgressBar(show: Boolean) {
         binding.tourProgressBar.visibility = if (show) View.VISIBLE else View.GONE
@@ -216,13 +210,12 @@ class TourActivity : AppCompatActivity() {
                     val userLon = location.longitude
                     tourSearchAdapter.setUserLocation(userLat, userLon)
                     tourAdapter.setUserLocation(userLat, userLon)
-
                 } else {
                     showError(getString(R.string.tour_location_error))
                 }
             }
         }
-    }  // 사용자 현재 위치를 가져 오는 함수
+    } // 사용자 현재 위치를 가져 오는 함수
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

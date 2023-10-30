@@ -28,7 +28,7 @@ object RetrofitModule {
             .readTimeout(5, TimeUnit.MINUTES)
             .connectTimeout(5, TimeUnit.MINUTES)
             .build()
-    
+
     private var gson: Gson = GsonBuilder()
         .setLenient()
         .create()

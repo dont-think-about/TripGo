@@ -20,7 +20,6 @@ class ReviewWritingViewModel(
     val eventLoadingReview: SingleLiveEvent<ReviewWritingEvent>
         get() = _eventLoadingReview
 
-
     fun onClickGenderGroupEvent(checkedId: Int) {
         when (checkedId) {
             R.id.review_writing_toggle_man_button -> {

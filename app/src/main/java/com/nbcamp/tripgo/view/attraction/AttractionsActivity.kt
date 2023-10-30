@@ -130,7 +130,6 @@ class AttractionsActivity : AppCompatActivity() {
                     val userLat = location.latitude
                     val userLon = location.longitude
                     attractionsAdapter.setUserLocation(userLat, userLon)
-
                 } else {
                     showError(getString(R.string.tour_location_error))
                 }

@@ -198,7 +198,6 @@ class MainActivity : AppCompatActivity() {
                         .setAction("LOGIN") {
                             sharedViewModel.runLoginActivity()
                         }.show()
-
                 }
 
                 is SetUserEvent.Success -> {
@@ -214,9 +213,7 @@ class MainActivity : AppCompatActivity() {
                     println("kakaoUserMain: " + App.kakaoUser)
                 }
             }
-
         }
-
     }
 
     private fun changeFragment(pageType: FragmentPageType) {

@@ -56,7 +56,6 @@ class TourDetailActivity : AppCompatActivity() {
     private var calendarBinding: DialogCalendarBinding? = null
     private var currentUser: Any? = null
     private var isEmailVerified = false
-    
     private val tourDetailViewModel: TourDetailViewModel by viewModels {
         TourDetailViewModelFactory(
             this
@@ -89,7 +88,6 @@ class TourDetailActivity : AppCompatActivity() {
             intent?.getParcelableExtra("keywordItem")
         }
         nearbyContentId = intent?.getStringExtra("contentId")
-
     }
 
     private fun initViews() = with(binding) {
@@ -122,7 +120,6 @@ class TourDetailActivity : AppCompatActivity() {
             } else {
                 toast(getString(R.string.not_login_then_not_submit_like))
             }
-
         }
         // 일정 추가 캘린더 다이얼로그 실행
         moveToCalendar.setOnClickListener {
@@ -144,15 +141,25 @@ class TourDetailActivity : AppCompatActivity() {
                     getString(R.string.not_login_so_dont_add_schedule),
                     5000
                 ).setAction(getString(R.string.login_en)) {
-                    startActivity(Intent(this@TourDetailActivity, LogInActivity::class.java))
+                    startActivity(
+                        Intent(
+                            this@TourDetailActivity,
+                            LogInActivity::class.java
+                        )
+                    )
                 }.show()
             }
         }
         // 상단 홈 버튼 클릭 시 메인으로 이동
         btnHome.setOnClickListener {
-            startActivity(Intent(this@TourDetailActivity, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            })
+            startActivity(
+                Intent(
+                    this@TourDetailActivity,
+                    MainActivity::class.java
+                ).apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+            )
         }
         // 공유 버튼
         btnShare.setOnClickListener {

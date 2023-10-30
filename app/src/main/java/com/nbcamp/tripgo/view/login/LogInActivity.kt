@@ -50,7 +50,6 @@ class LogInActivity : AppCompatActivity() {
     private lateinit var GoogleSignInClient: GoogleSignInClient
     private lateinit var startGoogleLoginForResult: ActivityResultLauncher<Intent>
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
@@ -76,7 +75,6 @@ class LogInActivity : AppCompatActivity() {
         signInButton.setOnClickListener {
             val signInIntent = GoogleSignInClient.signInIntent
             startGoogleLoginForResult.launch(signInIntent)
-
         }
 
         // kakao 선언 시작 ~
@@ -145,7 +143,7 @@ class LogInActivity : AppCompatActivity() {
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
 
-                            //firestore google inpo 저장
+                            // firestore google inpo 저장
                             val user = hashMapOf(
                                 "email" to account.email,
                                 "nickname" to account.displayName,
@@ -155,8 +153,8 @@ class LogInActivity : AppCompatActivity() {
                             fireStore.collection("users").document(account.email.toString())
                                 .set(user)
 
-                            //val keyHash = Utility.getKeyHash(this)
-                            //Log.d("Hash", keyHash)
+                            // val keyHash = Utility.getKeyHash(this)
+                            // Log.d("Hash", keyHash)
 
                             finish()
 
@@ -196,7 +194,7 @@ class LogInActivity : AppCompatActivity() {
                 Log.d("카톡계정 로그인 실패 @@@@@@@@@", "카카오계정으로 로그인 실패 : $error")
                 setLogin(false)
             } else if (token != null) {
-                //TODO: 최종적으로 카카오로그인 및 유저정보 가져온 결과
+                // TODO: 최종적으로 카카오로그인 및 유저정보 가져온 결과
                 UserApiClient.instance.me { user, userError ->
                     if (userError != null) {
                         // 사용자 정보 가져오기에 실패한 경우, 에러 처리를 수행

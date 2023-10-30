@@ -173,7 +173,6 @@ class HomeViewModel(
         }
     }
 
-
     fun getProvincePlace() {
         _provincePlaceUiState.value = HomeProvincePlaceUiState.initialize()
         val list = AreaCode.values().toList()

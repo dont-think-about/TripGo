@@ -84,7 +84,8 @@ class CalendarFragment : Fragment() {
                     // 수정 시 일정이 있는 날엔 달력에 따로 표시해 주기 위한 리스트
                     putExtra("selectedDayList", selectedDayList)
                     // 수정 시 해당 일정을 뺴고 보여주기 위한 임시 캘린더 배열
-                    putExtra("forModifySchedule",
+                    putExtra(
+                        "forModifySchedule",
                         forModifySchedule?.let {
                             ArrayList(it)
                         }
@@ -317,7 +318,7 @@ class CalendarFragment : Fragment() {
             goToReviewFragment(model!!, currentUser, WritingType.MODIFY)
         }.show()
     }
-    
+
     // 일정 삭제 다이얼로그
     private fun runDialogForScheduleDelete(model: CalendarEntity) {
         if (model.isReviewed == true) {
@@ -350,7 +351,6 @@ class CalendarFragment : Fragment() {
         ).addToBackStack(null)
             .commit()
     }
-
 
     override fun onResume() {
         super.onResume()

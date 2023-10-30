@@ -15,7 +15,6 @@ class ViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
             1 -> "관광지"
             else -> "문화 생활"
         } // 각 페이지마다 제목 설정
-
     }
 
     override fun getCount(): Int {

@@ -280,8 +280,9 @@ class ReviewWritingFragment : Fragment() {
             getString(R.string.generation_20) -> reviewWritingToggle20sButton.isChecked = true
             getString(R.string.generation_30) -> reviewWritingToggle30sButton.isChecked = true
             getString(R.string.generation_40) -> reviewWritingToggle40sButton.isChecked = true
-            getString(R.string.generation_50_over) -> reviewWritingToggle50sOverButton.isChecked =
-                true
+            getString(R.string.generation_50_over) -> {
+                reviewWritingToggle50sOverButton.isChecked = true
+            }
         }
         when (pastModel.companion) {
             getString(R.string.family) -> reviewWritingToggleFamilyButton.isChecked = true

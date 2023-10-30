@@ -146,12 +146,14 @@ class TourModifyDetailActivity : AppCompatActivity() {
 
         // 상단 홈 버튼 클릭 시 메인으로 이동
         btnHome.setOnClickListener {
-            startActivity(Intent(
-                this@TourModifyDetailActivity,
-                MainActivity::class.java
-            ).apply {
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            })
+            startActivity(
+                Intent(
+                    this@TourModifyDetailActivity,
+                    MainActivity::class.java
+                ).apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+            )
         }
         // 공유 버튼
         btnShare.setOnClickListener {

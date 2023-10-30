@@ -13,7 +13,6 @@ import com.nbcamp.tripgo.databinding.AttractionRecyclerviewItemBinding
 class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
     ListAdapter<AreaItem, AttractionsAdapter.AttractionViewHolder>(AttractionDiffCallback) {
 
-
     private var userLat = 0.0 // 사용자 위도
     private var userLon = 0.0 // 사용자 경도
 
@@ -100,7 +99,7 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
 
     companion object AttractionDiffCallback : DiffUtil.ItemCallback<AreaItem>() {
         override fun areItemsTheSame(oldItem: AreaItem, newItem: AreaItem): Boolean {
-            return oldItem.contentid == newItem.contentid  // contentid를 고유 식별자로 사용하여 비교
+            return oldItem.contentid == newItem.contentid // contentid를 고유 식별자로 사용하여 비교
         }
 
         override fun areContentsTheSame(oldItem: AreaItem, newItem: AreaItem): Boolean {

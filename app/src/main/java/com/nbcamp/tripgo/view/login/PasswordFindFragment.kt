@@ -19,7 +19,6 @@ class PasswordFindFragment : DialogFragment() {
     private val binding get() = _binding!!
     var firebaseAuth: FirebaseAuth = Firebase.auth
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.Dialog)

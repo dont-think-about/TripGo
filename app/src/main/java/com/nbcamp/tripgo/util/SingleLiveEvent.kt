@@ -35,7 +35,8 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
                 if (pending.compareAndSet(true, false)) {
                     observer.onChanged(t)
                 }
-            })
+            }
+        )
     }
 
     @MainThread
