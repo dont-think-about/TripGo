@@ -8,5 +8,4 @@ sealed interface PermissionEvent {
     data class GetLocationPermission(
         val permission: String
     ) : PermissionEvent
-
 }

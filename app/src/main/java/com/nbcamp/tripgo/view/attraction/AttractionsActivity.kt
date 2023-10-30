@@ -131,7 +131,6 @@ class AttractionsActivity : AppCompatActivity() {
                     val userLon = location.longitude
                     attractionsAdapter.setUserLocation(userLat, userLon)
 
-
                 } else {
                     showError(getString(R.string.tour_location_error))
                 }
@@ -164,4 +163,3 @@ class AttractionsActivity : AppCompatActivity() {
         }
     }
 }
-

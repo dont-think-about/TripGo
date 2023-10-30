@@ -1,6 +1,5 @@
 package com.nbcamp.tripgo.data.model.festivals
 
-
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
@@ -51,4 +50,4 @@ data class FestivalItem(
     val tel: String,
     @SerializedName("title")
     val title: String
-):Parcelable
+) : Parcelable

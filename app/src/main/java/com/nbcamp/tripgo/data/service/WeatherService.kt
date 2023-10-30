@@ -15,8 +15,7 @@ interface WeatherService {
         @Query("base_date") date: String,
         @Query("base_time") time: String,
     ): Response<WeatherResponseModel>
-
-
+    
     companion object {
         val DEFAULT_QUERY_SET = hashMapOf(
             "ServiceKey" to BuildConfig.TOUR_API_KEY,

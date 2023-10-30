@@ -66,8 +66,8 @@ class HomeFragment : Fragment() {
         object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE
-                    && !binding.mainNearbyTourRecyclerView.canScrollHorizontally(1)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE &&
+                    !binding.mainNearbyTourRecyclerView.canScrollHorizontally(1)
                 ) {
                     homeViewModel.getNearbyPlaceList(locationForScrollListener, ++nearbyPageNumber)
                 }
@@ -78,7 +78,9 @@ class HomeFragment : Fragment() {
     private var locationForScrollListener: Location? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(layoutInflater)
         return binding.root

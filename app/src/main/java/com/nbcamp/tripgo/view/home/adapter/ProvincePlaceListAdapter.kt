@@ -44,11 +44,10 @@ class ProvincePlaceListAdapter(
                 onClickItem(model)
             }
             itemTitleTextView.text = model.name
-            "${((floor(model.tourListCount.toDouble() / 100)) * 100).toInt()}${
-                context.getString(
-                    R.string.many_tour_place,
-                )
-            }".also { itemDescriptionTextView.text = it }
+            ("${((floor(model.tourListCount.toDouble() / 100)) * 100).toInt()}" +
+                    context.getString(
+                        R.string.many_tour_place,
+                    )).also { itemDescriptionTextView.text = it }
             itemMainImageView.load(model.imageUrl, App.imageLoader) {
                 memoryCachePolicy(CachePolicy.ENABLED)
                 diskCachePolicy(CachePolicy.ENABLED)

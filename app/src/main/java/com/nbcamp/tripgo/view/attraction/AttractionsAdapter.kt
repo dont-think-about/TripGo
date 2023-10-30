@@ -40,7 +40,7 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
         return R * c
-    }  // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
+    } // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 
     fun attractionDistance(recyclerView: RecyclerView) {
         val sortedList = currentList.sortedBy { item ->
@@ -93,9 +93,6 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
                         userLon
                     ).toInt()
                 )
-
-
-
                 myImage.load(item.firstimage)
             }
         }
@@ -111,4 +108,3 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         }
     }
 }
-

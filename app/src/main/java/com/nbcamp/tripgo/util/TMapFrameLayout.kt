@@ -2,7 +2,6 @@ package com.nbcamp.tripgo.util
 
 import android.content.Context
 import android.util.AttributeSet
-
 import android.view.MotionEvent
 import android.widget.FrameLayout
 
@@ -32,5 +31,4 @@ class TMapFrameLayout(
         super.performClick()
         return true
     }
-
 }

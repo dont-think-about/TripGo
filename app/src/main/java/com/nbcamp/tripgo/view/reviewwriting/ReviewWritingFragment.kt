@@ -124,12 +124,12 @@ class ReviewWritingFragment : Fragment() {
         }
 
         reviewWritingSubmitButton.setOnClickListener {
-            if (::genderValue.isInitialized.not()
-                || ::generationValue.isInitialized.not()
-                || ::companionValue.isInitialized.not()
-                || ::imageUrlValue.isInitialized.not()
-                || imageUrlValue.isEmpty()
-                || reviewTextValue.isEmpty()
+            if (::genderValue.isInitialized.not() ||
+                ::generationValue.isInitialized.not() ||
+                ::companionValue.isInitialized.not() ||
+                ::imageUrlValue.isInitialized.not() ||
+                imageUrlValue.isEmpty() ||
+                reviewTextValue.isEmpty()
             ) {
                 requireActivity().toast("모든 항목을 입력해주세요")
                 return@setOnClickListener

@@ -14,4 +14,3 @@ sealed interface SetUserEvent {
         val message: String
     ) : SetUserEvent
 }
-

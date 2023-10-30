@@ -57,9 +57,12 @@ class GalleryActivity : AppCompatActivity() {
                     }
 
                     is GalleryUiState.PickPhoto -> {
-                        setResult(RESULT_OK, Intent().apply {
-                            putExtra(URI_LIST_KEY, state.photo)
-                        })
+                        setResult(
+                            RESULT_OK,
+                            Intent().apply {
+                                putExtra(URI_LIST_KEY, state.photo)
+                            }
+                        )
                         finish()
                     }
                 }

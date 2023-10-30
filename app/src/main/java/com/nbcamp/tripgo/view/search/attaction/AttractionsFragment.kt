@@ -65,8 +65,7 @@ class AttractionsFragment : Fragment() {
         // 'edit_closeBtn' 색상 설정
         val closeButtonColor = ContextCompat.getColor(requireContext(), R.color.edit_closeBtn)
         binding.attractionsSearchCloseImage.setColorFilter(closeButtonColor)
-        viewModel.searchUiState.observe(viewLifecycleOwner)
-        { state ->
+        viewModel.searchUiState.observe(viewLifecycleOwner) { state ->
             if (state == SearchKeywordUiState.error()) {
                 requireActivity().toast(getString(R.string.load_failed_data))
                 return@observe

@@ -85,7 +85,6 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
                     )
                 }
             }
-
         }.await()
     }
 
@@ -136,7 +135,8 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
     }
 
     private suspend fun saveNewImage(reviewWritingModel: ReviewWritingModel): String {
-        return storage.reference.child("reviews/${userInfo}").child(fileName)
+        return storage.reference.child("reviews/$userInfo")
+            .child(fileName)
             .putFile(reviewWritingModel.imageUrl.toUri())
             .await()
             .storage
@@ -147,7 +147,7 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
 
     private suspend fun removePastImageAndSaveNewImage(reviewWritingModel: ReviewWritingModel): String {
         // 삭제 하고 다시 집어넣기
-        storage.reference.child("reviews/${userInfo}").child(fileName)
+        storage.reference.child("reviews/$userInfo").child(fileName)
             .delete()
             .await()
         return saveNewImage(reviewWritingModel)
@@ -158,5 +158,4 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
         val gsonString = gson.toJson(this)
         return gson.fromJson(gsonString, ReviewWritingModel::class.java)
     }
-
 }

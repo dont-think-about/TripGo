@@ -56,8 +56,7 @@ class TourDetailActivity : AppCompatActivity() {
     private var calendarBinding: DialogCalendarBinding? = null
     private var currentUser: Any? = null
     private var isEmailVerified = false
-
-
+    
     private val tourDetailViewModel: TourDetailViewModel by viewModels {
         TourDetailViewModelFactory(
             this

@@ -31,5 +31,4 @@ sealed interface ReviewWritingEvent {
         val pastModel: ReviewWritingModel?,
         val isLoading: Boolean
     ) : ReviewWritingEvent
-
 }

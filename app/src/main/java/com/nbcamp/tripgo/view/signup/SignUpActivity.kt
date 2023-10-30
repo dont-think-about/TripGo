@@ -72,7 +72,6 @@ class SignUpActivity : AppCompatActivity() {
         signUpNickNameAuthButton.setOnClickListener {
             signUpViewModel.checkNickNameDuplication(signUpNickNameEditText.text.toString())
         }
-
     }
 
     private fun initViewModel() {
@@ -89,13 +88,15 @@ class SignUpActivity : AppCompatActivity() {
                 binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text_error)
                 binding.signUpEmailErrorDuplicationTextView.visibility = View.VISIBLE
 
-                binding.signUpEmailEditText.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
-                    if (keyCode == KeyEvent.KEYCODE_DEL) {
-                        binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text)
-                        binding.signUpEmailErrorDuplicationTextView.visibility = View.GONE
+                binding.signUpEmailEditText.setOnKeyListener(
+                    View.OnKeyListener { v, keyCode, event ->
+                        if (keyCode == KeyEvent.KEYCODE_DEL) {
+                            binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text)
+                            binding.signUpEmailErrorDuplicationTextView.visibility = View.GONE
+                        }
+                        false
                     }
-                    false
-                })
+                )
             } else {
                 binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text_correct)
                 binding.signUpEmailErrorDuplicationTextView.visibility = View.GONE
@@ -119,8 +120,6 @@ class SignUpActivity : AppCompatActivity() {
                 binding.signUpNickNameErrorTextView.visibility = View.GONE
             }
         }
-
-
     }
 
     private fun checkBoxEssentialChecked() = binding.apply {

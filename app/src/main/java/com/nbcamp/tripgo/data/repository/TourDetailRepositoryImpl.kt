@@ -132,7 +132,6 @@ class TourDetailRepositoryImpl(
                 likedReference,
                 likedModel
             )
-
         }.await()
     }
 
@@ -180,5 +179,4 @@ class TourDetailRepositoryImpl(
             userInfo = App.kakaoUser?.email.toString()
         }
     }
-
 }

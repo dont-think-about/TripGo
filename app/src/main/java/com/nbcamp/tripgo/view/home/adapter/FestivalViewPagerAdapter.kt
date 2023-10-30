@@ -49,7 +49,6 @@ class FestivalViewPagerAdapter :
                 newItem: FestivalEntity
             ): Boolean = oldItem.contentId == newItem.contentId
 
-
             override fun areContentsTheSame(
                 oldItem: FestivalEntity,
                 newItem: FestivalEntity

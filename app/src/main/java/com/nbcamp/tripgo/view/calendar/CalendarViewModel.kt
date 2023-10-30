@@ -56,7 +56,6 @@ class CalendarViewModel(
     val buttonClickModifyState: MutableLiveData<CalendarScheduleUiState>
         get() = _buttonClickModifyState
 
-
     // 원본으로 하기 힘든 위치에 추가적인 날짜 필터링을 위해 캐싱 데이터를 생성
     private var cachingSchedule: List<CalendarEntity>? = null
     private val scheduleDates = arrayListOf<CalendarDay>()
@@ -67,7 +66,6 @@ class CalendarViewModel(
                 println(currentUser.email)
                 println(currentUser.isEmailVerified)
                 _loginStatus.value = CalendarLogInUiState(currentUser, true)
-
             }
 
             is Account -> {
@@ -166,8 +164,10 @@ class CalendarViewModel(
     ) {
         val dateList = arrayListOf<Triple<Int, Int, Int>>()
         data?.forEach { calendarEntity ->
-            for (today in (calendarEntity.startDate?.toInt()
-                ?.rangeTo(calendarEntity.endDate?.toInt()!!))!!) {
+            for (today in (
+                    calendarEntity.startDate?.toInt()
+                        ?.rangeTo(calendarEntity.endDate?.toInt()!!)
+                    )!!) {
                 val (year, date) = today.toString().chunked(4).map { it }
                 val (month, day) = date.chunked(2).map { it.toInt() }
                 dateList.add(Triple(year.toInt(), month, day))
@@ -226,7 +226,7 @@ class CalendarViewModel(
         val month = today.get(Calendar.MONTH) + 1
         val day = today.get(Calendar.DATE)
         val todayInt =
-            "$year${if (month < 10) "0${month}" else "$month"}$day".toInt()
+            "$year${if (month < 10) "0$month" else "$month"}$day".toInt()
         val clickedDate =
             "${clickDate?.year ?: 100}${clickDate?.month ?: 100}${if ((clickDate?.day ?: 0) < 10) "0${clickDate?.day ?: 100}" else clickDate?.day ?: 100}".toInt()
         val list =
@@ -252,7 +252,6 @@ class CalendarViewModel(
         // 유효하지 않으면 리뷰를 작성 못하게 함
         _runDialogState.call()
     }
-
 
     // documentId 값을 통해 리뷰 삭제
     fun deleteMySchedule(model: CalendarEntity) {
@@ -284,7 +283,6 @@ class CalendarViewModel(
                         false
                     )
                 )
-
             }.onFailure {
                 _deleteScheduleUiState.postValue(CalendarScheduleUiState.error("삭제에 실패하였습니다."))
             }
@@ -339,12 +337,11 @@ class CalendarViewModel(
             startDate.day
         )
         val (endYear, endMonth, endDay) = listOf(endDate.year, endDate.month, endDate.day)
-        val startMonthWithZero = if (startMonth < 10) "0${startMonth}" else "$startMonth"
-        val endMonthWithZero = if (endMonth < 10) "0${endMonth}" else "$endMonth"
-        val startDayWithZero = if (startDay < 10) "0${startDay}" else "$startDay"
-        val endDayWithZero = if (endDay < 10) "0${endDay}" else "$endDay"
+        val startMonthWithZero = if (startMonth < 10) "0$startMonth" else "$startMonth"
+        val endMonthWithZero = if (endMonth < 10) "0$endMonth" else "$endMonth"
+        val startDayWithZero = if (startDay < 10) "0$startDay" else "$startDay"
+        val endDayWithZero = if (endDay < 10) "0$endDay" else "$endDay"
 
         return "$startYear$startMonthWithZero$startDayWithZero" to "$endYear$endMonthWithZero$endDayWithZero"
-
     }
 }

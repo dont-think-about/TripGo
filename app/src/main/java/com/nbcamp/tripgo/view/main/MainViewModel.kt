@@ -125,7 +125,6 @@ class MainViewModel : ViewModel() {
         _eventRunGallery.call()
     }
 
-
     fun setUserState() {
         val firebaseAuth = FirebaseAuth.getInstance()
         val firebaseUser = firebaseAuth.currentUser

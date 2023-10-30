@@ -24,5 +24,4 @@ interface ReviewWritingRepository {
     suspend fun setPastReviewForModifyReview(
         model: CalendarUserModel
     ): ReviewWritingModel?
-
 }

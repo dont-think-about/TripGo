@@ -49,7 +49,7 @@ class TourAdapter(
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
         return R * c
-    }  // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
+    } // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 
     fun popularDistance(recyclerView: RecyclerView) {
         val sortedList = currentList.sortedBy { item ->
@@ -65,7 +65,6 @@ class TourAdapter(
         submitList(sortedList) {
             recyclerView.scrollToPosition(0)
         }
-
     } // 인기 있는 여행지 날짜순 으로 정렬
 
     class TourViewHolder(
@@ -75,7 +74,6 @@ class TourAdapter(
         fun bind(item: FestivalItem) {
 
             itemView.setOnClickListener {
-
                 onClickItem(item)
             }
             with(binding) {

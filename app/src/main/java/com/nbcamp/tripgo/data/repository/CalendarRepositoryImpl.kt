@@ -110,8 +110,8 @@ class CalendarRepositoryImpl(
                 modifyDocumentReference,
                 modifyEntity.toMap()
             )
-
         }.await()
+
         // 다시 가져 와서 리스트 업데이트
         val scheduleList = getMySchedules(email)
 

@@ -267,7 +267,8 @@ class MainActivity : AppCompatActivity() {
                 },
                 runTaskAfterPermissionGranted = {
                     sharedViewModel.runGalleryEvent()
-                })
+                }
+            )
             return
         }
         checkPermission(
@@ -279,9 +280,9 @@ class MainActivity : AppCompatActivity() {
             },
             runTaskAfterPermissionGranted = {
                 sharedViewModel.runGalleryEvent()
-            })
+            }
+        )
     }
-
 
     private fun checkLocationPermission(permission: String) {
         checkPermission(

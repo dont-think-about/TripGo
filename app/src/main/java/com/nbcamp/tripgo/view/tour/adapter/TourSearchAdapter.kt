@@ -12,7 +12,7 @@ import com.nbcamp.tripgo.databinding.TourRecyclerviewItemBinding
 
 class TourSearchAdapter(
 
-    private val onClickItem: (KeywordItem) -> Unit  //아이템 클릭시 실행할 콜백 함수
+    private val onClickItem: (KeywordItem) -> Unit  // 아이템 클릭시 실행할 콜백 함수
 ) : ListAdapter<KeywordItem, TourSearchAdapter.TourViewHolder>(TourViewHolder.TourDiffCallback) {
 
     private var userLat = 0.0 // 사용자 위도
@@ -41,7 +41,7 @@ class TourSearchAdapter(
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
         return R * c
-    }  // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
+    } // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 
     fun tourDistance(recyclerView: RecyclerView) {
         val sortedList = currentList.sortedBy { item ->
@@ -107,7 +107,6 @@ class TourSearchAdapter(
                 ): Boolean {
                     return oldItem == newItem
                 }
-
             }
         }
     }

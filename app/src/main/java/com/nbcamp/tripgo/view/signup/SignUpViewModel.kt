@@ -50,24 +50,21 @@ class SignUpViewModel : ViewModel() {
                             "profileImage" to null,
                         )
 
-                    // 자체 로그인 firestore 저장부분  users -> email -> email,nickname,image
+                        // 자체 로그인 firestore 저장부분  users -> email -> email,nickname,image
                         fireStore.collection("users").document(email).set(user)
                         firebaseAuth.currentUser?.sendEmailVerification()
 
                         Log.d(ContentValues.TAG, "createUserWithEmail:success")
-
                     } else {
-                        //아이디가 있을 경우에! 로직 추가 ->다음 작업 시 진행
+                        // 아이디가 있을 경우에! 로직 추가 ->다음 작업 시 진행
                         Log.w(ContentValues.TAG, "createUserWithEmail:failure", it.exception)
                     }
                 }
-
             }
         }
     }
 
     fun checkEmailDuplication(email: String) {
-
         fireStore.collection("users")
             .get()
             .addOnSuccessListener { result ->
@@ -78,17 +75,15 @@ class SignUpViewModel : ViewModel() {
                     } else {
                         _isEmailRegistered.value = true
                     }
-                    Log.d(ContentValues.TAG, "${document.id}=${email}")
+                    Log.d(ContentValues.TAG, "${document.id}=$email")
                 }
             }
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error getting documents: ", exception)
             }
-
     }
 
     fun checkNickNameDuplication(nickname: String) {
-
         fireStore.collection("users").get().addOnSuccessListener { querySnapshot ->
             for (document in querySnapshot) {
                 val fieldValue = document.getString("nickname")
@@ -107,9 +102,5 @@ class SignUpViewModel : ViewModel() {
             // 에러 처리
             Log.d(ContentValues.TAG, "Error getting documents: ", exception)
         }
-
-
     }
-
-
 }

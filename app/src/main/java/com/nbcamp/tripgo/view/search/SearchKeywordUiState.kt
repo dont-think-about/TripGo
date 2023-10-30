@@ -21,7 +21,8 @@ data class SearchKeywordUiState(
                     weatherType = WeatherType.UNDEFINED, // 여기서 적절한 열거형 멤버 사용
                     temperature = "error"
                 )
-            ), isLoading = false
+            ),
+            isLoading = false
         )
     }
 }

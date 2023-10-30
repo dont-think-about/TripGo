@@ -19,5 +19,4 @@ sealed interface GalleryUiState {
     data class Error(
         val message: String
     ) : GalleryUiState
-
 }

@@ -11,7 +11,6 @@ import com.nbcamp.tripgo.data.repository.model.NearbyPlaceEntity
 import com.nbcamp.tripgo.databinding.ItemMainTourCardBinding
 import com.nbcamp.tripgo.view.App
 
-
 class NearbyPlaceAdapter(
     private val context: Context,
     private val onClickItem: (String) -> Unit
