@@ -34,10 +34,10 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         val dLon = Math.toRadians(mapx - userLon)
 
         val a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(Math.toRadians(userLat)) *
-            Math.cos(Math.toRadians(mapy)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(userLat)) *
+                Math.cos(Math.toRadians(mapy)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2)
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
         return R * c

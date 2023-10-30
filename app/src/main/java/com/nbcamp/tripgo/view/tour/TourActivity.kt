@@ -157,7 +157,7 @@ class TourActivity : AppCompatActivity() {
             val service = RetrofitModule.createTourApiService()
             val currentDate = Calendar.getInstance()
             val startDate = "${currentDate.get(Calendar.YEAR)}" +
-                    "${String.format("%02d", currentDate.get(Calendar.MONTH) + 1)}01"
+                "${String.format("%02d", currentDate.get(Calendar.MONTH) + 1)}01"
             try {
                 val response = service.getFestivalInThisMonth(
                     startDate = startDate,
