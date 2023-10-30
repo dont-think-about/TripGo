@@ -4,7 +4,8 @@ import com.nbcamp.tripgo.data.repository.mapper.WeatherType
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 
 data class SearchKeywordUiState(
-    val list: List<KeywordSearchEntity> = emptyList(), val isLoading: Boolean = true
+    val list: List<KeywordSearchEntity> = emptyList(),
+    val isLoading: Boolean = true
 ) {
     companion object {
         fun initialize() = SearchKeywordUiState()
@@ -21,7 +22,8 @@ data class SearchKeywordUiState(
                     weatherType = WeatherType.UNDEFINED, // 여기서 적절한 열거형 멤버 사용
                     temperature = "error"
                 )
-            ), isLoading = false
+            ),
+            isLoading = false
         )
     }
 }

@@ -72,7 +72,6 @@ class SignUpActivity : AppCompatActivity() {
         signUpNickNameAuthButton.setOnClickListener {
             signUpViewModel.checkNickNameDuplication(signUpNickNameEditText.text.toString())
         }
-
     }
 
     private fun initViewModel() {
@@ -89,13 +88,15 @@ class SignUpActivity : AppCompatActivity() {
                 binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text_error)
                 binding.signUpEmailErrorDuplicationTextView.visibility = View.VISIBLE
 
-                binding.signUpEmailEditText.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
-                    if (keyCode == KeyEvent.KEYCODE_DEL) {
-                        binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text)
-                        binding.signUpEmailErrorDuplicationTextView.visibility = View.GONE
+                binding.signUpEmailEditText.setOnKeyListener(
+                    View.OnKeyListener { v, keyCode, event ->
+                        if (keyCode == KeyEvent.KEYCODE_DEL) {
+                            binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text)
+                            binding.signUpEmailErrorDuplicationTextView.visibility = View.GONE
+                        }
+                        false
                     }
-                    false
-                })
+                )
             } else {
                 binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text_correct)
                 binding.signUpEmailErrorDuplicationTextView.visibility = View.GONE
@@ -106,21 +107,20 @@ class SignUpActivity : AppCompatActivity() {
             if (it == false) {
                 binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text_error)
                 binding.signUpNickNameErrorTextView.visibility = View.VISIBLE
-                binding.signUpNickNameEditText.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
-                    if (keyCode == KeyEvent.KEYCODE_DEL) {
-                        binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text)
-                        binding.signUpNickNameErrorTextView.visibility = View.GONE
+                binding.signUpNickNameEditText.setOnKeyListener(
+                    View.OnKeyListener { v, keyCode, event ->
+                        if (keyCode == KeyEvent.KEYCODE_DEL) {
+                            binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text)
+                            binding.signUpNickNameErrorTextView.visibility = View.GONE
+                        }
+                        false
                     }
-                    false
-                })
-
+                )
             } else {
                 binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text_correct)
                 binding.signUpNickNameErrorTextView.visibility = View.GONE
             }
         }
-
-
     }
 
     private fun checkBoxEssentialChecked() = binding.apply {
@@ -203,7 +203,6 @@ class SignUpActivity : AppCompatActivity() {
     private fun showError(errorText: () -> AppCompatTextView, background: () -> LinearLayout) {
         errorText().visibility = View.VISIBLE
         background().setBackgroundResource(R.drawable.background_edit_text_error)
-
     }
 
     private fun hideError(errorText: () -> AppCompatTextView, background: () -> LinearLayout) {

@@ -10,9 +10,9 @@ import com.nbcamp.tripgo.data.repository.model.WeatherEntity
 interface HomeRepository {
 
     /**
-     * @param  startDate 검색할 시작 날짜
-     * @param  endDate 검색할 종료 날짜
-     * @param  responseCount 반환할 결과 수
+     * @param startDate 검색할 시작 날짜
+     * @param endDate 검색할 종료 날짜
+     * @param responseCount 반환할 결과 수
      *
      * @return 시작~종료 날짜 사이의 지자체 별 방문 객 수 목록
      */

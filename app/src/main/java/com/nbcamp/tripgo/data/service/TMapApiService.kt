@@ -17,5 +17,4 @@ interface TMapApiService {
         @Query("endY") endLatitude: Double,
         @Query("lineColor") lineColor: String = "red"
     ): Response<ResponseBody>
-
 }

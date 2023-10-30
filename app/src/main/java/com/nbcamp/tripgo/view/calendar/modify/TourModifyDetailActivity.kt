@@ -48,7 +48,6 @@ class TourModifyDetailActivity : AppCompatActivity() {
     private lateinit var tMapView: TMapView
     private var currentUser: Any? = null
 
-
     private val tourDetailViewModel: TourDetailViewModel by viewModels {
         TourDetailViewModelFactory(
             this
@@ -126,7 +125,6 @@ class TourModifyDetailActivity : AppCompatActivity() {
             } else {
                 toast(getString(R.string.not_login_then_not_submit_like))
             }
-
         }
         // 일정 추가 캘린더 다이얼로그 실행
         moveToCalendar.setOnClickListener {
@@ -144,13 +142,18 @@ class TourModifyDetailActivity : AppCompatActivity() {
             ScheduleModifyFragment.newInstance().apply {
                 arguments = bundle
             }.show(supportFragmentManager, ScheduleModifyFragment.TAG)
-
         }
+
         // 상단 홈 버튼 클릭 시 메인으로 이동
         btnHome.setOnClickListener {
-            startActivity(Intent(this@TourModifyDetailActivity, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            })
+            startActivity(
+                Intent(
+                    this@TourModifyDetailActivity,
+                    MainActivity::class.java
+                ).apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+            )
         }
         // 공유 버튼
         btnShare.setOnClickListener {

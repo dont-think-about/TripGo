@@ -52,7 +52,6 @@ class ScheduleModifyFragment : DialogFragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         entity = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -74,20 +73,17 @@ class ScheduleModifyFragment : DialogFragment() {
         initViewModel()
     }
 
-
     private fun initViews() = with(binding) {
         negativeTextView.setOnClickListener {
             dismiss()
         }
         positiveTextView.setOnClickListener {
             calendarViewModel.modifySchedule(entity)
-
         }
         entity?.let {
             setCalendarOption(it)
         }
         runModifySchedule()
-
     }
 
     private fun initViewModel() = with(calendarViewModel) {
@@ -111,7 +107,6 @@ class ScheduleModifyFragment : DialogFragment() {
                         }
                     )
                 }
-
             }
 
             calendarClickModifyEvent.observe(requireActivity()) {

@@ -148,7 +148,7 @@ class HomeViewModel(
                 val nearbyPlaces = homeRepository.getNearbyPlaces(
                     latitude = location?.latitude.toString(),
                     longitude = location?.longitude.toString(),
-                    radius = "10000", //10km 이내,
+                    radius = "10000", // 10km 이내,
                     pageNumber = pageNumber.toString()
                 )
                 val calculatedDistanceData = nearbyPlaces?.onEach { nearbyPlaceEntity ->
@@ -172,7 +172,6 @@ class HomeViewModel(
             }
         }
     }
-
 
     fun getProvincePlace() {
         _provincePlaceUiState.value = HomeProvincePlaceUiState.initialize()
@@ -223,14 +222,13 @@ class HomeViewModel(
         list?.get(randomIndex)
     }
 
-
     private fun getPopularFestival(
         data: List<FestivalEntity>?,
         manyTravelersCountList: List<String>?
     ) = data?.filter {
         it.address.contains(
             """${manyTravelersCountList?.get(0)}|${manyTravelersCountList?.get(1)}|${
-                manyTravelersCountList?.get(2)
+            manyTravelersCountList?.get(2)
             }""".toRegex()
         )
     }

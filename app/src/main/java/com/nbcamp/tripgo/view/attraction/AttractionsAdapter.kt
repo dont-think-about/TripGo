@@ -13,7 +13,6 @@ import com.nbcamp.tripgo.databinding.AttractionRecyclerviewItemBinding
 class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
     ListAdapter<AreaItem, AttractionsAdapter.AttractionViewHolder>(AttractionDiffCallback) {
 
-
     private var userLat = 0.0 // 사용자 위도
     private var userLon = 0.0 // 사용자 경도
 
@@ -34,13 +33,15 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         val dLat = Math.toRadians(mapy - userLat)
         val dLon = Math.toRadians(mapx - userLon)
 
-        val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(mapy)) *
+        val a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(userLat)) *
+                Math.cos(Math.toRadians(mapy)) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2)
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
         return R * c
-    }  // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
+    } // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 
     fun attractionDistance(recyclerView: RecyclerView) {
         val sortedList = currentList.sortedBy { item ->
@@ -93,9 +94,6 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
                         userLon
                     ).toInt()
                 )
-
-
-
                 myImage.load(item.firstimage)
             }
         }
@@ -103,7 +101,7 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
 
     companion object AttractionDiffCallback : DiffUtil.ItemCallback<AreaItem>() {
         override fun areItemsTheSame(oldItem: AreaItem, newItem: AreaItem): Boolean {
-            return oldItem.contentid == newItem.contentid  // contentid를 고유 식별자로 사용하여 비교
+            return oldItem.contentid == newItem.contentid // contentid를 고유 식별자로 사용하여 비교
         }
 
         override fun areContentsTheSame(oldItem: AreaItem, newItem: AreaItem): Boolean {
@@ -111,4 +109,3 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         }
     }
 }
-

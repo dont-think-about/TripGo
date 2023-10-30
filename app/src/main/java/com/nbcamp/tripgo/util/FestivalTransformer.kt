@@ -32,8 +32,8 @@ class FestivalTransformer : ViewPager2.PageTransformer {
                     scaleY = scaleFactor
 
                     // Fade the page relative to its size.
-                    alpha = (minAlpha +
-                            (((scaleFactor - minScale) / (1 - minScale)) * (1 - minAlpha)))
+                    alpha =
+                        (minAlpha + (((scaleFactor - minScale) / (1 - minScale)) * (1 - minAlpha)))
                 }
 
                 else -> { // (1,+Infinity]

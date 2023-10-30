@@ -10,15 +10,9 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.auth.User
-import com.google.firebase.firestore.firestore
-import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.login.LogInActivity
@@ -28,7 +22,7 @@ import com.nbcamp.tripgo.view.review.ReviewFragment
 // MVVM 패턴 적용 해야됨
 class MyPageFragment : Fragment() {
 
-     var dbinpo : DocumentReference?  = null
+    var dbinpo: DocumentReference? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,8 +32,6 @@ class MyPageFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_my_page, container, false)
         val mypageSigninUpText = view.findViewById<TextView>(R.id.mypage_signin_up_text)
         val mypageSigninUpInpo = view.findViewById<TextView>(R.id.mypage_signin_up_inpo)
-
-
 
         // review_layout 클릭 이벤트 처리
         val reviewLayout = view.findViewById<LinearLayout>(R.id.review_layout)
@@ -54,7 +46,10 @@ class MyPageFragment : Fragment() {
         val zzimLayout = view.findViewById<LinearLayout>(R.id.mypage_zzim_layout)
         zzimLayout.setOnClickListener {
             val transaction_zzim = parentFragmentManager.beginTransaction()
-            transaction_zzim.replace(R.id.main_fragment_container, FavoriteFragment()) // 다른 프래그먼트로 전환
+            transaction_zzim.replace(
+                R.id.main_fragment_container,
+                FavoriteFragment()
+            ) // 다른 프래그먼트로 전환
             transaction_zzim.addToBackStack(null)
             transaction_zzim.commit()
         }
@@ -75,58 +70,51 @@ class MyPageFragment : Fragment() {
         val user = auth.currentUser
         val userEmail = user?.email
 
-        //firestore 정보 가져오기
+        // firestore 정보 가져오기
         val firestoredb = FirebaseFirestore.getInstance()
 
-
-        //kakao / google 자체로그인 구분자
+        // kakao / google 자체로그인 구분자
         val kakaouser = App.kakaoUser?.email
-        if( kakaouser == null){
-             dbinpo = firestoredb.collection("users")?.document(userEmail.toString())
+        if (kakaouser == null) {
+            dbinpo = firestoredb.collection("users")?.document(userEmail.toString())
+        } else if (kakaouser != null) {
+            dbinpo = firestoredb.collection("users")?.document(kakaouser.toString())
+            Log.d(TAG, "TEST222222222222$kakaouser")
+        } else {
+            Log.d(TAG, "둘다 로그인 불가")
         }
-        else if (kakaouser != null){
-             dbinpo = firestoredb.collection("users")?.document(kakaouser.toString())
-            Log.d(TAG,"TEST222222222222${kakaouser}")
-        }
-        else{
-            Log.d(TAG,"둘다 로그인 불가")
-        }
-
 
         dbinpo?.get()
-            ?.addOnSuccessListener { documentSnapshot  ->
+            ?.addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     val userdata = documentSnapshot.data
-                    //정보 확인
-                     Log.d(TAG, "test2 : ${userdata}")
+                    // 정보 확인
+                    Log.d(TAG, "test2 : $userdata")
                     val email = userdata?.get("email") as? String
                     val nickname = userdata?.get("nickname") as? String
 
-                    if( nickname != null){
+                    if (nickname != null) {
                         mypageSigninUpText.text = ("   ") + nickname + "님 "
                     }
-                    if( email != null){
+                    if (email != null) {
                         mypageSigninUpInpo.text = ("   ") + email
                     }
-
                 } else {
                     Log.d(TAG, "No such document")
-
                 }
             }
 
             ?.addOnFailureListener { e ->
                 // Firestore에서 데이터를 가져오는 중에 오류가 발생한 경우 처리
                 Log.d(TAG, "get failed with $e")
-
             }
 
         return view
     }
+
     companion object {
         fun newInstance() = MyPageFragment()
 
         const val TAG = "MY_PAGE_FRAGMENT"
     }
 }
-

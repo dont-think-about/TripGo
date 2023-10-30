@@ -11,7 +11,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 
-
 // Retrofit을 통해 인터넷 연결하게 해주는 모듈 (구현체)
 object RetrofitModule {
     private fun buildOkHttpClient(): OkHttpClient =
@@ -30,19 +29,9 @@ object RetrofitModule {
             .connectTimeout(5, TimeUnit.MINUTES)
             .build()
 
-
     private var gson: Gson = GsonBuilder()
         .setLenient()
         .create()
-
-    fun create(): ExamService {
-        return Retrofit.Builder()
-            .baseUrl(URL.TOUR_API_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(buildOkHttpClient())
-            .build()
-            .create(ExamService::class.java)
-    }
 
     fun createTourApiService(): TourApiService {
         return Retrofit.Builder()
@@ -71,6 +60,7 @@ object RetrofitModule {
             .build()
             .create(TMapApiService::class.java)
     }
+
     fun createAreaApiService(): TourApiService {
         return Retrofit.Builder()
             .baseUrl(URL.DEFAULT_TOUR_API_URL)

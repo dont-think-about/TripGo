@@ -8,4 +8,3 @@ data class TravelerEntity(
     // 관광객 구분명
     val travelerIdentifier: String,
 )
-

@@ -2,7 +2,6 @@ package com.nbcamp.tripgo.view.search
 
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 
-
 interface SearchRepository {
     /**
      * @param keyword 검색 요청 할 키워드

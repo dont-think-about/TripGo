@@ -123,7 +123,6 @@ class TourDetailViewModel(
         }
     }
 
-
     fun getMySchedules(currentUser: Any) {
         // 이전에 지정한 일정 우선 제거
         scheduleDates.clear()
@@ -170,8 +169,7 @@ class TourDetailViewModel(
     ) {
         val dateList = arrayListOf<Triple<Int, Int, Int>>()
         data?.forEach { calendarEntity ->
-            for (today in (calendarEntity.startDate?.toInt()
-                ?.rangeTo(calendarEntity.endDate?.toInt()!!))!!) {
+            for (today in (calendarEntity.startDate?.toInt()?.rangeTo(calendarEntity.endDate?.toInt()!!))!!) {
                 val (year, date) = today.toString().chunked(4).map { it }
                 val (month, day) = date.chunked(2).map { it.toInt() }
                 dateList.add(Triple(year.toInt(), month, day))
@@ -275,8 +273,6 @@ class TourDetailViewModel(
                 _addScheduleState.postValue(AddScheduleUiState.error("저장 중 오류가 발생하였습니다."))
             }
         }
-
-
     }
 
     private fun convertDate(scheduleDates: ArrayList<CalendarDay>): Pair<String, String> {
@@ -288,13 +284,12 @@ class TourDetailViewModel(
             startDate.day
         )
         val (endYear, endMonth, endDay) = listOf(endDate.year, endDate.month, endDate.day)
-        val startMonthWithZero = if (startMonth < 10) "0${startMonth}" else "$startMonth"
-        val endMonthWithZero = if (endMonth < 10) "0${endMonth}" else "$endMonth"
-        val startDayWithZero = if (startDay < 10) "0${startDay}" else "$startDay"
-        val endDayWithZero = if (endDay < 10) "0${endDay}" else "$endDay"
+        val startMonthWithZero = if (startMonth < 10) "0$startMonth" else "$startMonth"
+        val endMonthWithZero = if (endMonth < 10) "0$endMonth" else "$endMonth"
+        val startDayWithZero = if (startDay < 10) "0$startDay" else "$startDay"
+        val endDayWithZero = if (endDay < 10) "0$endDay" else "$endDay"
 
         return "$startYear$startMonthWithZero$startDayWithZero" to "$endYear$endMonthWithZero$endDayWithZero"
-
     }
 
     fun setUserOption() {
@@ -304,10 +299,10 @@ class TourDetailViewModel(
                 _loginStatus.value = CalendarLogInUiState(null, false)
             }
 //            (currentUser as FirebaseUser).isEmailVerified.not() || (currentUser as Account).isEmailVerified!!.not() -> {
-////                toast("이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.")
+// //                toast("이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.")
 //            // 테스트 할 떄는 주석 풀고, 이메일 인증 기능이 완성 되면 주석 처리
-////                tourDetailViewModel.getMySchedules(currentUser)
-////                runCalendarDialog()
+// //                tourDetailViewModel.getMySchedules(currentUser)
+// //                runCalendarDialog()
 //            }
 
             else -> {
@@ -340,7 +335,6 @@ class TourDetailViewModel(
             _likeStatus.postValue(response)
         }
     }
-
 
     fun saveLikePlace(
         detailInfo: DetailCommonEntity,

@@ -3,7 +3,6 @@ package com.nbcamp.tripgo.data.repository
 import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toKeywordSearchEntity
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 import com.nbcamp.tripgo.data.service.TourApiService
-import com.nbcamp.tripgo.util.APIResponse
 import com.nbcamp.tripgo.view.search.SearchRepository
 
 class SearchRepositoryImpl(

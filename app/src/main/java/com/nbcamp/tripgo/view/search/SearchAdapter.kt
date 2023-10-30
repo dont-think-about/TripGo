@@ -20,6 +20,7 @@ class SearchAdapter(private val sContext: Context) :
         items.clear()
         notifyDataSetChanged()
     }
+
     fun additem(list: List<KeywordSearchEntity>) {
         items.addAll(list)
         notifyDataSetChanged()
@@ -43,13 +44,14 @@ class SearchAdapter(private val sContext: Context) :
         holder.bind(item)
     }
 
-    inner class SearchItemViewHolder(binding: ItemSearchBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+    inner class SearchItemViewHolder(binding: ItemSearchBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         var longitudeEx: TextView = binding.longitude
         var latitudeEx: TextView = binding.latitude
         var titleEx: TextView = binding.title
         var addressEx: TextView = binding.address
         var imageEx: ImageView = binding.image
-        var id: View = binding.root  // 혹시나 다른 변수를 받아올 때 사용할 수 있음
+        var id: View = binding.root // 혹시나 다른 변수를 받아올 때 사용할 수 있음
 
         init {
             binding.root.setOnClickListener(this)
@@ -62,7 +64,6 @@ class SearchAdapter(private val sContext: Context) :
             addressEx.text = item.address
             imageEx.load(item.imageUrl, imageLoader)
         }
-
 
         override fun onClick(v: View?) {
             val position = adapterPosition.takeIf { it != RecyclerView.NO_POSITION } ?: return

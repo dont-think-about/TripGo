@@ -84,8 +84,11 @@ class CalendarFragment : Fragment() {
                     // 수정 시 일정이 있는 날엔 달력에 따로 표시해 주기 위한 리스트
                     putExtra("selectedDayList", selectedDayList)
                     // 수정 시 해당 일정을 뺴고 보여주기 위한 임시 캘린더 배열
-                    putExtra("forModifySchedule",
-                        forModifySchedule?.let { ArrayList(it) }
+                    putExtra(
+                        "forModifySchedule",
+                        forModifySchedule?.let {
+                            ArrayList(it)
+                        }
                     )
                 }
                 startActivity(intent)
@@ -100,7 +103,9 @@ class CalendarFragment : Fragment() {
     private var loadingDialog: LoadingDialog? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCalendarBinding.inflate(layoutInflater)
         loadingDialog = LoadingDialog(requireActivity())
@@ -208,8 +213,8 @@ class CalendarFragment : Fragment() {
     }
 
     private fun updateCalendarUi(state: CalendarScheduleUiState) = with(binding) {
-        if (state == CalendarScheduleUiState.error(state.message)
-            || state.allSchedules?.isEmpty() == true
+        if (state == CalendarScheduleUiState.error(state.message) ||
+            state.allSchedules?.isEmpty() == true
         ) {
             calendarNoticeTextView.isVisible = true
             calendarProgressBar.isVisible = state.isLoading
@@ -314,7 +319,6 @@ class CalendarFragment : Fragment() {
         }.show()
     }
 
-
     // 일정 삭제 다이얼로그
     private fun runDialogForScheduleDelete(model: CalendarEntity) {
         if (model.isReviewed == true) {
@@ -347,7 +351,6 @@ class CalendarFragment : Fragment() {
         ).addToBackStack(null)
             .commit()
     }
-
 
     override fun onResume() {
         super.onResume()

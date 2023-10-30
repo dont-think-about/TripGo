@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.tour
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.service.RetrofitModule
@@ -21,8 +23,6 @@ import com.nbcamp.tripgo.view.tour.adapter.TourAdapter
 import com.nbcamp.tripgo.view.tour.adapter.TourSearchAdapter
 import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 import kotlinx.coroutines.launch
-import android.Manifest
-import com.nbcamp.tripgo.R
 import java.util.Calendar
 
 class TourActivity : AppCompatActivity() {
@@ -71,61 +71,44 @@ class TourActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-
         }
 
         tourTheme = intent.getIntExtra("theme", -100)
-
         initView()
-
         getMyLocation()
-
     }
 
     private fun initView() {
 
         when (tourTheme) {
             TourTheme.FAMILY.themeId -> {
-
                 binding.tourOfTheMonth.text = "가족 여행"
                 retrofitThemeSearch("가족")
-
             }
 
             TourTheme.HEALING.themeId -> {
-
                 binding.tourOfTheMonth.text = "힐링"
                 retrofitThemeSearch("힐링")
-
-
             }
 
             TourTheme.CAMPING.themeId -> {
-
                 binding.tourOfTheMonth.text = "캠핑"
                 retrofitThemeSearch("캠핑")
-
             }
 
             TourTheme.TASTY.themeId -> {
-
                 binding.tourOfTheMonth.text = "맛집"
                 retrofitThemeSearch("맛")
-
-
             }
 
             TourTheme.POPULAR.themeId -> {
-
                 binding.tourOfTheMonth.text = "이달의 축제"
                 retrofitFestival()
-
             }
 
             TourTheme.NEARBY.themeId -> Unit
             TourTheme.SEARCH.themeId -> Unit
         }
-
     }
 
     private fun retrofitThemeSearch(keyword: String) {
@@ -151,11 +134,9 @@ class TourActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 showError(getString(R.string.tour_exception_error))
-
             } finally {
                 showProgressBar(false)
             }
-
         }
     }
 
@@ -175,13 +156,8 @@ class TourActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val service = RetrofitModule.createTourApiService()
             val currentDate = Calendar.getInstance()
-            val startDate = "${currentDate.get(Calendar.YEAR)}${
-                String.format(
-                    "%02d",
-                    currentDate.get(Calendar.MONTH) + 1
-                )
-            }01"
-
+            val startDate = "${currentDate.get(Calendar.YEAR)}" +
+                "${String.format("%02d", currentDate.get(Calendar.MONTH) + 1)}01"
             try {
                 val response = service.getFestivalInThisMonth(
                     startDate = startDate,
@@ -197,11 +173,9 @@ class TourActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 showError(getString(R.string.tour_exception_error))
-
             } finally {
-                showProgressBar(false) //API 응답 후 로딩 비활성화
+                showProgressBar(false) // API 응답 후 로딩 비활성화
             }
-
         }
     }
 
@@ -216,7 +190,7 @@ class TourActivity : AppCompatActivity() {
                 putExtra("keywordItem", keywordItem)
             }
         startActivity(myIntent)
-    }  // Detail Activity로 넘어 가는 함수
+    } // Detail Activity로 넘어 가는 함수
 
     private fun showProgressBar(show: Boolean) {
         binding.tourProgressBar.visibility = if (show) View.VISIBLE else View.GONE
@@ -235,13 +209,12 @@ class TourActivity : AppCompatActivity() {
                     val userLon = location.longitude
                     tourSearchAdapter.setUserLocation(userLat, userLon)
                     tourAdapter.setUserLocation(userLat, userLon)
-
                 } else {
                     showError(getString(R.string.tour_location_error))
                 }
             }
         }
-    }  // 사용자 현재 위치를 가져 오는 함수
+    } // 사용자 현재 위치를 가져 오는 함수
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -258,7 +231,3 @@ class TourActivity : AppCompatActivity() {
         }
     }
 }
-
-
-
-

@@ -40,15 +40,14 @@ class ProvincePlaceListAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: ProvincePlaceEntity) = with(binding) {
+            val str = ((floor(model.tourListCount.toDouble() / 100)) * 100).toInt()
             itemView.setOnClickListener {
                 onClickItem(model)
             }
             itemTitleTextView.text = model.name
-            "${((floor(model.tourListCount.toDouble() / 100)) * 100).toInt()}${
-                context.getString(
-                    R.string.many_tour_place,
-                )
-            }".also { itemDescriptionTextView.text = it }
+            "$str" + context.getString(R.string.many_tour_place).also {
+                itemDescriptionTextView.text = it
+            }
             itemMainImageView.load(model.imageUrl, App.imageLoader) {
                 memoryCachePolicy(CachePolicy.ENABLED)
                 diskCachePolicy(CachePolicy.ENABLED)

@@ -198,7 +198,6 @@ class MainActivity : AppCompatActivity() {
                         .setAction("LOGIN") {
                             sharedViewModel.runLoginActivity()
                         }.show()
-
                 }
 
                 is SetUserEvent.Success -> {
@@ -214,9 +213,7 @@ class MainActivity : AppCompatActivity() {
                     println("kakaoUserMain: " + App.kakaoUser)
                 }
             }
-
         }
-
     }
 
     private fun changeFragment(pageType: FragmentPageType) {
@@ -267,7 +264,8 @@ class MainActivity : AppCompatActivity() {
                 },
                 runTaskAfterPermissionGranted = {
                     sharedViewModel.runGalleryEvent()
-                })
+                }
+            )
             return
         }
         checkPermission(
@@ -279,9 +277,9 @@ class MainActivity : AppCompatActivity() {
             },
             runTaskAfterPermissionGranted = {
                 sharedViewModel.runGalleryEvent()
-            })
+            }
+        )
     }
-
 
     private fun checkLocationPermission(permission: String) {
         checkPermission(

@@ -54,5 +54,4 @@ object DetailMapper {
         homePage = detailInfo.homePage,
         isReviewed = false
     )
-
 }

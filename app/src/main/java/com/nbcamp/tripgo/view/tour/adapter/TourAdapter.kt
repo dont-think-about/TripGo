@@ -44,12 +44,12 @@ class TourAdapter(
         val dLon = Math.toRadians(mapx - userLon)
 
         val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(mapy)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2)
+            Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(mapy)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2)
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
         return R * c
-    }  // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
+    } // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 
     fun popularDistance(recyclerView: RecyclerView) {
         val sortedList = currentList.sortedBy { item ->
@@ -65,7 +65,6 @@ class TourAdapter(
         submitList(sortedList) {
             recyclerView.scrollToPosition(0)
         }
-
     } // 인기 있는 여행지 날짜순 으로 정렬
 
     class TourViewHolder(
@@ -75,7 +74,6 @@ class TourAdapter(
         fun bind(item: FestivalItem) {
 
             itemView.setOnClickListener {
-
                 onClickItem(item)
             }
             with(binding) {
@@ -100,7 +98,7 @@ class TourAdapter(
     companion object {
         private val TourDiffCallback = object : DiffUtil.ItemCallback<FestivalItem>() {
             override fun areItemsTheSame(oldItem: FestivalItem, newItem: FestivalItem): Boolean {
-                return oldItem.contentid == newItem.contentid  // contentid를 고유 식별자로 사용하여 비교
+                return oldItem.contentid == newItem.contentid // contentid를 고유 식별자로 사용하여 비교
             }
 
             override fun areContentsTheSame(oldItem: FestivalItem, newItem: FestivalItem): Boolean {

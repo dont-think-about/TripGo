@@ -124,12 +124,12 @@ class ReviewWritingFragment : Fragment() {
         }
 
         reviewWritingSubmitButton.setOnClickListener {
-            if (::genderValue.isInitialized.not()
-                || ::generationValue.isInitialized.not()
-                || ::companionValue.isInitialized.not()
-                || ::imageUrlValue.isInitialized.not()
-                || imageUrlValue.isEmpty()
-                || reviewTextValue.isEmpty()
+            if (::genderValue.isInitialized.not() ||
+                ::generationValue.isInitialized.not() ||
+                ::companionValue.isInitialized.not() ||
+                ::imageUrlValue.isInitialized.not() ||
+                imageUrlValue.isEmpty() ||
+                reviewTextValue.isEmpty()
             ) {
                 requireActivity().toast("모든 항목을 입력해주세요")
                 return@setOnClickListener
@@ -280,8 +280,9 @@ class ReviewWritingFragment : Fragment() {
             getString(R.string.generation_20) -> reviewWritingToggle20sButton.isChecked = true
             getString(R.string.generation_30) -> reviewWritingToggle30sButton.isChecked = true
             getString(R.string.generation_40) -> reviewWritingToggle40sButton.isChecked = true
-            getString(R.string.generation_50_over) -> reviewWritingToggle50sOverButton.isChecked =
-                true
+            getString(R.string.generation_50_over) -> {
+                reviewWritingToggle50sOverButton.isChecked = true
+            }
         }
         when (pastModel.companion) {
             getString(R.string.family) -> reviewWritingToggleFamilyButton.isChecked = true

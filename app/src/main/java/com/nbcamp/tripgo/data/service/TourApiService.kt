@@ -7,7 +7,6 @@ import com.nbcamp.tripgo.data.model.festivals.FestivalResponseModel
 import com.nbcamp.tripgo.data.model.keywords.KeywordSearchResponseModel
 import com.nbcamp.tripgo.data.model.nearby.NearbyPlaceResponseModel
 import com.nbcamp.tripgo.data.model.travelers.TravelersCountResponseModel
-import com.nbcamp.tripgo.view.home.valuetype.AreaCode
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -66,7 +65,7 @@ interface TourApiService {
         @QueryMap defaultQuerySet: HashMap<String, String> = DEFAULT_QUERY_SET,
         @Query("areaCode") areaCode: String,
         @Query("numOfRows") numOfRows: Int = 100
-    ):Response<AreaResponseModel>
+    ): Response<AreaResponseModel>
 
     companion object {
         val DEFAULT_QUERY_SET = hashMapOf(
