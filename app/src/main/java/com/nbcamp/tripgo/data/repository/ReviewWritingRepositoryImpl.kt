@@ -169,6 +169,5 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
             .await()
             .data
             ?.toModelMap<UserModel>()
-
     }
 }

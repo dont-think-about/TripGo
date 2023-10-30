@@ -152,7 +152,7 @@ class ReviewWritingFragment : Fragment() {
                     reviewText = reviewTextValue,
                     reviewImageUrl = imageUrlValue,
                     rating = ratingValue,
-                    userNickName = userModel?.nickname ?: "NO NAME" ,
+                    userNickName = userModel?.nickname ?: "NO NAME",
                     tourTitle = calendarUserEntity.model?.title
                         ?: getString(R.string.no_detail_info),
                     address = calendarUserEntity.model?.address
