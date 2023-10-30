@@ -21,7 +21,6 @@ class FestivalViewModel(
 
     // ViewModel의 fetchSearchResult 함수
     fun fetchSearchResult(keyword: String) {
-        _searchUiState.value = SearchKeywordUiState.initialize()
         Log.d("키워드1", "값 = $keyword")
 
         viewModelScope.launch {

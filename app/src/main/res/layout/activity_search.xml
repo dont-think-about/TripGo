@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,10 +8,13 @@
     tools:context=".view.search.SearchActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/search_back"
@@ -35,6 +38,8 @@
         android:id="@+id/search_tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         app:tabIndicatorColor="@color/main"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/black" />
@@ -42,8 +47,9 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/search_viewpager"
         android:layout_width="match_parent"
-        android:layout_gravity="top"
-        android:layout_height="200dp" />
+        android:layout_height="150dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_tabLayout" />
 
     <TextView
         android:id="@+id/search_rank_text"
@@ -52,23 +58,30 @@
         android:padding="16dp"
         android:text="@string/tripRank"
         android:textSize="15sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_viewpager" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_rank_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_rank_text" />
 
-    <TextView
-        android:id="@+id/search_result_text"
+    <LinearLayout
+        android:id="@+id/linearLayoutTmap"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
         android:gravity="center"
-        android:padding="16dp"
-        android:text="임시 구글맵"
+        android:orientation="vertical"
         android:textSize="15sp"
-        android:visibility="gone" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/search_rank_text"
+        app:layout_constraintTop_toBottomOf="@+id/search_viewpager"
+        tools:text="임시 구글맵">
 
+    </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

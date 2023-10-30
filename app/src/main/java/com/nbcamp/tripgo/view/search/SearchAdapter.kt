@@ -20,7 +20,6 @@ class SearchAdapter(private val sContext: Context) :
         items.clear()
         notifyDataSetChanged()
     }
-
     fun additem(list: List<KeywordSearchEntity>) {
         items.addAll(list)
         notifyDataSetChanged()
@@ -44,8 +43,7 @@ class SearchAdapter(private val sContext: Context) :
         holder.bind(item)
     }
 
-    inner class SearchItemViewHolder(binding: ItemSearchBinding) :
-        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+    inner class SearchItemViewHolder(binding: ItemSearchBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         var longitudeEx: TextView = binding.longitude
         var latitudeEx: TextView = binding.latitude
         var titleEx: TextView = binding.title
