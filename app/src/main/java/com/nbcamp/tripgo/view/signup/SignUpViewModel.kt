@@ -31,8 +31,8 @@ class SignUpViewModel : ViewModel() {
         val password = password.value.toString()
         val nickname = nickname.value.toString()
 
-        if (email.trim().isNotEmpty() && password.trim().isNotEmpty() && nickname.trim()
-                .isNotEmpty()
+        if (email.trim().isNotEmpty() && password.trim().isNotEmpty() &&
+            nickname.trim().isNotEmpty()
         ) {
             firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
                 if (it.isSuccessful) {

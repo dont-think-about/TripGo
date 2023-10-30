@@ -164,8 +164,9 @@ class CalendarViewModel(
     ) {
         val dateList = arrayListOf<Triple<Int, Int, Int>>()
         data?.forEach { calendarEntity ->
-            for (today in (calendarEntity.startDate?.toInt()
-                ?.rangeTo(calendarEntity.endDate?.toInt()!!))!!) {
+            val range =
+                (calendarEntity.startDate?.toInt()?.rangeTo(calendarEntity.endDate?.toInt()!!))!!
+            for (today in range) {
                 val (year, date) = today.toString().chunked(4).map { it }
                 val (month, day) = date.chunked(2).map { it.toInt() }
                 dateList.add(

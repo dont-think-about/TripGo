@@ -73,7 +73,6 @@ class MyPageFragment : Fragment() {
         // firestore 정보 가져오기
         val firestoredb = FirebaseFirestore.getInstance()
 
-
         // kakao / google 자체로그인 구분자
         val kakaouser = App.kakaoUser?.email
         if (kakaouser == null) {
@@ -85,12 +84,11 @@ class MyPageFragment : Fragment() {
             Log.d(TAG, "둘다 로그인 불가")
         }
 
-
         dbinpo?.get()
             ?.addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     val userdata = documentSnapshot.data
-                    //정보 확인
+                    // 정보 확인
                     Log.d(TAG, "test2 : $userdata")
                     val email = userdata?.get("email") as? String
                     val nickname = userdata?.get("nickname") as? String

@@ -228,7 +228,7 @@ class HomeViewModel(
     ) = data?.filter {
         it.address.contains(
             """${manyTravelersCountList?.get(0)}|${manyTravelersCountList?.get(1)}|${
-                manyTravelersCountList?.get(2)
+            manyTravelersCountList?.get(2)
             }""".toRegex()
         )
     }

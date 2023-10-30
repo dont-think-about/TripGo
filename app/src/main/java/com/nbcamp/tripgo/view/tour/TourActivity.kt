@@ -158,7 +158,6 @@ class TourActivity : AppCompatActivity() {
             val currentDate = Calendar.getInstance()
             val startDate = "${currentDate.get(Calendar.YEAR)}" +
                     "${String.format("%02d", currentDate.get(Calendar.MONTH) + 1)}01"
-
             try {
                 val response = service.getFestivalInThisMonth(
                     startDate = startDate,
@@ -175,7 +174,7 @@ class TourActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 showError(getString(R.string.tour_exception_error))
             } finally {
-                showProgressBar(false) //API 응답 후 로딩 비활성화
+                showProgressBar(false) // API 응답 후 로딩 비활성화
             }
         }
     }
