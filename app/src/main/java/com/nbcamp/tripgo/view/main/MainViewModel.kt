@@ -34,7 +34,7 @@ class MainViewModel : ViewModel() {
     private val _eventRunGallery: SingleLiveEvent<Unit?> = SingleLiveEvent()
     val eventRunGallery: SingleLiveEvent<Unit?> get() = _eventRunGallery
 
-    private val _eventSetUser: MutableLiveData<SetUserEvent> = SingleLiveEvent()
+    private val _eventSetUser: MutableLiveData<SetUserEvent> = MutableLiveData()
     val eventSetUser: LiveData<SetUserEvent>
         get() = _eventSetUser
 

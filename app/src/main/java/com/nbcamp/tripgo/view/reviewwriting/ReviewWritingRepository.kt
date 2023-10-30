@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.reviewwriting
 
+import com.nbcamp.tripgo.data.repository.model.UserModel
 import com.nbcamp.tripgo.view.calendar.WritingType
 
 interface ReviewWritingRepository {
@@ -24,4 +25,6 @@ interface ReviewWritingRepository {
     suspend fun setPastReviewForModifyReview(
         model: CalendarUserModel
     ): ReviewWritingModel?
+
+    suspend fun getUserInfo(): UserModel?
 }

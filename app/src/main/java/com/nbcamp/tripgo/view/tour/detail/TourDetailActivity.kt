@@ -15,8 +15,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import coil.load
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseUser
-import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.BuildConfig
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
@@ -222,10 +220,10 @@ class TourDetailActivity : AppCompatActivity() {
             // 유저 정보 확인
             currentUser = state.user
             // 이메일 인증 확인
-            isEmailVerified = if (state.user is FirebaseUser) {
-                state.user.isEmailVerified
+            isEmailVerified = if (App.firebaseUser != null) {
+                App.firebaseUser!!.isEmailVerified
             } else {
-                (state.user as Account).isEmailVerified ?: false
+                App.kakaoUser!!.isEmailVerified ?: false
             }
         }
 

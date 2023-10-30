@@ -6,8 +6,13 @@ data class ReviewWritingModel(
     val generation: String,
     val companion: String,
     val reviewText: String,
-    var imageUrl: String = "",
-    val rating: Float
+    var reviewImageUrl: String = "",
+    val rating: Float,
+    val userNickName: String,
+    val tourTitle: String,
+    val address: String,
+    val userImageUrl: String,
+    val schedule: String,
 ) {
     fun toMap(): Map<String, Any> {
         return mapOf(
@@ -15,7 +20,7 @@ data class ReviewWritingModel(
             "companion" to companion,
             "gender" to gender,
             "generation" to generation,
-            "imageUrl" to imageUrl,
+            "reviewImageUrl" to reviewImageUrl,
             "rating" to rating,
             "reviewText" to reviewText
         )
