@@ -41,9 +41,25 @@ class CalendarViewModel(
     val runDialogState: SingleLiveEvent<RunDialogUiState?>
         get() = _runDialogState
 
+    private val _deleteScheduleUiState: MutableLiveData<CalendarScheduleUiState> = MutableLiveData()
+    val deleteScheduleUiState: MutableLiveData<CalendarScheduleUiState>
+        get() = _deleteScheduleUiState
+
+    // 일정 수정 시 캘린더 클릭 이벤트를 처리할 라이브 데이터
+    private val _calendarClickModifyEvent: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val calendarClickModifyEvent: SingleLiveEvent<Boolean>
+        get() = _calendarClickModifyEvent
+
+    // 일정 수정 시 수정 이벤트를 처리할 라이브 데이터
+    private val _buttonClickModifyState: MutableLiveData<CalendarScheduleUiState> =
+        MutableLiveData()
+    val buttonClickModifyState: MutableLiveData<CalendarScheduleUiState>
+        get() = _buttonClickModifyState
+
+
     // 원본으로 하기 힘든 위치에 추가적인 날짜 필터링을 위해 캐싱 데이터를 생성
     private var cachingSchedule: List<CalendarEntity>? = null
-
+    private val scheduleDates = arrayListOf<CalendarDay>()
     fun getLoginStatus() {
         val currentUser = calendarRepository.getCurrentUser()
         when (currentUser) {
@@ -180,6 +196,26 @@ class CalendarViewModel(
         _changedMonthState.value = filteredSchedule?.sortedBy { it.startDate?.toInt() }
     }
 
+    // 수정 날짜를 제한하기 위한 함수
+    fun selectScheduleRange(dates: List<CalendarDay>, selectedDayList: List<CalendarDay>) {
+        if (dates.last().isBefore(CalendarDay.today())) {
+            // 선택한 범위가 오늘 보다 전이면, 선택을 못 하도록 막음
+            scheduleDates.clear()
+            _calendarClickModifyEvent.value = false
+            return
+        }
+        if (dates.intersect(selectedDayList.toSet()).isNotEmpty()) {
+            // 겹치는 부분이 있으면 이전 저장 되어 있던 것 제거
+            // 제거 안하면 확인 클릭 했을 때 isEmpty 를 통과 하여 이상 현상 발생
+            scheduleDates.clear()
+            _calendarClickModifyEvent.value = true
+            return
+        }
+
+        scheduleDates.clear()
+        scheduleDates.addAll(dates)
+    }
+
     fun runDialogForReviewWriting(
         clickDate: CalendarDay?,
         selectedDayList: ArrayList<CalendarDay>?
@@ -215,5 +251,100 @@ class CalendarViewModel(
         }
         // 유효하지 않으면 리뷰를 작성 못하게 함
         _runDialogState.call()
+    }
+
+
+    // documentId 값을 통해 리뷰 삭제
+    fun deleteMySchedule(model: CalendarEntity) {
+        _deleteScheduleUiState.value = CalendarScheduleUiState.initialize()
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                if (model.id == null) {
+                    return@launch
+                }
+                val myAllSchedules = calendarRepository.deleteSchedule(model.id)
+                val monthSchedules = myAllSchedules.filter {
+                    it.startDate?.slice(4..5)?.toInt() == Calendar.getInstance()
+                        .get(Calendar.MONTH) + 1
+                }.sortedBy { it.startDate?.toInt() }.toMutableList()
+                cachingSchedule = myAllSchedules
+                if (myAllSchedules.isEmpty()) {
+                    _deleteScheduleUiState.postValue(
+                        CalendarScheduleUiState.error(
+                            "일정을 추가하고 관리해보세요!",
+                        )
+                    )
+                    return@launch
+                }
+                _deleteScheduleUiState.postValue(
+                    CalendarScheduleUiState(
+                        myAllSchedules,
+                        monthSchedules,
+                        "",
+                        false
+                    )
+                )
+
+            }.onFailure {
+                _deleteScheduleUiState.postValue(CalendarScheduleUiState.error("삭제에 실패하였습니다."))
+            }
+        }
+    }
+
+    fun modifySchedule(entity: CalendarEntity?) {
+        if (entity == null) {
+            return
+        }
+        if (scheduleDates.isEmpty()) {
+            _buttonClickModifyState.value = CalendarScheduleUiState.error("일정이 지정 되지 않았습니다.")
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                val (startDate, endDate) = convertDate(scheduleDates)
+                val myAllSchedules = calendarRepository.modifySchedule(entity, startDate, endDate)
+                val monthSchedules = myAllSchedules.filter {
+                    it.startDate?.slice(4..5)?.toInt() == Calendar.getInstance()
+                        .get(Calendar.MONTH) + 1
+                }.sortedBy { it.startDate?.toInt() }.toMutableList()
+                if (myAllSchedules.isEmpty()) {
+                    _buttonClickModifyState.postValue(
+                        CalendarScheduleUiState.error(
+                            "일정을 추가하고 관리해보세요!",
+                        )
+                    )
+                    return@launch
+                }
+                _buttonClickModifyState.postValue(
+                    CalendarScheduleUiState(
+                        myAllSchedules,
+                        monthSchedules,
+                        "",
+                        false
+                    )
+                )
+                // 줬으니까 다이얼로그닫고 캘린더프래그먼트업데이트하면 끗
+            }.onFailure {
+                _buttonClickModifyState.postValue(CalendarScheduleUiState.error("수정에 실패하였습니다."))
+            }
+        }
+    }
+
+    private fun convertDate(scheduleDates: ArrayList<CalendarDay>): Pair<String, String> {
+        val startDate = scheduleDates.first()
+        val endDate = scheduleDates.last()
+        val (startYear, startMonth, startDay) = listOf(
+            startDate.year,
+            startDate.month,
+            startDate.day
+        )
+        val (endYear, endMonth, endDay) = listOf(endDate.year, endDate.month, endDate.day)
+        val startMonthWithZero = if (startMonth < 10) "0${startMonth}" else "$startMonth"
+        val endMonthWithZero = if (endMonth < 10) "0${endMonth}" else "$endMonth"
+        val startDayWithZero = if (startDay < 10) "0${startDay}" else "$startDay"
+        val endDayWithZero = if (endDay < 10) "0${endDay}" else "$endDay"
+
+        return "$startYear$startMonthWithZero$startDayWithZero" to "$endYear$endMonthWithZero$endDayWithZero"
+
     }
 }

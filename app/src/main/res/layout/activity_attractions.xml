@@ -40,13 +40,13 @@
         app:layout_constraintTop_toTopOf="@+id/date" />
 
     <TextView
-        android:id="@+id/popularity"
+        android:id="@+id/distance"
         style="@style/Font.14.Normal.Black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:padding="5dp"
-        android:text="@string/by_popularity"
+        android:text="@string/by_distance"
         app:layout_constraintBottom_toBottomOf="@+id/date"
         app:layout_constraintEnd_toStartOf="@+id/wall"
         app:layout_constraintTop_toTopOf="@+id/date" />
@@ -65,12 +65,25 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/attraction_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date"
         tools:listitem="@layout/attraction_recyclerview_item" />
+
+    <ProgressBar
+        android:id="@+id/attraction_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

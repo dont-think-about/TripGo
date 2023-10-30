@@ -92,7 +92,7 @@
     <string name="nick_name">닉네임</string>
     <string name="nick_name_error">이미 존재하는 닉네임 입니다.</string>
     <string name="password">비밀번호</string>
-    <string name="password_error">영문, 숫자를 포함하여 8자 이상이어야 합니다.</string>
+    <string name="password_error">영문, 숫자, 특수 문자를 포함하여 8~20글자 이어야 합니다.</string>
     <string name="correct_password">비밀번호 확인</string>
     <string name="correct_password_error">비밀번호가 일치하지 않습니다.</string>
     <string name="full_agreement">전체 동의</string>
@@ -152,5 +152,27 @@
     <string name="like_place">좋아요 </string>
     <string name="not_register_schedule_before_today">오늘 이전 날짜에는 일정을 등록할 수 없습니다.</string>
     <string name="not_writing_review">일정이 없거나 지나지 않은 일정은 리뷰를 적을 수 없습니다.</string>
-
+    <string name="email_duplication">이메일 중복되었습니다. 다시 작성해주세요.</string>
+    <string name="loading_route">경로 로딩 중..</string>
+    <string name="add_schedule">일정 추가</string>
+    <string name="not_login_then_not_submit_like">로그인이 되어 있지 않아 찜 목록에 추가할 수 없습니다.</string>
+    <string name="login_en">LOGIN</string>
+    <string name="tour_error">행사 정보를 가져 오는데 실패 했습니다.</string>
+    <string name="tour_exception_error">행사 정보를 가져 오는 도중 오류가 발생 했습니다.</string>
+    <string name="tourist_attractions">%1$s 관광 명소</string>
+    <string name="tour_location_error">위치 정보를 불러올 수 없습니다.</string>
+    <string name="permission_denide_location">권한 거부됨. 위치를 가져올 수 없습니다.</string>
+    <string name="distance_from_my_location">내 위치로 부터 %1$d km</string>
+    <string name="cancel">취소</string>
+    <string name="modify">수정</string>
+    <string name="modify_schedule">스케줄 수정</string>
+    <string name="now_doing_schedule_cant_modify">현재 진행 중인 일정은 수정할 수 없습니다.</string>
+    <string name="past_schedule_not_modify">이미 지난 일정은 수정할 수 없습니다.</string>
+    <string name="sharing_place">공유하기</string>
+    <string name="getting_my_schedule">일정 가져 오는 중…</string>
+    <string name="move_to_log_in">로그인 페이지로 이동</string>
+    <string name="cannot_delete_review_writted">리뷰를 작성하신 일정은 삭제하실 수 없습니다.</string>
+    <string name="delete_schedule">일정 삭제</string>
+    <string name="confirm_delete_schedule">일정을 삭제하시겠나요?</string>
+    <string name="not_email_verified_then_cant_add_schedule">이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.</string>
 </resources>

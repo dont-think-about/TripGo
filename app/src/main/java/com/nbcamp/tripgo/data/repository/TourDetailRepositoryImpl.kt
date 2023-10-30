@@ -1,7 +1,5 @@
 package com.nbcamp.tripgo.data.repository
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
@@ -105,27 +103,6 @@ class TourDetailRepositoryImpl(
         return ratingList
     }
 
-    override suspend fun getRouteImage(
-        startLatitude: Double,
-        startLongitude: Double,
-        endLatitude: Double,
-        endLongitude: Double
-    ): Bitmap? {
-        val response = tMapApiService.getRouteImage(
-            startLatitude = startLatitude,
-            startLongitude = startLongitude,
-            endLatitude = endLatitude,
-            endLongitude = endLongitude
-        )
-        if (response.isSuccessful) {
-            response.body()?.let {
-                return BitmapFactory.decodeStream(it.byteStream())
-            }
-        }
-
-        return null
-    }
-
     override suspend fun saveLikePlace(
         detailInfo: DetailCommonEntity,
         contentId: String,
@@ -197,10 +174,10 @@ class TourDetailRepositoryImpl(
     }
 
     private fun getUserInfo() {
-        if (App.kaKaoUser == null) {
+        if (App.kakaoUser == null) {
             userInfo = App.firebaseUser?.email.toString()
         } else if (App.firebaseUser == null) {
-            userInfo = App.kaKaoUser?.email.toString()
+            userInfo = App.kakaoUser?.email.toString()
         }
     }
 

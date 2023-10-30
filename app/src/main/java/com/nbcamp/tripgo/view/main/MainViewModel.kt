@@ -10,6 +10,7 @@ import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
 import com.nbcamp.tripgo.view.calendar.WritingType
+import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.reviewwriting.CalendarUserModel
@@ -47,6 +48,12 @@ class MainViewModel : ViewModel() {
     private val _calendarToReviewModel: MutableLiveData<CalendarUserModel> = MutableLiveData()
     val calendarToReviewModel: LiveData<CalendarUserModel>
         get() = _calendarToReviewModel
+
+    // 일정 수정 시 수정 이벤트를 처리할 라이브 데이터
+    private val _buttonClickModifyState: MutableLiveData<CalendarScheduleUiState> =
+        MutableLiveData()
+    val buttonClickModifyState: MutableLiveData<CalendarScheduleUiState>
+        get() = _buttonClickModifyState
 
     fun runThemeTourActivity(themeId: TourTheme) {
         _event.value = ThemeClickEvent.RunTourThemeActivity(themeId)
@@ -146,5 +153,9 @@ class MainViewModel : ViewModel() {
                 _eventSetUser.postValue(SetUserEvent.Error("회원 정보 로딩 실패.."))
             }
         }
+    }
+
+    fun updateModifiedCalendarUi(state: CalendarScheduleUiState) {
+        _buttonClickModifyState.value = state
     }
 }

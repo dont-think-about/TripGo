@@ -1,6 +1,5 @@
 package com.nbcamp.tripgo.view.tour.detail
 
-import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,13 +11,15 @@ import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
-import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.calendar.CalendarRepository
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarLogInUiState
 import com.nbcamp.tripgo.view.tour.detail.uistate.AddScheduleUiState
 import com.nbcamp.tripgo.view.tour.detail.uistate.CalendarSetScheduleUiState
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.skt.tmap.TMapData
+import com.skt.tmap.TMapPoint
+import com.skt.tmap.overlay.TMapPolyLine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.floor
@@ -76,9 +77,9 @@ class TourDetailViewModel(
         get() = _countAndRating
 
     // 사용자의 위치에서 부터 관광지의 경로를 보여주기 위한 라이브 데이터
-    private val _routeImage: MutableLiveData<Bitmap?> = MutableLiveData()
-    val routeImage: LiveData<Bitmap?>
-        get() = _routeImage
+    private val _routeMap: MutableLiveData<TMapPolyLine?> = MutableLiveData()
+    val routeMap: LiveData<TMapPolyLine?>
+        get() = _routeMap
 
     // 좋아요 버튼을 클릭했을 때 이벤트를 처리하기 위한 라이브 데이터
     private val _likeClickEvent: SingleLiveEvent<String> = SingleLiveEvent()
@@ -102,26 +103,22 @@ class TourDetailViewModel(
                 getAverageRatingThisPlace(contentId)
                 // 이 컨텐츠의 현재 사용자 좋아요 상태 가져오기
                 getLikedStatusThisContent(contentId)
-                _detailUiState.postValue(DetailCommonUiState(response, "로딩 완료", false))
+                _detailUiState.postValue(DetailCommonUiState(response, "정보 로딩 완료\n경로 로딩 시작", false))
             }.onFailure {
                 _detailUiState.postValue(DetailCommonUiState.error("정보를 가져 오는데 실패했습니다."))
             }
         }
     }
 
-    fun getRouteImage(info: DetailCommonEntity) {
-        _routeImage.value = null
+    fun getRouteMap(startPoint: TMapPoint, endPoint: TMapPoint) {
+        _routeMap.value = null
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
-                val response = tourDetailRepository.getRouteImage(
-                    App.latitude,
-                    App.longitude,
-                    info.latitude.toDouble(),
-                    info.longitude.toDouble(),
-                )
-                _routeImage.postValue(response)
+                TMapData().findPathData(startPoint, endPoint) { tMapPolyLine ->
+                    _routeMap.postValue(tMapPolyLine)
+                }
             }.onFailure {
-                _routeImage.postValue(null)
+                _routeMap.postValue(null)
             }
         }
     }
@@ -221,6 +218,12 @@ class TourDetailViewModel(
     }
 
     fun selectScheduleRange(dates: List<CalendarDay>, selectedDayList: List<CalendarDay>) {
+        if (dates.last().isBefore(CalendarDay.today())) {
+            // 선택한 범위가 오늘 보다 전이면, 선택을 못 하도록 막음
+            scheduleDates.clear()
+            _calendarClickEvent.value = false
+            return
+        }
         if (dates.intersect(selectedDayList.toSet()).isNotEmpty()) {
             // 겹치는 부분이 있으면 이전 저장 되어 있던 것 제거
             // 제거 안하면 확인 클릭 했을 때 isEmpty 를 통과 하여 이상 현상 발생
@@ -228,12 +231,7 @@ class TourDetailViewModel(
             _calendarClickEvent.value = true
             return
         }
-        if (dates.last().isBefore(CalendarDay.today())) {
-            // 선택한 범위가 오늘 보다 전이면, 선택을 못 하도록 막음
-            scheduleDates.clear()
-            _calendarClickEvent.value = false
-            return
-        }
+
         scheduleDates.clear()
         scheduleDates.addAll(dates)
     }
@@ -305,12 +303,11 @@ class TourDetailViewModel(
             currentUser == null -> {
                 _loginStatus.value = CalendarLogInUiState(null, false)
             }
-
 //            (currentUser as FirebaseUser).isEmailVerified.not() || (currentUser as Account).isEmailVerified!!.not() -> {
-//                toast("이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.")
-            // 테스트 할 떄는 주석 풀고, 이메일 인증 기능이 완성 되면 주석 처리
-//                tourDetailViewModel.getMySchedules(currentUser)
-//                runCalendarDialog()
+////                toast("이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.")
+//            // 테스트 할 떄는 주석 풀고, 이메일 인증 기능이 완성 되면 주석 처리
+////                tourDetailViewModel.getMySchedules(currentUser)
+////                runCalendarDialog()
 //            }
 
             else -> {

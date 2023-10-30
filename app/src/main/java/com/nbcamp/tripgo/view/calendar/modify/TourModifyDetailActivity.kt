@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.tour.detail
+package com.nbcamp.tripgo.view.calendar.modify
 
 import android.Manifest
 import android.content.Intent
@@ -9,53 +9,44 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import coil.load
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseUser
-import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.BuildConfig
 import com.nbcamp.tripgo.R
-import com.nbcamp.tripgo.data.model.festivals.FestivalItem
-import com.nbcamp.tripgo.data.model.keywords.KeywordItem
+import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.databinding.ActivityTourDetailBinding
-import com.nbcamp.tripgo.databinding.DialogCalendarBinding
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.TMapFrameLayout
-import com.nbcamp.tripgo.util.calendar.CantSetDayDecorator
-import com.nbcamp.tripgo.util.calendar.OutDateMonthDecorator
-import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
-import com.nbcamp.tripgo.util.calendar.SundayDecorator
-import com.nbcamp.tripgo.util.calendar.TodayDecorator
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
-import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.main.MainActivity
+import com.nbcamp.tripgo.view.tour.detail.TextClickEvent
+import com.nbcamp.tripgo.view.tour.detail.TourDetailViewModel
+import com.nbcamp.tripgo.view.tour.detail.TourDetailViewModelFactory
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.skt.tmap.TMapPoint
 import com.skt.tmap.TMapView
 import com.skt.tmap.overlay.TMapMarkerItem
-import java.util.Calendar
 
-class TourDetailActivity : AppCompatActivity() {
-    private var festivalItem: FestivalItem? = null
-    private var keywordItem: KeywordItem? = null
-    private var nearbyContentId: String? = null
+class TourModifyDetailActivity : AppCompatActivity() {
+    private var startDate: CalendarDay? = null
+    private var endDate: CalendarDay? = null
+    private var contentId: String? = null
     private lateinit var binding: ActivityTourDetailBinding
     private lateinit var loadingDialog: LoadingDialog
-    private lateinit var selectedDayList: List<CalendarDay>
-    private lateinit var dialog: AlertDialog
+    private var entity: CalendarEntity? = null
+    private var selectedDayList: List<CalendarDay>? = null
+    private var forModifySchedule: ArrayList<CalendarEntity>? = null
     private lateinit var detailInfo: DetailCommonEntity
     private lateinit var container: TMapFrameLayout
     private lateinit var tMapView: TMapView
-    private var calendarBinding: DialogCalendarBinding? = null
     private var currentUser: Any? = null
-    private var isEmailVerified = false
 
 
     private val tourDetailViewModel: TourDetailViewModel by viewModels {
@@ -78,28 +69,40 @@ class TourDetailActivity : AppCompatActivity() {
 
     private fun initVariables() {
         loadingDialog = LoadingDialog(this)
-        festivalItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent?.getParcelableExtra("festivalItem", FestivalItem::class.java)
+        startDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent?.getParcelableExtra("startDate", CalendarDay::class.java)
         } else {
-            intent?.getParcelableExtra("festivalItem")
+            intent?.getParcelableExtra("startDate")
         }
 
-        keywordItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent?.getParcelableExtra("keywordItem", KeywordItem::class.java)
+        endDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent?.getParcelableExtra("endDate", CalendarDay::class.java)
         } else {
-            intent?.getParcelableExtra("keywordItem")
+            intent?.getParcelableExtra("endDate")
         }
-        nearbyContentId = intent?.getStringExtra("contentId")
-
+        contentId = intent?.getStringExtra("contentId")
+        entity = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent?.getParcelableExtra("model", CalendarEntity::class.java)
+        } else {
+            intent?.getParcelableExtra("model")
+        }
+        selectedDayList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent?.getParcelableArrayListExtra("selectedDayList", CalendarDay::class.java)
+        } else {
+            intent?.getParcelableArrayListExtra("selectedDayList")
+        }
+        forModifySchedule = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent?.getParcelableArrayListExtra("forModifySchedule", CalendarEntity::class.java)
+        } else {
+            intent?.getParcelableArrayListExtra("forModifySchedule")
+        }
     }
 
     private fun initViews() = with(binding) {
-        val contentId = if (festivalItem?.contentid != null) {
-            festivalItem?.contentid
-        } else if (keywordItem?.contentid != null) {
-            keywordItem?.contentid
-        } else {
-            nearbyContentId
+        val contentId = contentId
+        moveToCalendar.run {
+            text = "일정 수정하기"
+            setTextColor(ResourcesCompat.getColor(resources, R.color.black, theme))
         }
         btnBack.setOnClickListener {
             finish()
@@ -127,37 +130,48 @@ class TourDetailActivity : AppCompatActivity() {
         }
         // 일정 추가 캘린더 다이얼로그 실행
         moveToCalendar.setOnClickListener {
-            tourDetailViewModel.setUserOption()
-            if (currentUser != null && isEmailVerified) {
-                // 영상 용 조건문
-//            if (currentUser != null) {
-                tourDetailViewModel.getMySchedules(currentUser!!)
-                runCalendarDialog()
-            } else if (isEmailVerified.not()) {
-                Snackbar.make(
-                    binding.root,
-                    getString(R.string.not_email_verified_then_cant_add_schedule),
-                    2000
-                ).show()
-            } else {
-                Snackbar.make(
-                    binding.root,
-                    getString(R.string.not_login_so_dont_add_schedule),
-                    5000
-                ).setAction(getString(R.string.login_en)) {
-                    startActivity(Intent(this@TourDetailActivity, LogInActivity::class.java))
-                }.show()
+            val bundle = Bundle().apply {
+                putParcelable("model", entity)
+                putParcelableArrayList(
+                    "selectedDayList",
+                    selectedDayList?.let { ArrayList(it) }
+                )
+                putParcelableArrayList(
+                    "forModifySchedule",
+                    forModifySchedule?.let { ArrayList(it) }
+                )
             }
+            ScheduleModifyFragment.newInstance().apply {
+                arguments = bundle
+            }.show(supportFragmentManager, ScheduleModifyFragment.TAG)
+
         }
         // 상단 홈 버튼 클릭 시 메인으로 이동
         btnHome.setOnClickListener {
-            startActivity(Intent(this@TourDetailActivity, MainActivity::class.java).apply {
+            startActivity(Intent(this@TourModifyDetailActivity, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             })
         }
         // 공유 버튼
         btnShare.setOnClickListener {
             sharingPlace()
+        }
+        when {
+            CalendarDay.today().isInRange(startDate, endDate) -> {
+                moveToCalendar.run {
+                    text = getString(R.string.now_doing_schedule_cant_modify)
+                    setTextColor(resources.getColor(R.color.black, theme))
+                    isEnabled = false
+                }
+            }
+
+            endDate?.isBefore(CalendarDay.today()) == true -> {
+                moveToCalendar.run {
+                    text = getString(R.string.past_schedule_not_modify)
+                    setTextColor(resources.getColor(R.color.black, theme))
+                    isEnabled = false
+                }
+            }
         }
 
         // 지도 위에서 스크롤 뷰의 이벤트를 막기 위한 함수
@@ -173,7 +187,7 @@ class TourDetailActivity : AppCompatActivity() {
 
     private fun initViewModel() = with(tourDetailViewModel) {
         getLoginStatus()
-        detailUiState.observe(this@TourDetailActivity) { state ->
+        detailUiState.observe(this@TourModifyDetailActivity) { state ->
             loadingDialog.setText(state.message)
             if (state == DetailCommonUiState.error(state.message)) {
                 loadingDialog.setInvisible()
@@ -191,7 +205,7 @@ class TourDetailActivity : AppCompatActivity() {
             }
         }
 
-        textClickEvent.observe(this@TourDetailActivity) { event ->
+        textClickEvent.observe(this@TourModifyDetailActivity) { event ->
             when (event) {
                 is TextClickEvent.HomePageClickEvent -> {
                     if (event.homePage == getString(R.string.no_detail_info)) {
@@ -212,67 +226,19 @@ class TourDetailActivity : AppCompatActivity() {
             }
         }
 
-        loginStatus.observe(this@TourDetailActivity) { state ->
+        loginStatus.observe(this@TourModifyDetailActivity) { state ->
             // 유저 정보 확인
             currentUser = state.user
-            // 이메일 인증 확인
-            isEmailVerified = if (state.user is FirebaseUser) {
-                state.user.isEmailVerified
-            } else {
-                (state.user as Account).isEmailVerified ?: false
-            }
         }
 
-        schedulesDateState.observe(this@TourDetailActivity) { dateList ->
-            selectedDayList = dateList
-            calendarBinding?.addScheduleCalendarView?.addDecorator(
-                CantSetDayDecorator(this@TourDetailActivity, dateList)
-            )
-        }
-
-        myScheduleState.observe(this@TourDetailActivity) { state ->
-            state.message?.let { toast(it) }
-            calendarBinding?.calendarProgressBar?.isVisible = state.isLoading
-        }
-
-        calendarClickEvent.observe(this@TourDetailActivity) {
-            when (it) {
-                true -> toast(getString(R.string.cant_select_duplicate_schedule))
-                false -> toast(getString(R.string.not_register_schedule_before_today))
-            }
-            calendarBinding?.addScheduleCalendarView?.clearSelection()
-        }
-
-        calendarSubmitClickEvent.observe(this@TourDetailActivity) {
-            if (!it) {
-                toast(getString(R.string.please_select_schedule))
-                return@observe
-            }
-            dialog.dismiss()
-            calendarBinding = null
-        }
-
-        // 일정 저장 중 상태에 따른 Ui 업데이트
-        addScheduleState.observe(this@TourDetailActivity) { state ->
-            if (state.isLoading) {
-                loadingDialog.run {
-                    setVisible()
-                    setText(state.message)
-                }
-            } else {
-                toast(getString(R.string.done_save_schedule))
-                loadingDialog.setInvisible()
-            }
-        }
-
-        countAndRatting.observe(this@TourDetailActivity) { numSet ->
+        countAndRatting.observe(this@TourModifyDetailActivity) { numSet ->
             "${if (numSet.second.isNaN()) 0.0 else numSet.second}점".also {
                 binding.evaluation.text = it
             }
             "${numSet.first}개의 리뷰".also { binding.tourReview.text = it }
         }
 
-        routeMap.observe(this@TourDetailActivity) { polyLine ->
+        routeMap.observe(this@TourModifyDetailActivity) { polyLine ->
             with(binding) {
                 when (polyLine) {
                     null -> {
@@ -296,11 +262,11 @@ class TourDetailActivity : AppCompatActivity() {
             }
         }
 
-        likeClickEvent.observe(this@TourDetailActivity) {
+        likeClickEvent.observe(this@TourModifyDetailActivity) {
             Snackbar.make(binding.root, getString(R.string.like_place) + it, 2000).show()
         }
 
-        likeStatus.observe(this@TourDetailActivity) {
+        likeStatus.observe(this@TourModifyDetailActivity) {
             with(binding) {
                 btnHeart.run {
                     isEnabled = false
@@ -410,69 +376,13 @@ class TourDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun runCalendarDialog() {
-        calendarBinding = DialogCalendarBinding.inflate(layoutInflater)
-        setCalendarOption()
-        dialog = AlertDialog.Builder(this)
-            .setTitle(getString(R.string.add_schedule))
-            .setView(calendarBinding?.root)
-            .setPositiveButton(getString(R.string.save)) { _, _ -> }
-            .setNegativeButton(getString(R.string.disagree_permission)) { _, _ ->
-                calendarBinding = null
-            }
-            .create()
-        dialog.run {
-            show()
-            getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                tourDetailViewModel.saveMySchedule(
-                    festivalItem,
-                    keywordItem,
-                    detailInfo
-                )
-            }
-        }
-    }
-
-    private fun setCalendarOption() = with(calendarBinding!!) {
-        addScheduleCalendarView.run {
-            val month = Calendar.getInstance().get(Calendar.MONTH)
-            removeDecorators()
-            invalidateDecorators()
-            addDecorators(
-                SaturdayDecorator(month, 1),
-                SundayDecorator(month, 1),
-                OutDateMonthDecorator(this@TourDetailActivity, month + 1),
-                TodayDecorator(this@TourDetailActivity)
-            )
-            setOnMonthChangedListener { _, date ->
-                removeDecorators()
-                invalidateDecorators()
-                addDecorators(
-                    SaturdayDecorator(date.month, 0),
-                    SundayDecorator(date.month, 0),
-                    TodayDecorator(this@TourDetailActivity),
-                    OutDateMonthDecorator(this@TourDetailActivity, date.month),
-                    CantSetDayDecorator(this@TourDetailActivity, selectedDayList)
-                )
-            }
-            setOnRangeSelectedListener { _, dates ->
-                tourDetailViewModel.selectScheduleRange(dates, selectedDayList)
-            }
-            setOnDateChangedListener { _, date, _ ->
-                // 사용자는 하루만 선택을 할 수도 있으므로 단일 처리도 해야함
-                val dates = listOf(date, date)
-                tourDetailViewModel.selectScheduleRange(dates, selectedDayList)
-            }
-        }
-    }
-
     private fun sharingPlace() {
         val placeInfo = "${detailInfo.title}\n${detailInfo.telPhoneNumber}\n${detailInfo.homePage}"
         val intent = Intent(Intent.ACTION_SEND).apply {
             putExtra(Intent.EXTRA_TEXT, placeInfo)
             type = "text/plain"
         }
-        val sharingIntent = Intent.createChooser(intent, "공유하기")
+        val sharingIntent = Intent.createChooser(intent, getString(R.string.sharing_place))
         startActivity(sharingIntent)
     }
 }

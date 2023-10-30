@@ -22,7 +22,8 @@ import com.nbcamp.tripgo.view.tour.adapter.TourSearchAdapter
 import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 import kotlinx.coroutines.launch
 import android.Manifest
-
+import com.nbcamp.tripgo.R
+import java.util.Calendar
 
 class TourActivity : AppCompatActivity() {
 
@@ -35,16 +36,14 @@ class TourActivity : AppCompatActivity() {
     private val tourSearchAdapter: TourSearchAdapter by lazy {
         TourSearchAdapter { tourItem -> gotoDetailActivity(null, tourItem) }
     }
-    //tourSearchAdapter 연결
 
     private val tourAdapter: TourAdapter by lazy {
         TourAdapter { festivalItem -> gotoDetailActivity(festivalItem, null) }
     }
-    //tourAdapter 연결
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     private val LOCATION_PERMISSION_REQUEST_CODE = 1234
-    //내 위치
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,35 +51,30 @@ class TourActivity : AppCompatActivity() {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-
-
         binding.distance.setOnClickListener {
-
             tourSearchAdapter.tourDistance(binding.tourRecyclerview)
             tourAdapter.popularDistance(binding.tourRecyclerview)
-
-        } // 거리순 클릭시
+            updateButtonColors(isDistanceSelected = true)
+        }
 
         binding.date.setOnClickListener {
             tourSearchAdapter.tourDate(binding.tourRecyclerview)
             tourAdapter.popularDate(binding.tourRecyclerview)
-        } // 날짜순 클릭시
+            updateButtonColors(isDistanceSelected = false)
+        }
 
         binding.tourBackButton.setOnClickListener {
             finish()
-        } // 뒤로 가기 버튼
-
+        }
 
         binding.tourRecyclerview.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-            // 각 항목마다 줄 그어줌
+
         }
 
-
         tourTheme = intent.getIntExtra("theme", -100)
-
 
         initView()
 
@@ -93,24 +87,29 @@ class TourActivity : AppCompatActivity() {
         when (tourTheme) {
             TourTheme.FAMILY.themeId -> {
 
+                binding.tourOfTheMonth.text = "가족 여행"
                 retrofitThemeSearch("가족")
 
             }
 
             TourTheme.HEALING.themeId -> {
 
+                binding.tourOfTheMonth.text = "힐링"
                 retrofitThemeSearch("힐링")
 
 
             }
 
             TourTheme.CAMPING.themeId -> {
+
+                binding.tourOfTheMonth.text = "캠핑"
                 retrofitThemeSearch("캠핑")
 
             }
 
             TourTheme.TASTY.themeId -> {
 
+                binding.tourOfTheMonth.text = "맛집"
                 retrofitThemeSearch("맛")
 
 
@@ -118,7 +117,8 @@ class TourActivity : AppCompatActivity() {
 
             TourTheme.POPULAR.themeId -> {
 
-                retrofitWork()
+                binding.tourOfTheMonth.text = "이달의 축제"
+                retrofitFestival()
 
             }
 
@@ -126,11 +126,11 @@ class TourActivity : AppCompatActivity() {
             TourTheme.SEARCH.themeId -> Unit
         }
 
-    } // 해당 뷰 마다 데이터를 보여줌
+    }
 
     private fun retrofitThemeSearch(keyword: String) {
         binding.tourRecyclerview.adapter = tourSearchAdapter
-        showProgressBar(true) // API 호출 전에 로딩 활성화
+        showProgressBar(true)
         lifecycleScope.launch {
             val service = RetrofitModule.createTourApiService()
 
@@ -147,29 +147,44 @@ class TourActivity : AppCompatActivity() {
                         tourSearchAdapter.submitList(festivals.toMutableList())
                     }
                 } else {
-                    showError("행사 정보를 가져오는데 실패했습니다.")
+                    showError(getString(R.string.tour_error))
                 }
             } catch (e: Exception) {
-                showError("행사 정보를 가져오는 도중 오류가 발생했습니다: ${e.localizedMessage}")
-                println(e.localizedMessage)
+                showError(getString(R.string.tour_exception_error))
+
             } finally {
-                showProgressBar(false) //API 응답후 로딩 비활성화
+                showProgressBar(false)
             }
 
         }
     }
-    // Retrofit 연결 해서 검색 단어 마다 data 를 가져 와주는 함수
 
+    private fun updateButtonColors(isDistanceSelected: Boolean) {
+        if (isDistanceSelected) {
+            binding.distance.setTextColor(ContextCompat.getColor(this, R.color.black))
+            binding.date.setTextColor(ContextCompat.getColor(this, R.color.gray))
+        } else {
+            binding.distance.setTextColor(ContextCompat.getColor(this, R.color.gray))
+            binding.date.setTextColor(ContextCompat.getColor(this, R.color.black))
+        }
+    }
 
-    private fun retrofitWork() {
+    private fun retrofitFestival() {
         binding.tourRecyclerview.adapter = tourAdapter
         showProgressBar(true)
         lifecycleScope.launch {
             val service = RetrofitModule.createTourApiService()
+            val currentDate = Calendar.getInstance()
+            val startDate = "${currentDate.get(Calendar.YEAR)}${
+                String.format(
+                    "%02d",
+                    currentDate.get(Calendar.MONTH) + 1
+                )
+            }01"
 
             try {
                 val response = service.getFestivalInThisMonth(
-                    startDate = "20231001",
+                    startDate = startDate,
                     responseCount = 100
                 )
                 if (response.isSuccessful && response.body() != null) {
@@ -178,21 +193,21 @@ class TourActivity : AppCompatActivity() {
                         tourAdapter.submitList(festivals)
                     }
                 } else {
-                    showError("행사 정보를 가져 오는데 실패 했습니다.")
+                    showError(getString(R.string.tour_error))
                 }
             } catch (e: Exception) {
-                showError("행사 정보를 가져 오는 도중 오류가 발생 했습니다: ${e.localizedMessage}")
-                println(e.localizedMessage)
+                showError(getString(R.string.tour_exception_error))
+
             } finally {
                 showProgressBar(false) //API 응답 후 로딩 비활성화
             }
 
         }
-    } // retrofit 연결 해서 인기 여행지 알려 주는 함수
+    }
 
     private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }  // 에러 토스트 메세지 함수
+    }
 
     private fun gotoDetailActivity(festivalItem: FestivalItem?, keywordItem: KeywordItem?) {
         val myIntent = Intent(this, TourDetailActivity::class.java)
@@ -201,14 +216,12 @@ class TourActivity : AppCompatActivity() {
                 putExtra("keywordItem", keywordItem)
             }
         startActivity(myIntent)
-    }
-    // Detail Activity로 넘어 가는 함수
+    }  // Detail Activity로 넘어 가는 함수
 
     private fun showProgressBar(show: Boolean) {
         binding.tourProgressBar.visibility = if (show) View.VISIBLE else View.GONE
         binding.tourRecyclerview.visibility = if (show) View.GONE else View.VISIBLE
-    }  // ProgressBar 함수
-
+    }
 
     private fun getMyLocation() {
         if (ContextCompat.checkSelfPermission(
@@ -221,13 +234,14 @@ class TourActivity : AppCompatActivity() {
                     val userLat = location.latitude
                     val userLon = location.longitude
                     tourSearchAdapter.setUserLocation(userLat, userLon)
+                    tourAdapter.setUserLocation(userLat, userLon)
+
                 } else {
-                    showError("Cannot fetch location.")
+                    showError(getString(R.string.tour_location_error))
                 }
             }
         }
-    } //위치
-
+    }  // 사용자 현재 위치를 가져 오는 함수
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -237,10 +251,9 @@ class TourActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission was granted, now you can get the user's location
                 getMyLocation()
             } else {
-                showError("Permission denied. Cannot fetch location.")
+                showError(getString(R.string.permission_denide_location))
             }
         }
     }

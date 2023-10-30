@@ -75,7 +75,7 @@ class HomeFragment : Fragment() {
         }
     }
     private var nearbyPageNumber = 1
-    private lateinit var locationForScrollListener: Location
+    private var locationForScrollListener: Location? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -137,14 +137,14 @@ class HomeFragment : Fragment() {
     private fun initViewModel() = with(homeViewModel) {
         // viewpager 데이터 가져오기
         homeViewModel.run {
-            /*
-              fetchViewPagerData()
-              autoSlideViewPager()
-              getPlaceByTodayWeather()
-              */
-//            getProvincePlace()
+
+            fetchViewPagerData()
+            autoSlideViewPager()
+            getPlaceByTodayWeather()
+
+            getProvincePlace()
         }
-//        checkLocationPermissions()
+        checkLocationPermissions()
 
         festivalUiState.observe(viewLifecycleOwner) { state ->
             with(binding) {
