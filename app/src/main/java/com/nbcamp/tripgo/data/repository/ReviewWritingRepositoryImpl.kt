@@ -77,7 +77,7 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
 
             when (writingType) {
                 WritingType.NEW -> {
-                    if(userInfoForReview != null) {
+                    if (userInfoForReview != null) {
                         transaction.set(
                             reviewReference,
                             reviewedModel
