@@ -67,15 +67,32 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
     ) {
         // 데이터 무결성을 위해 트랜잭션 사용
         fireStore.runTransaction { transaction ->
+            val userReference =
+                fireStore.collection("users").document(userInfo)
             val reviewReference =
                 fireStore.collection("reviews").document(userInfo).collection("review")
                     .document(documentId)
+            // 리뷰 새로 작성 시 등급제를 위해 user info 가져 오기
+            val userInfoForReview = transaction.get(userReference).toObject<UserModel>()
+
             when (writingType) {
                 WritingType.NEW -> {
-                    transaction.set(
-                        reviewReference,
-                        reviewedModel
-                    )
+                    if(userInfoForReview != null) {
+                        transaction.set(
+                            reviewReference,
+                            reviewedModel
+                        )
+
+                        transaction.set(
+                            userReference,
+                            userInfoForReview.copy(
+                                reviewCount = ++userInfoForReview.reviewCount
+                            ),
+                            SetOptions.merge()
+                        )
+                    } else {
+                        return@runTransaction
+                    }
                 }
 
                 WritingType.MODIFY -> {
