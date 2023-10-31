@@ -17,9 +17,6 @@ import com.nbcamp.tripgo.view.tour.detail.uistate.AddScheduleUiState
 import com.nbcamp.tripgo.view.tour.detail.uistate.CalendarSetScheduleUiState
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.skt.tmap.TMapData
-import com.skt.tmap.TMapPoint
-import com.skt.tmap.overlay.TMapPolyLine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.floor
@@ -76,11 +73,6 @@ class TourDetailViewModel(
     val countAndRatting: LiveData<Pair<Int, Double>>
         get() = _countAndRating
 
-    // 사용자의 위치에서 부터 관광지의 경로를 보여주기 위한 라이브 데이터
-    private val _routeMap: MutableLiveData<TMapPolyLine?> = MutableLiveData()
-    val routeMap: LiveData<TMapPolyLine?>
-        get() = _routeMap
-
     // 좋아요 버튼을 클릭했을 때 이벤트를 처리하기 위한 라이브 데이터
     private val _likeClickEvent: SingleLiveEvent<String> = SingleLiveEvent()
     val likeClickEvent: SingleLiveEvent<String>
@@ -106,19 +98,6 @@ class TourDetailViewModel(
                 _detailUiState.postValue(DetailCommonUiState(response, "정보 로딩 완료\n경로 로딩 시작", false))
             }.onFailure {
                 _detailUiState.postValue(DetailCommonUiState.error("정보를 가져 오는데 실패했습니다."))
-            }
-        }
-    }
-
-    fun getRouteMap(startPoint: TMapPoint, endPoint: TMapPoint) {
-        _routeMap.value = null
-        viewModelScope.launch(Dispatchers.IO) {
-            runCatching {
-                TMapData().findPathData(startPoint, endPoint) { tMapPolyLine ->
-                    _routeMap.postValue(tMapPolyLine)
-                }
-            }.onFailure {
-                _routeMap.postValue(null)
             }
         }
     }

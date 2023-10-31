@@ -3,11 +3,11 @@ package com.nbcamp.tripgo.view.calendar.modify
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -15,13 +15,22 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import coil.load
 import com.google.android.material.snackbar.Snackbar
-import com.nbcamp.tripgo.BuildConfig
+import com.kakao.vectormap.KakaoMap
+import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
+import com.kakao.vectormap.MapLifeCycleCallback
+import com.kakao.vectormap.MapView
+import com.kakao.vectormap.camera.CameraAnimation
+import com.kakao.vectormap.camera.CameraUpdateFactory
+import com.kakao.vectormap.label.LabelOptions
+import com.kakao.vectormap.label.LabelStyle
+import com.kakao.vectormap.label.LabelStyles
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.databinding.ActivityTourDetailBinding
 import com.nbcamp.tripgo.util.LoadingDialog
-import com.nbcamp.tripgo.util.TMapFrameLayout
+import com.nbcamp.tripgo.util.KaKaoMapFrameLayout
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.main.MainActivity
@@ -30,9 +39,6 @@ import com.nbcamp.tripgo.view.tour.detail.TourDetailViewModel
 import com.nbcamp.tripgo.view.tour.detail.TourDetailViewModelFactory
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.skt.tmap.TMapPoint
-import com.skt.tmap.TMapView
-import com.skt.tmap.overlay.TMapMarkerItem
 
 class TourModifyDetailActivity : AppCompatActivity() {
     private var startDate: CalendarDay? = null
@@ -44,8 +50,7 @@ class TourModifyDetailActivity : AppCompatActivity() {
     private var selectedDayList: List<CalendarDay>? = null
     private var forModifySchedule: ArrayList<CalendarEntity>? = null
     private lateinit var detailInfo: DetailCommonEntity
-    private lateinit var container: TMapFrameLayout
-    private lateinit var tMapView: TMapView
+    private lateinit var container: KaKaoMapFrameLayout
     private var currentUser: Any? = null
 
     private val tourDetailViewModel: TourDetailViewModel by viewModels {
@@ -159,6 +164,19 @@ class TourModifyDetailActivity : AppCompatActivity() {
         btnShare.setOnClickListener {
             sharingPlace()
         }
+        // 카카오 맵 자차 실행
+        runKakaoMapCar.setOnClickListener {
+            val url =
+                "kakaomap://route?sp=${App.latitude},${App.longitude}&ep=${detailInfo.latitude},${detailInfo.longitude}8&by=CAR"
+            runKaKaoMap(url)
+        }
+        // 카카오 맵 대중교통 실행
+        runKakaoMapPublic.setOnClickListener {
+            val url =
+                "kakaomap://route?sp=${App.latitude},${App.longitude}&ep=${detailInfo.latitude},${detailInfo.longitude}8&by=PUBLICTRANSIT"
+            runKaKaoMap(url)
+        }
+
         when {
             CalendarDay.today().isInRange(startDate, endDate) -> {
                 moveToCalendar.run {
@@ -204,7 +222,7 @@ class TourModifyDetailActivity : AppCompatActivity() {
             state.detailInfo?.let { info ->
                 bindingInfo(info)
                 detailInfo = info
-                setTMap(info)
+                setKaKaoMap(info)
             }
         }
 
@@ -241,30 +259,6 @@ class TourModifyDetailActivity : AppCompatActivity() {
             "${numSet.first}개의 리뷰".also { binding.tourReview.text = it }
         }
 
-        routeMap.observe(this@TourModifyDetailActivity) { polyLine ->
-            with(binding) {
-                when (polyLine) {
-                    null -> {
-                        "${getString(R.string.find_road)} ${getString(R.string.now_loading)}".also {
-                            noticeRoute.text = it
-                        }
-                    }
-
-                    else -> {
-                        tMapView.run {
-                            addTMapPolyLine(polyLine)
-                            val info = tMapView.getDisplayTMapInfo(polyLine.linePointList)
-                            zoomLevel = info.zoom
-                            setCenterPoint(info.point.latitude, info.point.longitude, true)
-                        }
-                        noticeRoute.text = getString(R.string.find_road)
-                        // 지도까지 로딩 다 되면 다이얼로그 끄기
-                        loadingDialog.setInvisible()
-                    }
-                }
-            }
-        }
-
         likeClickEvent.observe(this@TourModifyDetailActivity) {
             Snackbar.make(binding.root, getString(R.string.like_place) + it, 2000).show()
         }
@@ -281,43 +275,96 @@ class TourModifyDetailActivity : AppCompatActivity() {
     }
 
     private fun doNotFrameScroll() = with(binding) {
-        container.setTouchListener(object : TMapFrameLayout.OnTouchListener {
+        container.setTouchListener(object : KaKaoMapFrameLayout.OnTouchListener {
             override fun onTouch() {
                 nestedScrollView.requestDisallowInterceptTouchEvent(true)
             }
         })
     }
 
-    private fun setTMap(info: DetailCommonEntity) {
-        tMapView = TMapView(this)
-        container.addView(tMapView)
-        tMapView.setSKTMapApiKey(BuildConfig.SK_OPEN_API_KEY)
-        setRouteOnTMap(info)
+    private fun setKaKaoMap(info: DetailCommonEntity) {
+        val mapView = MapView(this)
+        container.addView(mapView)
+        mapView.start(
+            object : MapLifeCycleCallback() {
+                override fun onMapDestroy() {
+                    // 지도 API 가 정상적으로 종료될 때 호출됨
+                }
+
+                override fun onMapError(error: Exception) {
+                    Log.d("오류", "$error")
+                }
+            },
+            object : KakaoMapReadyCallback() {
+                override fun onMapReady(kakaoMap: KakaoMap) {
+                    // 인증 후 API가 정상적으로 실행될 때 호출됨
+                    val position = LatLng.from(
+                        info.latitude.toDouble(),
+                        info.longitude.toDouble()
+                    )
+                    val myPosition = LatLng.from(
+                        App.latitude,
+                        App.longitude
+                    )
+
+                    val cameraUpdate = CameraUpdateFactory.newCenterPosition(position)
+                    kakaoMap.moveCamera(cameraUpdate)
+
+                    val endStyles = kakaoMap.labelManager
+                        ?.addLabelStyles(
+                            LabelStyles.from(
+                                LabelStyle.from(R.drawable.icon_end_marker)
+                            )
+                        )
+                    val startStyles = kakaoMap.labelManager
+                        ?.addLabelStyles(
+                            LabelStyles.from(
+                                LabelStyle.from(R.drawable.icon_start_marker)
+                            )
+                        )
+                    val endOptions = LabelOptions.from(position)
+                        .setStyles(endStyles)
+                    val startOptions = LabelOptions.from(myPosition)
+                        .setStyles(startStyles)
+
+                    val layer = kakaoMap.labelManager!!.layer
+                    layer!!.run {
+                        addLabel(startOptions)
+                        addLabel(endOptions)
+                    }
+
+                    kakaoMap.setOnMapClickListener { _, _, _, _ ->
+                        kakaoMap.moveCamera(
+                            cameraUpdate,
+                            CameraAnimation.from(
+                                500,
+                                true,
+                                true
+                            )
+                        )
+                        CameraUpdateFactory.zoomTo(10)
+                    }
+                }
+            }
+        )
+        loadingDialog.setInvisible()
     }
 
-    private fun setRouteOnTMap(detailInfo: DetailCommonEntity) = with(tMapView) {
-        setOnMapReadyListener {
-            setUserScrollZoomEnable(true)
-            val startMarker = TMapMarkerItem().apply {
-                id = "startMarker"
-                visible = true
-                icon = BitmapFactory.decodeResource(resources, R.drawable.icon_start_marker)
-                setTMapPoint(App.latitude, App.longitude)
-            }
-            val endMarker = TMapMarkerItem().apply {
-                id = "endMarker"
-                visible = true
-                icon = BitmapFactory.decodeResource(resources, R.drawable.icon_end_marker)
-                setTMapPoint(detailInfo.latitude.toDouble(), detailInfo.longitude.toDouble())
-            }
-            addTMapMarkerItem(startMarker)
-            addTMapMarkerItem(endMarker)
-            val startPoint = TMapPoint(App.latitude, App.longitude)
-            val endPoint =
-                TMapPoint(detailInfo.latitude.toDouble(), detailInfo.longitude.toDouble())
-            loadingDialog.setText(getString(R.string.loading_route))
-            // 경로 찾기 시작
-            tourDetailViewModel.getRouteMap(startPoint, endPoint)
+    private fun runKaKaoMap(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+            addCategory(Intent.CATEGORY_BROWSABLE)
+        }
+        // 카카오맵 어플리케이션이 사용자 핸드폰에 깔려있으면 바로 앱으로 연동
+        // 그렇지 않다면 다운로드 페이지로 연결
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        } else {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=net.daum.android.map")
+                )
+            )
         }
     }
 
