@@ -177,4 +177,8 @@
     <string name="not_email_verified_then_cant_add_schedule">이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.</string>
     <string name="own_car">자차 경로</string>
     <string name="public_transport">대중교통 경로</string>
+    <string name="request_location_permission">위치 권한을 요청 합니다.</string>
+    <string name="load_location_information">위치 정보를 불러 옵니다.</string>
+    <string name="cannot_change_location_settings">위치 설정을 변경할 수 없습니다.</string>
+
 </resources>
