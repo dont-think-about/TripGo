@@ -15,7 +15,7 @@
     <string name="home_page">홈페이지</string>
     <string name="move_to_home_page">홈페이지로 이동 - 터치 시 이동</string>
     <string name="rating">평점</string>
-    <string name="find_road">경로 안내</string>
+    <string name="find_road">경로 안내 (카카오 맵으로 이동)</string>
     <string name="move_to_tmap">TMAP으로 이동</string>
     <string name="add_to_calendar">캘린더에 일정 추가하기</string>
     <string name="go_go">고민말GO 여행GO</string>
@@ -175,4 +175,6 @@
     <string name="delete_schedule">일정 삭제</string>
     <string name="confirm_delete_schedule">일정을 삭제하시겠나요?</string>
     <string name="not_email_verified_then_cant_add_schedule">이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.</string>
+    <string name="own_car">자차 경로</string>
+    <string name="public_transport">대중교통 경로</string>
 </resources>

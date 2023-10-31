@@ -122,4 +122,7 @@ dependencies {
 
     // kakao Map
     implementation 'com.kakao.maps.open:android:2.6.0'
+
+    // kakao navigation
+    implementation "com.kakao.sdk:v2-navi:2.17.0"
 }
