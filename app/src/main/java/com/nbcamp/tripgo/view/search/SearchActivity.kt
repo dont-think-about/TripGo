@@ -51,20 +51,20 @@ class SearchActivity : AppCompatActivity() {
             adapter.additem(pullDatalist)
 
             val mapView: MapView = findViewById(R.id.map_view)
-            mapView.start(object : MapLifeCycleCallback() {
-                override fun onMapDestroy() {
-                    // 지도 API 가 정상적으로 종료될 때 호출됨
-                }
-
-                override fun onMapError(error: Exception) {
-                    Log.d("오류", "$error")
-                }
-            }, object : KakaoMapReadyCallback() {
-                override fun onMapReady(kakaoMap: KakaoMap) {
-                    // 인증 후 API가 정상적으로 실행될 때 호출됨
-
+            mapView.start(
+                object : MapLifeCycleCallback() {
+                    override fun onMapDestroy() {
+                        // 지도 API 가 정상적으로 종료될 때 호출됨
                     }
-            }
+                    override fun onMapError(error: Exception) {
+                        Log.d("오류", "$error")
+                    }
+                },
+                object : KakaoMapReadyCallback() {
+                    override fun onMapReady(kakaoMap: KakaoMap) {
+                        // 인증 후 API가 정상적으로 실행될 때 호출됨
+                    }
+                }
             )
         }
     }
