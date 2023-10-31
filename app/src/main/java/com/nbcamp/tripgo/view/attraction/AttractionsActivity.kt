@@ -1,6 +1,9 @@
 package com.nbcamp.tripgo.view.attraction
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -18,13 +21,18 @@ import com.nbcamp.tripgo.data.service.RetrofitModule
 import com.nbcamp.tripgo.databinding.ActivityAttractionsBinding
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import kotlinx.coroutines.launch
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.SettingsClient
 
 class AttractionsActivity : AppCompatActivity() {
     companion object {
         const val MAX_ROWS = 150
+        const val REQUEST_CHECK_SETTINGS = 1001
+        const val LOCATION_PERMISSION_REQUEST_CODE = 1234
     } // numOfRows
-
-    private val LOCATION_PERMISSION_REQUEST_CODE = 1234
 
     private val binding: ActivityAttractionsBinding by lazy {
         ActivityAttractionsBinding.inflate(layoutInflater)
@@ -75,8 +83,67 @@ class AttractionsActivity : AppCompatActivity() {
             updateButtonColors(isDistanceSelected = false)
         }
 
-        retrofitArea()
-        getMyLocation()
+
+        // 위치 권한 체크 후 처리
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // 권한이 승인 되지 않았을 경우, 권한 요청
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+
+            )
+            Toast.makeText(
+                this,
+                getString(R.string.request_location_permission),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            // 이미 권한이 승인된 경우, 위치 정보를 가져 옵니다.
+            getMyLocation()
+            Toast.makeText(this, getString(R.string.load_location_information), Toast.LENGTH_SHORT)
+                .show()
+        }
+        checkLocationSettingAndEnable()
+    }
+
+    private fun checkLocationSettingAndEnable() {
+
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        val settingsClient: SettingsClient = LocationServices.getSettingsClient(this)
+
+        val locationSettingsResponseTask = settingsClient.checkLocationSettings(builder.build())
+
+        locationSettingsResponseTask.addOnSuccessListener {
+
+            getMyLocation() // 위치 서비스가 활성화 된 경우 위치 정보를 가져옴
+        }
+
+        locationSettingsResponseTask.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                try {
+                    exception.startResolutionForResult(this, REQUEST_CHECK_SETTINGS)
+                } catch (sendEx: IntentSender.SendIntentException) {
+
+                    Toast.makeText(
+                        this,
+                        getString(R.string.cannot_change_location_settings),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                }
+            }
+        } // 위치 설정에 문제가 있을 경우 처리
     }
 
     private fun retrofitArea() {
@@ -130,6 +197,7 @@ class AttractionsActivity : AppCompatActivity() {
                     val userLat = location.latitude
                     val userLon = location.longitude
                     attractionsAdapter.setUserLocation(userLat, userLon)
+                    retrofitArea()
                 } else {
                     showError(getString(R.string.tour_location_error))
                 }
@@ -153,11 +221,26 @@ class AttractionsActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getMyLocation()
-            } else {
-                showError(getString(R.string.permission_denide_location))
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    checkLocationSettingAndEnable()
+                } else {
+                    showError(getString(R.string.permission_denide_location))
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CHECK_SETTINGS -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    getMyLocation()
+                } else {
+                    showError(getString(R.string.tour_location_error))
+                }
             }
         }
     }

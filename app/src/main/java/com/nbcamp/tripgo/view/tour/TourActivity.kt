@@ -1,23 +1,31 @@
 package com.nbcamp.tripgo.view.tour
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.SettingsClient
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.service.RetrofitModule
 import com.nbcamp.tripgo.databinding.ActivityTourBinding
+import com.nbcamp.tripgo.view.attraction.AttractionsActivity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.tour.adapter.TourAdapter
 import com.nbcamp.tripgo.view.tour.adapter.TourSearchAdapter
@@ -42,8 +50,6 @@ class TourActivity : AppCompatActivity() {
     }
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
-    private val LOCATION_PERMISSION_REQUEST_CODE = 1234
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,8 +80,71 @@ class TourActivity : AppCompatActivity() {
         }
 
         tourTheme = intent.getIntExtra("theme", -100)
-        initView()
-        getMyLocation()
+
+        // 위치 권한 체크 후 처리
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // 권한이 승인 되지 않았을 경우, 권한 요청
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                AttractionsActivity.LOCATION_PERMISSION_REQUEST_CODE
+            )
+            Toast.makeText(
+                this,
+                getString(R.string.request_location_permission),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            // 이미 권한이 승인된 경우, 위치 정보를 가져 옵니다.
+            getMyLocation()
+            Toast.makeText(this, getString(R.string.load_location_information), Toast.LENGTH_SHORT)
+                .show()
+        }
+        checkLocationSettingAndEnable()
+    }
+
+    private fun checkLocationSettingAndEnable() {
+        // 위치 요청 설정
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+        // 위치 설정 요청 빌더 생성
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        // 위치 설정 client 생성
+        val settingsClient: SettingsClient = LocationServices.getSettingsClient(this)
+
+        // 위치 설정 체크
+        val locationSettingsResponseTask = settingsClient.checkLocationSettings(builder.build())
+
+        locationSettingsResponseTask.addOnSuccessListener {
+
+            getMyLocation() // 위치 서비스가 활성화 된 경우 위치 정보를 가져옴
+        }
+
+        // 위치 설정에 문제가 있을 경우 처리
+        locationSettingsResponseTask.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                try {
+                    exception.startResolutionForResult(
+                        this,
+                        AttractionsActivity.REQUEST_CHECK_SETTINGS
+                    )
+                } catch (sendEx: IntentSender.SendIntentException) {
+
+                    Toast.makeText(
+                        this,
+                        getString(R.string.cannot_change_location_settings),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 
     private fun initView() {
@@ -106,7 +175,10 @@ class TourActivity : AppCompatActivity() {
                 retrofitFestival()
             }
 
-            TourTheme.NEARBY.themeId -> Unit
+            TourTheme.NEARBY.themeId -> {
+                binding.tourOfTheMonth.text = " 주변에 있는 관광지"
+
+            }
             TourTheme.SEARCH.themeId -> Unit
         }
     }
@@ -157,7 +229,7 @@ class TourActivity : AppCompatActivity() {
             val service = RetrofitModule.createTourApiService()
             val currentDate = Calendar.getInstance()
             val startDate = "${currentDate.get(Calendar.YEAR)}" +
-                "${String.format("%02d", currentDate.get(Calendar.MONTH) + 1)}01"
+                    "${String.format("%02d", currentDate.get(Calendar.MONTH) + 1)}01"
             try {
                 val response = service.getFestivalInThisMonth(
                     startDate = startDate,
@@ -209,12 +281,13 @@ class TourActivity : AppCompatActivity() {
                     val userLon = location.longitude
                     tourSearchAdapter.setUserLocation(userLat, userLon)
                     tourAdapter.setUserLocation(userLat, userLon)
+                    initView()  // 사용자 위치를 성공적 으로 얻은 후에 초기 뷰를 설정 합니다.
                 } else {
                     showError(getString(R.string.tour_location_error))
                 }
             }
         }
-    } // 사용자 현재 위치를 가져 오는 함수
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -222,11 +295,26 @@ class TourActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getMyLocation()
-            } else {
-                showError(getString(R.string.permission_denide_location))
+        when (requestCode) {
+            AttractionsActivity.LOCATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    checkLocationSettingAndEnable()
+                } else {
+                    showError(getString(R.string.permission_denide_location))
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            AttractionsActivity.REQUEST_CHECK_SETTINGS -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    getMyLocation()
+                } else {
+                    showError(getString(R.string.tour_location_error))
+                }
             }
         }
     }
