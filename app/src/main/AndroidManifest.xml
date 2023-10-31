@@ -28,7 +28,9 @@
         android:theme="@style/Theme.TripGo"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <meta-data
+            android:name="com.kakao.vectormap.APP_KEY"
+            android:value=""/>
         <activity
             android:name=".view.SplashActivity"
             android:exported="true">

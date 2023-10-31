@@ -69,19 +69,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_rank_text" />
 
-    <LinearLayout
-        android:id="@+id/linearLayoutTmap"
+
+    <com.kakao.vectormap.MapView
+        android:id="@+id/map_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/search_rank_text"
-        app:layout_constraintTop_toBottomOf="@+id/search_viewpager"
-        tools:text="임시 구글맵">
+        app:layout_constraintTop_toBottomOf="@+id/search_viewpager" />
 
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
