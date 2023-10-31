@@ -354,8 +354,8 @@ class TourModifyDetailActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
             addCategory(Intent.CATEGORY_BROWSABLE)
         }
-        //카카오맵 어플리케이션이 사용자 핸드폰에 깔려있으면 바로 앱으로 연동
-        //그렇지 않다면 다운로드 페이지로 연결
+        // 카카오맵 어플리케이션이 사용자 핸드폰에 깔려있으면 바로 앱으로 연동
+        // 그렇지 않다면 다운로드 페이지로 연결
         if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
         } else {

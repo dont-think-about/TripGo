@@ -46,7 +46,6 @@ import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.util.Calendar
 
-
 class TourDetailActivity : AppCompatActivity() {
     private var festivalItem: FestivalItem? = null
     private var keywordItem: KeywordItem? = null
@@ -171,12 +170,14 @@ class TourDetailActivity : AppCompatActivity() {
         }
 
         runKakaoMapCar.setOnClickListener {
-            val url = "kakaomap://route?sp=${App.latitude},${App.longitude}&ep=${detailInfo.latitude},${detailInfo.longitude}8&by=CAR"
+            val url =
+                "kakaomap://route?sp=${App.latitude},${App.longitude}&ep=${detailInfo.latitude},${detailInfo.longitude}8&by=CAR"
             runKaKaoMap(url)
         }
 
         runKakaoMapPublic.setOnClickListener {
-            val url = "kakaomap://route?sp=${App.latitude},${App.longitude}&ep=${detailInfo.latitude},${detailInfo.longitude}8&by=PUBLICTRANSIT"
+            val url =
+                "kakaomap://route?sp=${App.latitude},${App.longitude}&ep=${detailInfo.latitude},${detailInfo.longitude}8&by=PUBLICTRANSIT"
             runKaKaoMap(url)
         }
 
@@ -187,15 +188,20 @@ class TourDetailActivity : AppCompatActivity() {
     }
 
     private fun runKaKaoMap(url: String) {
-        val intent =  Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
             addCategory(Intent.CATEGORY_BROWSABLE)
         }
-        //카카오맵 어플리케이션이 사용자 핸드폰에 깔려있으면 바로 앱으로 연동
-        //그렇지 않다면 다운로드 페이지로 연결
-        if (intent.resolveActivity(packageManager) != null){
+        // 카카오맵 어플리케이션이 사용자 핸드폰에 깔려있으면 바로 앱으로 연동
+        // 그렇지 않다면 다운로드 페이지로 연결
+        if (intent.resolveActivity(packageManager) != null) {
             startActivity(intent)
-        }else{
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=net.daum.android.map")))
+        } else {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=net.daum.android.map")
+                )
+            )
         }
     }
 
