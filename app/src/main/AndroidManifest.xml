@@ -33,7 +33,7 @@
         tools:targetApi="31">
         <meta-data
             android:name="com.kakao.vectormap.APP_KEY"
-            android:value="fb7f0651bbb3318c25d8ce20907d330a"/>
+            android:value="@string/KAKAO_API_KEY"/>
         <activity
             android:name=".view.SplashActivity"
             android:exported="true">

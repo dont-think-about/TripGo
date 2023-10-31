@@ -39,11 +39,6 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="수원화성 관광특구" />
 
-        <!--        <Space-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_weight="1" />-->
-
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btn_home"
             android:layout_width="48dp"
@@ -217,7 +212,7 @@
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/run_kakao_navigation"
+                    android:id="@+id/run_kakao_map_car"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
@@ -227,7 +222,7 @@
                     android:text="@string/own_car" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/run_kakao_map"
+                    android:id="@+id/run_kakao_map_public"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
@@ -237,17 +232,10 @@
                     android:text="@string/public_transport" />
             </LinearLayout>
 
-
-            <com.nbcamp.tripgo.util.TMapFrameLayout
+            <com.nbcamp.tripgo.util.KaKaoMapFrameLayout
                 android:id="@+id/route_map"
                 android:layout_width="match_parent"
                 android:layout_height="500dp" />
-            <!--            <com.kakao.vectormap.MapView-->
-            <!--                android:id="@+id/route_map"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"/>-->
-
-
         </LinearLayout>
 
     </ScrollView>

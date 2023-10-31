@@ -3,7 +3,6 @@ package com.nbcamp.tripgo.view.tour.detail
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,11 +15,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import coil.load
 import com.google.android.material.snackbar.Snackbar
-import com.kakao.sdk.navi.Constants
-import com.kakao.sdk.navi.NaviClient
-import com.kakao.sdk.navi.model.CoordType
-import com.kakao.sdk.navi.model.Location
-import com.kakao.sdk.navi.model.NaviOption
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -38,7 +32,7 @@ import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.databinding.ActivityTourDetailBinding
 import com.nbcamp.tripgo.databinding.DialogCalendarBinding
 import com.nbcamp.tripgo.util.LoadingDialog
-import com.nbcamp.tripgo.util.TMapFrameLayout
+import com.nbcamp.tripgo.util.KaKaoMapFrameLayout
 import com.nbcamp.tripgo.util.calendar.CantSetDayDecorator
 import com.nbcamp.tripgo.util.calendar.OutDateMonthDecorator
 import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
@@ -50,9 +44,6 @@ import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.main.MainActivity
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.skt.tmap.TMapPoint
-import com.skt.tmap.TMapView
-import com.skt.tmap.overlay.TMapMarkerItem
 import java.util.Calendar
 
 
@@ -65,8 +56,7 @@ class TourDetailActivity : AppCompatActivity() {
     private lateinit var selectedDayList: List<CalendarDay>
     private lateinit var dialog: AlertDialog
     private lateinit var detailInfo: DetailCommonEntity
-    private lateinit var container: TMapFrameLayout
-    private lateinit var tMapView: TMapView
+    private lateinit var container: KaKaoMapFrameLayout
     private var calendarBinding: DialogCalendarBinding? = null
     private var currentUser: Any? = null
     private var isEmailVerified: Boolean? = false
@@ -180,32 +170,14 @@ class TourDetailActivity : AppCompatActivity() {
             sharingPlace()
         }
 
-        runKakaoNavigation.setOnClickListener {
-//            // 카카오내비 앱으로 길 안내
-//            if (NaviClient.instance.isKakaoNaviInstalled(this@TourDetailActivity)) {
-//                // 카카오내비 앱으로 길 안내 - WGS84
-//                startActivity(
-//                    NaviClient.instance.shareDestinationIntent(
-//                        Location(detailInfo.title, detailInfo.longitude, detailInfo.latitude),
-//                        NaviOption(coordType = CoordType.WGS84)
-//                    )
-//                )
-//            } else {
-//                // 카카오내비 설치 페이지로 이동
-//                startActivity(
-//                    Intent(
-//                        Intent.ACTION_VIEW,
-//                        Uri.parse(Constants.WEB_NAVI_INSTALL)
-//                    ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//                )
-//            }
+        runKakaoMapCar.setOnClickListener {
             val url = "kakaomap://route?sp=${App.latitude},${App.longitude}&ep=${detailInfo.latitude},${detailInfo.longitude}8&by=CAR"
-            runKakaoMap(url)
+            runKaKaoMap(url)
         }
 
-        runKakaoMap.setOnClickListener {
+        runKakaoMapPublic.setOnClickListener {
             val url = "kakaomap://route?sp=${App.latitude},${App.longitude}&ep=${detailInfo.latitude},${detailInfo.longitude}8&by=PUBLICTRANSIT"
-            runKakaoMap(url)
+            runKaKaoMap(url)
         }
 
         // 지도 위에서 스크롤 뷰의 이벤트를 막기 위한 함수
@@ -214,11 +186,10 @@ class TourDetailActivity : AppCompatActivity() {
         runSearchDetailInformation(contentId)
     }
 
-    private fun runKakaoMap(url: String) {
+    private fun runKaKaoMap(url: String) {
         val intent =  Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
             addCategory(Intent.CATEGORY_BROWSABLE)
         }
-
         //카카오맵 어플리케이션이 사용자 핸드폰에 깔려있으면 바로 앱으로 연동
         //그렇지 않다면 다운로드 페이지로 연결
         if (intent.resolveActivity(packageManager) != null){
@@ -249,7 +220,7 @@ class TourDetailActivity : AppCompatActivity() {
             state.detailInfo?.let { info ->
                 bindingInfo(info)
                 detailInfo = info
-                setTMap(info)
+                setKaKaoMap(info)
             }
         }
 
@@ -336,30 +307,6 @@ class TourDetailActivity : AppCompatActivity() {
             "${numSet.first}개의 리뷰".also { binding.tourReview.text = it }
         }
 
-        routeMap.observe(this@TourDetailActivity) { polyLine ->
-            with(binding) {
-                when (polyLine) {
-                    null -> {
-                        "${getString(R.string.find_road)} ${getString(R.string.now_loading)}".also {
-                            noticeRoute.text = it
-                        }
-                    }
-
-                    else -> {
-                        tMapView.run {
-                            addTMapPolyLine(polyLine)
-                            val info = tMapView.getDisplayTMapInfo(polyLine.linePointList)
-                            zoomLevel = info.zoom
-                            setCenterPoint(info.point.latitude, info.point.longitude, true)
-                        }
-                        noticeRoute.text = getString(R.string.find_road)
-                        // 지도까지 로딩 다 되면 다이얼로그 끄기
-                        loadingDialog.setInvisible()
-                    }
-                }
-            }
-        }
-
         likeClickEvent.observe(this@TourDetailActivity) {
             Snackbar.make(binding.root, getString(R.string.like_place) + it, 2000).show()
         }
@@ -376,14 +323,14 @@ class TourDetailActivity : AppCompatActivity() {
     }
 
     private fun doNotFrameScroll() = with(binding) {
-        container.setTouchListener(object : TMapFrameLayout.OnTouchListener {
+        container.setTouchListener(object : KaKaoMapFrameLayout.OnTouchListener {
             override fun onTouch() {
                 nestedScrollView.requestDisallowInterceptTouchEvent(true)
             }
         })
     }
 
-    private fun setTMap(info: DetailCommonEntity) {
+    private fun setKaKaoMap(info: DetailCommonEntity) {
         val mapView = MapView(this)
         container.addView(mapView)
         mapView.start(
@@ -448,82 +395,7 @@ class TourDetailActivity : AppCompatActivity() {
                 }
             }
         )
-//        binding.routeMap.start(
-//            object : MapLifeCycleCallback() {
-//                override fun onMapDestroy() {
-//                    // 지도 API 가 정상적으로 종료될 때 호출됨
-//                }
-//
-//                override fun onMapError(error: Exception) {
-//                    Log.d("오류", "$error")
-//                }
-//            },
-//            object : KakaoMapReadyCallback() {
-//                override fun onMapReady(kakaoMap: KakaoMap) {
-//                    // 인증 후 API가 정상적으로 실행될 때 호출됨
-//                    val position = LatLng.from(
-//                        info.latitude.toDouble(),
-//                        info.longitude.toDouble()
-//                    )
-//                    val cameraUpdate = CameraUpdateFactory.newCenterPosition(position)
-//                    kakaoMap.moveCamera(cameraUpdate)
-//
-//                    val styles = kakaoMap.labelManager
-//                        ?.addLabelStyles(
-//                            LabelStyles.from(
-//                                LabelStyle.from(R.drawable.icon_end_marker)
-//                            )
-//                        )
-//                    val options = LabelOptions.from(position)
-//                        .setStyles(styles)
-//                    val layer = kakaoMap.labelManager!!.layer
-//                    layer!!.addLabel(options)
-//
-//                    kakaoMap.setOnMapClickListener { _, _, _, _ ->
-//                        kakaoMap.moveCamera(
-//                            cameraUpdate,
-//                            CameraAnimation.from(
-//                                500,
-//                                true,
-//                                true
-//                            )
-//                        )
-//                        CameraUpdateFactory.zoomTo(10)
-//                    }
-//                }
-//            }
-//        )
         loadingDialog.setInvisible()
-//        tMapView = TMapView(this)
-//        container.addView(tMapView)
-//        tMapView.setSKTMapApiKey(BuildConfig.SK_OPEN_API_KEY)
-//        setRouteOnTMap(info)
-    }
-
-    private fun setRouteOnTMap(detailInfo: DetailCommonEntity) = with(tMapView) {
-        setOnMapReadyListener {
-            setUserScrollZoomEnable(true)
-            val startMarker = TMapMarkerItem().apply {
-                id = "startMarker"
-                visible = true
-                icon = BitmapFactory.decodeResource(resources, R.drawable.icon_start_marker)
-                setTMapPoint(App.latitude, App.longitude)
-            }
-            val endMarker = TMapMarkerItem().apply {
-                id = "endMarker"
-                visible = true
-                icon = BitmapFactory.decodeResource(resources, R.drawable.icon_end_marker)
-                setTMapPoint(detailInfo.latitude.toDouble(), detailInfo.longitude.toDouble())
-            }
-            addTMapMarkerItem(startMarker)
-            addTMapMarkerItem(endMarker)
-            val startPoint = TMapPoint(App.latitude, App.longitude)
-            val endPoint =
-                TMapPoint(detailInfo.latitude.toDouble(), detailInfo.longitude.toDouble())
-            loadingDialog.setText(getString(R.string.loading_route))
-            // 경로 찾기 시작
-            tourDetailViewModel.getRouteMap(startPoint, endPoint)
-        }
     }
 
     private fun bindingInfo(info: DetailCommonEntity) = with(binding) {
