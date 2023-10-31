@@ -148,6 +148,7 @@ class LogInActivity : AppCompatActivity() {
                                 "email" to account.email,
                                 "nickname" to account.displayName,
                                 "profileImage" to null,
+                                "reviewCount" to 0
                             )
 
                             fireStore.collection("users").document(account.email.toString())
@@ -206,7 +207,9 @@ class LogInActivity : AppCompatActivity() {
                         if (email != null) {
                             val userDocument = hashMapOf(
                                 "email" to email,
-                                "nickname" to nickname
+                                "nickname" to nickname,
+                                "profileImage" to null,
+                                "reviewCount" to 0
                             )
                             fireStore.collection("users").document(email)
                                 .set(userDocument)
