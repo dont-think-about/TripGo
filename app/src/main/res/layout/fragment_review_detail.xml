@@ -148,6 +148,7 @@
                 android:isIndicator="true"
                 android:progressTint="@color/dark_yellow"
                 tools:rating="3.5" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
