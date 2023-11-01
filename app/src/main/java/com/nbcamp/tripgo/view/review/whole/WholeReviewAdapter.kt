@@ -1,6 +1,7 @@
 package com.nbcamp.tripgo.view.review.whole
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,8 +13,6 @@ import com.google.android.material.chip.Chip
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ItemReviewMainBinding
 import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingModel
-import kotlin.random.Random
-import kotlin.random.nextInt
 
 class WholeReviewAdapter(
     private val context: Context,
@@ -53,11 +52,14 @@ class WholeReviewAdapter(
             itemView.setOnClickListener {
                 onClickItem(model)
             }
+            // 리뷰 리사이클러뷰 아이템 데이터
             reviewItemTitleTextView.text = model.tourTitle
             reviewItemDateTextView.text = model.schedule
             reviewItemRatingBar.rating = model.rating
             reviewItemImageView.load(model.reviewImageUrl)
+            reviewItemShortsDescriptionTextView.text = model.reviewText
 
+            // 리뷰 리사이클러뷰 칩 동적 주입
             val siDo = model.address.split(" ").first()
             reviewItemChipGroup.addView(
                 Chip(
@@ -66,11 +68,25 @@ class WholeReviewAdapter(
                     com.google.android.material.R.style.Widget_MaterialComponents_Chip_Action
                 ).apply {
                     when {
-                        siDo.isEmpty() -> "#${context.getString(R.string.somewhere)}".also { text = it }
+                        siDo.isEmpty() -> "#${context.getString(R.string.somewhere)}".also {
+                            text = it
+                        }
+
                         siDo.length != 4 -> "#${siDo.take(2)}".also { text = it }
                         siDo.length == 4 -> "#${siDo[0]}${siDo[2]}".also { text = it }
                     }
-//                    chipBackgroundColor = ColorStateList.valueOf(getRandomColor())
+                    chipBackgroundColor = ColorStateList.valueOf(
+                        Color.parseColor(
+                            context.getString(
+                                R.string.region_background
+                            )
+                        )
+                    )
+                    setTextColor(
+                        Color.parseColor(
+                            context.getString(R.string.region_text)
+                        )
+                    )
                     chipEndPadding = 8f
                     chipStartPadding = 8f
                 }
@@ -83,19 +99,23 @@ class WholeReviewAdapter(
                         com.google.android.material.R.style.Widget_MaterialComponents_Chip_Action
                     ).apply {
                         "#$tag".also { text = it }
-//                        chipBackgroundColor = ColorStateList.valueOf(getRandomColor())
+                        chipBackgroundColor = ColorStateList.valueOf(
+                            Color.parseColor(
+                                context.getString(
+                                    R.string.other_background
+                                )
+                            )
+                        )
+                        setTextColor(
+                            Color.parseColor(
+                                context.getString(R.string.other_text)
+                            )
+                        )
                         chipEndPadding = 8f
                         chipStartPadding = 8f
                     }
                 )
             }
-        }
-
-        private fun getRandomColor(): Int {
-            val red = Random.nextInt(0..255)
-            val green = Random.nextInt(0..255)
-            val blue = Random.nextInt(0..255)
-            return Color.argb(1f, red.toFloat(), green.toFloat(), blue.toFloat())
         }
     }
 
