@@ -17,6 +17,7 @@ class SignUpViewModel : ViewModel() {
 
     var email: MutableLiveData<String> = MutableLiveData("")
     var password: MutableLiveData<String> = MutableLiveData("")
+    var passwordCorrect: MutableLiveData<String> = MutableLiveData("")
     var nickname: MutableLiveData<String> = MutableLiveData("")
     var signUpButton: MutableLiveData<Boolean> = MutableLiveData(false)
 
@@ -29,10 +30,11 @@ class SignUpViewModel : ViewModel() {
     fun signUpComplete() {
         val email = email.value.toString()
         val password = password.value.toString()
+        val passwordCorrect = passwordCorrect.value.toString()
         val nickname = nickname.value.toString()
 
         if (email.trim().isNotEmpty() && password.trim().isNotEmpty() &&
-            nickname.trim().isNotEmpty()
+            nickname.trim().isNotEmpty() && passwordCorrect.trim().isNotEmpty() && password == passwordCorrect
         ) {
             firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
                 if (it.isSuccessful) {
@@ -59,45 +61,51 @@ class SignUpViewModel : ViewModel() {
                         // 아이디가 있을 경우에! 로직 추가 ->다음 작업 시 진행
                         Log.w(ContentValues.TAG, "createUserWithEmail:failure", it.exception)
                     }
+                } else {
+
                 }
             }
+        } else {
+
         }
     }
 
     fun checkEmailDuplication(email: String) {
-        fireStore.collection("users")
+        fireStore.collection("users").whereEqualTo("email", email)
             .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    if (document.id == email) {
-                        Log.d("ContentValues123123123", "아이디가 중복이다아")
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val result = task.result
+
+                    if (result != null && !result.isEmpty) {
                         _isEmailRegistered.value = false
+                        Log.d("ContentValues123123123", "아이디가 중복이다아")
                     } else {
                         _isEmailRegistered.value = true
+                        Log.d("Firestore", "값이 다르따")
                     }
-                    Log.d(ContentValues.TAG, "${document.id}=$email")
                 }
             }
+
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error getting documents: ", exception)
             }
     }
 
     fun checkNickNameDuplication(nickname: String) {
-        fireStore.collection("users").get().addOnSuccessListener { querySnapshot ->
-            for (document in querySnapshot) {
-                val fieldValue = document.getString("nickname")
+        fireStore.collection("users").whereEqualTo("nickname", nickname).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val result = task.result
 
-                if (fieldValue != null) {
-                    if (fieldValue.toString() == nickname) {
-                        _isNickNameRegistered.value = false
-                        Log.d("Firestore", "값이 이따")
-                    } else {
-                        _isNickNameRegistered.value = true
-                        Log.d("Firestore", "값이 다르따")
-                    }
+                if (result != null && !result.isEmpty) {
+                    _isNickNameRegistered.value = false
+                    Log.d("Firestore", "값이 이따")
+                } else {
+                    _isNickNameRegistered.value = true
+                    Log.d("Firestore", "값이 다르따")
                 }
             }
+
         }.addOnFailureListener { exception ->
             // 에러 처리
             Log.d(ContentValues.TAG, "Error getting documents: ", exception)
