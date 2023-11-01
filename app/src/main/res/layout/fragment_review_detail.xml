@@ -79,9 +79,12 @@
                     android:id="@+id/review_detail_user_image_view"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
+                    android:padding="8dp"
+                    android:scaleType="fitXY"
                     tools:src="@tools:sample/avatars" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/review_detail_user_name"
                     style="@style/Font.20.Bold.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -114,6 +117,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_title_text_view"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -123,6 +127,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_address_text_view"
+                style="@style/Font.12.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -131,13 +136,15 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_festival_date_text_view"
+                style="@style/Font.12.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:textSize="16sp"
-                tools:text="축제라면 기간 작성" />
+                tools:text="참석 기간" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Font.14.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -147,6 +154,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_description_text_view"
+                style="@style/Font.12.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="4dp"
@@ -171,6 +179,7 @@
             </com.google.android.material.chip.ChipGroup>
 
             <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Font.14.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

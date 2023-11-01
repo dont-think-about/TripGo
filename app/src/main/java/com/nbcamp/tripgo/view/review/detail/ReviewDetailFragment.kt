@@ -1,12 +1,17 @@
 package com.nbcamp.tripgo.view.review.detail
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import coil.load
+import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentReviewDetailBinding
+import com.nbcamp.tripgo.view.main.MainActivity
 import com.nbcamp.tripgo.view.main.MainViewModel
 import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingModel
 
@@ -16,6 +21,7 @@ class ReviewDetailFragment : Fragment() {
     private val binding: FragmentReviewDetailBinding
         get() = _binding!!
     private val sharedViewModel: MainViewModel by activityViewModels()
+    private val reviewDetailViewModel: ReviewDetailViewModel by viewModels { ReviewDetailViewModelFactory() }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,8 +42,45 @@ class ReviewDetailFragment : Fragment() {
         }
     }
 
-    private fun initViews(model: ReviewWritingModel?) {
-        println(model)
+    private fun initViews(model: ReviewWritingModel?) = with(binding) {
+        if (model?.userImageUrl.isNullOrEmpty() || model?.userImageUrl == "") {
+            reviewDetailUserImageView.load(R.drawable.icon_user)
+        } else {
+            reviewDetailUserImageView.load(model?.userImageUrl)
+        }
+        reviewDetailUserName.text = model?.userNickName
+        reviewDetailImageView.load(model?.reviewImageUrl)
+        reviewDetailTitleTextView.text = model?.tourTitle
+        reviewDetailAddressTextView.text = model?.address ?: "주소 정보가 없습니다."
+        reviewDetailFestivalDateTextView.text = model?.schedule
+        reviewDetailDescriptionTextView.text = model?.reviewText
+        reviewDetailRatingBar.rating = model?.rating ?: 0f
+        reviewDetailViewModel.getUserStatus(model?.userNickName)
+        // 홈 버튼
+        reviewDetailButtonHome.setOnClickListener {
+            startActivity(
+                Intent(
+                    requireActivity(),
+                    MainActivity::class.java
+                ).apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+            )
+        }
+        // 공유 버튼
+        reviewDetailButtonShare.setOnClickListener {
+            sharingPlace(model)
+        }
+    }
+
+    private fun sharingPlace(model: ReviewWritingModel?) {
+        val placeInfo = "${model?.tourTitle}\n${model?.reviewText}"
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_TEXT, placeInfo)
+            type = "text/plain"
+        }
+        val sharingIntent = Intent.createChooser(intent, "공유하기")
+        startActivity(sharingIntent)
     }
 
     companion object {
