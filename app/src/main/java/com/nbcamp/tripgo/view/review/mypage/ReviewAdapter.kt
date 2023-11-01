@@ -1,11 +1,13 @@
-package com.nbcamp.tripgo.view.review
+package com.nbcamp.tripgo.view.review.mypage
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RatingBar
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.nbcamp.tripgo.R
 
 class ReviewAdapter : RecyclerView.Adapter<ReviewAdapter.ViewHolder>() {
@@ -36,6 +38,7 @@ class ReviewAdapter : RecyclerView.Adapter<ReviewAdapter.ViewHolder>() {
         private val dateTextView: AppCompatTextView = itemView.findViewById(R.id.review_item_date_text_view)
         private val ratingBar: RatingBar = itemView.findViewById(R.id.review_item_rating_bar)
         private val descriptionTextView: AppCompatTextView = itemView.findViewById(R.id.review_item_shorts_description_text_view)
+        private val reviewImageView: AppCompatImageView = itemView.findViewById(R.id.review_item_image_view)
 
         // 데이터 바인딩 메서드
         fun bind(reviewItem: ReviewItem) {
@@ -43,6 +46,7 @@ class ReviewAdapter : RecyclerView.Adapter<ReviewAdapter.ViewHolder>() {
             dateTextView.text = reviewItem.date
             ratingBar.rating = reviewItem.rating
             descriptionTextView.text = reviewItem.shortDescription
+            reviewImageView.load(reviewItem.reviewImageUrl)
         }
     }
 }
