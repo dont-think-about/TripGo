@@ -40,6 +40,9 @@ class ReviewDetailFragment : Fragment() {
         reviewDetailModel.observe(viewLifecycleOwner) {
             initViews(it)
         }
+        reviewDetailViewModel.userStatus.observe(viewLifecycleOwner) { model ->
+            initUserReviewGrade(model)
+        }
     }
 
     private fun initViews(model: ReviewWritingModel?) = with(binding) {
@@ -72,6 +75,20 @@ class ReviewDetailFragment : Fragment() {
             sharingPlace(model)
         }
     }
+
+    // 리뷰 갯수에 따라 뱃지 다르게 보여주기
+    private fun initUserReviewGrade(model: UserStatus?) = with(binding) {
+        if (model == null) {
+            return@with
+        }
+        when (model.reviewCount) {
+            in 0..5 -> reviewDetailMedal.load(R.drawable.icon_third_place)
+            in 6..10 -> reviewDetailMedal.load(R.drawable.icon_second_place)
+            in 11..20 -> reviewDetailMedal.load(R.drawable.icon_first_place)
+            else -> reviewDetailMedal.load(R.drawable.icon_thropy)
+        }
+    }
+
 
     private fun sharingPlace(model: ReviewWritingModel?) {
         val placeInfo = "${model?.tourTitle}\n${model?.reviewText}"

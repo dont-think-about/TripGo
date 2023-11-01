@@ -1,7 +1,7 @@
 package com.nbcamp.tripgo.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson
+import com.nbcamp.tripgo.util.MapConverter.toModelMap
 import com.nbcamp.tripgo.view.review.whole.ReviewRepository
 import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingModel
 import kotlinx.coroutines.tasks.await
@@ -17,9 +17,8 @@ class ReviewRepositoryImpl : ReviewRepository {
 
         reviewDocuments.documents.forEach { documents ->
             val reviews = documents.reference.collection("review").get().await()
-            reviews.documents.forEach { review ->
-                val jsonString = Gson().toJson(review.data)
-                val model = Gson().fromJson(jsonString, ReviewWritingModel::class.java)
+            for (document in reviews.documents) {
+                val model = document.data?.toModelMap<ReviewWritingModel>() ?: continue
                 reviewList.add(model)
             }
         }
