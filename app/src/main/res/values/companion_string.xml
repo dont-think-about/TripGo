@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="companion">
+        <item>@string/family</item>
+        <item>@string/bf_gf</item>
+        <item>@string/friends</item>
+        <item>@string/solo</item>
+        <item>@string/pet</item>
+    </string-array>
+</resources>

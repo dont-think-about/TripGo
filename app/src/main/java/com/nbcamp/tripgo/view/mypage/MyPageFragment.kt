@@ -17,7 +17,7 @@ import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.mypage.favorite.FavoriteFragment
-import com.nbcamp.tripgo.view.review.ReviewFragment
+import com.nbcamp.tripgo.view.review.mypage.ReviewFragment
 
 // MVVM 패턴 적용 해야됨
 class MyPageFragment : Fragment() {
