@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
@@ -14,6 +15,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.DataBindingUtil
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivitySignUpBinding
+import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.login.LogInActivity
 
 class SignUpActivity : AppCompatActivity() {
@@ -21,7 +23,9 @@ class SignUpActivity : AppCompatActivity() {
     lateinit var binding: ActivitySignUpBinding
     private val signUpViewModel: SignUpViewModel by viewModels()
 
-    var agreeCheck = false
+    private var emailCheck = false
+    private var nicknameCheck = false
+    private var agreeCheck = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +45,8 @@ class SignUpActivity : AppCompatActivity() {
                 signUpPrivacyPolicyCheckBox.isChecked = true
                 signUpTermsOfUseCheckBox.isChecked = true
                 signUpEssentialAgreementErrorTextView.visibility = View.GONE
-                signUpTermsAndConditionsAgreementLayout.setBackgroundResource(R.drawable.background_edit_text)
+                signUpTermsAndConditionsAgreementLayout.setBackgroundResource(R.drawable.background_edit_text_correct)
                 agreeCheck = true
-//                checkBoxAllChecked()
             } else {
                 signUpAgeLimitCheckBox.isChecked = false
                 signUpAppAlarmCheckBox.isChecked = false
@@ -53,6 +56,8 @@ class SignUpActivity : AppCompatActivity() {
                 signUpTermsAndConditionsAgreementLayout.setBackgroundResource(R.drawable.background_edit_text_error)
                 agreeCheck = false
             }
+            signUpSignUpCompleteButton.isEnabled =
+                emailCheck && nicknameCheck && agreeCheck && signUpPasswordEditText.text.toString().isNotEmpty() && signUpCorrectPasswordEditText.text.toString().isNotEmpty()
         }
 
         signUpAgeLimitCheckBox.setOnClickListener {
@@ -68,10 +73,13 @@ class SignUpActivity : AppCompatActivity() {
 
         signUpEmailAuthButton.setOnClickListener {
             signUpViewModel.checkEmailDuplication(signUpEmailEditText.text.toString())
+
+
         }
         signUpNickNameAuthButton.setOnClickListener {
             signUpViewModel.checkNickNameDuplication(signUpNickNameEditText.text.toString())
         }
+
     }
 
     private fun initViewModel() {
@@ -87,54 +95,57 @@ class SignUpActivity : AppCompatActivity() {
             if (it == false) {
                 binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text_error)
                 binding.signUpEmailErrorDuplicationTextView.visibility = View.VISIBLE
+                emailCheck = false
 
-                binding.signUpEmailEditText.setOnKeyListener(
-                    View.OnKeyListener { v, keyCode, event ->
-                        if (keyCode == KeyEvent.KEYCODE_DEL) {
-                            binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text)
-                            binding.signUpEmailErrorDuplicationTextView.visibility = View.GONE
-                        }
-                        false
-                    }
-                )
             } else {
                 binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text_correct)
                 binding.signUpEmailErrorDuplicationTextView.visibility = View.GONE
+                emailCheck = true
             }
+            binding.signUpEmailEditText.setOnKeyListener(
+                View.OnKeyListener { v, keyCode, event ->
+                    if (keyCode == KeyEvent.KEYCODE_DEL) {
+                        binding.signUpEmailErrorDuplicationTextView.visibility = View.GONE
+                    }
+                    false
+                }
+            )
         }
 
         signUpViewModel.isNickNameRegistered.observe(this) {
             if (it == false) {
                 binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text_error)
                 binding.signUpNickNameErrorTextView.visibility = View.VISIBLE
-                binding.signUpNickNameEditText.setOnKeyListener(
-                    View.OnKeyListener { v, keyCode, event ->
-                        if (keyCode == KeyEvent.KEYCODE_DEL) {
-                            binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text)
-                            binding.signUpNickNameErrorTextView.visibility = View.GONE
-                        }
-                        false
-                    }
-                )
+                nicknameCheck = false
             } else {
                 binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text_correct)
                 binding.signUpNickNameErrorTextView.visibility = View.GONE
+                nicknameCheck = true
             }
+            binding.signUpNickNameEditText.setOnKeyListener(
+                View.OnKeyListener { v, keyCode, event ->
+                    if (keyCode == KeyEvent.KEYCODE_DEL) {
+                        binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text)
+                        binding.signUpNickNameErrorTextView.visibility = View.GONE
+                    }
+                    false
+                }
+            )
         }
     }
 
     private fun checkBoxEssentialChecked() = binding.apply {
-
         if (signUpAgeLimitCheckBox.isChecked && signUpPrivacyPolicyCheckBox.isChecked && signUpTermsOfUseCheckBox.isChecked) {
             signUpEssentialAgreementErrorTextView.visibility = View.GONE
-            signUpTermsAndConditionsAgreementLayout.setBackgroundResource(R.drawable.background_edit_text)
+            signUpTermsAndConditionsAgreementLayout.setBackgroundResource(R.drawable.background_edit_text_correct)
             agreeCheck = true
-//            checkBoxAllChecked()
         } else {
             binding.signUpEssentialAgreementErrorTextView.visibility = View.VISIBLE
             signUpTermsAndConditionsAgreementLayout.setBackgroundResource(R.drawable.background_edit_text_error)
             agreeCheck = false
         }
+        signUpSignUpCompleteButton.isEnabled = emailCheck && nicknameCheck && agreeCheck
+
     }
 
     private fun editTextMemberInformation() = binding.apply {
@@ -179,6 +190,7 @@ class SignUpActivity : AppCompatActivity() {
                 signUpCorrectPasswordLayout
             }
         )
+
     }
 
     private fun EditText.addValidation(
@@ -203,6 +215,7 @@ class SignUpActivity : AppCompatActivity() {
     private fun showError(errorText: () -> AppCompatTextView, background: () -> LinearLayout) {
         errorText().visibility = View.VISIBLE
         background().setBackgroundResource(R.drawable.background_edit_text_error)
+
     }
 
     private fun hideError(errorText: () -> AppCompatTextView, background: () -> LinearLayout) {
