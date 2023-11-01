@@ -20,6 +20,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/review_detail_restore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/icon_restore"
+            app:layout_constraintBottom_toBottomOf="@id/review_title_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/review_title_text_view" />
+
         <HorizontalScrollView
             android:id="@+id/horizontal_chip_group"
             android:layout_width="wrap_content"
@@ -96,6 +106,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/horizontal_chip_group"
             tools:listitem="@layout/item_review_main" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/review_detail_notice_text_view"
+            style="@style/Font.18.Bold.Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/review_recycler_view"
+            app:layout_constraintEnd_toEndOf="@id/review_recycler_view"
+            app:layout_constraintStart_toStartOf="@id/review_recycler_view"
+            app:layout_constraintTop_toTopOf="@id/review_recycler_view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
