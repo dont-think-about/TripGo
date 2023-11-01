@@ -148,7 +148,7 @@ class WholeReviewFragment : Fragment() {
                 if (state.allSchedules?.isEmpty() == true) {
                     binding.reviewDetailNoticeTextView.run {
                         isVisible = true
-                        text = "아직 작성 된 리뷰가 없어요.. 첫 리뷰를 작성해보세요 :)"
+                        text = getString(R.string.no_review_so_write_review)
                     }
                     reviewAdapter.submitList(emptyList())
                     return@observe
@@ -162,7 +162,7 @@ class WholeReviewFragment : Fragment() {
             if (list.isEmpty()) {
                 binding.reviewDetailNoticeTextView.run {
                     isVisible = true
-                    text = "조건에 맞는 리뷰가 존재 하지 않습니다.. :)"
+                    text = context.getString(R.string.no_exist_condition_review)
                 }
                 reviewAdapter.submitList(emptyList())
                 return@observe
