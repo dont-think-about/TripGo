@@ -20,8 +20,11 @@ import com.nbcamp.tripgo.databinding.FragmentReviewBinding
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.view.main.MainViewModel
 import com.nbcamp.tripgo.view.review.detail.ReviewDetailFragment
+import com.nbcamp.tripgo.view.review.whole.BottomSheetAdapter
+import com.nbcamp.tripgo.view.review.whole.ReviewViewModel
+import com.nbcamp.tripgo.view.review.whole.ReviewViewModelFactory
+import com.nbcamp.tripgo.view.review.whole.WholeReviewAdapter
 import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingModel
-
 
 class WholeReviewFragment : Fragment() {
     private var _binding: FragmentReviewBinding? = null
@@ -30,6 +33,15 @@ class WholeReviewFragment : Fragment() {
     private lateinit var loadingDialog: LoadingDialog
     private lateinit var allSchedule: List<ReviewWritingModel>
     private lateinit var categoryTitle: String
+    private val filterTags by lazy {
+        mutableMapOf(
+            getString(R.string.region) to "",
+            getString(R.string.gender) to "",
+            getString(R.string.age) to "",
+            getString(R.string.companion) to ""
+        )
+    }
+
     private val sharedViewModel: MainViewModel by activityViewModels()
     private val reviewViewModel: ReviewViewModel by viewModels { ReviewViewModelFactory() }
     private val reviewAdapter: WholeReviewAdapter by lazy {
@@ -40,12 +52,14 @@ class WholeReviewFragment : Fragment() {
     private val bottomSheetAdapter: BottomSheetAdapter by lazy {
         BottomSheetAdapter { category ->
             behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            setChipText(category)
+            // 필터링 태그를 전달 하여 다중 필터링을 시행
             reviewViewModel.setFilteredReview(
-                category,
-                categoryTitle
+                filterTags,
             )
         }
     }
+
     private val behavior by lazy {
         BottomSheetBehavior.from(
             binding.commentBottomSheet.root
@@ -75,22 +89,27 @@ class WholeReviewFragment : Fragment() {
         }
         reviewChipRegion.setOnClickListener {
             val categoryList = resources.getStringArray(R.array.si_do)
-            runBottomSheetForFiltering(reviewChipRegion.text, categoryList)
+            runBottomSheetForFiltering(getString(R.string.region), categoryList)
         }
         reviewChipGender.setOnClickListener {
             val categoryList = resources.getStringArray(R.array.gender)
-            runBottomSheetForFiltering(reviewChipGender.text, categoryList)
+            runBottomSheetForFiltering(getString(R.string.gender), categoryList)
         }
         reviewChipAge.setOnClickListener {
             val categoryList = resources.getStringArray(R.array.generation)
-            runBottomSheetForFiltering(reviewChipAge.text, categoryList)
+            runBottomSheetForFiltering(getString(R.string.age), categoryList)
         }
         reviewChipCompanion.setOnClickListener {
             val categoryList = resources.getStringArray(R.array.companion)
-            runBottomSheetForFiltering(reviewChipCompanion.text, categoryList)
+            runBottomSheetForFiltering(getString(R.string.companion), categoryList)
         }
         reviewDetailRestore.setOnClickListener {
-            reviewViewModel.setFilteredReview("", "")
+            reviewChipRegion.text = getString(R.string.region)
+            reviewChipAge.text = getString(R.string.age)
+            reviewChipGender.text = getString(R.string.gender)
+            reviewChipCompanion.text = getString(R.string.companion)
+            reviewDetailNoticeTextView.isVisible = false
+            reviewViewModel.setFilteredReview(mutableMapOf())
         }
 
         reviewViewModel.getAllReviews()
@@ -126,7 +145,7 @@ class WholeReviewFragment : Fragment() {
                     setInvisible()
                     state.message?.let { setText(it) }
                 }
-                if(state.allSchedules?.isEmpty() == true) {
+                if (state.allSchedules?.isEmpty() == true) {
                     binding.reviewDetailNoticeTextView.run {
                         isVisible = true
                         text = "아직 작성 된 리뷰가 없어요.. 첫 리뷰를 작성해보세요 :)"
@@ -135,13 +154,12 @@ class WholeReviewFragment : Fragment() {
                     return@observe
                 }
             }
-            binding.reviewDetailNoticeTextView.isVisible = false
             allSchedule = state.allSchedules ?: emptyList()
             reviewAdapter.submitList(allSchedule)
         }
 
         filteredList.observe(viewLifecycleOwner) { list ->
-            if(list.isEmpty()) {
+            if (list.isEmpty()) {
                 binding.reviewDetailNoticeTextView.run {
                     isVisible = true
                     text = "조건에 맞는 리뷰가 존재 하지 않습니다.. :)"
@@ -182,6 +200,36 @@ class WholeReviewFragment : Fragment() {
             displayMetrics.heightPixels
         }
     }
+
+    // 칩의 텍스트를 바꾸고, 필터링할 map 객체를 만드는 메소드
+    private fun setChipText(category: String) = with(binding) {
+        val siDoList = resources.getStringArray(R.array.si_do)
+        val ageList = resources.getStringArray(R.array.generation)
+        val genderList = resources.getStringArray(R.array.gender)
+        val companionList = resources.getStringArray(R.array.companion)
+        when {
+            siDoList.contains(category) -> {
+                filterTags[getString(R.string.region)] = category
+                reviewChipRegion.text = category
+            }
+
+            ageList.contains(category) -> {
+                filterTags[getString(R.string.age)] = category
+                reviewChipAge.text = category
+            }
+
+            genderList.contains(category) -> {
+                filterTags[getString(R.string.gender)] = category
+                reviewChipGender.text = category
+            }
+
+            companionList.contains(category) -> {
+                filterTags[getString(R.string.companion)] = category
+                reviewChipCompanion.text = category
+            }
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

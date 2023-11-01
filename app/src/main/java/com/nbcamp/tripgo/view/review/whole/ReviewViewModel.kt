@@ -1,10 +1,9 @@
-package com.nbcamp.tripgo.view.review
+package com.nbcamp.tripgo.view.review.whole
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nbcamp.tripgo.view.review.whole.ReviewRepository
 import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,21 +40,28 @@ class ReviewViewModel(
         }
     }
 
-    fun setFilteredReview(category: String, text: CharSequence) {
-        // 필터링 해서 - 빈 값일 때는 원상 복구
-        val filteredReviews = when (text) {
-            "" -> cachingReviews
-            "성별" -> cachingReviews.filter { it.gender == category }
-            "나이" -> cachingReviews.filter { it.generation == category }
-            "동반인" -> cachingReviews.filter { it.companion == category }
-            else -> {
-                cachingReviews.filter {
+    // 다중 필터링을 하는 메소드
+    fun setFilteredReview(category: MutableMap<String, String>) {
+        if (category.isEmpty()) {
+            _filteredList.value = cachingReviews
+            return
+        }
+        val map = category.filter { it.value.isNotEmpty() }.toSortedMap()
+        var filteredReviews = cachingReviews
+        map.forEach { (key, value) ->
+            when (key) {
+                "지역" -> filteredReviews = filteredReviews.filter {
                     it.address
                         .split(" ").first().split("")
-                        .containsAll(category.split(""))
+                        .containsAll(value.split(""))
                 }
+
+                "성별" -> filteredReviews = filteredReviews.filter { it.gender == value }
+                "나이" -> filteredReviews = filteredReviews.filter { it.generation == value }
+                "동반인" -> filteredReviews = filteredReviews.filter { it.companion == value }
             }
         }
+
         // 라이브데이터로 제공
         _filteredList.value = filteredReviews
     }

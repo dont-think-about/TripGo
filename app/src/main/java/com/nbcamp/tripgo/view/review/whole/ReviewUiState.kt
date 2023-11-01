@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.review
+package com.nbcamp.tripgo.view.review.whole
 
 import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingModel
 

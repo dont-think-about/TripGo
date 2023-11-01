@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.review
+package com.nbcamp.tripgo.view.review.whole
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

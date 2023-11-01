@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.review
+package com.nbcamp.tripgo.view.review.whole
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

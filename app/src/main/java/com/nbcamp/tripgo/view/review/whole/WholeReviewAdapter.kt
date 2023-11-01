@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.review
+package com.nbcamp.tripgo.view.review.whole
 
 import android.content.Context
 import android.content.res.ColorStateList
