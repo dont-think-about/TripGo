@@ -38,20 +38,15 @@ class SignUpViewModel : ViewModel() {
         ) {
             firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
                 if (it.isSuccessful) {
-
                     signUpButton.value = true
 
-                    // 자체 로그인 firestore 저장부분  users -> email -> uid,nickname,image
                     val firebaseUID = FirebaseAuth.getInstance().currentUser?.uid
-
                     if (firebaseUID != null) {
-
                         val user = hashMapOf(
                             "email" to email,
                             "nickname" to nickname,
                             "profileImage" to null,
                         )
-
                         // 자체 로그인 firestore 저장부분  users -> email -> email,nickname,image
                         fireStore.collection("users").document(email).set(user)
                         firebaseAuth.currentUser?.sendEmailVerification()
@@ -61,12 +56,8 @@ class SignUpViewModel : ViewModel() {
                         // 아이디가 있을 경우에! 로직 추가 ->다음 작업 시 진행
                         Log.w(ContentValues.TAG, "createUserWithEmail:failure", it.exception)
                     }
-                } else {
-
                 }
             }
-        } else {
-
         }
     }
 
