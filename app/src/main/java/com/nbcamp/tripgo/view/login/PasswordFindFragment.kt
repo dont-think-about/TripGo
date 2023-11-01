@@ -14,7 +14,6 @@ import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.DialogPasswordFindBinding
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 
-
 class PasswordFindFragment : DialogFragment() {
     private var _binding: DialogPasswordFindBinding? = null
     private val binding get() = _binding!!
@@ -63,7 +62,6 @@ class PasswordFindFragment : DialogFragment() {
             }
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

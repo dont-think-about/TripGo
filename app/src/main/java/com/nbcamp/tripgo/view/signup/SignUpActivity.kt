@@ -72,8 +72,6 @@ class SignUpActivity : AppCompatActivity() {
 
         signUpEmailAuthButton.setOnClickListener {
             signUpViewModel.checkEmailDuplication(signUpEmailEditText.text.toString())
-
-
         }
         signUpNickNameAuthButton.setOnClickListener {
             signUpViewModel.checkNickNameDuplication(signUpNickNameEditText.text.toString())
@@ -107,7 +105,7 @@ class SignUpActivity : AppCompatActivity() {
                 emailCheck = true
             }
             binding.signUpEmailEditText.setOnKeyListener(
-                View.OnKeyListener { v, keyCode, event ->
+                View.OnKeyListener { _, keyCode, _ ->
                     if (keyCode == KeyEvent.KEYCODE_DEL) {
                         binding.signUpEmailErrorDuplicationTextView.visibility = View.GONE
                     }
@@ -115,7 +113,6 @@ class SignUpActivity : AppCompatActivity() {
                 }
             )
         }
-
         signUpViewModel.isNickNameRegistered.observe(this) {
             if (it == false) {
                 binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text_error)
@@ -127,7 +124,7 @@ class SignUpActivity : AppCompatActivity() {
                 nicknameCheck = true
             }
             binding.signUpNickNameEditText.setOnKeyListener(
-                View.OnKeyListener { v, keyCode, event ->
+                View.OnKeyListener { _, keyCode, _ ->
                     if (keyCode == KeyEvent.KEYCODE_DEL) {
                         binding.signUpNickNameLayout.setBackgroundResource(R.drawable.background_edit_text)
                         binding.signUpNickNameErrorTextView.visibility = View.GONE
@@ -154,12 +151,11 @@ class SignUpActivity : AppCompatActivity() {
             agreeCheck = false
         }
         signUpSignUpCompleteButton.isEnabled = emailCheck && nicknameCheck && agreeCheck
-
     }
 
     private fun editTextMemberInformation() = binding.apply {
 
-        signUpEmailEditText.doOnTextChanged { text, _, _, _ ->
+        signUpEmailEditText.doOnTextChanged { _, _, _, _ ->
             val emailTextCheck = signUpEmailEditText.text.toString().matches(
                 Regex("[0-9a-zA-Z]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$")
             )
@@ -177,7 +173,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        signUpPasswordEditText.doOnTextChanged { text, _, _, _ ->
+        signUpPasswordEditText.doOnTextChanged { _, _, _, _ ->
             val passwordTextCheck = signUpPasswordEditText.text.toString().matches(
                 Regex("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[$@$!%*#?&.])[A-Za-z[0-9]$@$!%*#?&.]{8,20}$")
             )
@@ -195,7 +191,7 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        signUpCorrectPasswordEditText.doOnTextChanged { text, _, _, _ ->
+        signUpCorrectPasswordEditText.doOnTextChanged { _, _, _, _ ->
             val passwordCorrectTextCheck = signUpPasswordEditText.text.toString()
 
             if (passwordCorrectTextCheck == signUpCorrectPasswordEditText.text.toString()) {
@@ -210,8 +206,6 @@ class SignUpActivity : AppCompatActivity() {
                 pwRepeatCheck = false
                 signUpSignUpCompleteButton.isEnabled = false
             }
-
         }
     }
 }
-

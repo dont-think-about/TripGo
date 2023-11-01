@@ -78,7 +78,6 @@ class SignUpViewModel : ViewModel() {
                     }
                 }
             }
-
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "Error getting documents: ", exception)
             }
@@ -97,7 +96,6 @@ class SignUpViewModel : ViewModel() {
                     Log.d("Firestore", "값이 다르따")
                 }
             }
-
         }.addOnFailureListener { exception ->
             // 에러 처리
             Log.d(ContentValues.TAG, "Error getting documents: ", exception)

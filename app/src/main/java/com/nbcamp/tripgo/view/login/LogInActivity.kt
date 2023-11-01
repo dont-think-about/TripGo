@@ -89,7 +89,6 @@ class LogInActivity : AppCompatActivity() {
         kakaoLoginButton.setOnClickListener {
             kakaoLogin()
         }
-        //회원가입 완료 후 스낵바 띄우기
         val snackbarMessage = intent.getStringExtra("snackbarMessage")
         if (snackbarMessage != null) {
             Snackbar.make(binding.root, snackbarMessage, Snackbar.LENGTH_LONG).show()
@@ -125,7 +124,6 @@ class LogInActivity : AppCompatActivity() {
                     } else {
                         toast("이메일 인증을 완료해 주세요")
                     }
-
                 } else {
                     Toast.makeText(this, "로그인 실패.", Toast.LENGTH_SHORT).show()
                 }
