@@ -299,7 +299,7 @@ class TourDetailViewModel(
             // 적힌 리뷰의 숫자 및 평점
             val reviewCount = filteredList.count()
             val averageRating = filteredList.sum()
-            val calculatedRating = if(reviewCount == 1) {
+            val calculatedRating = if (reviewCount == 1) {
                 averageRating.toDouble()
             } else {
                 floor(((averageRating / reviewCount) * 10.0) / 10.0)

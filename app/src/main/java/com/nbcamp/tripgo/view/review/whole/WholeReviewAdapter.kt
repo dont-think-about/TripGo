@@ -76,7 +76,7 @@ class WholeReviewAdapter(
                 val color = Color.argb(10f, red.toFloat(), green.toFloat(), blue.toFloat())
                 reviewItemChipGroup.addView(
                     Chip(context).apply {
-                        "#${tag}".also { text = it }
+                        "#$tag".also { text = it }
                         chipBackgroundColor = ColorStateList.valueOf(color)
                     }
                 )

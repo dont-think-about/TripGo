@@ -7,7 +7,7 @@ import com.nbcamp.tripgo.databinding.ItemReviewBottomSheetSelectorBinding
 
 class BottomSheetAdapter(
     private val onClickItem: (String) -> Unit
-): RecyclerView.Adapter<BottomSheetAdapter.BottomSheetViewHolder>() {
+) : RecyclerView.Adapter<BottomSheetAdapter.BottomSheetViewHolder>() {
     private val categoryList = arrayListOf<String>()
 
     fun addItems(strings: Collection<String>) {
@@ -36,7 +36,7 @@ class BottomSheetAdapter(
     inner class BottomSheetViewHolder(
         private val binding: ItemReviewBottomSheetSelectorBinding,
         private val onClickItem: (String) -> Unit
-    ): RecyclerView.ViewHolder(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(str: String) = with(binding) {
             itemReviewBottomSheet.run {
                 text = str
