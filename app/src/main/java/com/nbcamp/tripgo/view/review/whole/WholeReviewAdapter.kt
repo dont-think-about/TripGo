@@ -44,8 +44,11 @@ class WholeReviewAdapter(
         fun bind(model: ReviewWritingModel) = with(binding) {
             reviewItemChipGroup.removeAllViews()
             tags.apply {
-                add(model.companion)
-                add(model.generation)
+                clear()
+                if (tags.size <= 2) {
+                    add(model.companion)
+                    add(model.generation)
+                }
             }
             itemView.setOnClickListener {
                 onClickItem(model)
@@ -54,6 +57,18 @@ class WholeReviewAdapter(
             reviewItemDateTextView.text = model.schedule
             reviewItemRatingBar.rating = model.rating
             reviewItemImageView.load(model.reviewImageUrl)
+
+            val siDo = model.address.split(" ").first()
+            reviewItemChipGroup.addView(
+                Chip(context).apply {
+                    when {
+                        siDo.isEmpty() -> "#어딘가".also { text = it }
+                        siDo.length != 4 -> "#${siDo.take(2)}".also { text = it }
+                        siDo.length == 4 -> "#${siDo[0]}${siDo[2]}".also { text = it }
+                    }
+                    chipBackgroundColor = ColorStateList.valueOf(getRandomColor())
+                }
+            )
             tags.forEach { tag ->
                 val red = Random.nextInt(0..255)
                 val green = Random.nextInt(0..255)
@@ -66,6 +81,13 @@ class WholeReviewAdapter(
                     }
                 )
             }
+        }
+
+        private fun getRandomColor(): Int {
+            val red = Random.nextInt(0..255)
+            val green = Random.nextInt(0..255)
+            val blue = Random.nextInt(0..255)
+            return Color.argb(10f, red.toFloat(), green.toFloat(), blue.toFloat())
         }
     }
 
