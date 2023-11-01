@@ -15,7 +15,7 @@
     <string name="home_page">홈페이지</string>
     <string name="move_to_home_page">홈페이지로 이동 - 터치 시 이동</string>
     <string name="rating">평점</string>
-    <string name="find_road">경로 안내</string>
+    <string name="find_road">경로 안내 (카카오 맵으로 이동)</string>
     <string name="move_to_tmap">TMAP으로 이동</string>
     <string name="add_to_calendar">캘린더에 일정 추가하기</string>
     <string name="go_go">고민말GO 여행GO</string>
@@ -175,4 +175,21 @@
     <string name="delete_schedule">일정 삭제</string>
     <string name="confirm_delete_schedule">일정을 삭제하시겠나요?</string>
     <string name="not_email_verified_then_cant_add_schedule">이메일 인증이 되어 있지 않아 일정을 추가할 수 없습니다.</string>
+    <string name="own_car">자차 경로</string>
+    <string name="public_transport">대중교통 경로</string>
+    <string name="request_location_permission">위치 권한을 요청 합니다.</string>
+    <string name="load_location_information">위치 정보를 불러 옵니다.</string>
+    <string name="cannot_change_location_settings">위치 설정을 변경할 수 없습니다.</string>
+    <string name="no_address_info">주소 정보가 없습니다</string>
+    <string name="zero_to_five">0 ~ 5개</string>
+    <string name="six_to_ten">6 ~ 10개</string>
+    <string name="eleven_to_twelve">11 ~ 20개</string>
+    <string name="twelve_more">20 ~ 개</string>
+    <string name="somewhere">어딘가</string>
+    <string name="badge_of_review_count">리뷰 개수별 뱃지</string>
+    <string name="no_review_so_write_review">아직 작성 된 리뷰가 없어요.. 첫 리뷰를 작성해보세요 :)</string>
+    <string name="no_exist_condition_review">조건에 맞는 리뷰가 존재 하지 않습니다.. :)</string>
+    <string name="address_title">주소:</string>
+    <string name="visited_title">다녀 온 날짜:</string>
+
 </resources>

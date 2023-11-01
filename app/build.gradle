@@ -49,9 +49,6 @@ android {
 }
 
 dependencies {
-    implementation files('libs\\tmap-sdk-1.2.aar')
-    implementation files('libs\\vsm-tmap-sdk-v2-android-1.6.60.aar')
-
     def coroutines_version = "1.6.4"
     def retrofit_version = "2.9.0"
     def room_version = "2.5.0"
@@ -120,6 +117,9 @@ dependencies {
 
     implementation 'com.github.Shashank02051997:FancyAlertDialog-Android:0.3'
 
-    implementation files('libs/vsm-tmap-sdk-v2-android-1.6.60.aar')
-    implementation files('libs/tmap-sdk-1.2.aar')
+    // kakao Map
+    implementation 'com.kakao.maps.open:android:2.6.0'
+
+    // kakao navigation
+    implementation "com.kakao.sdk:v2-navi:2.17.0"
 }

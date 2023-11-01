@@ -26,6 +26,9 @@ jobs:
       - name: Access Key SET
         run: echo '${{secrets.API_KEY_SET}}'  > ./local.properties
 
+      - name: Access Key by xml
+        run: echo '${{secrets.KAKAO_API_KEY_XML}}'  > ./app/src/main/res/values/key.xml
+
       - name: Cache Gradle packages
         uses: actions/cache@v3
         with:

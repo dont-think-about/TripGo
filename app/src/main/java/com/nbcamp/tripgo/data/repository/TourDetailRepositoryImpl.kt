@@ -75,7 +75,7 @@ class TourDetailRepositoryImpl(
         val ratingList = arrayListOf<Float>()
 
         // 유저 정보를 전부 가져와서
-        val userReference = fireStore.collection("user")
+        val userReference = fireStore.collection("users")
             .get()
             .await()
 

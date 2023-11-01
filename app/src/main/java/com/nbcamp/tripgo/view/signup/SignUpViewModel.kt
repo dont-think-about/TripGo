@@ -46,6 +46,7 @@ class SignUpViewModel : ViewModel() {
                             "email" to email,
                             "nickname" to nickname,
                             "profileImage" to null,
+                            "reviewCount" to 0
                         )
                         // 자체 로그인 firestore 저장부분  users -> email -> email,nickname,image
                         fireStore.collection("users").document(email).set(user)

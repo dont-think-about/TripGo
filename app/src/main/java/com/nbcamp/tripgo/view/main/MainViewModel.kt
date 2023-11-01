@@ -14,6 +14,7 @@ import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.reviewwriting.CalendarUserModel
+import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -54,6 +55,11 @@ class MainViewModel : ViewModel() {
         MutableLiveData()
     val buttonClickModifyState: MutableLiveData<CalendarScheduleUiState>
         get() = _buttonClickModifyState
+
+    // 리뷰 목록 아이템에서 리뷰 상세 페이지로 넘겨줄 라이브 데이터
+    private val _reviewDetailModel: MutableLiveData<ReviewWritingModel> = MutableLiveData()
+    val reviewDetailModel: LiveData<ReviewWritingModel>
+        get() = _reviewDetailModel
 
     fun runThemeTourActivity(themeId: TourTheme) {
         _event.value = ThemeClickEvent.RunTourThemeActivity(themeId)
@@ -156,5 +162,9 @@ class MainViewModel : ViewModel() {
 
     fun updateModifiedCalendarUi(state: CalendarScheduleUiState) {
         _buttonClickModifyState.value = state
+    }
+
+    fun setReviewDetailModel(model: ReviewWritingModel) {
+        _reviewDetailModel.value = model
     }
 }

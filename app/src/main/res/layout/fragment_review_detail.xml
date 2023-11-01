@@ -67,55 +67,110 @@
             android:orientation="vertical"
             android:paddingHorizontal="16dp">
 
+            <LinearLayout
+                android:id="@+id/review_detail_user_info"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/review_detail_user_image_view"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="8dp"
+                    android:scaleType="fitXY"
+                    tools:src="@tools:sample/avatars" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/review_detail_user_name"
+                    style="@style/Font.20.Bold.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="18dp"
+                    tools:text="닉네임" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/review_detail_medal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:padding="12dp"
+                    android:src="@drawable/icon_third_place" />
+
+            </LinearLayout>
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/review_detail_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
+                android:clickable="true"
+                android:focusable="true"
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@tools:sample/avatars" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_title_text_view"
+                style="@style/Font.18.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 tools:text="축제 or 장소 이름" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/review_detail_address_text_view"
+                style="@style/Font.14.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="16sp"
+                android:layout_marginTop="16dp"
+                android:text="@string/address_title" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/review_detail_address_text_view"
+                style="@style/Font.12.Normal.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 tools:text="주소" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/review_detail_festival_date_text_view"
+                style="@style/Font.14.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="16sp"
-                tools:text="축제라면 기간 작성" />
+                android:layout_marginTop="16dp"
+                android:text="@string/visited_title" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/review_detail_festival_date_text_view"
+                style="@style/Font.12.Normal.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                tools:text="참석 기간" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Font.14.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/review"
-                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_description_text_view"
+                style="@style/Font.16.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:maxLines="5"
-                android:textSize="16sp"
                 tools:text="lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum " />
 
             <com.google.android.material.chip.ChipGroup
@@ -124,21 +179,38 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp">
 
-                <!-- addView()를 통해 동적으로 추가-->
-                <!-- <com.google.android.material.chip.Chip-->
-                <!--      style="@style/Widget.MaterialComponents.Chip.Action"-->
-                <!--      android:layout_width="wrap_content"-->
-                <!--      android:layout_height="wrap_content"-->
-                <!--      android:clickable="false"-->
-                <!--      tools:text="서울" />-->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/generation_chip"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/gender_chip"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/companion_chip"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp" />
+
             </com.google.android.material.chip.ChipGroup>
 
             <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Font.14.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/rating"
-                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <RatingBar

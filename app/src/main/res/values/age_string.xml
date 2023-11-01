@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="generation">
+        <item>@string/generation_10</item>
+        <item>@string/generation_20</item>
+        <item>@string/generation_30</item>
+        <item>@string/generation_40</item>
+        <item>@string/generation_50_over</item>
+    </string-array>
+</resources>
