@@ -29,8 +29,9 @@ import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.BuildConfig
 import com.nbcamp.tripgo.R
-import com.nbcamp.tripgo.databinding.ActivityMainBinding
+import com.nbcamp.tripgo.databinding.ActivityLogInBinding
 import com.nbcamp.tripgo.view.main.MainActivity
+import com.nbcamp.tripgo.view.signup.SignUpActivity
 
 class LogInActivity : AppCompatActivity() {
 
@@ -46,13 +47,13 @@ class LogInActivity : AppCompatActivity() {
     // firebaseUID 가져오기
 
     // google login
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val binding by lazy { ActivityLogInBinding.inflate(layoutInflater) }
     private lateinit var GoogleSignInClient: GoogleSignInClient
     private lateinit var startGoogleLoginForResult: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_log_in)
+        setContentView(binding.root)
 
         // Firebaseauth 로그인
         auth = FirebaseAuth.getInstance()
@@ -86,6 +87,9 @@ class LogInActivity : AppCompatActivity() {
         kakaoLoginButton.setOnClickListener {
             kakaoLogin()
         }
+
+        passwordFind()
+        signUp()
     }
 
     private fun effectiveness() {
@@ -258,6 +262,20 @@ class LogInActivity : AppCompatActivity() {
 
     private fun setLogin(bool: Boolean) {
         kakaoLoginButton.visibility = if (bool) View.GONE else View.VISIBLE
+    }
+
+    private fun passwordFind() {
+        binding.logInFindPasswordTextView.setOnClickListener {
+            val fragment = PasswordFindFragment()
+            fragment.show(supportFragmentManager, null)
+        }
+    }
+
+    private fun signUp() {
+        binding.logInSignUpTextView.setOnClickListener {
+            val intent = Intent(this, SignUpActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     companion object {
