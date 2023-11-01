@@ -3,11 +3,18 @@ package com.nbcamp.tripgo.view.search
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
+import android.view.View
 import android.widget.ImageView
+import android.widget.RatingBar
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -57,6 +64,13 @@ class SearchActivity : AppCompatActivity() {
             val centerLatitude = totalLatitude / pullDatalist.size
             val centerLongitude = totalLongitude / pullDatalist.size
 
+            val removeButton = findViewById<ImageView>(R.id.remove_button)
+            removeButton.setOnClickListener {
+                // 레이아웃을 숨기도록 설정
+                val detailLayout = findViewById<ConstraintLayout>(R.id.map_of_detail_item)
+                detailLayout.visibility = View.GONE
+            }
+
             val mapView: MapView = findViewById(R.id.map_view)
             mapView.start(object : MapLifeCycleCallback() {
                 override fun onMapDestroy() {
@@ -68,6 +82,42 @@ class SearchActivity : AppCompatActivity() {
                 }
             }, object : KakaoMapReadyCallback() {
                 override fun onMapReady(kakaoMap: KakaoMap) {
+                    kakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
+                        val clickedItem = pullDatalist.find {
+                            it.latitude.toDouble() == label.position.latitude && it.longitude.toDouble() == label.position.longitude
+                        }
+
+                        if (clickedItem != null) {
+                            val message = "${clickedItem.title} 클릭되었습니다."
+
+                            // 레이아웃을 보이도록 설정
+                            val detailLayout = findViewById<ConstraintLayout>(R.id.map_of_detail_item)
+                            detailLayout.visibility = View.VISIBLE
+
+                            val mapImage = findViewById<ImageView>(R.id.map_item_image)
+                            val imageUrl = clickedItem.imageUrl
+
+                            mapImage.load(imageUrl) {
+                            }
+
+                            // 나머지 처리 (예: TextView에 데이터 설정 등)
+                            val titleTextView = findViewById<AppCompatTextView>(R.id.map_item_title)
+                            titleTextView.text = clickedItem.title
+
+                            val addressTextView = findViewById<AppCompatTextView>(R.id.map_item_address)
+                            addressTextView.text = clickedItem.address
+
+//                            val ratingBar = findViewById<RatingBar>(R.id.review_detail_rating_bar)
+//                            ratingBar.rating = clickedItem.rating.toFloat()
+                            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+
+                        } else {
+                            val message = "클릭한 라벨에 대한 정보를 찾을 수 없음"
+                            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+
                     val position = LatLng.from(
                         centerLatitude,
                         centerLongitude
@@ -96,6 +146,7 @@ class SearchActivity : AppCompatActivity() {
 
                         val layer = kakaoMap.labelManager?.layer
                         val label: Label = layer!!.addLabel(options)
+
                     }
                 }
             })
