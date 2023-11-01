@@ -7,14 +7,13 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/item_review_bottom_sheet"
-        style="?android:attr/borderlessButtonStyle"
+        style="@style/Font.14.Normal.Black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:background="@drawable/review_bottom_sheet_button_round_background"
         android:gravity="center"
         android:padding="10dp"
-        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
