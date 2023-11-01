@@ -18,7 +18,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.view.App
 
-
 class ReviewFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -89,4 +88,3 @@ class ReviewFragment : Fragment() {
         }
     }
 }
-
