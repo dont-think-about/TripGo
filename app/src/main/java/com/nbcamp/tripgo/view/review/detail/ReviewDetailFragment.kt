@@ -110,7 +110,6 @@ class ReviewDetailFragment : Fragment() {
         }
     }
 
-
     private fun sharingPlace(model: ReviewWritingModel?) {
         val placeInfo = "${model?.tourTitle}\n${model?.reviewText}"
         val intent = Intent(Intent.ACTION_SEND).apply {

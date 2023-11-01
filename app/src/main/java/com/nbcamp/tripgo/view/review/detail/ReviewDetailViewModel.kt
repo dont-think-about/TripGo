@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 
 class ReviewDetailViewModel(
     private val reviewDetailRepository: ReviewDetailRepository
-): ViewModel() {
+) : ViewModel() {
     private val _userStatus: MutableLiveData<UserStatus?> = MutableLiveData()
     val userStatus: LiveData<UserStatus?>
         get() = _userStatus
@@ -24,5 +24,4 @@ class ReviewDetailViewModel(
             }
         }
     }
-
 }
