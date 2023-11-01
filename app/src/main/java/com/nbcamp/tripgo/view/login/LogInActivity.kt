@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -30,6 +31,7 @@ import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.BuildConfig
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityLogInBinding
+import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.main.MainActivity
 import com.nbcamp.tripgo.view.signup.SignUpActivity
 
@@ -87,7 +89,11 @@ class LogInActivity : AppCompatActivity() {
         kakaoLoginButton.setOnClickListener {
             kakaoLogin()
         }
-
+        //회원가입 완료 후 스낵바 띄우기
+        val snackbarMessage = intent.getStringExtra("snackbarMessage")
+        if (snackbarMessage != null) {
+            Snackbar.make(binding.root, snackbarMessage, Snackbar.LENGTH_LONG).show()
+        }
         passwordFind()
         signUp()
     }
@@ -111,9 +117,15 @@ class LogInActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { authResult ->
                 if (authResult.isSuccessful) {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    val user = auth.currentUser
+                    if (user != null && user.isEmailVerified) {
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        toast("이메일 인증을 완료해 주세요")
+                    }
+
                 } else {
                     Toast.makeText(this, "로그인 실패.", Toast.LENGTH_SHORT).show()
                 }
