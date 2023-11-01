@@ -28,7 +28,7 @@ import com.nbcamp.tripgo.view.home.HomeFragment
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.mypage.MyPageFragment
-import com.nbcamp.tripgo.view.review.ReviewFragment
+import com.nbcamp.tripgo.view.review.WholeReviewFragment
 import com.nbcamp.tripgo.view.search.SearchActivity
 import com.nbcamp.tripgo.view.tour.TourActivity
 import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
@@ -249,7 +249,7 @@ class MainActivity : AppCompatActivity() {
     private fun getFragment(pageType: FragmentPageType): Fragment = when (pageType) {
         FragmentPageType.PAGE_HOME -> HomeFragment.newInstance()
         FragmentPageType.PAGE_CALENDAR -> CalendarFragment.newInstance()
-        FragmentPageType.PAGE_REVIEW -> ReviewFragment.newInstance()
+        FragmentPageType.PAGE_REVIEW -> WholeReviewFragment.newInstance()
         FragmentPageType.PAGE_MY -> MyPageFragment.newInstance()
     }
 

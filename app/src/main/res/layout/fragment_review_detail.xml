@@ -67,6 +67,43 @@
             android:orientation="vertical"
             android:paddingHorizontal="16dp">
 
+            <LinearLayout
+                android:id="@+id/review_detail_user_info"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/review_detail_user_image_view"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    tools:src="@tools:sample/avatars" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/Font.20.Bold.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="18dp"
+                    tools:text="닉네임" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/review_detail_medal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:padding="12dp"
+                    android:src="@drawable/icon_third_place" />
+
+            </LinearLayout>
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/review_detail_image_view"
                 android:layout_width="match_parent"
