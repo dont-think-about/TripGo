@@ -10,29 +10,24 @@
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/review_item_chip_group"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/review_item_image_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <!--        <com.google.android.material.chip.Chip-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            style="@style/Widget.MaterialComponents.Chip.Action"-->
-        <!--            tools:text="서울"-->
-        <!--            />-->
 
     </com.google.android.material.chip.ChipGroup>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/review_item_image_view"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/review_item_chip_group"
+        app:layout_constraintStart_toEndOf="@id/review_item_title_text_view"
+        app:layout_constraintTop_toTopOf="@id/review_item_chip_group"
         tools:src="@tools:sample/avatars" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -40,9 +35,10 @@
         style="@style/Font.16.Bold.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/review_item_image_view"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/review_item_image_view"
+        app:layout_constraintTop_toBottomOf="@id/review_item_chip_group"
         tools:text="광안리 해변 테마 거리" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -51,16 +47,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/review_item_image_view"
         app:layout_constraintStart_toStartOf="@id/review_item_title_text_view"
         app:layout_constraintTop_toBottomOf="@id/review_item_title_text_view"
         tools:text="2023.10.12 ~ 2023.10.16" />
 
     <RatingBar
         android:id="@+id/review_item_rating_bar"
-        style="@style/Widget.AppCompat.RatingBar.Indicator"
+        style="@style/Widget.AppCompat.RatingBar.Small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
         android:isIndicator="true"
         android:progressTint="@color/dark_yellow"
         app:layout_constraintStart_toStartOf="@id/review_item_date_text_view"
@@ -73,6 +72,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:maxLines="1"
         app:layout_constraintEnd_toStartOf="@id/review_item_image_view"

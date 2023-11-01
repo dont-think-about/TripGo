@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.review.ReviewFragment">
+    tools:context=".view.review.mypage.ReviewFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -20,64 +20,71 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/review_chip_group"
-            android:layout_width="match_parent"
+        <HorizontalScrollView
+            android:id="@+id/horizontal_chip_group"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/review_title_text_view">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/review_chip_region"
-                style="@style/Widget.MaterialComponents.Chip.Action"
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/review_chip_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:backgroundTint="@color/light_deactivated"
-                android:text="@string/region"
-                app:chipEndPadding="15dp"
-                app:chipStartPadding="15dp"
-                app:rippleColor="@color/deactivated" />
+                android:layout_marginTop="20dp">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/review_chip_gender"
-                style="@style/Widget.MaterialComponents.Chip.Action"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:backgroundTint="@color/light_deactivated"
-                android:text="@string/gender"
-                app:chipEndPadding="15dp"
-                app:chipStartPadding="15dp"
-                app:rippleColor="@color/deactivated" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/review_chip_region"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="@color/light_deactivated"
+                    android:text="@string/region"
+                    app:chipEndPadding="15dp"
+                    app:chipStartPadding="15dp"
+                    app:rippleColor="@color/deactivated" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/review_chip_age"
-                style="@style/Widget.MaterialComponents.Chip.Action"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:backgroundTint="@color/light_deactivated"
-                android:text="@string/age"
-                app:chipEndPadding="15dp"
-                app:chipStartPadding="15dp"
-                app:rippleColor="@color/deactivated" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/review_chip_gender"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="@color/light_deactivated"
+                    android:text="@string/gender"
+                    app:chipEndPadding="15dp"
+                    app:chipStartPadding="15dp"
+                    app:rippleColor="@color/deactivated" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/review_chip_companion"
-                style="@style/Widget.MaterialComponents.Chip.Action"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:backgroundTint="@color/light_deactivated"
-                android:text="@string/companion"
-                app:chipEndPadding="15dp"
-                app:chipStartPadding="15dp"
-                app:rippleColor="@color/deactivated" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/review_chip_age"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="@color/light_deactivated"
+                    android:text="@string/age"
+                    app:chipEndPadding="15dp"
+                    app:chipStartPadding="15dp"
+                    app:rippleColor="@color/deactivated" />
 
-        </com.google.android.material.chip.ChipGroup>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/review_chip_companion"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="@color/light_deactivated"
+                    android:text="@string/companion"
+                    app:chipEndPadding="15dp"
+                    app:chipStartPadding="15dp"
+                    app:rippleColor="@color/deactivated" />
+
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/review_recycler_view"
@@ -87,7 +94,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/review_chip_group"
+            app:layout_constraintTop_toBottomOf="@id/horizontal_chip_group"
             tools:listitem="@layout/item_review_main" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
