@@ -5,10 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentReviewBinding
 import com.nbcamp.tripgo.util.LoadingDialog
+import com.nbcamp.tripgo.view.main.MainViewModel
+import com.nbcamp.tripgo.view.review.detail.ReviewDetailFragment
 import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingModel
 
 class WholeReviewFragment : Fragment() {
@@ -17,11 +21,11 @@ class WholeReviewFragment : Fragment() {
         get() = _binding!!
     private lateinit var loadingDialog: LoadingDialog
     private lateinit var allSchedule: List<ReviewWritingModel>
-
+    private val sharedViewModel: MainViewModel by activityViewModels()
     private val reviewViewModel: ReviewViewModel by viewModels { ReviewViewModelFactory() }
     private val reviewAdapter: WholeReviewAdapter by lazy {
-        WholeReviewAdapter(requireActivity()) {
-
+        WholeReviewAdapter(requireActivity()) { model ->
+            goToReviewDetailFragment(model)
         }
     }
 
@@ -67,6 +71,16 @@ class WholeReviewFragment : Fragment() {
         }
     }
 
+    private fun goToReviewDetailFragment(model: ReviewWritingModel) {
+        val transactionReviewWriting = parentFragmentManager.beginTransaction()
+        // review Detail fragment로 데이터 전달
+        sharedViewModel.setReviewDetailModel(model)
+        transactionReviewWriting.replace(
+            R.id.main_fragment_container,
+            ReviewDetailFragment.newInstance()
+        ).addToBackStack(null)
+            .commit()
+    }
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

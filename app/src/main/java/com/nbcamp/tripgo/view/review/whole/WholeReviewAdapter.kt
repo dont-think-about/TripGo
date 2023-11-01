@@ -17,7 +17,7 @@ import kotlin.random.nextInt
 
 class WholeReviewAdapter(
     private val context: Context,
-    private val onClickItem: (String) -> Unit
+    private val onClickItem: (ReviewWritingModel) -> Unit
 ) : ListAdapter<ReviewWritingModel, WholeReviewAdapter.ReviewViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
@@ -37,7 +37,7 @@ class WholeReviewAdapter(
 
     inner class ReviewViewHolder(
         private val binding: ItemReviewMainBinding,
-        private val onClickItem: (String) -> Unit
+        private val onClickItem: (ReviewWritingModel) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         private val tags = mutableSetOf<String>()
 
@@ -48,7 +48,7 @@ class WholeReviewAdapter(
                 add(model.generation)
             }
             itemView.setOnClickListener {
-                onClickItem(model.contentId)
+                onClickItem(model)
             }
             reviewItemTitleTextView.text = model.tourTitle
             reviewItemDateTextView.text = model.schedule
