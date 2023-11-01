@@ -31,8 +31,8 @@ import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.databinding.ActivityTourDetailBinding
 import com.nbcamp.tripgo.databinding.DialogCalendarBinding
-import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.KaKaoMapFrameLayout
+import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.calendar.CantSetDayDecorator
 import com.nbcamp.tripgo.util.calendar.OutDateMonthDecorator
 import com.nbcamp.tripgo.util.calendar.SaturdayDecorator
@@ -100,6 +100,12 @@ class TourDetailActivity : AppCompatActivity() {
             keywordItem?.contentid
         } else {
             nearbyContentId
+        }
+        if (festivalItem != null) {
+            festivalDateCardView.isVisible = true
+            "${festivalItem?.eventstartdate} ~ ${festivalItem?.eventenddate}".also {
+                festivalDateTextView.text = it
+            }
         }
         btnBack.setOnClickListener {
             finish()
