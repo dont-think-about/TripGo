@@ -54,7 +54,8 @@ class ReviewDetailFragment : Fragment() {
         reviewDetailUserName.text = model?.userNickName
         reviewDetailImageView.load(model?.reviewImageUrl)
         reviewDetailTitleTextView.text = model?.tourTitle
-        reviewDetailAddressTextView.text = model?.address ?: "주소 정보가 없습니다."
+        reviewDetailAddressTextView.text =
+            if (model?.address.isNullOrEmpty()) "주소 정보가 없습니다" else model?.address
         reviewDetailFestivalDateTextView.text = model?.schedule
         reviewDetailDescriptionTextView.text = model?.reviewText
         reviewDetailRatingBar.rating = model?.rating ?: 0f

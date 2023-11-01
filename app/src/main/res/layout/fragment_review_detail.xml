@@ -117,30 +117,40 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_title_text_view"
-                style="@style/Font.16.Bold.Black"
+                style="@style/Font.18.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 tools:text="축제 or 장소 이름" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Font.14.Bold.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="주소:" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_address_text_view"
                 style="@style/Font.12.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="16sp"
+                android:layout_marginTop="2dp"
                 tools:text="주소" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Font.14.Bold.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="다녀 온 날짜:" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_festival_date_text_view"
                 style="@style/Font.12.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="16sp"
+                android:layout_marginTop="2dp"
                 tools:text="참석 기간" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -149,18 +159,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/review"
-                android:textSize="16sp"
+
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_description_text_view"
-                style="@style/Font.12.Normal.Black"
+                style="@style/Font.16.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:maxLines="5"
-                android:textSize="16sp"
                 tools:text="lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum " />
 
             <com.google.android.material.chip.ChipGroup
@@ -184,7 +193,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/rating"
-                android:textSize="16sp"
+
                 android:textStyle="bold" />
 
             <RatingBar
