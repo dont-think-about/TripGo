@@ -44,11 +44,13 @@ class ScheduleListAdapter(
         private val day = today.get(Calendar.DATE)
         fun bind(model: CalendarEntity) = with(binding) {
             val todayString =
-                "$year${if (month < 10) "0$month" else "$month"}$day"
+                "$year${if (month < 10) "0$month" else "$month"}${if (day < 10) "0$day" else "$day"}"
             val isValid = model.endDate?.toInt()!! <= todayString.toInt()
+            println("왜 안뜸?11")
 
             if (isValid) {
                 if (model.isReviewed == true) {
+                    println("왜 안뜸?22")
                     itemCheckTextView.run {
                         text = "리뷰 작성 됨"
                         setTextColor(Color.RED)
