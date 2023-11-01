@@ -1,7 +1,6 @@
 package com.nbcamp.tripgo.view.review.whole
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.google.android.material.chip.Chip
+import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ItemReviewMainBinding
 import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingModel
 import kotlin.random.Random
@@ -60,24 +60,32 @@ class WholeReviewAdapter(
 
             val siDo = model.address.split(" ").first()
             reviewItemChipGroup.addView(
-                Chip(context).apply {
+                Chip(
+                    context,
+                    null,
+                    com.google.android.material.R.style.Widget_MaterialComponents_Chip_Action
+                ).apply {
                     when {
-                        siDo.isEmpty() -> "#어딘가".also { text = it }
+                        siDo.isEmpty() -> "#${context.getString(R.string.somewhere)}".also { text = it }
                         siDo.length != 4 -> "#${siDo.take(2)}".also { text = it }
                         siDo.length == 4 -> "#${siDo[0]}${siDo[2]}".also { text = it }
                     }
-                    chipBackgroundColor = ColorStateList.valueOf(getRandomColor())
+//                    chipBackgroundColor = ColorStateList.valueOf(getRandomColor())
+                    chipEndPadding = 8f
+                    chipStartPadding = 8f
                 }
             )
             tags.forEach { tag ->
-                val red = Random.nextInt(0..255)
-                val green = Random.nextInt(0..255)
-                val blue = Random.nextInt(0..255)
-                val color = Color.argb(10f, red.toFloat(), green.toFloat(), blue.toFloat())
                 reviewItemChipGroup.addView(
-                    Chip(context).apply {
+                    Chip(
+                        context,
+                        null,
+                        com.google.android.material.R.style.Widget_MaterialComponents_Chip_Action
+                    ).apply {
                         "#$tag".also { text = it }
-                        chipBackgroundColor = ColorStateList.valueOf(color)
+//                        chipBackgroundColor = ColorStateList.valueOf(getRandomColor())
+                        chipEndPadding = 8f
+                        chipStartPadding = 8f
                     }
                 )
             }
@@ -87,7 +95,7 @@ class WholeReviewAdapter(
             val red = Random.nextInt(0..255)
             val green = Random.nextInt(0..255)
             val blue = Random.nextInt(0..255)
-            return Color.argb(10f, red.toFloat(), green.toFloat(), blue.toFloat())
+            return Color.argb(1f, red.toFloat(), green.toFloat(), blue.toFloat())
         }
     }
 

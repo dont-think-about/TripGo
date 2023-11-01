@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import coil.load
@@ -55,11 +57,17 @@ class ReviewDetailFragment : Fragment() {
         reviewDetailImageView.load(model?.reviewImageUrl)
         reviewDetailTitleTextView.text = model?.tourTitle
         reviewDetailAddressTextView.text =
-            if (model?.address.isNullOrEmpty()) "주소 정보가 없습니다" else model?.address
+            if (model?.address.isNullOrEmpty()) getString(R.string.no_address_info) else model?.address
         reviewDetailFestivalDateTextView.text = model?.schedule
         reviewDetailDescriptionTextView.text = model?.reviewText
         reviewDetailRatingBar.rating = model?.rating ?: 0f
         reviewDetailViewModel.getUserStatus(model?.userNickName)
+
+        // 칩그룹 세팅
+        "#${model?.generation}".also { generationChip.text = it }
+        "#${model?.gender}".also { genderChip.text = it }
+        "#${model?.companion}과 함께".also { companionChip.text = it }
+
         // 홈 버튼
         reviewDetailButtonHome.setOnClickListener {
             startActivity(
@@ -75,12 +83,24 @@ class ReviewDetailFragment : Fragment() {
         reviewDetailButtonShare.setOnClickListener {
             sharingPlace(model)
         }
+
+        // 뒤로가기 버튼
+        reviewDetailButtonBack.setOnClickListener {
+            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        }
     }
 
     // 리뷰 갯수에 따라 뱃지 다르게 보여주기
     private fun initUserReviewGrade(model: UserStatus?) = with(binding) {
         if (model == null) {
             return@with
+        }
+        reviewDetailMedal.setOnClickListener {
+            AlertDialog.Builder(requireActivity())
+                .setTitle(getString(R.string.badge_of_review_count))
+                .setView(R.layout.dialog_review_grade)
+                .create()
+                .show()
         }
         when (model.reviewCount) {
             in 0..5 -> reviewDetailMedal.load(R.drawable.icon_third_place)

@@ -53,8 +53,8 @@
                     android:layout_margin="10dp"
                     android:backgroundTint="@color/light_deactivated"
                     android:text="@string/region"
-                    app:chipEndPadding="15dp"
-                    app:chipStartPadding="15dp"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp"
                     app:rippleColor="@color/deactivated" />
 
                 <com.google.android.material.chip.Chip
@@ -65,8 +65,8 @@
                     android:layout_margin="10dp"
                     android:backgroundTint="@color/light_deactivated"
                     android:text="@string/gender"
-                    app:chipEndPadding="15dp"
-                    app:chipStartPadding="15dp"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp"
                     app:rippleColor="@color/deactivated" />
 
                 <com.google.android.material.chip.Chip
@@ -77,8 +77,8 @@
                     android:layout_margin="10dp"
                     android:backgroundTint="@color/light_deactivated"
                     android:text="@string/age"
-                    app:chipEndPadding="15dp"
-                    app:chipStartPadding="15dp"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp"
                     app:rippleColor="@color/deactivated" />
 
                 <com.google.android.material.chip.Chip
@@ -89,8 +89,8 @@
                     android:layout_margin="10dp"
                     android:backgroundTint="@color/light_deactivated"
                     android:text="@string/companion"
-                    app:chipEndPadding="15dp"
-                    app:chipStartPadding="15dp"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp"
                     app:rippleColor="@color/deactivated" />
 
             </com.google.android.material.chip.ChipGroup>

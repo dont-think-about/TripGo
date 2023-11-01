@@ -111,6 +111,8 @@
                 android:id="@+id/review_detail_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
+                android:clickable="true"
+                android:focusable="true"
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@tools:sample/avatars" />
@@ -128,7 +130,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="주소:" />
+                android:text="@string/address_title" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_address_text_view"
@@ -143,7 +145,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="다녀 온 날짜:" />
+                android:text="@string/visited_title" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_festival_date_text_view"
@@ -159,7 +161,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/review"
-
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -178,13 +179,30 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp">
 
-                <!-- addView()를 통해 동적으로 추가-->
-                <!-- <com.google.android.material.chip.Chip-->
-                <!--      style="@style/Widget.MaterialComponents.Chip.Action"-->
-                <!--      android:layout_width="wrap_content"-->
-                <!--      android:layout_height="wrap_content"-->
-                <!--      android:clickable="false"-->
-                <!--      tools:text="서울" />-->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/generation_chip"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/gender_chip"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/companion_chip"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp" />
+
             </com.google.android.material.chip.ChipGroup>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -193,7 +211,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/rating"
-
                 android:textStyle="bold" />
 
             <RatingBar
