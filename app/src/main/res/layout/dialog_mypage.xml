@@ -15,8 +15,7 @@
         android:paddingTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints,RtlSymmetry">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/mypage_dialog_my_page_textview"
@@ -58,6 +57,7 @@
                     android:id="@+id/mypage_dialog_sigin_up_inpo_textview"
                     style="@style/Font.16.Normal.Black"
                     android:layout_width="match_parent"
+                    android:layout_marginTop="6dp"
                     android:layout_height="wrap_content"
                     android:text="@string/mypage_signin_up_inpor" />
             </LinearLayout>
@@ -101,47 +101,50 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/mypage_dialog_total_textview"
-                style="@style/Font.14.Normal.Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/mypage_dialog_total_things" />
+            <LinearLayout
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/mypage_dialog_total_count_textview"
-                style="@style/Font.14.Normal.Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:hint="00개" />
+                <TextView
+                    android:id="@+id/mypage_dialog_total_textview"
+                    style="@style/Font.14.Normal.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mypage_dialog_total_things" />
 
+                <TextView
+                    android:id="@+id/mypage_dialog_total_count_textview"
+                    style="@style/Font.14.Normal.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:hint="00개" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mypage_dialog_next_grade_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/mypage_dialog_next_grade_textview"
+                    style="@style/Font.14.Normal.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mypage_dialog_next_grade_things" />
+
+                <TextView
+                    android:id="@+id/mypage_dialog_next_grage_count_textview"
+                    style="@style/Font.14.Normal.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:hint="00개" />
+            </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/mypage_dialog_next_grade_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/mypage_dialog_next_grade_textview"
-                style="@style/Font.14.Normal.Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/mypage_dialog_next_grade_things" />
-
-            <TextView
-                android:id="@+id/mypage_dialog_next_grage_count_textview"
-                style="@style/Font.14.Normal.Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:hint="00개" />
-
-        </LinearLayout>
-
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+
