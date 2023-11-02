@@ -12,10 +12,10 @@ import com.nbcamp.tripgo.view.calendar.uistate.CalendarLogInUiState
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
 import com.nbcamp.tripgo.view.calendar.uistate.RunDialogUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CalendarViewModel(
     private val calendarRepository: CalendarRepository
@@ -192,11 +192,11 @@ class CalendarViewModel(
     fun changeScheduleListForThisMonth(
         date: CalendarDay?
     ) {
-        val changedMonth = date?.month
+        val changedMonth = if(date?.month!! < 10) "0${date.month}" else "${date.month}"
         val filteredSchedule = cachingSchedule?.filter {
             it.startDate?.chunked(4)?.last()?.chunked(2)
-                ?.first() == changedMonth.toString() || it.endDate?.chunked(4)?.last()?.chunked(2)
-                ?.first() == changedMonth.toString()
+                ?.first() == changedMonth || it.endDate?.chunked(4)?.last()?.chunked(2)
+                ?.first() == changedMonth
         }
         _changedMonthState.value = filteredSchedule?.sortedBy { it.startDate?.toInt() }
     }
