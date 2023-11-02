@@ -192,5 +192,6 @@
     <string name="address_title">주소:</string>
     <string name="visited_title">다녀 온 날짜:</string>
     <string name="already_written_review">리뷰 작성 됨</string>
+    <string name="to_be_updated_later">위치 정보 업데이트 중...</string>
 
 </resources>

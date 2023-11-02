@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -25,6 +26,7 @@ import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.data.service.RetrofitModule
 import com.nbcamp.tripgo.databinding.ActivityTourBinding
+import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.attraction.AttractionsActivity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.tour.adapter.TourAdapter
@@ -51,6 +53,32 @@ class TourActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    private var currentPage = 1
+
+    private var theme = ""
+
+    private var isLastPage = false
+
+    private val scrollListener by lazy {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE
+                    && !binding.tourRecyclerview.canScrollVertically(1)
+                ) {
+                    if (isLastPage) {
+                        toast("마지막 페이지 입니다.")
+                        return
+                    }
+                    when (tourTheme) {
+                        TourTheme.POPULAR.themeId -> getFestivalSearch(++currentPage)
+                        else -> getThemeSearch(theme, ++currentPage)
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -74,6 +102,9 @@ class TourActivity : AppCompatActivity() {
         }
 
         binding.tourRecyclerview.apply {
+
+            addOnScrollListener(scrollListener)
+
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -108,26 +139,24 @@ class TourActivity : AppCompatActivity() {
     }
 
     private fun checkLocationSettingAndEnable() {
-        // 위치 요청 설정
+
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-        // 위치 설정 요청 빌더 생성
-        val builder = LocationSettingsRequest.Builder()
+        }  // 위치 요청 설정
+
+        val builder = LocationSettingsRequest.Builder()  // 위치 설정 요청 빌더 생성
             .addLocationRequest(locationRequest)
 
-        // 위치 설정 client 생성
-        val settingsClient: SettingsClient = LocationServices.getSettingsClient(this)
+        val settingsClient: SettingsClient =
+            LocationServices.getSettingsClient(this)  // 위치 설정 client 생성
 
-        // 위치 설정 체크
-        val locationSettingsResponseTask = settingsClient.checkLocationSettings(builder.build())
+        val locationSettingsResponseTask =
+            settingsClient.checkLocationSettings(builder.build()) // 위치 설정 체크
 
         locationSettingsResponseTask.addOnSuccessListener {
-
             getMyLocation() // 위치 서비스가 활성화 된 경우 위치 정보를 가져옴
         }
 
-        // 위치 설정에 문제가 있을 경우 처리
         locationSettingsResponseTask.addOnFailureListener { exception ->
             if (exception is ResolvableApiException) {
                 try {
@@ -136,7 +165,6 @@ class TourActivity : AppCompatActivity() {
                         AttractionsActivity.REQUEST_CHECK_SETTINGS
                     )
                 } catch (sendEx: IntentSender.SendIntentException) {
-
                     Toast.makeText(
                         this,
                         getString(R.string.cannot_change_location_settings),
@@ -144,7 +172,7 @@ class TourActivity : AppCompatActivity() {
                     ).show()
                 }
             }
-        }
+        } // 위치 설정에 문제가 있을 경우 처리
     }
 
     private fun initView() {
@@ -152,22 +180,26 @@ class TourActivity : AppCompatActivity() {
         when (tourTheme) {
             TourTheme.FAMILY.themeId -> {
                 binding.tourOfTheMonth.text = "가족 여행"
-                retrofitThemeSearch("가족")
+                theme = "가족"
+                retrofitThemeSearch(theme)
             }
 
             TourTheme.HEALING.themeId -> {
                 binding.tourOfTheMonth.text = "힐링"
-                retrofitThemeSearch("힐링")
+                theme = "힐링"
+                retrofitThemeSearch(theme)
             }
 
             TourTheme.CAMPING.themeId -> {
                 binding.tourOfTheMonth.text = "캠핑"
-                retrofitThemeSearch("캠핑")
+                theme = "캠핑"
+                retrofitThemeSearch(theme)
             }
 
             TourTheme.TASTY.themeId -> {
                 binding.tourOfTheMonth.text = "맛집"
-                retrofitThemeSearch("맛")
+                theme = "맛"
+                retrofitThemeSearch(theme)
             }
 
             TourTheme.POPULAR.themeId -> {
@@ -176,29 +208,31 @@ class TourActivity : AppCompatActivity() {
             }
 
             TourTheme.NEARBY.themeId -> {
-                binding.tourOfTheMonth.text = " 주변에 있는 관광지"
-
+                binding.tourOfTheMonth.text = "주변에 있는 관광지"
             }
+
             TourTheme.SEARCH.themeId -> Unit
         }
     }
 
-    private fun retrofitThemeSearch(keyword: String) {
-        binding.tourRecyclerview.adapter = tourSearchAdapter
-        showProgressBar(true)
+    private fun getThemeSearch(keyword: String, currentPage: Int) {
+
         lifecycleScope.launch {
             val service = RetrofitModule.createTourApiService()
 
             try {
-                val response = service.getPlaceBySearch(
+                val response = service.getPlaceSearchByPage(
                     keyword = keyword,
                     contentTypeId = "",
-                    responseCount = 100
+                    responseCount = 20,
+                    currentPage = currentPage
                 )
                 if (response.isSuccessful && response.body() != null) {
                     val festivals = response.body()?.response?.body?.items?.item
                     if (festivals != null) {
-                        println(festivals)
+                        if (festivals.size < 20) {
+                            isLastPage = true
+                        }
                         tourSearchAdapter.submitList(festivals.toMutableList())
                     }
                 } else {
@@ -212,32 +246,32 @@ class TourActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateButtonColors(isDistanceSelected: Boolean) {
-        if (isDistanceSelected) {
-            binding.distance.setTextColor(ContextCompat.getColor(this, R.color.black))
-            binding.date.setTextColor(ContextCompat.getColor(this, R.color.gray))
-        } else {
-            binding.distance.setTextColor(ContextCompat.getColor(this, R.color.gray))
-            binding.date.setTextColor(ContextCompat.getColor(this, R.color.black))
-        }
+    private fun retrofitThemeSearch(keyword: String) {
+        binding.tourRecyclerview.adapter = tourSearchAdapter
+        showProgressBar(true)
+        getThemeSearch(keyword, 1)
     }
 
-    private fun retrofitFestival() {
-        binding.tourRecyclerview.adapter = tourAdapter
-        showProgressBar(true)
+    private fun getFestivalSearch(currentPage: Int) {
+
         lifecycleScope.launch {
             val service = RetrofitModule.createTourApiService()
             val currentDate = Calendar.getInstance()
             val startDate = "${currentDate.get(Calendar.YEAR)}" +
                     "${String.format("%02d", currentDate.get(Calendar.MONTH) + 1)}01"
             try {
-                val response = service.getFestivalInThisMonth(
+                val response = service.getFestivalInThisMonthByPage(
                     startDate = startDate,
-                    responseCount = 100
+                    responseCount = 20,
+                    currentPage = currentPage
                 )
                 if (response.isSuccessful && response.body() != null) {
                     val festivals = response.body()?.response?.body?.items?.item
                     if (festivals != null) {
+
+                        if (festivals.size < 20) {
+                            isLastPage = true
+                        }
                         tourAdapter.submitList(festivals)
                     }
                 } else {
@@ -251,8 +285,24 @@ class TourActivity : AppCompatActivity() {
         }
     }
 
+    private fun retrofitFestival() {
+        binding.tourRecyclerview.adapter = tourAdapter
+        showProgressBar(true)
+        getFestivalSearch(1)
+    }
+
     private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun updateButtonColors(isDistanceSelected: Boolean) {
+        if (isDistanceSelected) {
+            binding.distance.setTextColor(ContextCompat.getColor(this, R.color.black))
+            binding.date.setTextColor(ContextCompat.getColor(this, R.color.gray))
+        } else {
+            binding.distance.setTextColor(ContextCompat.getColor(this, R.color.gray))
+            binding.date.setTextColor(ContextCompat.getColor(this, R.color.black))
+        }
     }
 
     private fun gotoDetailActivity(festivalItem: FestivalItem?, keywordItem: KeywordItem?) {
@@ -281,7 +331,7 @@ class TourActivity : AppCompatActivity() {
                     val userLon = location.longitude
                     tourSearchAdapter.setUserLocation(userLat, userLon)
                     tourAdapter.setUserLocation(userLat, userLon)
-                    initView()  // 사용자 위치를 성공적 으로 얻은 후에 초기 뷰를 설정 합니다.
+                    initView()
                 } else {
                     showError(getString(R.string.tour_location_error))
                 }
