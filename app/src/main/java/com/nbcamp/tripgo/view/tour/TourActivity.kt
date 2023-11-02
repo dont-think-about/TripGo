@@ -70,8 +70,10 @@ class TourActivity : AppCompatActivity() {
                         toast("마지막 페이지 입니다.")
                         return
                     }
-                    getThemeSearch(theme, ++currentPage)
-                    getFestivalSearch(++currentPage)
+                    when (tourTheme) {
+                        TourTheme.POPULAR.themeId -> getFestivalSearch(++currentPage)
+                        else -> getThemeSearch(theme, ++currentPage)
+                    }
                 }
             }
         }
