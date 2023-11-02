@@ -67,6 +67,34 @@ interface TourApiService {
         @Query("numOfRows") numOfRows: Int = 100
     ): Response<AreaResponseModel>
 
+    @GET("KorService1/searchKeyword1")
+    suspend fun getPlaceSearchByPage(
+        @QueryMap defaultQuerySet: HashMap<String, String> = DEFAULT_QUERY_SET,
+        @Query("keyword") keyword: String,
+        @Query("contentTypeId") contentTypeId: String,
+        @Query("numOfRows") responseCount: Int,
+        @Query("pageNo") currentPage : Int
+    ): Response<KeywordSearchResponseModel>
+
+    @GET("KorService1/searchFestival1")
+    suspend fun getFestivalInThisMonthByPage(
+        @QueryMap defaultQuerySet: HashMap<String, String> = DEFAULT_QUERY_SET,
+        @Query("eventStartDate") startDate: String,
+        @Query("numOfRows") responseCount: Int,
+        @Query("pageNo") currentPage : Int
+    ): Response<FestivalResponseModel>
+
+    @GET("KorService1/areaBasedList1")
+    suspend fun getAreaInformationByPage(
+        @QueryMap defaultQuerySet: HashMap<String, String> = DEFAULT_QUERY_SET,
+        @Query("areaCode") areaCode: String,
+        @Query("numOfRows") numOfRows: Int = 100,
+        @Query("pageNo") currentPage : Int
+
+    ): Response<AreaResponseModel>
+
+
+
     companion object {
         val DEFAULT_QUERY_SET = hashMapOf(
             "serviceKey" to BuildConfig.TOUR_API_KEY,

@@ -22,14 +22,16 @@ import com.nbcamp.tripgo.databinding.ActivityAttractionsBinding
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import kotlinx.coroutines.launch
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.SettingsClient
+import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 
 class AttractionsActivity : AppCompatActivity() {
     companion object {
-        const val MAX_ROWS = 150
+        const val MAX_ROWS = 20
         const val REQUEST_CHECK_SETTINGS = 1001
         const val LOCATION_PERMISSION_REQUEST_CODE = 1234
     } // numOfRows
@@ -46,13 +48,32 @@ class AttractionsActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    private var isLastPage = false
+
+    private var currentPage = 1
+
+    private val scrollListener by lazy {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE
+                    && !binding.attractionRecyclerview.canScrollVertically(1)
+                ) {
+                    if (isLastPage) {
+                        toast("마지막 페이지 입니다.")
+                        return
+                    }
+                    getArea(++currentPage)
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
         fusedLocationClient =
             LocationServices.getFusedLocationProviderClient(this) // 사용자 현재 위치를 가져 오는 객체
-
         provinceItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent?.getParcelableExtra("provinceModel", ProvincePlaceEntity::class.java)!!
         } else {
@@ -68,10 +89,11 @@ class AttractionsActivity : AppCompatActivity() {
         }
 
         binding.attractionRecyclerview.apply {
+            addOnScrollListener(scrollListener)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = attractionsAdapter
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-        } // 아이템 선 표시
+        }
 
         binding.distance.setOnClickListener {
             attractionsAdapter.attractionDistance(binding.attractionRecyclerview)
@@ -82,7 +104,6 @@ class AttractionsActivity : AppCompatActivity() {
             attractionsAdapter.attractionDate(binding.attractionRecyclerview)
             updateButtonColors(isDistanceSelected = false)
         }
-
 
         // 위치 권한 체크 후 처리
         if (ContextCompat.checkSelfPermission(
@@ -95,7 +116,6 @@ class AttractionsActivity : AppCompatActivity() {
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
-
             )
             Toast.makeText(
                 this,
@@ -112,58 +132,48 @@ class AttractionsActivity : AppCompatActivity() {
     }
 
     private fun checkLocationSettingAndEnable() {
-
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
-
         val builder = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest)
-
         val settingsClient: SettingsClient = LocationServices.getSettingsClient(this)
-
         val locationSettingsResponseTask = settingsClient.checkLocationSettings(builder.build())
-
         locationSettingsResponseTask.addOnSuccessListener {
-
             getMyLocation() // 위치 서비스가 활성화 된 경우 위치 정보를 가져옴
         }
-
         locationSettingsResponseTask.addOnFailureListener { exception ->
             if (exception is ResolvableApiException) {
                 try {
                     exception.startResolutionForResult(this, REQUEST_CHECK_SETTINGS)
                 } catch (sendEx: IntentSender.SendIntentException) {
-
                     Toast.makeText(
                         this,
                         getString(R.string.cannot_change_location_settings),
                         Toast.LENGTH_SHORT
                     ).show()
-
                 }
             }
         } // 위치 설정에 문제가 있을 경우 처리
     }
 
-    private fun retrofitArea() {
-        binding.attractionRecyclerview.adapter = attractionsAdapter
-        showProgressBar(true)
+    private fun getArea(currentPage: Int) {
         lifecycleScope.launch {
             val service = RetrofitModule.createAreaApiService()
-
             try {
                 val response = provinceItem.areaCode.let {
-                    service.getAreaInformation(
-
+                    service.getAreaInformationByPage(
                         areaCode = it,
-                        numOfRows = MAX_ROWS
-
+                        numOfRows = MAX_ROWS,
+                        currentPage = currentPage
                     )
                 }
                 if (response.isSuccessful && response.body() != null) {
                     val area = response.body()?.response?.body?.items?.item
                     if (area != null) {
+                        if (area.size < 20) {
+                            isLastPage = true
+                        }
                         attractionsAdapter.submitList(area)
                     }
                 } else {
@@ -175,7 +185,13 @@ class AttractionsActivity : AppCompatActivity() {
                 showProgressBar(false)
             }
         }
-    } // 관광지 정보 가져 오기
+    }
+
+    private fun retrofitArea() {
+        binding.attractionRecyclerview.adapter = attractionsAdapter
+        showProgressBar(true)
+        getArea(1)
+    }
 
     private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
