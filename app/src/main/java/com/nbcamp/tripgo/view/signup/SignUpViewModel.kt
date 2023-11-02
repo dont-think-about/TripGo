@@ -17,6 +17,7 @@ class SignUpViewModel : ViewModel() {
 
     var email: MutableLiveData<String> = MutableLiveData("")
     var password: MutableLiveData<String> = MutableLiveData("")
+    var passwordCorrect: MutableLiveData<String> = MutableLiveData("")
     var nickname: MutableLiveData<String> = MutableLiveData("")
     var signUpButton: MutableLiveData<Boolean> = MutableLiveData(false)
 
@@ -29,28 +30,24 @@ class SignUpViewModel : ViewModel() {
     fun signUpComplete() {
         val email = email.value.toString()
         val password = password.value.toString()
+        val passwordCorrect = passwordCorrect.value.toString()
         val nickname = nickname.value.toString()
 
         if (email.trim().isNotEmpty() && password.trim().isNotEmpty() &&
-            nickname.trim().isNotEmpty()
+            nickname.trim().isNotEmpty() && passwordCorrect.trim().isNotEmpty() && password == passwordCorrect
         ) {
             firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
                 if (it.isSuccessful) {
-
                     signUpButton.value = true
 
-                    // 자체 로그인 firestore 저장부분  users -> email -> uid,nickname,image
                     val firebaseUID = FirebaseAuth.getInstance().currentUser?.uid
-
                     if (firebaseUID != null) {
-
                         val user = hashMapOf(
                             "email" to email,
                             "nickname" to nickname,
                             "profileImage" to null,
                             "reviewCount" to 0
                         )
-
                         // 자체 로그인 firestore 저장부분  users -> email -> email,nickname,image
                         fireStore.collection("users").document(email).set(user)
                         firebaseAuth.currentUser?.sendEmailVerification()
@@ -66,17 +63,19 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun checkEmailDuplication(email: String) {
-        fireStore.collection("users")
+        fireStore.collection("users").whereEqualTo("email", email)
             .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    if (document.id == email) {
-                        Log.d("ContentValues123123123", "아이디가 중복이다아")
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val result = task.result
+
+                    if (result != null && !result.isEmpty) {
                         _isEmailRegistered.value = false
+                        Log.d("ContentValues123123123", "아이디가 중복이다아")
                     } else {
                         _isEmailRegistered.value = true
+                        Log.d("Firestore", "값이 다르따")
                     }
-                    Log.d(ContentValues.TAG, "${document.id}=$email")
                 }
             }
             .addOnFailureListener { exception ->
@@ -85,18 +84,16 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun checkNickNameDuplication(nickname: String) {
-        fireStore.collection("users").get().addOnSuccessListener { querySnapshot ->
-            for (document in querySnapshot) {
-                val fieldValue = document.getString("nickname")
+        fireStore.collection("users").whereEqualTo("nickname", nickname).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val result = task.result
 
-                if (fieldValue != null) {
-                    if (fieldValue.toString() == nickname) {
-                        _isNickNameRegistered.value = false
-                        Log.d("Firestore", "값이 이따")
-                    } else {
-                        _isNickNameRegistered.value = true
-                        Log.d("Firestore", "값이 다르따")
-                    }
+                if (result != null && !result.isEmpty) {
+                    _isNickNameRegistered.value = false
+                    Log.d("Firestore", "값이 이따")
+                } else {
+                    _isNickNameRegistered.value = true
+                    Log.d("Firestore", "값이 다르따")
                 }
             }
         }.addOnFailureListener { exception ->

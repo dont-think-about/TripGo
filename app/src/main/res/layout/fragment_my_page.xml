@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     tools:context=".view.mypage.MyPageFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +22,7 @@
 
             <TextView
                 android:id="@+id/myapge_text_mypage"
-                style="@style/Font.22.Bold.Black"
+                style="@style/Font.20.Bold.Black"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 android:layout_marginStart="16dp"
@@ -50,6 +49,7 @@
 
                 <LinearLayout
                     android:id="@+id/mypage_userinpolayout"
+                    android:layout_marginStart="16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -74,7 +74,7 @@
         <View
             android:id="@+id/inpo_review_view"
             android:layout_width="0dp"
-            android:layout_height="3dp"
+            android:layout_height="1dp"
             android:background="@color/black"
             app:layout_constraintTop_toBottomOf="@id/mypage_linearlayout"
             tools:ignore="MissingConstraints" />
@@ -146,8 +146,7 @@
         <View
             android:id="@+id/mypage_review_question_view"
             android:layout_width="0dp"
-            android:layout_height="3dp"
-            android:layout_marginTop="10dp"
+            android:layout_height="1dp"
             android:background="@color/black"
             app:layout_constraintTop_toBottomOf="@id/mypage_icon_gridlayout"
             tools:ignore="MissingConstraints" />
@@ -157,7 +156,6 @@
             android:id="@+id/bottom_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -165,7 +163,7 @@
 
             <TextView
                 android:id="@+id/mypage_question_textview"
-                style="@style/Font.20.Normal.Black"
+                style="@style/Font.18.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -176,14 +174,14 @@
             <View
                 android:id="@+id/mypage_question_appinpo_view"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/black"
+                android:layout_height="1dp"
+                android:background="@color/gray"
                 app:layout_constraintTop_toBottomOf="@id/mypage_question_textview" />
 
 
             <TextView
                 android:id="@+id/mypage_appinpo_textview"
-                style="@style/Font.20.Normal.Black"
+                style="@style/Font.18.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -194,12 +192,12 @@
             <View
                 android:id="@+id/mypage_appinpo_1dae1question_view"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/black" />
+                android:layout_height="1dp"
+                android:background="@color/gray" />
 
             <TextView
                 android:id="@+id/mypage_1dae1question_textview"
-                style="@style/Font.20.Normal.Black"
+                style="@style/Font.18.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -211,12 +209,12 @@
             <View
                 android:id="@+id/mypage_1dae1question_uesrinpo_view"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/black" />
+                android:layout_height="1dp"
+                android:background="@color/gray" />
 
             <TextView
                 android:id="@+id/mypage_userinpo_textview"
-                style="@style/Font.20.Normal.Black"
+                style="@style/Font.18.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -227,8 +225,8 @@
             <View
                 android:id="@+id/mypage_userinpo_logout_view"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/black" />
+                android:layout_height="1dp"
+                android:background="@color/gray" />
 
             <Button
                 android:id="@+id/mypage_logout_button"
@@ -245,6 +243,7 @@
                 android:layout_width="70dp"
                 android:layout_height="30dp"
                 android:layout_gravity="right"
+                android:textColor="@color/deactivated"
                 android:layout_marginTop="50dp"
                 android:text="@string/mypage_withdrawal"
                 android:textSize="15sp" />
