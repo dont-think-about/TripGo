@@ -63,14 +63,10 @@ class CalendarViewModel(
         val currentUser = calendarRepository.getCurrentUser()
         when (currentUser) {
             is FirebaseUser -> {
-                println(currentUser.email)
-                println(currentUser.isEmailVerified)
                 _loginStatus.value = CalendarLogInUiState(currentUser, true)
             }
 
             is Account -> {
-                println(currentUser.email)
-                println(currentUser.isEmailVerified)
                 _loginStatus.value = CalendarLogInUiState(currentUser, true)
             }
 

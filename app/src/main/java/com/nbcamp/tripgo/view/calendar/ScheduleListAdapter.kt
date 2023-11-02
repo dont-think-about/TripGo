@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.calendar
 
+import android.content.Context
 import android.graphics.Color
 import android.icu.util.Calendar
 import android.view.LayoutInflater
@@ -8,11 +9,13 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.databinding.ItemCalendarScheduleCardBinding
 import java.util.Locale
 
 class ScheduleListAdapter(
+    private val scheduleContext: Context,
     private val onClickItem: (CalendarEntity) -> Unit,
     private val onLongClickItem: (CalendarEntity) -> Unit,
 ) : ListAdapter<CalendarEntity, ScheduleListAdapter.ScheduleViewHolder>(DIFF_CALLBACK) {
@@ -24,6 +27,7 @@ class ScheduleListAdapter(
                 parent,
                 false
             ),
+            scheduleContext,
             onClickItem,
             onLongClickItem
         )
@@ -35,6 +39,7 @@ class ScheduleListAdapter(
 
     inner class ScheduleViewHolder(
         private val binding: ItemCalendarScheduleCardBinding,
+        private val scheduleContext: Context,
         private val onClickItem: (CalendarEntity) -> Unit,
         private val onLongClickItem: (CalendarEntity) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -47,12 +52,22 @@ class ScheduleListAdapter(
                 "$year${if (month < 10) "0$month" else "$month"}${if (day < 10) "0$day" else "$day"}"
             val isValid = model.endDate?.toInt()!! <= todayString.toInt()
             if (isValid) {
-                if (model.isReviewed == true) {
-                    itemCheckTextView.run {
-                        text = "리뷰 작성 됨"
-                        setTextColor(Color.RED)
+                when(model.isReviewed) {
+                    true -> {
+                        itemCheckTextView.run {
+                            text = scheduleContext.getString(R.string.already_written_review)
+                            setTextColor(Color.RED)
+                        }
                     }
+                    false -> {
+                        itemCheckTextView.run {
+                            text = scheduleContext.getString(R.string.possible_write_review)
+                            setTextColor(Color.GREEN)
+                        }
+                    }
+                    else -> Unit
                 }
+
                 itemView.setOnClickListener {
                     onClickItem(model)
                 }
