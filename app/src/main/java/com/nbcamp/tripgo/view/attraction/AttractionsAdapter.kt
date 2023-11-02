@@ -35,9 +35,9 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
 
         val a =
             Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(userLat)) *
-                Math.cos(Math.toRadians(mapy)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                    Math.cos(Math.toRadians(userLat)) *
+                    Math.cos(Math.toRadians(mapy)) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2)
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
         return R * c
@@ -84,7 +84,8 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
             }
             with(binding) {
                 attractionTitle.text = item.title
-                attractionAddress.text = item.addr1
+                attractionAddress.text =
+                    if (item.addr1.isNullOrEmpty()) itemView.context.getString(R.string.to_be_updated_later) else item.addr1
                 attractionPosition.text = binding.root.context.getString(
                     R.string.distance_from_my_location,
                     calculateDistance(
@@ -94,7 +95,7 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
                         userLon
                     ).toInt()
                 )
-                myImage.load(item.firstimage)
+                myImage.load(if (item.firstimage.isNullOrEmpty()) R.drawable.icon_main_logo else item.firstimage)
             }
         }
     }
