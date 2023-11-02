@@ -31,15 +31,12 @@ class TourSearchAdapter(
         userLon: Double
     ): Double {
         val R = 6371.0
-
         val dLat = Math.toRadians(mapy - userLat)
         val dLon = Math.toRadians(mapx - userLon)
-
         val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(mapy)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(mapy)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2)
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-
         return R * c
     } // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 
@@ -80,7 +77,8 @@ class TourSearchAdapter(
             itemView.setOnClickListener { onClickItem(item) }
             with(binding) {
                 tourTitle.text = item.title
-                tourAddress.text = item.addr1
+                tourAddress.text =
+                    if (item.addr1.isNullOrEmpty()) itemView.context.getString(R.string.to_be_updated_later) else item.addr1
                 tourContent.text = binding.root.context.getString(
                     R.string.distance_from_my_location,
                     calculateDistance(
@@ -90,8 +88,7 @@ class TourSearchAdapter(
                         userLon
                     ).toInt()
                 )
-
-                myImage.load(item.firstimage)
+                myImage.load(if (item.firstimage.isNullOrEmpty()) R.drawable.icon_main_logo else item.firstimage)
             }
         }
 
