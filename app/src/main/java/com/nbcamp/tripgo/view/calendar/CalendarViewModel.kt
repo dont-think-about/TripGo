@@ -4,6 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import java.util.Calendar
+import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import com.google.firebase.auth.FirebaseUser
 import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
@@ -12,10 +16,7 @@ import com.nbcamp.tripgo.view.calendar.uistate.CalendarLogInUiState
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
 import com.nbcamp.tripgo.view.calendar.uistate.RunDialogUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import java.util.Calendar
-import java.util.Locale
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+
 
 class CalendarViewModel(
     private val calendarRepository: CalendarRepository
@@ -188,7 +189,7 @@ class CalendarViewModel(
     fun changeScheduleListForThisMonth(
         date: CalendarDay?
     ) {
-        val changedMonth = if(date?.month!! < 10) "0${date.month}" else "${date.month}"
+        val changedMonth = if (date?.month!! < 10) "0${date.month}" else "${date.month}"
         val filteredSchedule = cachingSchedule?.filter {
             it.startDate?.chunked(4)?.last()?.chunked(2)
                 ?.first() == changedMonth || it.endDate?.chunked(4)?.last()?.chunked(2)

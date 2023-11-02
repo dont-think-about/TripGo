@@ -52,7 +52,7 @@ class ScheduleListAdapter(
                 "$year${if (month < 10) "0$month" else "$month"}${if (day < 10) "0$day" else "$day"}"
             val isValid = model.endDate?.toInt()!! <= todayString.toInt()
             if (isValid) {
-                when(model.isReviewed) {
+                when (model.isReviewed) {
                     true -> {
                         itemCheckTextView.run {
                             text = scheduleContext.getString(R.string.already_written_review)
