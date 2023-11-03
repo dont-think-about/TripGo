@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivitySignUpBinding
 import com.nbcamp.tripgo.view.login.LogInActivity
-import com.nbcamp.tripgo.view.login.PasswordFindFragment
 
 class SignUpActivity : AppCompatActivity() {
 

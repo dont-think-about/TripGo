@@ -3,21 +3,16 @@ package com.nbcamp.tripgo.view.signup
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentRulesBinding
-import java.util.regex.Pattern
 
 class RulesFragment : DialogFragment() {
     private var _binding: FragmentRulesBinding? = null
@@ -60,36 +55,6 @@ class RulesFragment : DialogFragment() {
                 val contentLineSort = content?.replace("*", "\n")
 
                 binding.rulesContentTextView.text = contentLineSort
-//                val redColor = Color.RED
-//
-//                val text = SpannableString(content)
-//                val pattern = "이용"
-//                val matcher = Pattern.compile(pattern).matcher(content)
-//
-//                while (matcher.find()) {
-//                    val start = matcher.start()
-//                    val end = matcher.end()
-//                    text.setSpan(ForegroundColorSpan(redColor), start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-//                }
-//
-//               binding.rulesContentTextView.text = text
-//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//                binding.rulesContentTextView.text = content
 
             }
         }?.addOnFailureListener { exception ->
