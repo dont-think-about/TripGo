@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.search
 
+import com.nbcamp.tripgo.data.model.travelerssegmentation.SegmentationItem
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 
 interface SearchRepository {
@@ -15,4 +16,10 @@ interface SearchRepository {
         contentTypeId: String,
         responseCount: Int
     ): List<KeywordSearchEntity>?
+
+    suspend fun getCalculationTravelers(
+        startDate: String,
+        endDate: String,
+        responseCount: Int
+    ): List<SegmentationItem>?
 }

@@ -7,6 +7,7 @@ import com.nbcamp.tripgo.data.model.festivals.FestivalResponseModel
 import com.nbcamp.tripgo.data.model.keywords.KeywordSearchResponseModel
 import com.nbcamp.tripgo.data.model.nearby.NearbyPlaceResponseModel
 import com.nbcamp.tripgo.data.model.travelers.TravelersCountResponseModel
+import com.nbcamp.tripgo.data.model.travelerssegmentation.TravelersSegmentation
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -22,6 +23,14 @@ interface TourApiService {
         @Query("startYmd") startDate: String,
         @Query("endYmd") endDate: String,
     ): Response<TravelersCountResponseModel>
+
+    @GET("DataLabService/locgoRegnVisitrDDList")
+    suspend fun getCalculationTravelerSegmentation(
+        @QueryMap defaultQuerySet: HashMap<String, String> = DEFAULT_QUERY_SET,
+        @Query("numOfRows") responseCount: Int,
+        @Query("startYmd") startDate: String,
+        @Query("endYmd") endDate: String,
+    ): Response<TravelersSegmentation>
 
     // 행사 정보 조회
     @GET("KorService1/searchFestival1")

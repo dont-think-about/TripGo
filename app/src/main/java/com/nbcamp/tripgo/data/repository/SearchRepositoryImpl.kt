@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.data.repository
 
+import com.nbcamp.tripgo.data.model.travelerssegmentation.SegmentationItem
 import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toKeywordSearchEntity
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 import com.nbcamp.tripgo.data.service.TourApiService
@@ -35,6 +36,33 @@ class SearchRepositoryImpl(
                     list.add(item.toKeywordSearchEntity())
                 }
                 return list
+            }
+        }
+        return emptyList()
+    }
+
+    override suspend fun getCalculationTravelers(
+        startDate: String,
+        endDate: String,
+        responseCount: Int
+    ): List<SegmentationItem>? {
+        val response = tourApiService.getCalculationTravelerSegmentation(
+            startDate = startDate,
+            endDate = endDate,
+            responseCount = responseCount
+        )
+
+        if (response.isSuccessful) {
+            response.body()?.let { travelerCountModel ->
+                val resultCode = travelerCountModel.response.header.resultCode
+                val items = travelerCountModel.response.body.items.segmentationItem
+                if (resultCode != "0000") {
+                    return null
+                }
+                if (items.isEmpty()) {
+                    return emptyList()
+                }
+                return items
             }
         }
         return emptyList()

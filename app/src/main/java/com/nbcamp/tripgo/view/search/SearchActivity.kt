@@ -1,12 +1,12 @@
 package com.nbcamp.tripgo.view.search
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
-import android.widget.RatingBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +28,7 @@ import com.kakao.vectormap.label.LabelStyles
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivitySearchBinding
 import com.nbcamp.tripgo.view.search.adapters.ViewPagerAdapter
+import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 
 class SearchActivity : AppCompatActivity() {
 
@@ -35,20 +36,26 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: SearchAdapter
-    private val searchViewModel: SearchViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels { SearchViewModelFactory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         mViewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
         binding.searchViewpager.adapter = mViewPagerAdapter
         binding.searchTabLayout.setupWithViewPager(binding.searchViewpager)
+        adapter = SearchAdapter(this)
+
+        searchViewModel.initAdapter(adapter)
 
         recyclerView = binding.searchRankRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = SearchAdapter(this)
         recyclerView.adapter = adapter
+        // RecyclerView 어댑터에 데이터 추가
+        searchViewModel.fetchViewPagerData()
+        adapter.clearItem()
 
         val searchBackImageView = findViewById<ImageView>(R.id.search_back)
         searchBackImageView.setOnClickListener {
@@ -56,8 +63,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchViewModel.pullData.observe(this) { pullDatalist ->
-            adapter.clearItem()
-            adapter.additem(pullDatalist)
 
             val totalLatitude = pullDatalist.map { it.latitude.toDouble() }.sum()
             val totalLongitude = pullDatalist.map { it.longitude.toDouble() }.sum()
@@ -70,7 +75,6 @@ class SearchActivity : AppCompatActivity() {
                 val detailLayout = findViewById<ConstraintLayout>(R.id.map_of_detail_item)
                 detailLayout.visibility = View.GONE
             }
-
             val mapView: MapView = findViewById(R.id.map_view)
             mapView.start(object : MapLifeCycleCallback() {
                 override fun onMapDestroy() {
@@ -86,29 +90,39 @@ class SearchActivity : AppCompatActivity() {
                         val clickedItem = pullDatalist.find {
                             it.latitude.toDouble() == label.position.latitude && it.longitude.toDouble() == label.position.longitude
                         }
-
                         if (clickedItem != null) {
                             val message = "${clickedItem.title} 클릭되었습니다."
-
                             // 레이아웃을 보이도록 설정
-                            val detailLayout = findViewById<ConstraintLayout>(R.id.map_of_detail_item)
+                            val detailLayout =
+                                findViewById<ConstraintLayout>(R.id.map_of_detail_item)
                             detailLayout.visibility = View.VISIBLE
 
                             val mapImage = findViewById<ImageView>(R.id.map_item_image)
                             val imageUrl = clickedItem.imageUrl
-
-                            mapImage.load(imageUrl) {
+                            val detailMoveButton =
+                                findViewById<Button>(R.id.move_to_detail_button)
+                            detailMoveButton.setOnClickListener {
+                                startActivity(
+                                    Intent(
+                                        this@SearchActivity,
+                                        TourDetailActivity::class.java
+                                    ).apply {
+                                        putExtra("contentId", clickedItem.contentId)
+                                    }
+                                )
                             }
-
+                            mapImage.load(imageUrl) {
+                                placeholder(R.drawable.icon_main)
+                                error(R.drawable.icon_main)
+                            }
                             // 나머지 처리 (예: TextView에 데이터 설정 등)
                             val titleTextView = findViewById<AppCompatTextView>(R.id.map_item_title)
                             titleTextView.text = clickedItem.title
 
-                            val addressTextView = findViewById<AppCompatTextView>(R.id.map_item_address)
+                            val addressTextView =
+                                findViewById<AppCompatTextView>(R.id.map_item_address)
                             addressTextView.text = clickedItem.address
 
-//                            val ratingBar = findViewById<RatingBar>(R.id.review_detail_rating_bar)
-//                            ratingBar.rating = clickedItem.rating.toFloat()
                             Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
 
                         } else {
@@ -116,8 +130,6 @@ class SearchActivity : AppCompatActivity() {
                             Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
                         }
                     }
-
-
                     val position = LatLng.from(
                         centerLatitude,
                         centerLongitude
@@ -146,7 +158,6 @@ class SearchActivity : AppCompatActivity() {
 
                         val layer = kakaoMap.labelManager?.layer
                         val label: Label = layer!!.addLabel(options)
-
                     }
                 }
             })
