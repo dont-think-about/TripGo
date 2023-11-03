@@ -61,11 +61,11 @@ class MyPageFragment : Fragment() {
         val emailText = view.findViewById<TextView>(R.id.mypage_signin_up_inpo)
         val nicknameText = view.findViewById<TextView>(R.id.mypage_signin_up_text)
 
-        dbinpo = when{
-            kakaouser == null -> firestoredb.collection("users")?.document(userEmail.toString())
-            kakaouser != null -> firestoredb.collection("users")?.document(kakaouser.toString())
-        else ->{
-            return
+        dbinpo = when {
+            kakaouser == null -> firestoredb.collection("users").document(userEmail.toString())
+            kakaouser != null -> firestoredb.collection("users").document(kakaouser.toString())
+            else -> {
+                return
             }
         }
 
