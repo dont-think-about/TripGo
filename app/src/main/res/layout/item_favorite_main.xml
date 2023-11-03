@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,12 +14,14 @@
         android:orientation="horizontal"
         tools:ignore="MissingConstraints">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/favorite_item_imageview"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:adjustViewBounds="true"
-            android:src="@drawable/icon_user" />
+            android:src="@drawable/icon_user"
+            android:importantForAccessibility="yes"
+            android:contentDescription="Image Description" />
 
         <LinearLayout
             android:id="@+id/favorite_item_region_inpo_layout"
@@ -27,36 +31,40 @@
             android:layout_weight="3"
             android:orientation="vertical">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/favorite_item_region_name_textview"
-                style="@style/Font.20.Normal.Black"
+                style="@style/Font.18.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/favorite_item_region_name" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/favorite_item_region_explantion_textivew"
-                style="@style/Font.16.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/favorite_item_region_explantion" />
+                android:text="@string/favorite_item_region_explantion"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/favorite_item_region_distance_textview"
-                style="@style/Font.16.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/favorite_item_region_distance"
-                android:textColor="@color/deactivated" />
+                android:textColor="@color/deactivated"
+                android:maxLines="1"
+                android:ellipsize="end" />
         </LinearLayout>
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/favorite_item_zzim_imageview"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:padding="12dp"
-            android:src="@drawable/icon_empty_favorite" />
+            android:src="@drawable/selector_button_heart" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

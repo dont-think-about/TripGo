@@ -126,6 +126,7 @@ class LogInActivity : AppCompatActivity() {
                     }
                 } else {
                     Toast.makeText(this, "로그인 실패.", Toast.LENGTH_SHORT).show()
+                    authResult.exception?.localizedMessage?.let { Log.d("TEST!", it) }
                 }
             }
     }
