@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.databinding.TourRecyclerviewItemBinding
 
@@ -26,6 +27,7 @@ class TourAdapter(
 
     private var userLat = 0.0 // 사용자 위도
     private var userLon = 0.0 // 사용자 경도
+
     fun setUserLocation(lat: Double, lon: Double) {
         userLat = lat
         userLon = lon
@@ -39,15 +41,12 @@ class TourAdapter(
         userLon: Double
     ): Double {
         val R = 6371.0
-
         val dLat = Math.toRadians(mapy - userLat)
         val dLon = Math.toRadians(mapx - userLon)
-
         val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(mapy)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+                Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(mapy)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2)
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-
         return R * c
     } // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 
@@ -72,17 +71,16 @@ class TourAdapter(
         private val onClickItem: (FestivalItem) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FestivalItem) {
-
             itemView.setOnClickListener {
                 onClickItem(item)
             }
             with(binding) {
                 tourTitle.text = item.title
-                tourAddress.text = item.addr1
+                tourAddress.text =
+                    if (item.addr1.isNullOrEmpty()) itemView.context.getString(R.string.to_be_updated_later) else item.addr1
                 tourContent.text =
                     "${formatDate(item.eventstartdate)} ~ ${formatDate(item.eventenddate)}"
-
-                myImage.load(item.firstimage)
+                myImage.load(if (item.firstimage.isNullOrEmpty()) R.drawable.icon_main_logo else item.firstimage)
             }
         }
 

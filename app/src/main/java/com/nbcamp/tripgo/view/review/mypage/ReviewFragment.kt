@@ -1,7 +1,6 @@
 package com.nbcamp.tripgo.view.review.mypage
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,22 +12,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.view.App
 
 class ReviewFragment : Fragment() {
+
+    private val auth = FirebaseAuth.getInstance()
+    private val fireStoreDb = FirebaseFirestore.getInstance()
+    private val kakaoUser = App.kakaoUser?.email
+    private val reviewItems = ArrayList<ReviewItem>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_review, container, false)
-
-        // Firebase 데이터 불러오는 부분
-        suchdata(view) // suchdata 함수를 onCreateView 내에서 호출
-
+        val recyclerView = view.findViewById<RecyclerView>(R.id.review_recycler_view)
+        val reviewAdapter = ReviewAdapter()
+        recyclerView.adapter = reviewAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        fetchReviewData()
         return view
     }
 
@@ -39,52 +44,44 @@ class ReviewFragment : Fragment() {
         view.findViewById<TextView>(R.id.review_title_text_view).text = "내 후기"
     }
 
-    companion object {
-        fun newInstance() = ReviewFragment()
-
-        const val TAG = "REVIEW_FRAGMENT"
-    }
-
-    // suchdata 함수는 Fragment 클래스 내에 멤버 함수로 정의
-    private fun suchdata(view: View) {
-        val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
-        val userEmail = user?.email
-        var realstoredb: CollectionReference? = null
-        val firestoredb = FirebaseFirestore.getInstance()
-        val kakaouser = App.kakaoUser?.email
-        if (kakaouser == null) {
-            realstoredb = firestoredb.collection("reviews").document(userEmail.toString()).collection("review")
-            Log.d(ReviewFragment.TAG, "구글 계정 연결 완료(Review)")
-        } else if (kakaouser != null) {
-            realstoredb = firestoredb.collection("reviews").document(kakaouser.toString()).collection("review")
-            Log.d(ReviewFragment.TAG, "카카오 계정 연결 완료 (Review)")
-        } else {
-            Log.d(ReviewFragment.TAG, "둘다 로그인 불가")
+    private fun fetchReviewData() {
+        val userEmail = auth.currentUser?.email
+        var reviewCollectionRef = userEmail?.let {
+            fireStoreDb.collection("reviews").document(it).collection("review")
+        }
+        if (kakaoUser != null) {
+            reviewCollectionRef =
+                fireStoreDb.collection("reviews").document(kakaoUser).collection("review")
         }
 
-        realstoredb?.get()?.addOnSuccessListener { querySnapshot ->
+        reviewCollectionRef?.get()?.addOnSuccessListener { querySnapshot ->
             if (!querySnapshot.isEmpty) {
-                val reviewItems = ArrayList<ReviewItem>()
-                for (document in querySnapshot) {
+                querySnapshot.forEach { document ->
                     val reviewData = document.data
                     val reviewTitle = reviewData["tourTitle"] as? String ?: ""
                     val reviewDate = reviewData["schedule"] as? String ?: ""
                     val reviewWriting = (reviewData["rating"] as? Double)?.toFloat() ?: 0.0f
-                    val reviewDescription = reviewData["/* 물어보기*/"] as? String ?: "" // 리뷰쓴내용
-                    val reviewImageUrl = reviewData["reviewImageUrl"] as? String ?: ""
-
-                    val reviewItem = ReviewItem(reviewTitle, reviewDate, reviewWriting, reviewDescription, reviewImageUrl)
+                    val reviewText = reviewData["reviewText"] as? String ?: ""
+                    val reviewImageUrl = reviewData["reviewImageUrl"] as String
+                    val reviewItem = ReviewItem(
+                        reviewTitle,
+                        reviewDate,
+                        reviewWriting,
+                        reviewText,
+                        reviewImageUrl
+                    )
                     reviewItems.add(reviewItem)
                 }
-
-                val recyclerView = view.findViewById<RecyclerView>(R.id.review_recycler_view)
-                val reviewAdapter = ReviewAdapter()
-                reviewAdapter.setData(reviewItems)
-
-                recyclerView.adapter = reviewAdapter
-                recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                (view?.findViewById<RecyclerView>(R.id.review_recycler_view)?.adapter as? ReviewAdapter)?.setData(
+                    reviewItems
+                )
             }
         }
+    }
+
+    companion object {
+        fun newInstance() = ReviewFragment()
+
+        const val TAG = "REVIEW_FRAGMENT"
     }
 }

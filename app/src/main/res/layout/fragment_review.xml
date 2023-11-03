@@ -12,10 +12,11 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/review_title_text_view"
-            style="@style/Font.22.Bold.Black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
+            style="@style/Font.20.Bold.Black"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:layout_marginStart="16dp"
+            android:gravity="center_vertical"
             android:text="@string/reviews"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -53,8 +54,8 @@
                     android:layout_margin="10dp"
                     android:backgroundTint="@color/light_deactivated"
                     android:text="@string/region"
-                    app:chipEndPadding="15dp"
-                    app:chipStartPadding="15dp"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp"
                     app:rippleColor="@color/deactivated" />
 
                 <com.google.android.material.chip.Chip
@@ -65,8 +66,8 @@
                     android:layout_margin="10dp"
                     android:backgroundTint="@color/light_deactivated"
                     android:text="@string/gender"
-                    app:chipEndPadding="15dp"
-                    app:chipStartPadding="15dp"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp"
                     app:rippleColor="@color/deactivated" />
 
                 <com.google.android.material.chip.Chip
@@ -77,8 +78,8 @@
                     android:layout_margin="10dp"
                     android:backgroundTint="@color/light_deactivated"
                     android:text="@string/age"
-                    app:chipEndPadding="15dp"
-                    app:chipStartPadding="15dp"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp"
                     app:rippleColor="@color/deactivated" />
 
                 <com.google.android.material.chip.Chip
@@ -89,8 +90,8 @@
                     android:layout_margin="10dp"
                     android:backgroundTint="@color/light_deactivated"
                     android:text="@string/companion"
-                    app:chipEndPadding="15dp"
-                    app:chipStartPadding="15dp"
+                    app:chipEndPadding="8dp"
+                    app:chipStartPadding="8dp"
                     app:rippleColor="@color/deactivated" />
 
             </com.google.android.material.chip.ChipGroup>

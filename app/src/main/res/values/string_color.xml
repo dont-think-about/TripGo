@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="region_background">#ECF7FB</string>
+    <string name="region_text">#006198</string>
+    <string name="other_background">#F2F3F7</string>
+    <string name="other_text">#4D515A</string>
+</resources>

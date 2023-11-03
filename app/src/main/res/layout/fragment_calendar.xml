@@ -9,10 +9,10 @@
     <LinearLayout
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="?actionBarSize"
+        android:layout_marginStart="16dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,9 +20,9 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tour_main_title"
             style="@style/Font.20.Bold.Black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:text="@string/calendar" />
 
     </LinearLayout>
@@ -61,7 +61,7 @@
                 style="@style/Font.20.Bold.Black"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="16dp"
                 android:text="@string/my_current_schedule"
                 app:layout_constraintBottom_toTopOf="@id/calendar_schedule_recycler_view"
                 app:layout_constraintStart_toStartOf="parent"
