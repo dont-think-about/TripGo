@@ -100,8 +100,8 @@
                         style="@style/Font.16.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="60dp"
-                        android:backgroundTint="@color/main"
                         android:layout_marginStart="10dp"
+                        android:backgroundTint="@color/main"
                         android:enabled="true"
                         android:text="@string/double_check" />
 
@@ -161,8 +161,8 @@
                         style="@style/Font.16.Normal.Black"
                         android:layout_width="wrap_content"
                         android:layout_height="60dp"
-                        android:backgroundTint="@color/main"
                         android:layout_marginStart="10dp"
+                        android:backgroundTint="@color/main"
                         android:enabled="true"
                         android:text="@string/double_check" />
 
@@ -219,6 +219,7 @@
                     android:id="@+id/sign_up_correct_password_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/background_edit_text"
                     android:orientation="vertical"
                     android:paddingStart="10dp"
@@ -234,7 +235,8 @@
                         android:hint="@string/correct_password"
                         android:inputType="textPassword"
                         android:maxLength="20"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:text="@={viewModel.passwordCorrect}" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/sign_up_correct_password_error_text_view"
@@ -465,6 +467,7 @@
                     android:layout_marginTop="25dp"
                     android:layout_marginBottom="50dp"
                     android:backgroundTint="@color/main"
+                    android:enabled="false"
                     android:onClick="@{() -> viewModel.signUpComplete()}"
                     android:text="@string/sign_up_complete" />
 

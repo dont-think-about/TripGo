@@ -52,6 +52,7 @@ class CalendarFragment : Fragment() {
     private val sharedViewModel: MainViewModel by activityViewModels()
     private val scheduleListAdapter by lazy {
         ScheduleListAdapter(
+            requireActivity(),
             // 짧게 클릭 하면 리뷰 작성 or 수정
             onClickItem = { model ->
                 runDialogForReviewWriting(model)
@@ -65,7 +66,7 @@ class CalendarFragment : Fragment() {
 
     /**
      *  스와이프를 했을 때 내가 일정 저장한 상세 페이지로 들어 갈 수 있도록 하고
-     *  그곳에서 일정을 수정 할 수 있도록 함
+     *  그 곳에서 일정을 수정 할 수 있도록 함
      */
     private val modifyScheduleSwipeHandler by lazy {
         object : SwipeToEditCallback(requireActivity()) {
