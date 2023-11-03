@@ -191,14 +191,14 @@
                 android:background="@color/gray" />
 
             <TextView
-                android:id="@+id/mypage_1dae1question_textview"
+                android:id="@+id/mypage_opensource_textview"
                 style="@style/Font.20.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="@string/mypage_1dae1_question" />
+                android:text="@string/mypage_open_source_license" />
 
             <View
                 android:id="@+id/mypage_1dae1question_uesrinpo_view"

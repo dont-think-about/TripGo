@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
@@ -37,12 +38,14 @@ class MyPageFragment : Fragment() {
         val zzimLayout = view.findViewById<LinearLayout>(R.id.mypage_zzim_layout)
         val logoutButton = view.findViewById<Button>(R.id.mypage_logout_button)
         val userLayout = view.findViewById<LinearLayout>(R.id.mypage_userlayout)
+        val openSourceLicenseTextView = view.findViewById<TextView>(R.id.mypage_opensource_textview)
 
 
         reviewLayout.setOnClickListener { navigateToFragment(ReviewFragment()) }
         zzimLayout.setOnClickListener { navigateToFragment(FavoriteFragment()) }
         logoutButton.setOnClickListener { logout() }
         userLayout.setOnClickListener { showUserDialog() }
+        openSourceLicenseTextView.setOnClickListener { runOpenSourceDialog() }
 
         // Firebase 정보 가져오고 UI 업데이트
         fetchFirebaseDataAndUIUpdate(view)
@@ -105,6 +108,15 @@ class MyPageFragment : Fragment() {
     private fun showUserDialog() {
         val myPageDialog = MyPageDialog(requireContext())
         myPageDialog.show(parentFragmentManager, dialogTag)
+    }
+
+    private fun runOpenSourceDialog() {
+        AlertDialog.Builder(requireActivity())
+            .setView(R.layout.dialog_opensource)
+            .setTitle("오픈소스 라이센스")
+            .setPositiveButton("확인"){_, _ ->}
+            .create()
+            .show()
     }
 
     companion object {
