@@ -73,6 +73,10 @@ class AttractionsFragment : Fragment() {
             Log.d("키워드", "값 = $state")
             searchViewModel.sendSearchData(state.list)
         }
+        // 전달받은 아이템 정보를 화면에 표시
+        val clickedItem = arguments?.getString("clickedItem")
+// clickedItem을 화면에 표시하는 EditText에 설정
+        binding.attractionsSearchEdit.setText(clickedItem)
     }
 
     // 키보드를 숨기는 메서드

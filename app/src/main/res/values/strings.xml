@@ -180,5 +180,6 @@
     <string name="request_location_permission">위치 권한을 요청 합니다.</string>
     <string name="load_location_information">위치 정보를 불러 옵니다.</string>
     <string name="cannot_change_location_settings">위치 설정을 변경할 수 없습니다.</string>
+    <string name="go_to_check">확인 하러가기</string>
 
 </resources>
