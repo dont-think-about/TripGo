@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivitySignUpBinding
 import com.nbcamp.tripgo.view.login.LogInActivity
+import com.nbcamp.tripgo.view.login.PasswordFindFragment
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -31,6 +32,7 @@ class SignUpActivity : AppCompatActivity() {
         initViewModel()
         initView()
         editTextMemberInformation()
+        rules()
     }
 
     private fun initView() = binding.apply {
@@ -80,7 +82,6 @@ class SignUpActivity : AppCompatActivity() {
             startActivity(Intent(this@SignUpActivity, LogInActivity::class.java))
             finish()
         }
-
     }
 
     private fun initViewModel() {
@@ -98,7 +99,6 @@ class SignUpActivity : AppCompatActivity() {
                 binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text_error)
                 binding.signUpEmailErrorDuplicationTextView.visibility = View.VISIBLE
                 emailCheck = false
-
             } else {
                 binding.signUpEmailLayout.setBackgroundResource(R.drawable.background_edit_text_correct)
                 binding.signUpEmailErrorDuplicationTextView.visibility = View.GONE
@@ -207,5 +207,22 @@ class SignUpActivity : AppCompatActivity() {
                 signUpSignUpCompleteButton.isEnabled = false
             }
         }
+    }
+
+    private fun rules() = binding.apply {
+        signUpRulesTermsOfUseTextView.setOnClickListener {
+            showFullDialog("terms")
+        }
+        signUpRulesPrivacyPolicyTextView.setOnClickListener {
+            showFullDialog("privacy")
+        }
+    }
+
+    private fun showFullDialog(data: String) {
+        val dialogFragment = RulesFragment()
+        val args = Bundle()
+        args.putString("data", data)
+        dialogFragment.arguments = args
+        dialogFragment.show(supportFragmentManager, null)
     }
 }
