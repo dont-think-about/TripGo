@@ -36,12 +36,16 @@ interface HomeRepository {
     /**
      * @param date 날짜
      * @param time 시간
+     * @param x 초 단기 예보 지점 좌표(x)
+     * @param y 초 단기 예보 지점 좌표(y)
      *
      * @return 특정 시간의 날씨 정보
      */
     suspend fun getTodayWeather(
         date: String,
-        time: String
+        time: String,
+        x: Double,
+        y: Double,
     ): WeatherEntity?
 
     /**

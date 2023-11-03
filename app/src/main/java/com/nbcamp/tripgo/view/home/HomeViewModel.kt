@@ -16,17 +16,23 @@ import com.nbcamp.tripgo.view.home.uistate.HomeNearbyPlaceUiState
 import com.nbcamp.tripgo.view.home.uistate.HomeProvincePlaceUiState
 import com.nbcamp.tripgo.view.home.uistate.HomeWeatherUiState
 import com.nbcamp.tripgo.view.home.valuetype.AreaCode
+import com.nbcamp.tripgo.view.home.valuetype.LatXLngY
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import java.lang.Math.PI
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.math.atan2
 import kotlin.math.cos
+import kotlin.math.floor
+import kotlin.math.ln
+import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
+import kotlin.math.tan
 import kotlin.random.Random
 
 class HomeViewModel(
@@ -97,12 +103,18 @@ class HomeViewModel(
         }
     }
 
-    fun getPlaceByTodayWeather() {
+    fun getPlaceByTodayWeather(location: Location) {
         _weatherSearchUiState.value = HomeWeatherUiState.initialize()
         viewModelScope.launch(Dispatchers.IO) {
             val today = getTodayInfo()
+            val getXY = convertLatLngToXY(location.latitude, location.longitude)
             runCatching {
-                val todayWeather = homeRepository.getTodayWeather(today.first, today.second)
+                val todayWeather = homeRepository.getTodayWeather(
+                    today.first,
+                    today.second,
+                    getXY.x,
+                    getXY.y
+                )
                 when (todayWeather?.weatherType) {
                     WeatherType.SUNNY -> {
                         val entity = runSearchByKeyword(
@@ -284,6 +296,33 @@ class HomeViewModel(
         thread.interrupt()
     }
 
+    private fun convertLatLngToXY(latitude: Double, longitude: Double): LatXLngY {
+        // LCC DFS 좌표변환 ( code : "TO_GRID"(위경도->좌표, lat_X:위도,  lng_Y:경도), "TO_GPS"(좌표->위경도,  lat_X:x, lng_Y:y) )
+        val re = EARTH_RADIUS / GRID
+        val slat1 = SLAT1 * GRAD
+        val slat2 = SLAT2 * GRAD
+        val lon = LON * GRAD
+        val lat = LAT * GRAD
+        var sn = tan(PI * 0.25 + slat2 * 0.5) / tan(PI * 0.25 + slat1 * 0.5)
+        sn = ln(cos(slat1) / cos(slat2)) / ln(sn)
+        var sf = tan(PI * 0.25 + slat1 * 0.5)
+        sf = sf.pow(sn) * cos(slat1) / sn
+        var ro = tan(PI * 0.25 + lat * 0.5)
+        ro = re * sf / ro.pow(sn)
+        val rs = LatXLngY()
+
+        var ra = tan(PI * 0.25 + latitude * GRAD * 0.5)
+        ra = re * sf / ra.pow(sn)
+        var theta = longitude * GRAD - lon
+        if (theta > PI) theta -= 2.0 * PI
+        if (theta < -PI) theta += 2.0 * PI
+        theta *= sn
+        rs.x = floor(ra * sin(theta) + XO + 0.5)
+        rs.y = floor(ro - ra * cos(theta) + YO + 0.5)
+
+        return rs
+    }
+
     inner class PagerRunnable : Runnable {
         override fun run() {
             while (true) {
@@ -299,5 +338,13 @@ class HomeViewModel(
 
     companion object {
         const val EARTH_RADIUS = 6371
+        const val GRID = 5.0 // 격자 간격(km)
+        const val SLAT1 = 30.0 // 투영 위도1(degree)
+        const val SLAT2 = 60.0 // 투영 위도2(degree)
+        const val LON = 126.0 // 기준점 경도(degree)
+        const val LAT = 38.0 // 기준점 위도(degree)
+        const val XO = 43.0 // 기준점 X좌표(GRID)
+        const val YO = 136.0 // 기준점 Y좌표(GRID)
+        const val GRAD = PI / 180.0 // 라디안
     }
 }
