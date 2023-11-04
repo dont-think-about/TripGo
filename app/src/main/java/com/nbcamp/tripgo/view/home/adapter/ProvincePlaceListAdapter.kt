@@ -47,7 +47,7 @@ class ProvincePlaceListAdapter(
                 onClickItem(model)
             }
             itemTitleTextView.text = model.name
-            "$str" + context.getString(R.string.many_tour_place).also {
+            ("$str" + context.getString(R.string.many_tour_place)).also {
                 itemDescriptionTextView.text = it
             }
             // 이미지가 없을 떄 텍스트 색 바꾸기
