@@ -14,13 +14,13 @@ interface WeatherService {
         @QueryMap querySet: HashMap<String, String> = DEFAULT_QUERY_SET,
         @Query("base_date") date: String,
         @Query("base_time") time: String,
+        @Query("nx") x: String,
+        @Query("ny") y: String
     ): Response<WeatherResponseModel>
     companion object {
         val DEFAULT_QUERY_SET = hashMapOf(
             "ServiceKey" to BuildConfig.TOUR_API_KEY,
             "dataType" to "JSON",
-            "nx" to "60",
-            "ny" to "126"
         )
     }
 }

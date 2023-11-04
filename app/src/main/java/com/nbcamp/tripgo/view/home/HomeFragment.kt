@@ -97,6 +97,7 @@ class HomeFragment : Fragment() {
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
         cancellationTokenSource = CancellationTokenSource()
+        checkLocationPermissions()
     }
 
     private fun initViews() = with(binding) {
@@ -139,14 +140,10 @@ class HomeFragment : Fragment() {
     private fun initViewModel() = with(homeViewModel) {
         // viewpager 데이터 가져오기
         homeViewModel.run {
-
             fetchViewPagerData()
             autoSlideViewPager()
-            getPlaceByTodayWeather()
-
             getProvincePlace()
         }
-        checkLocationPermissions()
 
         festivalUiState.observe(viewLifecycleOwner) { state ->
             with(binding) {
@@ -196,7 +193,10 @@ class HomeFragment : Fragment() {
                 locationForScrollListener = location
                 App.latitude = location.latitude
                 App.longitude = location.longitude
-                homeViewModel.getNearbyPlaceList(location, nearbyPageNumber)
+                homeViewModel.run {
+                    getNearbyPlaceList(location, nearbyPageNumber)
+                    getPlaceByTodayWeather(location)
+                }
             }
         }
     }
@@ -279,7 +279,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        //   homeViewModel.stopSlideViewPager()
+        homeViewModel.stopSlideViewPager()
         _binding = null
     }
 

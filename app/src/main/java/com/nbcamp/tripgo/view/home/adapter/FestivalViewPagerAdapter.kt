@@ -1,7 +1,9 @@
 package com.nbcamp.tripgo.view.home.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -32,13 +34,26 @@ class FestivalViewPagerAdapter :
         private val binding: ItemMainFestivalCardBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(model: FestivalEntity) = with(binding) {
-            itemMainImageView.load(model.imageUrl, App.imageLoader) {
-                placeholder(R.drawable.icon_camping)
-                memoryCachePolicy(CachePolicy.ENABLED)
-                diskCachePolicy(CachePolicy.ENABLED)
-            }
             itemTitleTextView.text = model.title
             "${model.startDate} ~ ${model.endDate}".also { itemDescriptionTextView.text = it }
+            when {
+                model.imageUrl.isEmpty() -> {
+                    itemMainImageView.scaleType = ImageView.ScaleType.CENTER
+                    itemMainImageView.load(R.drawable.icon_no_image)
+                    itemTitleTextView.setTextColor(Color.BLACK)
+                    itemDescriptionTextView.setTextColor(Color.BLACK)
+                }
+                else -> {
+                    itemMainImageView.scaleType = ImageView.ScaleType.FIT_XY
+                    itemMainImageView.load(model.imageUrl, App.imageLoader) {
+                        placeholder(R.drawable.icon_main_logo)
+                        memoryCachePolicy(CachePolicy.ENABLED)
+                        diskCachePolicy(CachePolicy.ENABLED)
+                    }
+                    itemTitleTextView.setTextColor(Color.WHITE)
+                    itemDescriptionTextView.setTextColor(Color.WHITE)
+                }
+            }
         }
     }
 

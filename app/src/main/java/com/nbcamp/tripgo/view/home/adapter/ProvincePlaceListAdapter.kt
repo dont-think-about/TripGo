@@ -1,8 +1,10 @@
 package com.nbcamp.tripgo.view.home.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -48,9 +50,24 @@ class ProvincePlaceListAdapter(
             "$str" + context.getString(R.string.many_tour_place).also {
                 itemDescriptionTextView.text = it
             }
-            itemMainImageView.load(model.imageUrl, App.imageLoader) {
-                memoryCachePolicy(CachePolicy.ENABLED)
-                diskCachePolicy(CachePolicy.ENABLED)
+            // 이미지가 없을 떄 텍스트 색 바꾸기
+            when {
+                model.imageUrl.isEmpty() -> {
+                    itemMainImageView.scaleType = ImageView.ScaleType.CENTER
+                    itemMainImageView.load(R.drawable.icon_no_image)
+                    itemTitleTextView.setTextColor(Color.BLACK)
+                    itemDescriptionTextView.setTextColor(Color.BLACK)
+                }
+                else -> {
+                    itemMainImageView.scaleType = ImageView.ScaleType.FIT_XY
+                    itemMainImageView.load(model.imageUrl, App.imageLoader) {
+                        placeholder(R.drawable.icon_main_logo)
+                        memoryCachePolicy(CachePolicy.ENABLED)
+                        diskCachePolicy(CachePolicy.ENABLED)
+                    }
+                    itemTitleTextView.setTextColor(Color.WHITE)
+                    itemDescriptionTextView.setTextColor(Color.WHITE)
+                }
             }
         }
     }

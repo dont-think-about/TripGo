@@ -80,11 +80,15 @@ class HomeRepositoryImpl(
 
     override suspend fun getTodayWeather(
         date: String,
-        time: String
+        time: String,
+        x: Double,
+        y: Double
     ): WeatherEntity? {
         val response = weatherApiService.getTodayWeather(
             date = date,
-            time = time
+            time = time,
+            x = x.toInt().toString(),
+            y = y.toInt().toString()
         )
 
         if (response.isSuccessful) {
