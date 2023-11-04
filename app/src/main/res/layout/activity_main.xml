@@ -15,9 +15,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        app:layout_constraintBottom_toTopOf="@id/main_bottom_navigation"
+        android:background="@color/gray"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/main_bottom_navigation"
         android:layout_width="match_parent"
+        android:elevation="3dp"
         android:layout_height="wrap_content"
         android:background="@color/white"
         app:itemActiveIndicatorStyle="@android:color/transparent"
