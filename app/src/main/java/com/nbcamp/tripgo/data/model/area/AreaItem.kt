@@ -1,5 +1,9 @@
 package com.nbcamp.tripgo.data.model.area
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class AreaItem(
     val addr1: String,
     val addr2: String,
@@ -22,4 +26,4 @@ data class AreaItem(
     val tel: String,
     val title: String,
     val zipcode: String
-)
+) : Parcelable
