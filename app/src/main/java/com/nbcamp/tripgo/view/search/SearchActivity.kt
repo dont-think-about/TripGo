@@ -53,6 +53,7 @@ class SearchActivity : AppCompatActivity() {
         recyclerView = binding.searchRankRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
+
         // RecyclerView 어댑터에 데이터 추가
         searchViewModel.fetchViewPagerData()
         adapter.clearItem()
@@ -61,9 +62,12 @@ class SearchActivity : AppCompatActivity() {
         searchBackImageView.setOnClickListener {
             finish()
         }
+        searchViewModel.rankList.observe(this) { pullRankList ->
+            adapter.additem(pullRankList)
+        }
 
         searchViewModel.pullData.observe(this) { pullDatalist ->
-
+        Log.d("데이터45","$pullDatalist")
             val totalLatitude = pullDatalist.map { it.latitude.toDouble() }.sum()
             val totalLongitude = pullDatalist.map { it.longitude.toDouble() }.sum()
             val centerLatitude = totalLatitude / pullDatalist.size

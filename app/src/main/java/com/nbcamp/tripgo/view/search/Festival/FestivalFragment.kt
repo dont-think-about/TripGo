@@ -1,5 +1,7 @@
 package com.nbcamp.tripgo.view.search.Festival
 
+import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -9,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,10 +21,12 @@ import com.nbcamp.tripgo.databinding.FragmentSearchFestivalBinding
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.search.SearchKeywordUiState
 import com.nbcamp.tripgo.view.search.SearchViewModel
+import java.util.Calendar
+import kotlin.random.Random
 
 // 축제
 class FestivalFragment : Fragment() {
-
+    private lateinit var startDateString: String
     private val viewModel: FestivalViewModel by viewModels { FestivalViewModelFactory() }
     private val searchViewModel: SearchViewModel by activityViewModels()
     private var _binding: FragmentSearchFestivalBinding? = null
@@ -54,10 +59,32 @@ class FestivalFragment : Fragment() {
         // 검색 버튼(ImageView) 클릭 시 동작 설정
         binding.festivalSearchOk.setOnClickListener {
             val searchText = binding.festivalSearchEdit.text.toString()
-            viewModel.fetchSearchResult(keyword = searchText)
+            if (::startDateString.isInitialized.not()){
+                Toast.makeText(context, "날짜를 입력해주세요!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            viewModel.fetchSearchResult(keyword = searchText, startDate = startDateString)
             hideKeyboard() // 키보드 숨김
         }
-
+        binding.festivalSearchWeather.setOnClickListener {
+            val cal = Calendar.getInstance()
+            val dateSetListener =
+                DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                    Log.d("날짜", "$year, $month, $dayOfMonth")
+                    val monthStr = if (month < 10) "0${month+1}" else "${month+1}"
+                    val dayOfMonthStr = if (dayOfMonth < 10) "0$dayOfMonth" else "$dayOfMonth"
+                    startDateString = "$year$monthStr$dayOfMonthStr"
+                    binding.festivalSearchWeather.text = "$year-$monthStr-$dayOfMonthStr"
+                }
+            DatePickerDialog(
+                requireActivity(),
+                AlertDialog.THEME_HOLO_LIGHT,
+                dateSetListener,
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
         // 'FestivalSearchCloseImage' 클릭 시 EditText 내용을 지웁니다.
         binding.festivalSearchCloseImage.setOnClickListener {
             binding.festivalSearchEdit.text?.clear()
