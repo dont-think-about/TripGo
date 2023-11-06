@@ -1,5 +1,7 @@
 package com.nbcamp.tripgo.data.repository
 
+import com.nbcamp.tripgo.data.model.festivals.FestivalItem
+import com.nbcamp.tripgo.data.model.festivals.FestivalResponseModel
 import com.nbcamp.tripgo.data.model.travelerssegmentation.SegmentationItem
 import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toKeywordSearchEntity
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
@@ -56,6 +58,30 @@ class SearchRepositoryImpl(
             response.body()?.let { travelerCountModel ->
                 val resultCode = travelerCountModel.response.header.resultCode
                 val items = travelerCountModel.response.body.items.segmentationItem
+                if (resultCode != "0000") {
+                    return null
+                }
+                if (items.isEmpty()) {
+                    return emptyList()
+                }
+                return items
+            }
+        }
+        return emptyList()
+    }
+
+    override suspend fun getFestivalBySearch(
+        startDate: String,
+        responseCount: Int
+    ): List<FestivalItem>? {
+        val response = tourApiService.getFestivalInThisMonth(
+            startDate = startDate,
+            responseCount = responseCount
+        )
+        if (response.isSuccessful) {
+            response.body()?.let { travelerCountModel ->
+                val resultCode = travelerCountModel.response.header.resultCode
+                val items = travelerCountModel.response.body.items.item
                 if (resultCode != "0000") {
                     return null
                 }

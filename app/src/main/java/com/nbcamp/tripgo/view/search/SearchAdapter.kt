@@ -68,6 +68,5 @@ class SearchAdapter(private val sContext: Context) :
 //            fragmentTransaction.addToBackStack(null)
 //            fragmentTransaction.commit()
         }
-
     }
 }
