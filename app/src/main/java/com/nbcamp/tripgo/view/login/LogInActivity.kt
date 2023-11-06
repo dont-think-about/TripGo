@@ -117,7 +117,7 @@ class LogInActivity : AppCompatActivity() {
             .addOnCompleteListener { authResult ->
                 if (authResult.isSuccessful) {
                     val user = auth.currentUser
-                    if (user != null && user.isEmailVerified) {
+                    if (user != null) {
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                         finish()

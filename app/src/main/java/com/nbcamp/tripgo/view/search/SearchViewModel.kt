@@ -15,18 +15,17 @@ import java.util.Locale
 class SearchViewModel(
     private val searchRepository: SearchRepository
 ) : ViewModel() {
-    private val _pullData: MutableLiveData<List<KeywordSearchEntity>> = MutableLiveData()
     private lateinit var adapter: SearchAdapter
+    private val _pullData: MutableLiveData<List<KeywordSearchEntity>> = MutableLiveData()
+    val pullData: LiveData<List<KeywordSearchEntity>>
+        get() = _pullData
     var manyTravelersCountList: List<String>? = null
-
-    // RecyclerView 어댑터 초기화 메서드
+    private val _rankList: MutableLiveData<List<String>> = MutableLiveData()
+    val rankList: LiveData<List<String>>
+        get() = _rankList
     fun initAdapter(adapter: SearchAdapter) {
         this.adapter = adapter
     }
-
-    val pullData: LiveData<List<KeywordSearchEntity>>
-        get() = _pullData
-
     fun sendSearchData(list: List<KeywordSearchEntity>) {
         _pullData.value = list
     }
@@ -36,7 +35,7 @@ class SearchViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
                 val travelersSegmentation = searchRepository.getCalculationTravelers(
-                    responseCount = 1000,
+                    responseCount = 500,
                     startDate = getPastDateString.first,
                     endDate = getPastDateString.second
                 )
@@ -46,8 +45,9 @@ class SearchViewModel(
                 val manyTravelersCountList =
                     getHowManyTravelersByPlace(travelersSegmentation)?.map { it.first }
                 Log.d("데이터1", "$manyTravelersCountList")
+
                 manyTravelersCountList?.let {
-                    adapter.additem(it)
+                    _rankList.postValue(it)
                 }
                 // manyTravelersCountList에 데이터가 저장되어 있을 것입니다.
             }.onFailure {
@@ -74,7 +74,7 @@ class SearchViewModel(
                 }
 
             formattedPlaceName to travelersCount
-        }?.sortedByDescending { it.second }?.filterNot { it.first.contains("구") }
+        }?.sortedByDescending { it.second }?.take(10)
 
     private fun getPastDateString(): Triple<String, String, String> {
         val calendar = Calendar.getInstance(Locale.KOREAN)

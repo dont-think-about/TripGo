@@ -77,7 +77,6 @@
     <string name="profile_modify_nickname">닉네임</string>
     <string name="profile_modify_push_nickname">닉네임을 입력하시오</string>
     <string name="search">검색</string>
-    <string name="tripRank">이번주 자주 찾는 여행지 순위</string>
     <string name="main_title">메인 타이틀</string>
     <string name="festival_of_the_month">이달의 축제</string>
     <string name="wall">ㅣ</string>
@@ -194,5 +193,6 @@
     <string name="already_written_review">리뷰 작성 됨</string>
     <string name="to_be_updated_later">위치 정보 업데이트 중...</string>
     <string name="go_to_check">확인 하러가기</string>
+    <string name="tripRank">이번주 자주 찾는 여행지 순위</string>
 
 </resources>

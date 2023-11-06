@@ -1,5 +1,7 @@
 package com.nbcamp.tripgo.view.search
 
+import com.nbcamp.tripgo.data.model.festivals.FestivalItem
+import com.nbcamp.tripgo.data.model.festivals.FestivalResponseModel
 import com.nbcamp.tripgo.data.model.travelerssegmentation.SegmentationItem
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
 
@@ -22,4 +24,9 @@ interface SearchRepository {
         endDate: String,
         responseCount: Int
     ): List<SegmentationItem>?
+
+    suspend fun getFestivalBySearch(
+        startDate: String,
+        responseCount: Int
+    ): List<FestivalItem>?
 }
