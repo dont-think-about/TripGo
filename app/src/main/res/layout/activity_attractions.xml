@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/attraction_of_the_month"
-        style="@style/Font.22.Bold.Black"
+        style="@style/Font.18.Bold.Black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
@@ -19,7 +19,7 @@
 
     <TextView
         android:id="@+id/date"
-        style="@style/Font.14.Normal.Black"
+        style="@style/Font.12.Normal.Black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -41,7 +41,7 @@
 
     <TextView
         android:id="@+id/distance"
-        style="@style/Font.14.Normal.Black"
+        style="@style/Font.12.Normal.Black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
@@ -66,7 +66,7 @@
         android:id="@+id/attraction_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
