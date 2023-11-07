@@ -89,7 +89,7 @@ class TourSearchAdapter(
                         userLon
                     ).toInt()
                 )
-                myImage.load(if (item.firstimage.isNullOrEmpty()) R.drawable.icon_main_logo else item.firstimage)
+                myImage.load(if (item.firstimage.isNullOrEmpty()) R.drawable.icon_no_image else item.firstimage)
             }
         }
 

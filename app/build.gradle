@@ -126,4 +126,7 @@ dependencies {
     // kakao navigation
     implementation "com.kakao.sdk:v2-navi:2.17.0"
 
+    // swipe refresh layout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
 }
