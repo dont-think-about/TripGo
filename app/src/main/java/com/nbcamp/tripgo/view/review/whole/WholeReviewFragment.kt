@@ -112,6 +112,10 @@ class WholeReviewFragment : Fragment() {
             reviewViewModel.setFilteredReview(mutableMapOf())
         }
 
+        updateReviewsLayout.setOnRefreshListener {
+            reviewViewModel.getAllReviews()
+        }
+
         reviewViewModel.getAllReviews()
     }
 
@@ -162,6 +166,10 @@ class WholeReviewFragment : Fragment() {
                     return@observe
                 }
             }
+            if(binding.updateReviewsLayout.isRefreshing) {
+                loadingDialog.setInvisible()
+                binding.updateReviewsLayout.isRefreshing = false
+            }
             allSchedule = state.allSchedules ?: emptyList()
             reviewAdapter.submitList(allSchedule)
         }
@@ -184,6 +192,7 @@ class WholeReviewFragment : Fragment() {
         val transactionReviewWriting = parentFragmentManager.beginTransaction()
         // review Detail fragment로 데이터 전달
         sharedViewModel.setReviewDetailModel(model)
+        behavior.state = BottomSheetBehavior.STATE_COLLAPSED
         transactionReviewWriting.hide(this)
         transactionReviewWriting.add(
             R.id.main_fragment_container,
