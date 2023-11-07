@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent"
     tools:context=".view.calendar.CalendarFragment">
 
@@ -19,7 +20,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tour_main_title"
-            style="@style/Font.20.Bold.Black"
+            style="@style/Font.22.Bold.Black"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
@@ -58,7 +59,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/calendar_title_text_view"
-                style="@style/Font.20.Bold.Black"
+                style="@style/Font.18.Bold.Black"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -71,6 +72,7 @@
                 android:id="@+id/calendar_schedule_recycler_view"
                 android:layout_width="0dp"
                 android:layout_height="300dp"
+                android:layout_marginTop="10dp"
                 android:nestedScrollingEnabled="true"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -80,8 +82,9 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/calendar_notice_text_view"
-                style="@style/Font.20.Bold.Black"
+                style="@style/Font.18.Bold.Black"
                 android:layout_width="wrap_content"
+                android:gravity="center"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="@id/calendar_schedule_recycler_view"
                 app:layout_constraintEnd_toEndOf="@id/calendar_schedule_recycler_view"

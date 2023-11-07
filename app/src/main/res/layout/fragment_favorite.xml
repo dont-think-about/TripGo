@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".view.mypage.favorite.FavoriteFragment">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -15,25 +16,40 @@
     <LinearLayout
         android:id="@+id/favorite_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="?actionBarSize"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/profile_favorite_back_imagebutton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="4dp"
+            android:padding="12dp"
+            android:src="@drawable/icon_back_button" />
 
         <TextView
             android:id="@+id/favorite_textview"
-            style="@style/Font.22.Bold.Black"
+            style="@style/Font.18.Bold.Black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginStart="44dp"
             android:layout_marginTop="23dp"
-            android:text="@string/favorite_zzim" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/favorite_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="15dp"
-            tools:listitem="@layout/item_favorite_main" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+
+            android:text="@string/favorite_zzim" />
 
     </LinearLayout>
 
-</FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favorite_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="15dp"
+        tools:listitem="@layout/item_favorite_main" />
+
+
+</LinearLayout>

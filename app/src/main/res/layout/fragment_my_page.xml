@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -47,13 +46,12 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="30dp"
                 android:orientation="horizontal"
-                android:paddingBottom="15dp">
+                android:padding="16dp">
 
                 <ImageView
                     android:id="@+id/mypage_usericon"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_margin="5dp"
                     android:adjustViewBounds="true"
                     android:src="@drawable/icon_user" />
 
@@ -61,30 +59,36 @@
                     android:id="@+id/mypage_userinpolayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/mypage_signin_up_text"
-                        style="@style/Font.18.Normal.Black"
+                        style="@style/Font.16.Normal.Black"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
+                        android:gravity="center_vertical"
                         android:text="@string/mypage_signin_up" />
 
                     <TextView
                         android:id="@+id/mypage_signin_up_inpo"
-                        style="@style/Font.16.Normal.Black"
+                        style="@style/Font.14.Normal.Black"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/mypage_signin_up_inpor" />
+
                 </LinearLayout>
+
             </LinearLayout>
+
         </LinearLayout>
 
         <View
             android:id="@+id/inpo_review_view"
             android:layout_width="0dp"
-            android:layout_height="3dp"
-            android:background="@color/black"
+            android:layout_height="2dp"
+            android:layout_marginTop="10dp"
+            android:background="#EBEBEB"
             app:layout_constraintTop_toBottomOf="@id/mypage_linearlayout"
             tools:ignore="MissingConstraints" />
 
@@ -92,8 +96,6 @@
             android:id="@+id/mypage_icon_gridlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="3"
-            android:paddingTop="10dp"
             android:rowCount="1"
             app:layout_constraintTop_toBottomOf="@id/inpo_review_view">
 
@@ -108,10 +110,10 @@
 
                 <ImageView
                     android:id="@+id/mypage_review_imageview"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/icon_my_page_review" />
+                    android:src="@drawable/icon_review_my_page" />
 
                 <TextView
                     android:id="@+id/mypage_review_textview"
@@ -133,10 +135,10 @@
 
                 <ImageView
                     android:id="@+id/mypage_zzim_imageview"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/icon_favorite" />
+                    android:src="@drawable/icon_favorite_list_my_page" />
 
                 <TextView
                     android:id="@+id/mypage_zzim_textview"
@@ -145,15 +147,16 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
                     android:text="@string/mypage_zzim" />
+
             </LinearLayout>
+
         </GridLayout>
 
         <View
             android:id="@+id/mypage_review_question_view"
             android:layout_width="0dp"
             android:layout_height="2dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/black"
+            android:background="#EBEBEB"
             app:layout_constraintTop_toBottomOf="@id/mypage_icon_gridlayout"
             tools:ignore="MissingConstraints" />
 
@@ -161,7 +164,6 @@
             android:id="@+id/bottom_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -169,7 +171,7 @@
 
             <TextView
                 android:id="@+id/mypage_question_textview"
-                style="@style/Font.20.Normal.Black"
+                style="@style/Font.16.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -180,12 +182,12 @@
             <View
                 android:id="@+id/mypage_question_appinpo_view"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/gray" />
+                android:layout_height="1dp"
+                android:background="#EBEBEB" />
 
             <TextView
                 android:id="@+id/mypage_appinpo_textview"
-                style="@style/Font.20.Normal.Black"
+                style="@style/Font.16.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -196,12 +198,12 @@
             <View
                 android:id="@+id/mypage_appinpo_1dae1question_view"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/gray" />
+                android:layout_height="1dp"
+                android:background="#EBEBEB" />
 
             <TextView
                 android:id="@+id/mypage_opensource_textview"
-                style="@style/Font.20.Normal.Black"
+                style="@style/Font.16.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -212,12 +214,12 @@
             <View
                 android:id="@+id/mypage_1dae1question_uesrinpo_view"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/gray" />
+                android:layout_height="1dp"
+                android:background="#EBEBEB" />
 
             <TextView
                 android:id="@+id/mypage_userinpo_textview"
-                style="@style/Font.20.Normal.Black"
+                style="@style/Font.16.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -228,27 +230,36 @@
             <View
                 android:id="@+id/mypage_userinpo_logout_view"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/gray" />
+                android:layout_height="1dp"
+                android:background="#EBEBEB" />
 
             <Button
                 android:id="@+id/mypage_logout_button"
                 style="@style/Font.16.Normal.Black"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="16dp"
                 android:backgroundTint="@color/main"
                 android:text="@string/mypage_logout" />
 
             <TextView
                 android:id="@+id/mypage_withdrawal_textivew"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:padding="4dp"
                 android:text="@string/mypage_withdrawal"
                 android:textSize="15sp" />
+
+
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.core.widget.NestedScrollView>

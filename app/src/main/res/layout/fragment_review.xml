@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".view.review.mypage.ReviewFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +20,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/review_title_text_view"
-            style="@style/Font.20.Bold.Black"
+            style="@style/Font.22.Bold.Black"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:layout_marginStart="44dp"
@@ -33,7 +34,8 @@
             android:id="@+id/review_detail_restore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
+            android:padding="8dp"
             android:src="@drawable/icon_restore"
             app:layout_constraintBottom_toBottomOf="@id/review_title_text_view"
             app:layout_constraintEnd_toEndOf="parent"
@@ -51,8 +53,7 @@
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/review_chip_group"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/review_chip_region"
@@ -105,16 +106,33 @@
             </com.google.android.material.chip.ChipGroup>
         </HorizontalScrollView>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/review_recycler_view"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/update_reviews_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/horizontal_chip_group"
-            tools:listitem="@layout/item_review_main" />
+            app:layout_constraintTop_toBottomOf="@id/horizontal_chip_group">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/review_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                tools:listitem="@layout/item_review_main" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <View
+            android:id="@+id/review_recycler_view_background"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/black_transparent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/horizontal_chip_group" />
+
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/review_detail_notice_text_view"
@@ -122,10 +140,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/review_recycler_view"
-            app:layout_constraintEnd_toEndOf="@id/review_recycler_view"
-            app:layout_constraintStart_toStartOf="@id/review_recycler_view"
-            app:layout_constraintTop_toTopOf="@id/review_recycler_view" />
+            app:layout_constraintBottom_toBottomOf="@id/update_reviews_layout"
+            app:layout_constraintEnd_toEndOf="@id/update_reviews_layout"
+            app:layout_constraintStart_toStartOf="@id/update_reviews_layout"
+            app:layout_constraintTop_toTopOf="@id/update_reviews_layout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

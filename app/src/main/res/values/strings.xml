@@ -16,7 +16,7 @@
     <string name="move_to_home_page">홈페이지로 이동 - 터치 시 이동</string>
     <string name="rating">평점</string>
     <string name="find_road">경로 안내 (카카오 맵으로 이동)</string>
-    <string name="move_to_tmap">TMAP으로 이동</string>
+    <string name="move_to_map">MAP으로 이동</string>
     <string name="add_to_calendar">캘린더에 일정 추가하기</string>
     <string name="go_go">고민말GO 여행GO</string>
     <string name="go_search_activity">검색하러 가기</string>
@@ -165,9 +165,9 @@
     <string name="cancel">취소</string>
     <string name="modify">수정</string>
     <string name="modify_schedule">스케줄 수정</string>
-    <string name="now_doing_schedule_cant_modify">현재 진행 중인 일정은 수정할 수 없습니다.</string>
+    <string name="now_doing_schedule_cant_modify">현재 진행 중인 일정은 \n 수정할 수 없습니다.</string>
     <string name="past_schedule_not_modify">이미 지난 일정은 수정할 수 없습니다.</string>
-    <string name="sharing_place">공유하기</string>
+    <string name="sharing_place">공유하기</string>재
     <string name="getting_my_schedule">일정 가져 오는 중…</string>
     <string name="move_to_log_in">로그인 페이지로 이동</string>
     <string name="cannot_delete_review_writted">리뷰를 작성하신 일정은 삭제하실 수 없습니다.</string>

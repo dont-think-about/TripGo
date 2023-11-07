@@ -26,6 +26,7 @@
                 android:id="@+id/btn_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:padding="16dp"
                 app:srcCompat="@drawable/icon_back_button" />
 
@@ -38,6 +39,7 @@
                 style="@style/Font.18.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
                 android:text="@string/sign_up" />
 
             <Space
@@ -59,7 +61,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="32dp"
+                android:layout_marginHorizontal="20dp"
                 android:orientation="vertical">
 
                 <LinearLayout
