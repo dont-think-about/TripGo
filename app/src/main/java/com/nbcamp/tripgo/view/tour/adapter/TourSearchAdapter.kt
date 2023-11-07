@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.nbcamp.tripgo.R
+import com.nbcamp.tripgo.data.model.keywords.Items
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.databinding.TourRecyclerviewItemBinding
 
