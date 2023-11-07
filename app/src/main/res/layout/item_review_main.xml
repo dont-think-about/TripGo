@@ -8,76 +8,90 @@
     android:background="@drawable/shape_item_review_main_background"
     android:padding="16dp">
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/review_item_chip_group"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    </com.google.android.material.chip.ChipGroup>
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/review_item_chip_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/review_item_image_view"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/review_item_title_text_view"
-        app:layout_constraintTop_toBottomOf="@id/review_item_chip_group"
-        tools:src="@tools:sample/avatars" />
+        </com.google.android.material.chip.ChipGroup>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/review_item_title_text_view"
-        style="@style/Font.16.Bold.Black"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/review_item_image_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/review_item_chip_group"
-        tools:text="광안리 해변 테마 거리" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/review_item_image_view"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="4dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/review_item_chip_group"
+            tools:src="@tools:sample/avatars" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/review_item_date_text_view"
-        style="@style/Font.14.Normal.Black"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/review_item_image_view"
-        app:layout_constraintStart_toStartOf="@id/review_item_title_text_view"
-        app:layout_constraintTop_toBottomOf="@id/review_item_title_text_view"
-        tools:text="2023.10.12 ~ 2023.10.16" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/review_item_title_text_view"
+            style="@style/Font.16.Bold.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toStartOf="@+id/review_item_image_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/review_item_chip_group"
+            tools:text="광안리 해변 테마 거리" />
 
-    <RatingBar
-        android:id="@+id/review_item_rating_bar"
-        style="@style/Widget.AppCompat.RatingBar.Small"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
-        android:isIndicator="true"
-        android:progressTint="@color/dark_yellow"
-        app:layout_constraintStart_toStartOf="@id/review_item_date_text_view"
-        app:layout_constraintTop_toBottomOf="@id/review_item_date_text_view"
-        tools:rating="3.5" />
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="16dp"
+            android:background="#EAEAEA"
+            app:layout_constraintTop_toBottomOf="@id/review_item_image_view" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/review_item_shorts_description_text_view"
-        style="@style/Font.14.Normal.Black"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        app:layout_constraintEnd_toStartOf="@id/review_item_image_view"
-        app:layout_constraintStart_toStartOf="@id/review_item_rating_bar"
-        app:layout_constraintTop_toBottomOf="@id/review_item_rating_bar"
-        tools:text="lorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/review_item_shorts_description_text_view"
+            style="@style/Font.14.Normal.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            app:layout_constraintEnd_toStartOf="@id/review_item_image_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/review_item_title_text_view"
+            tools:text="lorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/review_item_date_text_view"
+            style="@style/Font.14.Normal.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/review_item_rating_bar"
+            tools:text="2023.10.12 ~ 2023.10.16" />
+
+        <RatingBar
+            android:id="@+id/review_item_rating_bar"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:isIndicator="true"
+            android:progressTint="@color/dark_yellow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line"
+            tools:rating="3.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

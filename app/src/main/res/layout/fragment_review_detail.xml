@@ -23,7 +23,7 @@
             android:src="@drawable/icon_back_button" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Font.20.Bold.Black"
+            style="@style/Font.18.Bold.Black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -85,7 +85,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/review_detail_user_name"
-                    style="@style/Font.20.Bold.Black"
+                    style="@style/Font.18.Bold.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="18dp"
@@ -126,37 +126,37 @@
                 tools:text="축제 or 장소 이름" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                style="@style/Font.14.Bold.Black"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/address_title" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_address_text_view"
-                style="@style/Font.12.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="4dp"
                 tools:text="주소" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                style="@style/Font.14.Bold.Black"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/visited_title" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_festival_date_text_view"
-                style="@style/Font.12.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="4dp"
                 tools:text="참석 기간" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                style="@style/Font.14.Bold.Black"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -165,7 +165,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_detail_description_text_view"
-                style="@style/Font.16.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="4dp"
@@ -177,7 +177,7 @@
                 android:id="@+id/review_detail_chip_list"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="20dp">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/generation_chip"
@@ -206,10 +206,10 @@
             </com.google.android.material.chip.ChipGroup>
 
             <androidx.appcompat.widget.AppCompatTextView
-                style="@style/Font.14.Bold.Black"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/rating"
                 android:textStyle="bold" />
 
@@ -217,6 +217,7 @@
                 android:id="@+id/review_detail_rating_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:isIndicator="true"
                 android:progressTint="@color/dark_yellow"
                 tools:rating="3.5" />

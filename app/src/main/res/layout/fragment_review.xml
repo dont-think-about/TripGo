@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".view.review.mypage.ReviewFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,7 +13,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/review_title_text_view"
-            style="@style/Font.20.Bold.Black"
+            style="@style/Font.22.Bold.Black"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:layout_marginStart="16dp"
@@ -25,7 +26,8 @@
             android:id="@+id/review_detail_restore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
+            android:padding="8dp"
             android:src="@drawable/icon_restore"
             app:layout_constraintBottom_toBottomOf="@id/review_title_text_view"
             app:layout_constraintEnd_toEndOf="parent"
@@ -43,8 +45,7 @@
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/review_chip_group"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/review_chip_region"

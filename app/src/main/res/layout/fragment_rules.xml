@@ -18,6 +18,7 @@
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:padding="16dp"
             app:srcCompat="@drawable/icon_back_button" />
 
@@ -30,7 +31,8 @@
             android:id="@+id/rules_title_text_view"
             style="@style/Font.18.Bold.Black"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp" />
 
         <Space
             android:layout_width="0dp"
@@ -52,8 +54,8 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/rules_content_text_view"
-            android:layout_width="match_parent"
             style="@style/Font.14.Normal.Black"
+            android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </androidx.core.widget.NestedScrollView>
