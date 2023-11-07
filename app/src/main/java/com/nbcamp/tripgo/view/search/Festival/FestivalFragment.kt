@@ -22,7 +22,6 @@ import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.search.SearchKeywordUiState
 import com.nbcamp.tripgo.view.search.SearchViewModel
 import java.util.Calendar
-import kotlin.random.Random
 
 // 축제
 class FestivalFragment : Fragment() {
@@ -59,7 +58,7 @@ class FestivalFragment : Fragment() {
         // 검색 버튼(ImageView) 클릭 시 동작 설정
         binding.festivalSearchOk.setOnClickListener {
             val searchText = binding.festivalSearchEdit.text.toString()
-            if (::startDateString.isInitialized.not()){
+            if (::startDateString.isInitialized.not()) {
                 Toast.makeText(context, "날짜를 입력해주세요!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -71,7 +70,7 @@ class FestivalFragment : Fragment() {
             val dateSetListener =
                 DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
                     Log.d("날짜", "$year, $month, $dayOfMonth")
-                    val monthStr = if (month < 10) "0${month+1}" else "${month+1}"
+                    val monthStr = if (month < 10) "0${month + 1}" else "${month + 1}"
                     val dayOfMonthStr = if (dayOfMonth < 10) "0$dayOfMonth" else "$dayOfMonth"
                     startDateString = "$year$monthStr$dayOfMonthStr"
                     binding.festivalSearchWeather.text = "$year-$monthStr-$dayOfMonthStr"

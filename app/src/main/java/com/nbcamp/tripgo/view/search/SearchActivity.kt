@@ -1,20 +1,17 @@
 package com.nbcamp.tripgo.view.search
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -28,7 +25,6 @@ import com.kakao.vectormap.label.LabelStyles
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivitySearchBinding
 import com.nbcamp.tripgo.view.search.adapters.ViewPagerAdapter
-import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 
 class SearchActivity : AppCompatActivity() {
 
@@ -37,7 +33,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: SearchAdapter
     private val searchViewModel: SearchViewModel by viewModels { SearchViewModelFactory() }
-
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var bottomSheetLayout: LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
@@ -53,6 +50,9 @@ class SearchActivity : AppCompatActivity() {
         recyclerView = binding.searchRankRecyclerview
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
+        bottomSheetLayout = findViewById(R.id.persistent_bottom_sheet)
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN // 초기에는 숨긴 상태로 시작
 
         // RecyclerView 어댑터에 데이터 추가
         searchViewModel.fetchViewPagerData()
@@ -67,26 +67,17 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchViewModel.pullData.observe(this) { pullDatalist ->
-        Log.d("데이터45","$pullDatalist")
             val totalLatitude = pullDatalist.map { it.latitude.toDouble() }.sum()
             val totalLongitude = pullDatalist.map { it.longitude.toDouble() }.sum()
             val centerLatitude = totalLatitude / pullDatalist.size
             val centerLongitude = totalLongitude / pullDatalist.size
 
-            val removeButton = findViewById<ImageView>(R.id.remove_button)
-            removeButton.setOnClickListener {
-                // 레이아웃을 숨기도록 설정
-                val detailLayout = findViewById<ConstraintLayout>(R.id.map_of_detail_item)
-                detailLayout.visibility = View.GONE
-            }
             val mapView: MapView = findViewById(R.id.map_view)
             mapView.start(object : MapLifeCycleCallback() {
                 override fun onMapDestroy() {
-                    // 지도 API 가 정상적으로 종료될 때 호출됨
                 }
 
                 override fun onMapError(error: Exception) {
-                    Log.d("오류", "$error")
                 }
             }, object : KakaoMapReadyCallback() {
                 override fun onMapReady(kakaoMap: KakaoMap) {
@@ -95,31 +86,21 @@ class SearchActivity : AppCompatActivity() {
                             it.latitude.toDouble() == label.position.latitude && it.longitude.toDouble() == label.position.longitude
                         }
                         if (clickedItem != null) {
-                            val message = "${clickedItem.title} 클릭되었습니다."
-                            // 레이아웃을 보이도록 설정
-                            val detailLayout =
-                                findViewById<ConstraintLayout>(R.id.map_of_detail_item)
-                            detailLayout.visibility = View.VISIBLE
+                            // 마커 클릭 시 처리
+                            // 바텀 시트 열기
+                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
+                            val message = "${clickedItem.title} 클릭되었습니다."
+                            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+
+                            // 바텀 시트 내의 뷰들을 업데이트
                             val mapImage = findViewById<ImageView>(R.id.map_item_image)
                             val imageUrl = clickedItem.imageUrl
-                            val detailMoveButton =
-                                findViewById<Button>(R.id.move_to_detail_button)
-                            detailMoveButton.setOnClickListener {
-                                startActivity(
-                                    Intent(
-                                        this@SearchActivity,
-                                        TourDetailActivity::class.java
-                                    ).apply {
-                                        putExtra("contentId", clickedItem.contentId)
-                                    }
-                                )
-                            }
                             mapImage.load(imageUrl) {
                                 placeholder(R.drawable.icon_main)
                                 error(R.drawable.icon_main)
                             }
-                            // 나머지 처리 (예: TextView에 데이터 설정 등)
+
                             val titleTextView = findViewById<AppCompatTextView>(R.id.map_item_title)
                             titleTextView.text = clickedItem.title
 
@@ -127,13 +108,13 @@ class SearchActivity : AppCompatActivity() {
                                 findViewById<AppCompatTextView>(R.id.map_item_address)
                             addressTextView.text = clickedItem.address
 
-                            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
-
+                            // 나머지 처리 (예: 버튼 이벤트 처리 등)
                         } else {
                             val message = "클릭한 라벨에 대한 정보를 찾을 수 없음"
                             Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
                         }
                     }
+
                     val position = LatLng.from(
                         centerLatitude,
                         centerLongitude
