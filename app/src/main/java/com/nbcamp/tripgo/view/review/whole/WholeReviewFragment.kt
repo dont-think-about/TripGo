@@ -120,6 +120,14 @@ class WholeReviewFragment : Fragment() {
         categoryList: Array<String>
     ) = with(binding) {
 
+//        val bottomSheet = FilteringBottomSheetFragment.newInstance().apply {
+//            arguments = Bundle().apply {
+//                putString("text", text.toString())
+//                putStringArray("categoryList", categoryList)
+//            }
+//        }
+//        bottomSheet.show(parentFragmentManager, FilteringBottomSheetFragment.TAG)
+
         // 높이 조절
         val layoutParams = commentBottomSheet.root.layoutParams
         layoutParams.height = getBottomSheetDialogDefaultHeight()
@@ -176,7 +184,8 @@ class WholeReviewFragment : Fragment() {
         val transactionReviewWriting = parentFragmentManager.beginTransaction()
         // review Detail fragment로 데이터 전달
         sharedViewModel.setReviewDetailModel(model)
-        transactionReviewWriting.replace(
+        transactionReviewWriting.hide(this)
+        transactionReviewWriting.add(
             R.id.main_fragment_container,
             ReviewDetailFragment.newInstance()
         ).addToBackStack(null)
