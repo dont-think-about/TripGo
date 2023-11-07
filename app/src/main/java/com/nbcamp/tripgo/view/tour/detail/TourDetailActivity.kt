@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -352,7 +351,7 @@ class TourDetailActivity : AppCompatActivity() {
                 }
 
                 override fun onMapError(error: Exception) {
-                    Log.d("오류", "$error")
+
                 }
             },
             object : KakaoMapReadyCallback() {

@@ -1,6 +1,5 @@
 package com.nbcamp.tripgo.view.search.tour
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,8 +20,6 @@ class TourViewModel(
 
     // ViewModel의 fetchSearchResult 함수
     fun fetchSearchResult(keyword: String) {
-        Log.d("키워드1", "값 = $keyword")
-
         viewModelScope.launch {
             runCatching {
                 val searchResult = searchRepository.getPlaceBySearch(
@@ -30,7 +27,6 @@ class TourViewModel(
                     contentTypeId = "12",
                     responseCount = 20
                 )
-                println(searchResult)
                 if (searchResult == null) {
                     _searchUiState.postValue(SearchKeywordUiState.error())
                 } else {

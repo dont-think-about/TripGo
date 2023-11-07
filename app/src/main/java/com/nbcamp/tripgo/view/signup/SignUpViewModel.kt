@@ -1,7 +1,5 @@
 package com.nbcamp.tripgo.view.signup
 
-import android.content.ContentValues
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -51,11 +49,8 @@ class SignUpViewModel : ViewModel() {
                         // 자체 로그인 firestore 저장부분  users -> email -> email,nickname,image
                         fireStore.collection("users").document(email).set(user)
                         firebaseAuth.currentUser?.sendEmailVerification()
-
-                        Log.d(ContentValues.TAG, "createUserWithEmail:success")
                     } else {
                         // 아이디가 있을 경우에! 로직 추가 ->다음 작업 시 진행
-                        Log.w(ContentValues.TAG, "createUserWithEmail:failure", it.exception)
                     }
                 }
             }
@@ -71,15 +66,13 @@ class SignUpViewModel : ViewModel() {
 
                     if (result != null && !result.isEmpty) {
                         _isEmailRegistered.value = false
-                        Log.d("ContentValues123123123", "아이디가 중복이다아")
                     } else {
                         _isEmailRegistered.value = true
-                        Log.d("Firestore", "값이 다르따")
                     }
                 }
             }
             .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "Error getting documents: ", exception)
+
             }
     }
 
@@ -90,15 +83,12 @@ class SignUpViewModel : ViewModel() {
 
                 if (result != null && !result.isEmpty) {
                     _isNickNameRegistered.value = false
-                    Log.d("Firestore", "값이 이따")
                 } else {
                     _isNickNameRegistered.value = true
-                    Log.d("Firestore", "값이 다르따")
                 }
             }
         }.addOnFailureListener { exception ->
             // 에러 처리
-            Log.d(ContentValues.TAG, "Error getting documents: ", exception)
         }
     }
 }

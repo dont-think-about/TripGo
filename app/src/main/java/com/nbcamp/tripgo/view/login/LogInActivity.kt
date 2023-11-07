@@ -1,6 +1,5 @@
 package com.nbcamp.tripgo.view.login
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -83,7 +82,6 @@ class LogInActivity : AppCompatActivity() {
         // kakao 선언 시작 ~
         /** KakaoSDK init */
         KakaoSdk.init(this, BuildConfig.KAKAO_API_KEY)
-        Log.d("kakaoappkey", "kakaoappkey" + BuildConfig.KAKAO_API_KEY)
 
         kakaoLoginButton = findViewById(R.id.log_in_kakao_login_button)
         kakaoLoginButton.setOnClickListener {
@@ -126,7 +124,6 @@ class LogInActivity : AppCompatActivity() {
                     }
                 } else {
                     Toast.makeText(this, "로그인 실패.", Toast.LENGTH_SHORT).show()
-                    authResult.exception?.localizedMessage?.let { Log.d("TEST!", it) }
                 }
             }
     }
@@ -135,7 +132,7 @@ class LogInActivity : AppCompatActivity() {
     // https://github.com/firebase/snippets-android/blob/b8f65e9150fe927a5f0473e15e16fa5803189b60/auth/app/src/main/java/com/google/firebase/quickstart/auth/kotlin/GoogleSignInActivity.kt#L43-L44
     private fun googleInit() {
         val default_web_client_id =
-            "696047610679-dr938bmucn7iq2rnmul2delrveh52spa.apps.googleusercontent.com" // Android id X
+            getString(R.string.google_end_point) // Android id X
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(default_web_client_id)
@@ -156,7 +153,6 @@ class LogInActivity : AppCompatActivity() {
                         try {
                             // Google Sign In was successful, authenticate with Firebase
                             val account = task.getResult(ApiException::class.java)!!
-                            Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
                             firebaseAuthWithGoogle(account.idToken!!)
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
@@ -176,30 +172,27 @@ class LogInActivity : AppCompatActivity() {
                                                 "profileImage" to null,
                                                 "reviewCount" to 0
                                             )
-                                            firestore.collection("users").document(user.uid)
+                                            firestore.collection("users").document(user.email.toString())
                                                 .set(userDocument)
                                                 .addOnSuccessListener {
                                                     // Firestore에 사용자 정보 저장 성공
                                                     finish()
                                                 }
                                                 .addOnFailureListener { e ->
-                                                    Log.w(TAG, "Firestore에 사용자 정보 저장 실패", e)
+
                                                 }
                                         }
                                     } else {
                                         // Firebase Authentication에 로그인 실패
-                                        Log.w(TAG, "Firebase에 Google 로그인 실패", authResult.exception)
                                     }
                                 }
 
                         } catch (e: ApiException) {
                             // Google Sign In failed, update UI appropriately
-                            Log.w(TAG, "Google sign in failed", e)
+
                         }
                     }
                     // Google Login Success
-                } else {
-                    Log.e(TAG, "Google Result Error $result")
                 }
             }
     }
@@ -211,10 +204,8 @@ class LogInActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success")
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
                 }
             }
     }
@@ -224,14 +215,12 @@ class LogInActivity : AppCompatActivity() {
         // 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
-                Log.d("카톡계정 로그인 실패 @@@@@@@@@", "카카오계정으로 로그인 실패 : $error")
                 setLogin(false)
             } else if (token != null) {
                 // TODO: 최종적으로 카카오로그인 및 유저정보 가져온 결과
                 UserApiClient.instance.me { user, userError ->
                     if (userError != null) {
                         // 사용자 정보 가져오기에 실패한 경우, 에러 처리를 수행
-                        Log.e("사용자 정보 가져오기 오류", userError.toString())
                     } else if (user != null) {
                         val email = user.kakaoAccount?.email
                         val nickname = user.kakaoAccount?.profile?.nickname
@@ -246,12 +235,11 @@ class LogInActivity : AppCompatActivity() {
                             fireStore.collection("users").document(email)
                                 .set(userDocument)
                                 .addOnSuccessListener {
-                                    Log.d(ContentValues.TAG, "사용자 정보 Firestore에 저장 성공")
                                     val intent = Intent(this, MainActivity::class.java)
                                     startActivity(intent)
                                 }
                                 .addOnFailureListener { e ->
-                                    Log.w(ContentValues.TAG, "사용자 정보 Firestore에 저장 실패", e)
+
                                 }
                         }
                     }

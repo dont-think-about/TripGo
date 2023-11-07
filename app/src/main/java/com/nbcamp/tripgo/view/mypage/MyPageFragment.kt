@@ -2,7 +2,6 @@ package com.nbcamp.tripgo.view.mypage
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -97,8 +96,6 @@ class MyPageFragment : Fragment() {
 
                         val imageView = view?.findViewById<ImageView>(R.id.mypage_usericon)
 
-                        Log.d("MYpageurl", profileImageUrl)
-
                         imageView?.load(profileImageUrl) {
                             transformations(CircleCropTransformation())
                         }
@@ -114,8 +111,6 @@ class MyPageFragment : Fragment() {
         val user = auth.currentUser
         val userEmail = user?.email
         val firestoredb = FirebaseFirestore.getInstance()
-
-        Log.d("mypageemail", userEmail.toString())
 
         val kakaouser = App.kakaoUser?.email
 
@@ -135,18 +130,14 @@ class MyPageFragment : Fragment() {
                 if (document.exists()) {
                     val userdata = document.data
                     val email = userdata?.get("email") as? String
-                    Log.d("MYPAGEDBINPO", email.toString())
                     val nickname = userdata?.get("nickname") as? String
-                    Log.d("MYPAGEDBINPO", nickname.toString())
 
                     nicknameText.text = nickname?.let { "   $it 님" } ?: ""
                     emailText.text = email?.let { "   $it" } ?: ""
-                } else {
-                    Log.d("Mypagefail", "document를 찾을 수 없습니다.")
                 }
             }
             ?.addOnFailureListener { e ->
-                Log.d(TAG, "실 패 ! $e")
+
             }
     }
 

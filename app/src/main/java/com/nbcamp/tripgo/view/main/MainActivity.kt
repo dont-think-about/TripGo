@@ -209,8 +209,6 @@ class MainActivity : AppCompatActivity() {
                         setText(setUserEvent.message)
                         setInvisible()
                     }
-                    println("firebaseUserMain:" + App.firebaseUser)
-                    println("kakaoUserMain: " + App.kakaoUser)
                 }
             }
         }

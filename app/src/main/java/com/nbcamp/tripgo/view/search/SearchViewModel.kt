@@ -1,16 +1,15 @@
 package com.nbcamp.tripgo.view.search
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nbcamp.tripgo.data.model.travelerssegmentation.SegmentationItem
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchRepository: SearchRepository
@@ -46,14 +45,11 @@ class SearchViewModel(
 
                 val manyTravelersCountList =
                     getHowManyTravelersByPlace(travelersSegmentation)?.map { it.first }
-                Log.d("데이터1", "$manyTravelersCountList")
-
                 manyTravelersCountList?.let {
                     _rankList.postValue(it)
                 }
                 // manyTravelersCountList에 데이터가 저장되어 있을 것입니다.
             }.onFailure {
-                Log.d("데이터12", it.localizedMessage.toString())
                 // 오류 처리
             }
         }

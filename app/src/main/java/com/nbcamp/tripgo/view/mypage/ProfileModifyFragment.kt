@@ -1,11 +1,7 @@
 package com.nbcamp.tripgo.view.mypage
 
-import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,16 +11,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nbcamp.tripgo.R
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import coil.load
-import coil.transform.CircleCropTransformation
 import java.util.UUID
 
 class ProfileModifyFragment : Fragment() {
@@ -161,7 +153,6 @@ class ProfileModifyFragment : Fragment() {
                 callback(imageUrl)
             }
         }.addOnFailureListener { exception ->
-            Log.e("ProfileModifyFragment", "Storage에 업로드 오류 : $exception")
             callback("")
         }
     }
@@ -181,8 +172,6 @@ class ProfileModifyFragment : Fragment() {
                     if (!profileImageUrl.isNullOrEmpty()) {
 
                         val modifyImageView = view?.findViewById<ImageView>(R.id.profile_edit_user_imageview)
-
-                        Log.d("MYpageurl", profileImageUrl)
 
                         modifyImageView?.load(profileImageUrl){
                             transformations(CircleCropTransformation())

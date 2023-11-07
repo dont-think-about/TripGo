@@ -29,15 +29,7 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
         calendarUserModel: CalendarUserModel,
         writingType: WritingType
     ): String {
-//        when (val user = calendarUserModel.currentUser) {
-//            is FirebaseUser -> {
-//                userInfo = user.email.toString()
-//            }
-//
-//            is Account -> {
-//                userInfo = user.email.toString()
-//            }
-//        }
+
         if (App.kakaoUser == null) {
             userInfo = App.firebaseUser?.email.toString()
         } else if (App.firebaseUser == null) {

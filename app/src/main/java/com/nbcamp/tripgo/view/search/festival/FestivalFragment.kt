@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.search.Festival
+package com.nbcamp.tripgo.view.search.festival
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog

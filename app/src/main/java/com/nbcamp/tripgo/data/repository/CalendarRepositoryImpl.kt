@@ -11,25 +11,8 @@ import kotlinx.coroutines.tasks.await
 class CalendarRepositoryImpl(
     context: Context
 ) : CalendarRepository {
-//    init {
-//        KakaoSdk.init(context, BuildConfig.KAKAO_API_KEY)
-//        UserApiClient.instance.me { user, error ->
-//            user?.let {
-//                kaKaoAccount = user.kakaoAccount
-//            }
-//        }
-//    }
-
-    //    private val firebaseAuth = FirebaseAuth.getInstance()
     private val fireStore = FirebaseFirestore.getInstance()
-
-    //    private var kaKaoAccount: Account? = null
     override fun getCurrentUser(): Any? {
-//        if (firebaseAuth.currentUser != null && kaKaoAccount == null)
-//            return firebaseAuth.currentUser
-//        else if (firebaseAuth.currentUser == null && kaKaoAccount != null)
-//            return kaKaoAccount
-//        return null
         if (App.kakaoUser == null)
             return App.firebaseUser
         else if (App.firebaseUser == null)

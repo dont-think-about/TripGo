@@ -30,7 +30,6 @@ class AttractionsViewModel(
                     contentTypeId = "14",
                     responseCount = 20
                 )
-                println(searchResult)
                 if (searchResult == null) {
                     _searchUiState.postValue(SearchKeywordUiState.error())
                 } else {

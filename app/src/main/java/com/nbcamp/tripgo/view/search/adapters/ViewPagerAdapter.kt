@@ -3,7 +3,7 @@ package com.nbcamp.tripgo.view.search.adapters
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.nbcamp.tripgo.view.search.Festival.FestivalFragment
+import com.nbcamp.tripgo.view.search.festival.FestivalFragment
 import com.nbcamp.tripgo.view.search.attaction.AttractionsFragment
 import com.nbcamp.tripgo.view.search.tour.TourFragment
 

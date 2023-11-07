@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,7 +70,6 @@ class TourFragment : Fragment() {
                 requireActivity().toast(getString(R.string.load_failed_data))
                 return@observe
             }
-            Log.d("키워드", "값 = $state")
             searchViewModel.sendSearchData(state.list)
         }
     }

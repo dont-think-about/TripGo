@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.search.Festival
+package com.nbcamp.tripgo.view.search.festival
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -33,7 +33,6 @@ class FestivalViewModel(
                     responseCount = 100
                 )
                     ?.filter { it.addr1.contains(keyword) }
-                println(searchResult)
                 searchResult?.forEach {
                     val result = KeywordSearchEntity(
                         contentId = it.contentid,
