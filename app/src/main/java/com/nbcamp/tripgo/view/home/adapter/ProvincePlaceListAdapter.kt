@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
 import com.nbcamp.tripgo.R
+import com.nbcamp.tripgo.databinding.ItemMainProvincePlaceBinding
 import com.nbcamp.tripgo.databinding.ItemMainTourCardBinding
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
@@ -23,7 +24,7 @@ class ProvincePlaceListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProvincePlaceViewHolder {
         return ProvincePlaceViewHolder(
-            ItemMainTourCardBinding.inflate(
+            ItemMainProvincePlaceBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -37,7 +38,7 @@ class ProvincePlaceListAdapter(
     }
 
     inner class ProvincePlaceViewHolder(
-        private val binding: ItemMainTourCardBinding,
+        private val binding: ItemMainProvincePlaceBinding,
         private val onClickItem: (ProvincePlaceEntity) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 

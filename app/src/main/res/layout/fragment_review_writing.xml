@@ -26,7 +26,7 @@
             android:src="@drawable/icon_back_button" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Font.20.Bold.Black"
+            style="@style/Font.18.Bold.Black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -73,7 +73,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_writing_gender_text_view"
-                style="@style/Font.18.Bold.Black"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -118,10 +118,10 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_writing_age_text_view"
-                style="@style/Font.18.Bold.Black"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/age"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/review_writing_gender_button_group" />
@@ -204,10 +204,10 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_writing_companion_text_view"
-                style="@style/Font.18.Bold.Black"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/with_whom"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/review_writing_age_button_group_scroll_view" />
@@ -290,10 +290,10 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_writing_description_text_view"
-                style="@style/Font.18.Bold.Black"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/reviews"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/review_writing_companion_button_group_scroll_view" />
@@ -302,7 +302,7 @@
                 android:id="@+id/review_writing_text_input_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:hint="@string/submit_visit_review"
                 android:textColorHint="@color/deactivated"
                 app:boxStrokeColor="@color/main"
@@ -329,10 +329,10 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_writing_image_text_view"
-                style="@style/Font.18.Bold.Black"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/review_photo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/review_writing_text_input_layout" />
@@ -341,7 +341,7 @@
                 android:id="@+id/review_writing_image_button"
                 android:layout_width="0dp"
                 android:layout_height="300dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:scaleType="fitCenter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/review_writing_image_text_view"
@@ -360,10 +360,10 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/review_writing_rating_text_view"
-                style="@style/Font.20.Bold.Black"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/rating"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/review_writing_image_button" />
@@ -372,7 +372,7 @@
                 android:id="@+id/review_writing_rating_bar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:isIndicator="false"
                 android:progressTint="@color/dark_yellow"
                 app:layout_constraintStart_toStartOf="parent"

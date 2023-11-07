@@ -10,14 +10,15 @@
         android:id="@+id/cardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="30dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/my_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:scaleType="centerCrop"
@@ -26,7 +27,7 @@
 
     <TextView
         android:id="@+id/tour_title"
-        style="@style/Font.20.Bold.Black"
+        style="@style/Font.16.Bold.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
@@ -39,7 +40,7 @@
 
     <TextView
         android:id="@+id/tour_address"
-        style="@style/Font.16.Normal.Black"
+        style="@style/Font.14.Normal.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -53,7 +54,7 @@
 
     <TextView
         android:id="@+id/tour_content"
-        style="@style/Font.16.Normal.Black"
+        style="@style/Font.12.Normal.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"

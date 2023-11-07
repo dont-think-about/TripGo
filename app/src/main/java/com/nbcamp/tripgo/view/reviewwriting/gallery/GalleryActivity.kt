@@ -20,6 +20,7 @@ class GalleryActivity : AppCompatActivity() {
         }
     }
 
+
     private val galleryViewModel: GalleryViewModel by viewModels { GalleryViewModelFactory(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
