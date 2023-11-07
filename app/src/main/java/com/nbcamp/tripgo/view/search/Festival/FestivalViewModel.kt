@@ -11,7 +11,6 @@ import com.nbcamp.tripgo.view.search.SearchAdapter
 import com.nbcamp.tripgo.view.search.SearchKeywordUiState
 import com.nbcamp.tripgo.view.search.SearchRepository
 import kotlinx.coroutines.launch
-import okhttp3.internal.userAgent
 
 class FestivalViewModel(
     private val searchRepository: SearchRepository

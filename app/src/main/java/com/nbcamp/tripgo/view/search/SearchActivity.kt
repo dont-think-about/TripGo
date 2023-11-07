@@ -1,18 +1,13 @@
 package com.nbcamp.tripgo.view.search
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -30,7 +25,6 @@ import com.kakao.vectormap.label.LabelStyles
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivitySearchBinding
 import com.nbcamp.tripgo.view.search.adapters.ViewPagerAdapter
-import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 
 class SearchActivity : AppCompatActivity() {
 
@@ -73,7 +67,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchViewModel.pullData.observe(this) { pullDatalist ->
-        Log.d("데이터45","$pullDatalist")
             val totalLatitude = pullDatalist.map { it.latitude.toDouble() }.sum()
             val totalLongitude = pullDatalist.map { it.longitude.toDouble() }.sum()
             val centerLatitude = totalLatitude / pullDatalist.size
@@ -82,11 +75,9 @@ class SearchActivity : AppCompatActivity() {
             val mapView: MapView = findViewById(R.id.map_view)
             mapView.start(object : MapLifeCycleCallback() {
                 override fun onMapDestroy() {
-                    // 지도 API 가 정상적으로 종료될 때 호출됨
                 }
 
                 override fun onMapError(error: Exception) {
-                    Log.d("오류", "$error")
                 }
             }, object : KakaoMapReadyCallback() {
                 override fun onMapReady(kakaoMap: KakaoMap) {
@@ -113,7 +104,8 @@ class SearchActivity : AppCompatActivity() {
                             val titleTextView = findViewById<AppCompatTextView>(R.id.map_item_title)
                             titleTextView.text = clickedItem.title
 
-                            val addressTextView = findViewById<AppCompatTextView>(R.id.map_item_address)
+                            val addressTextView =
+                                findViewById<AppCompatTextView>(R.id.map_item_address)
                             addressTextView.text = clickedItem.address
 
                             // 나머지 처리 (예: 버튼 이벤트 처리 등)
