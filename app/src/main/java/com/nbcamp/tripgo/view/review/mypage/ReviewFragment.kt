@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toolbar
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +36,24 @@ class ReviewFragment : Fragment() {
         recyclerView.adapter = reviewAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         fetchReviewData()
+
+        val reviewToolbar = view.findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        reviewToolbar.setOnClickListener{
+            activity?.onBackPressed()
+        }
+
+        val callback = object  : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                parentFragmentManager.popBackStack()
+            }
+        }
+        reviewToolbar.setNavigationIcon(R.drawable.icon_back_button)
+
+        reviewToolbar.setNavigationOnClickListener {
+            callback.handleOnBackPressed()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
         return view
     }
 
@@ -43,6 +63,8 @@ class ReviewFragment : Fragment() {
         view.findViewById<ImageView>(R.id.review_detail_restore).isVisible = false
         view.findViewById<TextView>(R.id.review_title_text_view).text = "내 후기"
     }
+
+
 
     private fun fetchReviewData() {
         val userEmail = auth.currentUser?.email
