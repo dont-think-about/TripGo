@@ -10,28 +10,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.nbcamp.tripgo.R
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import retrofit2.http.Url
+import coil.load
+import coil.transform.CircleCropTransformation
 import java.util.UUID
 
 class ProfileModifyFragment : Fragment() {
     private lateinit var refreshNickText: AppCompatEditText
     private var selectedImageUri: Uri? = null  // 이미지 URI를 저장할 변수
+    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            selectedImageUri = uri
+            val imageView = view?.findViewById<ImageView>(R.id.profile_edit_user_imageview)
+            imageView?.setImageURI(selectedImageUri)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,9 +53,9 @@ class ProfileModifyFragment : Fragment() {
         backButton.setOnClickListener{ navigateToMyPageFragment() }
 
         val imageButton = view?.findViewById<ImageView>(R.id.profile_edit_user_imageview)
-        imageButton?.setOnClickListener { changeimage() }
+        imageButton?.setOnClickListener { changeImage() }
 
-        imageupdate()
+        imageUpdate()
 
         return view
     }
@@ -139,9 +144,8 @@ class ProfileModifyFragment : Fragment() {
             .commit()
     }
 
-    private fun changeimage() {
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE)
+    private fun changeImage() {
+        galleryLauncher.launch("image/*")
     }
 
     private fun uploadImageToFirebaseStorage(imageUri: Uri?, callback: (String) -> Unit) {
@@ -162,17 +166,7 @@ class ProfileModifyFragment : Fragment() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == GALLERY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            selectedImageUri = data?.data
-            val imageView = view?.findViewById<ImageView>(R.id.profile_edit_user_imageview)
-            imageView?.setImageURI(selectedImageUri)
-            Log.d("imageurl", selectedImageUri.toString())
-        }
-    }
-
-    private fun imageupdate() {
+    private fun imageUpdate() {
         val firestore = FirebaseFirestore.getInstance()
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
@@ -186,11 +180,11 @@ class ProfileModifyFragment : Fragment() {
                     val profileImageUrl = document.getString("profileImageUrl")
                     if (!profileImageUrl.isNullOrEmpty()) {
 
-                        val modifyimageview = view?.findViewById<ImageView>(R.id.profile_edit_user_imageview)
+                        val modifyImageView = view?.findViewById<ImageView>(R.id.profile_edit_user_imageview)
 
                         Log.d("MYpageurl", profileImageUrl)
 
-                        modifyimageview?.load(profileImageUrl){
+                        modifyImageView?.load(profileImageUrl){
                             transformations(CircleCropTransformation())
                         }
                     }
@@ -199,9 +193,7 @@ class ProfileModifyFragment : Fragment() {
         }
     }
 
-
-
-    companion object{
+    companion object {
         private const val GALLERY_REQUEST_CODE = 123
     }
 }
