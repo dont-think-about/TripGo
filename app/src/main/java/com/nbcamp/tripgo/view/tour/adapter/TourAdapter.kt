@@ -80,7 +80,7 @@ class TourAdapter(
                     if (item.addr1.isNullOrEmpty()) itemView.context.getString(R.string.to_be_updated_later) else item.addr1
                 tourContent.text =
                     "${formatDate(item.eventstartdate)} ~ ${formatDate(item.eventenddate)}"
-                myImage.load(if (item.firstimage.isNullOrEmpty()) R.drawable.icon_main_logo else item.firstimage)
+                myImage.load(if (item.firstimage.isNullOrEmpty()) R.drawable.icon_no_image else item.firstimage)
             }
         }
 
