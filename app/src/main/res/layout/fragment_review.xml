@@ -113,6 +113,17 @@
                 tools:listitem="@layout/item_review_main" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+        <View
+            android:id="@+id/review_recycler_view_background"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/black_transparent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/horizontal_chip_group" />
+
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/review_detail_notice_text_view"
@@ -124,12 +135,6 @@
             app:layout_constraintEnd_toEndOf="@id/update_reviews_layout"
             app:layout_constraintStart_toStartOf="@id/update_reviews_layout"
             app:layout_constraintTop_toTopOf="@id/update_reviews_layout" />
-        <View
-            android:id="@+id/dialog_background"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#88000000"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

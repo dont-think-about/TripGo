@@ -46,7 +46,8 @@ class WholeReviewFragment : Fragment() {
     private val reviewViewModel: ReviewViewModel by viewModels { ReviewViewModelFactory() }
     private val reviewAdapter: WholeReviewAdapter by lazy {
         WholeReviewAdapter(requireActivity()) { model ->
-            goToReviewDetailFragment(model)
+            if (behavior.state != BottomSheetBehavior.STATE_HALF_EXPANDED)
+                goToReviewDetailFragment(model)
         }
     }
     private val bottomSheetAdapter: BottomSheetAdapter by lazy {
@@ -57,6 +58,7 @@ class WholeReviewFragment : Fragment() {
             reviewViewModel.setFilteredReview(
                 filterTags,
             )
+            binding.reviewRecyclerViewBackground.isVisible = false
         }
     }
 
@@ -123,21 +125,15 @@ class WholeReviewFragment : Fragment() {
         text: CharSequence?,
         categoryList: Array<String>
     ) = with(binding) {
-
-//        val bottomSheet = FilteringBottomSheetFragment.newInstance().apply {
-//            arguments = Bundle().apply {
-//                putString("text", text.toString())
-//                putStringArray("categoryList", categoryList)
-//            }
-//        }
-//        bottomSheet.show(parentFragmentManager, FilteringBottomSheetFragment.TAG)
-
         // 높이 조절
         val layoutParams = commentBottomSheet.root.layoutParams
         layoutParams.height = getBottomSheetDialogDefaultHeight()
         commentBottomSheet.root.layoutParams = layoutParams
+
         behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         categoryTitle = text.toString()
+        reviewRecyclerViewBackground.isVisible = true
+
         commentBottomSheet.reviewBottomSheetTitleTextView.text = text
         commentBottomSheet.reviewBottomSheetRecyclerView.run {
             adapter = bottomSheetAdapter
@@ -166,7 +162,7 @@ class WholeReviewFragment : Fragment() {
                     return@observe
                 }
             }
-            if(binding.updateReviewsLayout.isRefreshing) {
+            if (binding.updateReviewsLayout.isRefreshing) {
                 loadingDialog.setInvisible()
                 binding.updateReviewsLayout.isRefreshing = false
             }
