@@ -82,7 +82,7 @@ interface TourApiService {
         @Query("keyword") keyword: String,
         @Query("contentTypeId") contentTypeId: String,
         @Query("numOfRows") responseCount: Int,
-        @Query("pageNo") currentPage : Int
+        @Query("pageNo") currentPage: Int
     ): Response<KeywordSearchResponseModel>
 
     @GET("KorService1/searchFestival1")
@@ -90,7 +90,7 @@ interface TourApiService {
         @QueryMap defaultQuerySet: HashMap<String, String> = DEFAULT_QUERY_SET,
         @Query("eventStartDate") startDate: String,
         @Query("numOfRows") responseCount: Int,
-        @Query("pageNo") currentPage : Int
+        @Query("pageNo") currentPage: Int
     ): Response<FestivalResponseModel>
 
     @GET("KorService1/areaBasedList1")
@@ -98,10 +98,9 @@ interface TourApiService {
         @QueryMap defaultQuerySet: HashMap<String, String> = DEFAULT_QUERY_SET,
         @Query("areaCode") areaCode: String,
         @Query("numOfRows") numOfRows: Int = 100,
-        @Query("pageNo") currentPage : Int
+        @Query("pageNo") currentPage: Int
 
     ): Response<AreaResponseModel>
-
 
 
     companion object {

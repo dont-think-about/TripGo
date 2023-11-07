@@ -23,9 +23,11 @@ class SearchViewModel(
     private val _rankList: MutableLiveData<List<String>> = MutableLiveData()
     val rankList: LiveData<List<String>>
         get() = _rankList
+
     fun initAdapter(adapter: SearchAdapter) {
         this.adapter = adapter
     }
+
     fun sendSearchData(list: List<KeywordSearchEntity>) {
         _pullData.value = list
     }

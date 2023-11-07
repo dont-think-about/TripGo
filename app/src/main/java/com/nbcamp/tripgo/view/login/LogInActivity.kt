@@ -135,7 +135,7 @@ class LogInActivity : AppCompatActivity() {
     // https://github.com/firebase/snippets-android/blob/b8f65e9150fe927a5f0473e15e16fa5803189b60/auth/app/src/main/java/com/google/firebase/quickstart/auth/kotlin/GoogleSignInActivity.kt#L43-L44
     private fun googleInit() {
         val default_web_client_id =
-            "1094795130006-9tkks7qfjnls7rtpijm4phspvurfscl0.apps.googleusercontent.com" // Android id X
+            "696047610679-dr938bmucn7iq2rnmul2delrveh52spa.apps.googleusercontent.com" // Android id X
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(default_web_client_id)
@@ -143,6 +143,8 @@ class LogInActivity : AppCompatActivity() {
             .build()
 
         GoogleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        auth = Firebase.auth
 
         startGoogleLoginForResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -155,26 +157,41 @@ class LogInActivity : AppCompatActivity() {
                             // Google Sign In was successful, authenticate with Firebase
                             val account = task.getResult(ApiException::class.java)!!
                             Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+                            firebaseAuthWithGoogle(account.idToken!!)
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
 
-                            // firestore google inpo 저장
-                            val user = hashMapOf(
-                                "email" to account.email,
-                                "nickname" to account.displayName,
-                                "profileImage" to null,
-                                "reviewCount" to 0
-                            )
+                            // Firebase Authentication으로 Google 사용자를 로그인합니다.
+                            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                            auth.signInWithCredential(credential)
+                                .addOnCompleteListener { authResult ->
+                                    if (authResult.isSuccessful) {
+                                        // Firebase Authentication에 로그인 성공
+                                        val user = auth.currentUser
+                                        if (user != null) {
+                                            // 로그인한 사용자 정보를 Firestore에 저장
+                                            val userDocument = hashMapOf(
+                                                "email" to user.email,
+                                                "nickname" to user.displayName,
+                                                "profileImage" to null,
+                                                "reviewCount" to 0
+                                            )
+                                            firestore.collection("users").document(user.uid)
+                                                .set(userDocument)
+                                                .addOnSuccessListener {
+                                                    // Firestore에 사용자 정보 저장 성공
+                                                    finish()
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Log.w(TAG, "Firestore에 사용자 정보 저장 실패", e)
+                                                }
+                                        }
+                                    } else {
+                                        // Firebase Authentication에 로그인 실패
+                                        Log.w(TAG, "Firebase에 Google 로그인 실패", authResult.exception)
+                                    }
+                                }
 
-                            fireStore.collection("users").document(account.email.toString())
-                                .set(user)
-
-                            // val keyHash = Utility.getKeyHash(this)
-                            // Log.d("Hash", keyHash)
-
-                            finish()
-
-                            firebaseAuthWithGoogle(account.idToken!!)
                         } catch (e: ApiException) {
                             // Google Sign In failed, update UI appropriately
                             Log.w(TAG, "Google sign in failed", e)

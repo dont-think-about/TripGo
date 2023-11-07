@@ -2,12 +2,17 @@ package com.nbcamp.tripgo.view.mypage
 
 import android.app.AlertDialog
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -38,6 +43,9 @@ class MyPageDialog(private val context: Context) {
 
         val progressBar = dialogView.findViewById<ProgressBar>(R.id.mypage_dialog_progressbar)
         val mygrade = dialogView.findViewById<TextView>(R.id.mypage_dialog_usergrade_textview)
+
+        imageupdate()
+
 
         if (!userId.isNullOrBlank()) {
             getReviewCount(userId) { reviewCount ->
@@ -79,8 +87,17 @@ class MyPageDialog(private val context: Context) {
                 e.printStackTrace()
             }
 
+
         val editbutton = dialogView.findViewById<Button>(R.id.mypage_dialog_edit_userinpo_button)
-        editbutton.setOnClickListener {
+        editbutton.setOnClickListener { userinfo(fragmentManager)  }
+    }
+
+    private fun userinfo(fragmentManager: FragmentManager){
+
+        val auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+
+        if( user != null ){
             val transaction = fragmentManager.beginTransaction()
             val newFragment = ProfileModifyFragment()
             transaction.replace(R.id.main_fragment_container, newFragment)
@@ -88,7 +105,12 @@ class MyPageDialog(private val context: Context) {
             transaction.commit()
             dismissDialog()
         }
+        else{
+            Toast.makeText(context, "프로필 데이터가 없습니다.\n프로필을 먼저 설정해주세요.", Toast.LENGTH_SHORT).show()
+        }
+
     }
+
 
     private fun calculateGradeAndProgress(reviewCount: Int): Triple<Int, String, Int> {
         return when {
@@ -99,7 +121,10 @@ class MyPageDialog(private val context: Context) {
         }
     }
 
-    private fun getUserDocumentReference(userId: String?, firestoredb: FirebaseFirestore): DocumentReference? {
+    private fun getUserDocumentReference(
+        userId: String?,
+        firestoredb: FirebaseFirestore
+    ): DocumentReference? {
         val kakaouser = App.kakaoUser?.email
         return userId?.let { firestoredb.collection("users").document(it) }
             ?: kakaouser?.let { firestoredb.collection("users").document(it) }
@@ -128,5 +153,34 @@ class MyPageDialog(private val context: Context) {
                     }
                 }
             }
+    }
+
+    private fun imageupdate() {
+        val firestore = FirebaseFirestore.getInstance()
+        val auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+        val userEmail = user?.email
+        val userRef = firestore.collection("users").document(userEmail.toString())
+
+
+        userRef.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val document = task.result
+                if (document != null && document.exists()) {
+                    val profileImageUrl = document.getString("profileImageUrl")
+                    if (!profileImageUrl.isNullOrEmpty()) {
+
+                        val dialogimageView =
+                            dialog?.findViewById<ImageView>(R.id.mypage_dialog_user_imageview)
+
+                        Log.d("MYpageurl", profileImageUrl)
+
+                        dialogimageView?.load(profileImageUrl) {
+                            transformations(CircleCropTransformation())
+                        }
+                    }
+                }
+            }
+        }
     }
 }
