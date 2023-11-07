@@ -7,6 +7,7 @@ import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +28,10 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.SettingsClient
+import com.nbcamp.tripgo.data.model.area.AreaItem
+import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 
 class AttractionsActivity : AppCompatActivity() {
     companion object {
@@ -36,12 +40,12 @@ class AttractionsActivity : AppCompatActivity() {
         const val LOCATION_PERMISSION_REQUEST_CODE = 1234
     } // numOfRows
 
-    private val binding: ActivityAttractionsBinding by lazy {
-        ActivityAttractionsBinding.inflate(layoutInflater)
+    private val attractionsAdapter: AttractionsAdapter by lazy {
+        AttractionsAdapter { areaItem -> gotoDetailActivity(areaItem) }
     }
 
-    private val attractionsAdapter: AttractionsAdapter by lazy {
-        AttractionsAdapter {}
+    private val binding: ActivityAttractionsBinding by lazy {
+        ActivityAttractionsBinding.inflate(layoutInflater)
     }
 
     private lateinit var provinceItem: ProvincePlaceEntity
@@ -157,7 +161,20 @@ class AttractionsActivity : AppCompatActivity() {
         } // 위치 설정에 문제가 있을 경우 처리
     }
 
+    private fun gotoDetailActivity(areaItem: AreaItem?) {
+        val myIntent = Intent(this, TourDetailActivity::class.java)
+            .apply {
+                putExtra("contentId", areaItem?.contentid)
+            }
+        startActivity(myIntent)
+    }
+
     private fun getArea(currentPage: Int) {
+        if (currentPage == 1) {
+            showProgressBar(true)
+        } else {
+            showSmallProgressBar(true)
+        }
         lifecycleScope.launch {
             val service = RetrofitModule.createAreaApiService()
             try {
@@ -171,7 +188,7 @@ class AttractionsActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     val area = response.body()?.response?.body?.items?.item
                     if (area != null) {
-                        if (area.size < 20) {
+                        if (area.size < MAX_ROWS) {
                             isLastPage = true
                         }
                         attractionsAdapter.submitList(area)
@@ -182,14 +199,17 @@ class AttractionsActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 showError(getString(R.string.tour_exception_error))
             } finally {
-                showProgressBar(false)
+                if (currentPage == 1) {
+                    showProgressBar(false)
+                } else {
+                    showSmallProgressBar(false)
+                }
             }
         }
     }
 
     private fun retrofitArea() {
         binding.attractionRecyclerview.adapter = attractionsAdapter
-        showProgressBar(true)
         getArea(1)
     }
 
@@ -200,6 +220,10 @@ class AttractionsActivity : AppCompatActivity() {
     private fun showProgressBar(show: Boolean) {
         binding.attractionProgressBar.visibility = if (show) View.VISIBLE else View.GONE
         binding.attractionRecyclerview.visibility = if (show) View.GONE else View.VISIBLE
+    }
+
+    private fun showSmallProgressBar(show: Boolean) {
+        binding.smallAttractionProgressBar.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun getMyLocation() {

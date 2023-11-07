@@ -216,7 +216,11 @@ class TourActivity : AppCompatActivity() {
     }
 
     private fun getThemeSearch(keyword: String, currentPage: Int) {
-
+        if (currentPage == 1) {
+            showProgressBar(true)
+        } else {
+            showSmallProgressBar(true)
+        }
         lifecycleScope.launch {
             val service = RetrofitModule.createTourApiService()
 
@@ -241,19 +245,26 @@ class TourActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 showError(getString(R.string.tour_exception_error))
             } finally {
-                showProgressBar(false)
+                if (currentPage == 1) {
+                    showProgressBar(false)
+                } else {
+                    showSmallProgressBar(false)
+                }
             }
         }
     }
 
     private fun retrofitThemeSearch(keyword: String) {
         binding.tourRecyclerview.adapter = tourSearchAdapter
-        showProgressBar(true)
         getThemeSearch(keyword, 1)
     }
 
     private fun getFestivalSearch(currentPage: Int) {
-
+        if (currentPage == 1) {
+            showProgressBar(true)
+        } else {
+            showSmallProgressBar(true)
+        }
         lifecycleScope.launch {
             val service = RetrofitModule.createTourApiService()
             val currentDate = Calendar.getInstance()
@@ -268,7 +279,6 @@ class TourActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     val festivals = response.body()?.response?.body?.items?.item
                     if (festivals != null) {
-
                         if (festivals.size < 20) {
                             isLastPage = true
                         }
@@ -280,7 +290,11 @@ class TourActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 showError(getString(R.string.tour_exception_error))
             } finally {
-                showProgressBar(false) // API 응답 후 로딩 비활성화
+                if (currentPage == 1) {
+                    showProgressBar(false)
+                } else {
+                    showSmallProgressBar(false)
+                }
             }
         }
     }
@@ -317,6 +331,10 @@ class TourActivity : AppCompatActivity() {
     private fun showProgressBar(show: Boolean) {
         binding.tourProgressBar.visibility = if (show) View.VISIBLE else View.GONE
         binding.tourRecyclerview.visibility = if (show) View.GONE else View.VISIBLE
+    }
+
+    private fun showSmallProgressBar(show: Boolean) {
+        binding.smallTourProgressBar.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun getMyLocation() {

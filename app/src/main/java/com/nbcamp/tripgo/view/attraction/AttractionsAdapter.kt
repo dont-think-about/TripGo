@@ -22,6 +22,8 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         notifyDataSetChanged()
     } // 위치 정보 변경 후 , RecyclerView 갱신
 
+
+
     private fun calculateDistanceTo(
         mapx: Double,
         mapy: Double,
