@@ -9,14 +9,17 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.login.LogInActivity
@@ -24,11 +27,18 @@ import com.nbcamp.tripgo.view.mypage.favorite.FavoriteFragment
 import com.nbcamp.tripgo.view.mypage.favorite.MypageAppInpo
 import com.nbcamp.tripgo.view.review.mypage.ReviewFragment
 
+
+
 class MyPageFragment : Fragment() {
 
     private var dbinpo: DocumentReference? = null
 
     private val dialogTag = "MyDialog"
+
+    private lateinit var emailText: TextView
+    private lateinit var nicknameText: TextView
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +46,15 @@ class MyPageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_my_page, container, false)
+
+        emailText = view.findViewById(R.id.mypage_signin_up_inpo)
+        nicknameText= view.findViewById(R.id.mypage_signin_up_text)
+
+
+
+
+
+        fetchFirebaseDataAndUIUpdate(view)
 
 
         val reviewLayout = view.findViewById<LinearLayout>(R.id.review_layout)
@@ -66,6 +85,8 @@ class MyPageFragment : Fragment() {
             appinfodialog.show(parentFragmentManager, "app_info_dialog")
         }
 
+        fetchFirebaseDataAndUIUpdate(view)
+
 
         return view
     }
@@ -73,8 +94,17 @@ class MyPageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        val email = arguments?.getString("email")
+        val nickname = arguments?.getString("nickname")
+        emailText?.text = email
+        nicknameText?.text = nickname
+        Log.d("MYPAGELELEL",email.toString())
+        Log.d("MYPAGELELEL",nickname.toString())
+
+
+
         // Firebase 정보 가져오고 UI 업데이트
-        fetchFirebaseDataAndUIUpdate(view)
 
         imageupdate()
 
@@ -174,12 +204,67 @@ class MyPageFragment : Fragment() {
     }
 
     private fun logout() {
-        FirebaseAuth.getInstance().signOut()
-        App.firebaseUser = null
-        App.kakaoUser = null
-        val intent = Intent(context, LogInActivity::class.java)
-        startActivity(intent)
+        val progressBar = view?.findViewById<ProgressBar>(R.id.mypage_progressBar)  // 프로그래스 바
+        val logoutButton = view?.findViewById<Button>(R.id.mypage_logout_button)
+
+        val auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+        val kakaouser = App.kakaoUser?.email
+
+
+        if (user != null || kakaouser != null) {
+            // 사용자가 로그인한 상태이면 로그아웃 처리
+
+            progressBar?.visibility = View.VISIBLE
+            lifecycleScope.launch {
+                delay(2000)  //  대기
+                logoutButton?.text = "로그인"
+                updateUIAfterLogout()
+                // 일정 시간 후에 프로그래스 바를 숨기고 화면을 전환
+                progressBar?.visibility = View.GONE
+
+            }
+
+            if (kakaouser != null) {
+                // 카카오 로그아웃
+                UserApiClient.instance.logout { error ->
+                    if (error != null) {
+                        Log.e("MYPAGEFRAGMENT", "I'm kakao user but failed : $error")
+                    } else {
+                        App.kakaoUser = null
+                        // 로그아웃 후 화면 갱신
+                        logoutButton?.text = "로그인"
+                        updateUIAfterLogout()
+                    }
+                }
+            } else {
+                // Firebase Auth 로그아웃
+                FirebaseAuth.getInstance().signOut()
+                App.firebaseUser = null
+                // 로그아웃 후 화면 갱신
+                logoutButton?.text = "로그인"
+                updateUIAfterLogout()
+            }
+        } else {
+            // 사용자가 로그인하지 않은 상태이면 로그인 화면으로 이동
+            val intent = Intent(requireContext(), LogInActivity::class.java)
+            startActivity(intent)
+        }
     }
+
+    private fun updateUIAfterLogout() {
+        val emailText = view?.findViewById<TextView>(R.id.mypage_signin_up_inpo)
+        val nicknameText = view?.findViewById<TextView>(R.id.mypage_signin_up_text)
+        val logoutbutton = view?.findViewById<Button>(R.id.mypage_logout_button)
+
+        nicknameText?.text = getString(R.string.mypage_signin_up)
+        emailText?.text = getString(R.string.mypage_signin_up_inpor)
+        logoutbutton?.text = getString(R.string.mypage_logout)
+
+        // 다른 로그아웃 관련 작업을 수행할 수 있으면 여기에 추가
+    }
+
+
 
     private fun showUserDialog() {
         val myPageDialog = MyPageDialog(requireContext())

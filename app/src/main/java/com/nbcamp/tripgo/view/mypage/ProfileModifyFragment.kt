@@ -88,7 +88,7 @@ class ProfileModifyFragment : Fragment() {
                             // 이미지를 Firebase Storage에 업로드하고 업로드가 완료되면 Firestore에 이미지 URL을 업데이트합니다.
                             uploadImageToFirebaseStorage(selectedImageUri) { imageUrl ->
                                 if (imageUrl.isNotEmpty()) {
-                                    data["profileImageUrl"] = imageUrl  // 이미지 URL을 데이터에 추가
+                                    data["profileImage"] = imageUrl  // 이미지 URL을 데이터에 추가
                                     userRef.update(data as Map<String, Any>).addOnSuccessListener {
                                         showToast("프로필이 업데이트되었습니다.")
                                         navigateToMyPageFragment()

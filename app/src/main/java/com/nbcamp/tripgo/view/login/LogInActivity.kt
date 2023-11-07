@@ -3,8 +3,10 @@ package com.nbcamp.tripgo.view.login
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -13,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -33,83 +36,90 @@ import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityLogInBinding
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.main.MainActivity
+import com.nbcamp.tripgo.view.mypage.MyPageFragment
 import com.nbcamp.tripgo.view.signup.SignUpActivity
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class LogInActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
-    lateinit var emailid: AppCompatEditText
-    lateinit var emailpwd: AppCompatEditText
-    lateinit var loginbtn: AppCompatButton
-    lateinit var kakaoLoginButton: AppCompatImageView
-    var fireStore: FirebaseFirestore = Firebase.firestore
+    private lateinit var emailid: AppCompatEditText
+    private lateinit var emailpwd: AppCompatEditText
+    private lateinit var loginbtn: AppCompatButton
+    private lateinit var kakaoLoginButton: AppCompatImageView
+    private val firestore: FirebaseFirestore = Firebase.firestore
 
-    // firestore 연결
-    val firestore = Firebase.firestore
-    // firebaseUID 가져오기
-
-    // google login
+    // Google login
     private val binding by lazy { ActivityLogInBinding.inflate(layoutInflater) }
-    private lateinit var GoogleSignInClient: GoogleSignInClient
+    private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var startGoogleLoginForResult: ActivityResultLauncher<Intent>
+    private lateinit var progressBar: ProgressBar
+
+    companion object {
+        const val TAG = "LogInActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        // Firebaseauth 로그인
+        initializeViews()
+        setupListeners()
+        configureGoogleLogin()
+        configureKakaoLogin()
+    }
+
+    private fun initializeViews() {
         auth = FirebaseAuth.getInstance()
         emailid = findViewById(R.id.sign_up_email_edit_text)
         emailpwd = findViewById(R.id.log_in_password_edit_text)
         loginbtn = findViewById(R.id.log_in_login_button)
-
-        // Firebase loginbtn click event
-        loginbtn.setOnClickListener {
-            effectiveness()
-        }
-
-        // google login 선언 시작~
-        auth = Firebase.auth
-
-        googleInit()
-
-        val signInButton = findViewById<SignInButton>(R.id.log_in_google_login_button)
-
-        signInButton.setOnClickListener {
-            val signInIntent = GoogleSignInClient.signInIntent
-            startGoogleLoginForResult.launch(signInIntent)
-        }
-
-        // kakao 선언 시작 ~
-        /** KakaoSDK init */
-        KakaoSdk.init(this, BuildConfig.KAKAO_API_KEY)
-        Log.d("kakaoappkey", "kakaoappkey" + BuildConfig.KAKAO_API_KEY)
-
         kakaoLoginButton = findViewById(R.id.log_in_kakao_login_button)
-        kakaoLoginButton.setOnClickListener {
-            kakaoLogin()
-        }
-        val snackbarMessage = intent.getStringExtra("snackbarMessage")
-        if (snackbarMessage != null) {
-            Snackbar.make(binding.root, snackbarMessage, Snackbar.LENGTH_LONG).show()
-        }
-        passwordFind()
-        signUp()
     }
 
-    private fun effectiveness() {
-        var email = emailid.text.toString()
-        var password = emailpwd.text.toString()
-
-        if (email.isNotBlank() && password.isNotBlank()) {
-            login(email, password)
-        } else if (email.isBlank()) {
-            Toast.makeText(this, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
-        } else if (password.isBlank()) {
-            Toast.makeText(this, "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "Email 또는 비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
+    private fun setupListeners() {
+        loginbtn.setOnClickListener {
+            handleLoginButtonClick()
         }
+
+        binding.logInGoogleLoginButton.setOnClickListener {
+            startGoogleSignIn()
+        }
+
+        binding.logInSignUpTextView.setOnClickListener {
+            navigateToSignUp()
+        }
+
+        binding.logInFindPasswordTextView.setOnClickListener {
+            showPasswordFindFragment()
+        }
+    }
+
+    private fun handleLoginButtonClick() {
+        val email = emailid.text.toString()
+        val password = emailpwd.text.toString()
+
+        when {
+            email.isBlank() -> Toast.makeText(this, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
+            password.isBlank() -> Toast.makeText(this, "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
+            else -> {
+                showProgressBar() // ProgressBar 표시
+                login(email, password)
+            }
+        }
+    }
+
+
+
+    private fun showProgressBar() {
+        progressBar.visibility = View.VISIBLE
+        Handler().postDelayed({
+            hideProgressBar()
+        }, 5000) // 5000 밀리초 (5초)
+    }
+    private fun hideProgressBar() {
+        progressBar.visibility = View.GONE
     }
 
     private fun login(email: String, password: String) {
@@ -122,116 +132,103 @@ class LogInActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     } else {
+                        hideProgressBar()
                         toast("이메일 인증을 완료해 주세요")
                     }
                 } else {
+                    hideProgressBar()
                     Toast.makeText(this, "로그인 실패.", Toast.LENGTH_SHORT).show()
-                    authResult.exception?.localizedMessage?.let { Log.d("TEST!", it) }
+                    authResult.exception?.localizedMessage?.let { Log.d(TAG, it) }
                 }
             }
     }
 
-    // https://jgeun97.tistory.com/233
-    // https://github.com/firebase/snippets-android/blob/b8f65e9150fe927a5f0473e15e16fa5803189b60/auth/app/src/main/java/com/google/firebase/quickstart/auth/kotlin/GoogleSignInActivity.kt#L43-L44
-    private fun googleInit() {
-        val default_web_client_id =
-            "696047610679-dr938bmucn7iq2rnmul2delrveh52spa.apps.googleusercontent.com" // Android id X
 
+    private fun configureGoogleLogin() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(default_web_client_id)
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
-        GoogleSignInClient = GoogleSignIn.getClient(this, gso)
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        auth = Firebase.auth
+        startGoogleLoginForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                result.data?.let { data ->
+                    val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                    try {
+                        val account = task.getResult(ApiException::class.java)!!
+                        Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+                        firebaseAuthWithGoogle(account.idToken!!)
+                        startGoogleSignIn()
+                        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                        auth.signInWithCredential(credential)
+                            .addOnCompleteListener { authResult ->
+                                if (authResult.isSuccessful) {
+                                    val user = auth.currentUser
+                                    if (user != null) {
+                                        val email = user.email
+                                        val nickname = user.displayName
+                                        onLoginSuccess(email.toString(), nickname.toString())
 
-        startGoogleLoginForResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-                if (result.resultCode == RESULT_OK) {
-                    result.data?.let { data ->
+                                        val userDocument = hashMapOf(
+                                            "email" to user.email,
+                                            "nickname" to user.displayName,
+                                            "profileImage" to null,
+                                            "reviewCount" to 0
+                                        )
+                                        firestore.collection("users").document(user.email.toString())
+                                            .set(userDocument)
+                                            .addOnSuccessListener {
 
-                        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-
-                        try {
-                            // Google Sign In was successful, authenticate with Firebase
-                            val account = task.getResult(ApiException::class.java)!!
-                            Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-                            firebaseAuthWithGoogle(account.idToken!!)
-                            val intent = Intent(this, MainActivity::class.java)
-                            startActivity(intent)
-
-                            // Firebase Authentication으로 Google 사용자를 로그인합니다.
-                            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                            auth.signInWithCredential(credential)
-                                .addOnCompleteListener { authResult ->
-                                    if (authResult.isSuccessful) {
-                                        // Firebase Authentication에 로그인 성공
-                                        val user = auth.currentUser
-                                        if (user != null) {
-                                            // 로그인한 사용자 정보를 Firestore에 저장
-                                            val userDocument = hashMapOf(
-                                                "email" to user.email,
-                                                "nickname" to user.displayName,
-                                                "profileImage" to null,
-                                                "reviewCount" to 0
-                                            )
-                                            firestore.collection("users").document(user.uid)
-                                                .set(userDocument)
-                                                .addOnSuccessListener {
-                                                    // Firestore에 사용자 정보 저장 성공
-                                                    finish()
-                                                }
-                                                .addOnFailureListener { e ->
-                                                    Log.w(TAG, "Firestore에 사용자 정보 저장 실패", e)
-                                                }
-                                        }
-                                    } else {
-                                        // Firebase Authentication에 로그인 실패
-                                        Log.w(TAG, "Firebase에 Google 로그인 실패", authResult.exception)
+                                                finish()
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Log.w(TAG, "Firestore에 사용자 정보 저장 실패", e)
+                                            }
                                     }
+                                } else {
+                                    Log.w(TAG, "Firebase에 Google 로그인 실패", authResult.exception)
                                 }
-
-                        } catch (e: ApiException) {
-                            // Google Sign In failed, update UI appropriately
-                            Log.w(TAG, "Google sign in failed", e)
-                        }
+                            }
+                    } catch (e: ApiException) {
+                        Log.w(TAG, "Google sign in failed", e)
                     }
-                    // Google Login Success
-                } else {
-                    Log.e(TAG, "Google Result Error $result")
                 }
+            } else {
+                Log.e(TAG, "Google Result Error $result")
             }
+        }
     }
 
-    // [START auth_with_google]
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                 } else {
-                    // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                 }
             }
     }
 
+    private fun configureKakaoLogin() {
+        KakaoSdk.init(this, BuildConfig.KAKAO_API_KEY)
+        kakaoLoginButton.setOnClickListener {
+            kakaoLogin()
+        }
+    }
+
     private fun kakaoLogin() {
-        // 카카오계정으로 로그인 공통 callback 구성
-        // 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
-                Log.d("카톡계정 로그인 실패 @@@@@@@@@", "카카오계정으로 로그인 실패 : $error")
-                setLogin(false)
+                Log.d("Kakao Login Failure", "Kakao login failed: $error")
+                setKakaoLoginButtonVisible(true)
             } else if (token != null) {
-                // TODO: 최종적으로 카카오로그인 및 유저정보 가져온 결과
                 UserApiClient.instance.me { user, userError ->
                     if (userError != null) {
-                        // 사용자 정보 가져오기에 실패한 경우, 에러 처리를 수행
-                        Log.e("사용자 정보 가져오기 오류", userError.toString())
+                        Log.e("Error fetching user info", userError.toString())
                     } else if (user != null) {
                         val email = user.kakaoAccount?.email
                         val nickname = user.kakaoAccount?.profile?.nickname
@@ -243,11 +240,12 @@ class LogInActivity : AppCompatActivity() {
                                 "profileImage" to null,
                                 "reviewCount" to 0
                             )
-                            fireStore.collection("users").document(email)
+                            firestore.collection("users").document(email)
                                 .set(userDocument)
                                 .addOnSuccessListener {
                                     Log.d(ContentValues.TAG, "사용자 정보 Firestore에 저장 성공")
                                     val intent = Intent(this, MainActivity::class.java)
+                                    onLoginSuccess(email,nickname.toString())
                                     startActivity(intent)
                                 }
                                 .addOnFailureListener { e ->
@@ -259,7 +257,6 @@ class LogInActivity : AppCompatActivity() {
             }
         }
 
-        // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
             UserApiClient.instance.loginWithKakaoTalk(this, callback = callback)
         } else {
@@ -267,49 +264,31 @@ class LogInActivity : AppCompatActivity() {
         }
     }
 
-    private fun kakaoLogout() {
-        // 로그아웃
-        UserApiClient.instance.logout { error ->
-            if (error != null) {
-                Log.d("this", "로그아웃 실패. SDK에서 토큰 삭제됨: $error")
-            } else {
-                Log.d("this", "로그아웃 성공. SDK에서 토큰 삭제됨")
-                setLogin(false)
-            }
+    private fun setKakaoLoginButtonVisible(visible: Boolean) {
+        kakaoLoginButton.visibility = if (visible) View.VISIBLE else View.GONE
+    }
+
+    private fun startGoogleSignIn() {
+        val signInIntent = googleSignInClient.signInIntent
+        startGoogleLoginForResult.launch(signInIntent)
+    }
+
+    private fun showPasswordFindFragment() {
+        val fragment = PasswordFindFragment()
+        fragment.show(supportFragmentManager, null)
+    }
+
+    private fun navigateToSignUp() {
+        val intent = Intent(this, SignUpActivity::class.java)
+        startActivity(intent)
+    }
+    private fun onLoginSuccess(email: String, nickname: String) {
+        // 로그인 성공 후 데이터를 설정
+        val myPageFragment = MyPageFragment.newInstance()
+        myPageFragment.arguments = Bundle().apply {
+            putString("email", email)
+            putString("nickname", nickname)
         }
     }
 
-    private fun kakaoUnlink() {
-        // 연결 끊기
-        UserApiClient.instance.unlink { error ->
-            if (error != null) {
-                Log.d("this", "연결 끊기 실패: $error")
-            } else {
-                Log.d("this", "연결 끊기 성공. SDK에서 토큰 삭제 됨")
-                setLogin(false)
-            }
-        }
-    }
-
-    private fun setLogin(bool: Boolean) {
-        kakaoLoginButton.visibility = if (bool) View.GONE else View.VISIBLE
-    }
-
-    private fun passwordFind() {
-        binding.logInFindPasswordTextView.setOnClickListener {
-            val fragment = PasswordFindFragment()
-            fragment.show(supportFragmentManager, null)
-        }
-    }
-
-    private fun signUp() {
-        binding.logInSignUpTextView.setOnClickListener {
-            val intent = Intent(this, SignUpActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
-    companion object {
-        const val TAG = "MainActivity"
-    }
 }
