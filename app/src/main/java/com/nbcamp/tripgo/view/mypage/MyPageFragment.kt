@@ -23,7 +23,6 @@ import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.mypage.favorite.FavoriteFragment
 import com.nbcamp.tripgo.view.mypage.favorite.MypageAppInpo
 import com.nbcamp.tripgo.view.review.mypage.ReviewFragment
-import org.w3c.dom.Text
 
 class MyPageFragment : Fragment() {
 
@@ -45,12 +44,22 @@ class MyPageFragment : Fragment() {
         val userLayout = view.findViewById<LinearLayout>(R.id.mypage_userlayout)
         val openSourceLicenseTextView = view.findViewById<TextView>(R.id.mypage_opensource_textview)
         val appInpo = view.findViewById<TextView>(R.id.mypage_appinpo_textview)
+        val auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
 
 
         reviewLayout.setOnClickListener { navigateToFragment(ReviewFragment()) }
         zzimLayout.setOnClickListener { navigateToFragment(FavoriteFragment()) }
         logoutButton.setOnClickListener { logout() }
-        userLayout.setOnClickListener { showUserDialog() }
+
+        userLayout.setOnClickListener {
+            if (user!=null){
+                showUserDialog()
+            }else{
+                startActivity(Intent(requireContext(), LogInActivity::class.java))
+            }
+        }
+
         openSourceLicenseTextView.setOnClickListener { runOpenSourceDialog() }
         appInpo.setOnClickListener {
             val appinfodialog = MypageAppInpo()
@@ -60,6 +69,7 @@ class MyPageFragment : Fragment() {
 
         return view
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -89,7 +99,7 @@ class MyPageFragment : Fragment() {
 
                         Log.d("MYpageurl", profileImageUrl)
 
-                        imageView?.load(profileImageUrl){
+                        imageView?.load(profileImageUrl) {
                             transformations(CircleCropTransformation())
                         }
                     }
@@ -105,7 +115,7 @@ class MyPageFragment : Fragment() {
         val userEmail = user?.email
         val firestoredb = FirebaseFirestore.getInstance()
 
-        Log.d("mypageemail" ,userEmail.toString())
+        Log.d("mypageemail", userEmail.toString())
 
         val kakaouser = App.kakaoUser?.email
 
@@ -125,9 +135,9 @@ class MyPageFragment : Fragment() {
                 if (document.exists()) {
                     val userdata = document.data
                     val email = userdata?.get("email") as? String
-                    Log.d("MYPAGEDBINPO",email.toString())
+                    Log.d("MYPAGEDBINPO", email.toString())
                     val nickname = userdata?.get("nickname") as? String
-                    Log.d("MYPAGEDBINPO",nickname.toString())
+                    Log.d("MYPAGEDBINPO", nickname.toString())
 
                     nicknameText.text = nickname?.let { "   $it 님" } ?: ""
                     emailText.text = email?.let { "   $it" } ?: ""
@@ -140,17 +150,18 @@ class MyPageFragment : Fragment() {
             }
     }
 
-    private fun changetextbutton(){
+    private fun changetextbutton() {
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
         val logoutButton = view?.findViewById<Button>(R.id.mypage_logout_button)
+        val withdrawalButton = view?.findViewById<TextView>(R.id.mypage_withdrawal_textivew)
         val kakaouser = App.kakaoUser?.email
-        if(user != null || kakaouser != null ){
-            logoutButton?.text = "로그아웃"
-        }
-
-        else{
-            logoutButton?.text = "로그인"
+        if (user != null || kakaouser != null) {
+            logoutButton?.visibility = View.VISIBLE
+            withdrawalButton?.visibility = View.VISIBLE
+        } else {
+            logoutButton?.visibility = View.GONE
+            withdrawalButton?.visibility = View.GONE
         }
 
     }
@@ -179,7 +190,7 @@ class MyPageFragment : Fragment() {
         AlertDialog.Builder(requireActivity())
             .setView(R.layout.dialog_opensource)
             .setTitle("오픈소스 라이센스")
-            .setPositiveButton("확인"){_, _ ->}
+            .setPositiveButton("확인") { _, _ -> }
             .create()
             .show()
     }
