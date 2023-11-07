@@ -43,7 +43,11 @@ class ProvincePlaceListAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: ProvincePlaceEntity) = with(binding) {
-            val str = ((floor(model.tourListCount.toDouble() / 100)) * 100).toInt()
+            val str =
+                if (model.tourListCount > 100)
+                    ((floor(model.tourListCount.toDouble() / 100)) * 100).toInt()
+                else
+                    ((floor(model.tourListCount.toDouble() / 10)) * 10).toInt()
             itemView.setOnClickListener {
                 onClickItem(model)
             }
@@ -59,6 +63,7 @@ class ProvincePlaceListAdapter(
                     itemTitleTextView.setTextColor(Color.BLACK)
                     itemDescriptionTextView.setTextColor(Color.BLACK)
                 }
+
                 else -> {
                     itemMainImageView.scaleType = ImageView.ScaleType.FIT_XY
                     itemMainImageView.load(model.imageUrl, App.imageLoader) {

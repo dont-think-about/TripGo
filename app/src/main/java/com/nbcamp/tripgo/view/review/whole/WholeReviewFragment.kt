@@ -46,7 +46,8 @@ class WholeReviewFragment : Fragment() {
     private val reviewViewModel: ReviewViewModel by viewModels { ReviewViewModelFactory() }
     private val reviewAdapter: WholeReviewAdapter by lazy {
         WholeReviewAdapter(requireActivity()) { model ->
-            goToReviewDetailFragment(model)
+            if (behavior.state != BottomSheetBehavior.STATE_HALF_EXPANDED)
+                goToReviewDetailFragment(model)
         }
     }
     private val bottomSheetAdapter: BottomSheetAdapter by lazy {
@@ -57,6 +58,7 @@ class WholeReviewFragment : Fragment() {
             reviewViewModel.setFilteredReview(
                 filterTags,
             )
+            binding.reviewRecyclerViewBackground.isVisible = false
         }
     }
 
@@ -112,6 +114,10 @@ class WholeReviewFragment : Fragment() {
             reviewViewModel.setFilteredReview(mutableMapOf())
         }
 
+        updateReviewsLayout.setOnRefreshListener {
+            reviewViewModel.getAllReviews()
+        }
+
         reviewViewModel.getAllReviews()
     }
 
@@ -119,13 +125,15 @@ class WholeReviewFragment : Fragment() {
         text: CharSequence?,
         categoryList: Array<String>
     ) = with(binding) {
-
         // 높이 조절
         val layoutParams = commentBottomSheet.root.layoutParams
         layoutParams.height = getBottomSheetDialogDefaultHeight()
         commentBottomSheet.root.layoutParams = layoutParams
+
         behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         categoryTitle = text.toString()
+        reviewRecyclerViewBackground.isVisible = true
+
         commentBottomSheet.reviewBottomSheetTitleTextView.text = text
         commentBottomSheet.reviewBottomSheetRecyclerView.run {
             adapter = bottomSheetAdapter
@@ -154,6 +162,10 @@ class WholeReviewFragment : Fragment() {
                     return@observe
                 }
             }
+            if (binding.updateReviewsLayout.isRefreshing) {
+                loadingDialog.setInvisible()
+                binding.updateReviewsLayout.isRefreshing = false
+            }
             allSchedule = state.allSchedules ?: emptyList()
             reviewAdapter.submitList(allSchedule)
         }
@@ -176,7 +188,9 @@ class WholeReviewFragment : Fragment() {
         val transactionReviewWriting = parentFragmentManager.beginTransaction()
         // review Detail fragment로 데이터 전달
         sharedViewModel.setReviewDetailModel(model)
-        transactionReviewWriting.replace(
+        behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        transactionReviewWriting.hide(this)
+        transactionReviewWriting.add(
             R.id.main_fragment_container,
             ReviewDetailFragment.newInstance()
         ).addToBackStack(null)
