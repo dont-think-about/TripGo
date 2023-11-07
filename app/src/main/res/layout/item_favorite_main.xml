@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,30 +8,30 @@
     <LinearLayout
         android:id="@+id/favorite_item_layout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         tools:ignore="MissingConstraints">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/favorite_item_imageview"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:adjustViewBounds="true"
-            android:src="@drawable/icon_user"
+            android:contentDescription="Image Description"
             android:importantForAccessibility="yes"
-            android:contentDescription="Image Description" />
+            android:src="@drawable/icon_user" />
 
         <LinearLayout
             android:id="@+id/favorite_item_region_inpo_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="10dp"
             android:layout_weight="3"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/favorite_item_region_name_textview"
-                style="@style/Font.18.Normal.Black"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/favorite_item_region_name" />
@@ -43,19 +41,21 @@
                 style="@style/Font.14.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/favorite_item_region_explantion"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
                 android:maxLines="1"
-                android:ellipsize="end" />
+                android:text="@string/favorite_item_region_explantion" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/favorite_item_region_distance_textview"
-                style="@style/Font.14.Normal.Black"
+                style="@style/Font.12.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/favorite_item_region_distance"
-                android:textColor="@color/deactivated"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
                 android:maxLines="1"
-                android:ellipsize="end" />
+                android:text="@string/favorite_item_region_distance"
+                android:textColor="@color/deactivated" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatImageView

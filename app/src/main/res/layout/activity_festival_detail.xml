@@ -27,7 +27,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/festival_main_title"
-            style="@style/Font.20.Bold.Black"
+            style="@style/Font.18.Bold.Black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -70,14 +70,15 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_view_main_photo"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scaleType="fitXY"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@tools:sample/avatars" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/festival_date_time"
-                style="@style/Font.18.Bold.Black"
+                style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -93,7 +94,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/address_festival"
-                style="@style/Font.16.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -108,7 +109,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/address_festival_detail"
-                style="@style/Font.16.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="4dp"
@@ -118,7 +119,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/show_more"
-                style="@style/Font.14.Normal.Black"
+                style="@style/Font.12.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -136,7 +137,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/phone_number"
-                style="@style/Font.16.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingVertical="4dp"
@@ -151,7 +152,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/move_to_homepage"
-                style="@style/Font.16.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingVertical="4dp"
@@ -178,14 +179,14 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/evaluation"
-                    style="@style/Font.16.Normal.Black"
+                    style="@style/Font.14.Normal.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="3.0점" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/festival_review"
-                    style="@style/Font.16.Normal.Black"
+                    style="@style/Font.14.Normal.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -201,12 +202,12 @@
                 android:text="@string/find_road" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                style="@style/Font.16.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingVertical="4dp"
                 android:paddingBottom="4dp"
-                android:text="@string/move_to_tmap" />
+                android:text="@string/move_to_map" />
 
             <Space
                 android:layout_width="0dp"

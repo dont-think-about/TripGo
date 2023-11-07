@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".view.tour.detail.TourDetailActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,7 +13,7 @@
         android:layout_height="56dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -29,14 +30,14 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tour_main_title"
-            style="@style/Font.16.Bold.Black"
+            style="@style/Font.18.Bold.Black"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="68dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_home"
-            app:layout_constraintStart_toEndOf="@id/btn_back"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btn_home"
@@ -53,7 +54,6 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
             android:padding="12dp"
             android:src="@drawable/icon_share_button"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -79,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@tools:sample/avatars" />
 
@@ -87,31 +87,32 @@
                 android:id="@+id/festival_date_card_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
                 android:visibility="gone"
-                app:cardCornerRadius="20dp">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="@null">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/festival_date_text_view"
-                    style="@style/Font.12.Normal.Black"
-                    android:textColorHint="@color/white"
+                    style="@style/Font.18.Bold.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/black_transparent"
-                    android:padding="15dp"
-                    android:textColor="@color/white" />
+                    android:background="@color/white"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black" />
+
             </androidx.cardview.widget.CardView>
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/address" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/address_tour"
-                style="@style/Font.16.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -126,7 +127,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/address_tour_detail"
-                style="@style/Font.16.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="4dp"
@@ -134,7 +135,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/show_more"
-                style="@style/Font.14.Normal.Black"
+                style="@style/Font.12.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -155,7 +156,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/phone_number"
-                style="@style/Font.16.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
@@ -172,7 +173,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/move_to_homepage"
-                style="@style/Font.16.Normal.Black"
+                style="@style/Font.14.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
@@ -201,14 +202,14 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/evaluation"
-                    style="@style/Font.16.Normal.Black"
+                    style="@style/Font.14.Normal.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/rating" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tour_review"
-                    style="@style/Font.16.Normal.Black"
+                    style="@style/Font.14.Normal.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -221,12 +222,13 @@
                 style="@style/Font.16.Bold.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/find_road" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatButton
@@ -250,15 +252,29 @@
                     android:text="@string/public_transport" />
             </LinearLayout>
 
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="150dp" />
+
             <com.nbcamp.tripgo.util.KaKaoMapFrameLayout
                 android:id="@+id/route_map"
                 android:layout_width="match_parent"
-                android:layout_height="500dp" />
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
         </LinearLayout>
 
     </ScrollView>
 
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EAEAEA"
+        app:layout_constraintBottom_toTopOf="@id/bottom" />
+
     <LinearLayout
+        android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/white"
@@ -275,7 +291,6 @@
             android:focusable="true"
             android:padding="16dp"
             app:srcCompat="@drawable/selector_button_heart" />
-
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/move_to_calendar"
