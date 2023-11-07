@@ -1,7 +1,9 @@
 package com.nbcamp.tripgo.view.search
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -25,6 +27,7 @@ import com.kakao.vectormap.label.LabelStyles
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivitySearchBinding
 import com.nbcamp.tripgo.view.search.adapters.ViewPagerAdapter
+import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 
 class SearchActivity : AppCompatActivity() {
 
@@ -103,6 +106,18 @@ class SearchActivity : AppCompatActivity() {
 
                             val titleTextView = findViewById<AppCompatTextView>(R.id.map_item_title)
                             titleTextView.text = clickedItem.title
+
+                            val detailMoveButton = findViewById<Button>(R.id.move_to_detail_button)
+                            detailMoveButton.setOnClickListener {
+                                startActivity(
+                                    Intent(
+                                        this@SearchActivity,
+                                        TourDetailActivity::class.java
+                                    ).apply {
+                                        putExtra("contentId", clickedItem.contentId)
+                                    }
+                                )
+                            }
 
                             val addressTextView =
                                 findViewById<AppCompatTextView>(R.id.map_item_address)
