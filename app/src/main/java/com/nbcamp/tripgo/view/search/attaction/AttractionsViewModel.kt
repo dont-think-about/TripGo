@@ -22,6 +22,7 @@ class AttractionsViewModel(
     // ViewModel의 fetchSearchResult 함수
     fun fetchSearchResult(keyword: String) {
         Log.d("키워드1", "값 = $keyword")
+        _searchUiState.value = SearchKeywordUiState.initialize()
 
         viewModelScope.launch {
             runCatching {
