@@ -227,7 +227,7 @@ class CalendarViewModel(
         val month = today.get(Calendar.MONTH) + 1
         val day = today.get(Calendar.DATE)
         val todayInt =
-            "$year${if (month < 10) "0$month" else "$month"}$day".toInt()
+            "$year${if (month < 10) "0$month" else "$month"}${if (day < 10) "0${day}" else day}".toInt()
         val clickedDate =
             "${clickDate?.year ?: 100}${clickDate?.month ?: 100}${if ((clickDate?.day ?: 0) < 10) "0${clickDate?.day ?: 100}" else clickDate?.day ?: 100}".toInt()
         val list =
