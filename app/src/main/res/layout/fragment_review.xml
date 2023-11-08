@@ -10,16 +10,24 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            tools:ignore="MissingConstraints" />
+
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/review_title_text_view"
             style="@style/Font.22.Bold.Black"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="44dp"
             android:gravity="center_vertical"
             android:text="@string/reviews"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView

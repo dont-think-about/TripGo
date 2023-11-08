@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,24 @@ class FavoriteFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_favorite, container, false)
         favoritedata(view)
+
+        val favoriteToolbar = view.findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        favoriteToolbar.setOnClickListener{
+            activity?.onBackPressed()
+        }
+
+        val callback = object  : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                parentFragmentManager.popBackStack()
+            }
+        }
+        favoriteToolbar.setNavigationIcon(R.drawable.icon_back_button)
+
+        favoriteToolbar.setNavigationOnClickListener {
+            callback.handleOnBackPressed()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
         return view
     }
 
