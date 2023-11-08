@@ -58,12 +58,16 @@ class FestivalFragment : Fragment() {
         // 검색 버튼(ImageView) 클릭 시 동작 설정
         binding.festivalSearchOk.setOnClickListener {
             val searchText = binding.festivalSearchEdit.text.toString()
-            if (::startDateString.isInitialized.not()) {
+            if (::startDateString.isInitialized) {
+                if (searchText.length >= 2) {
+                    viewModel.fetchSearchResult(keyword = searchText, startDate = startDateString)
+                    hideKeyboard() // 키보드 숨김
+                } else {
+                    Toast.makeText(context, "두 글자 이상의 검색어를 입력해주세요!", Toast.LENGTH_SHORT).show()
+                }
+            } else {
                 Toast.makeText(context, "날짜를 입력해주세요!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
             }
-            viewModel.fetchSearchResult(keyword = searchText, startDate = startDateString)
-            hideKeyboard() // 키보드 숨김
         }
         binding.festivalSearchWeather.setOnClickListener {
             val cal = Calendar.getInstance()
