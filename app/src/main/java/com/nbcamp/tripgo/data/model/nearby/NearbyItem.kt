@@ -1,7 +1,10 @@
 package com.nbcamp.tripgo.data.model.nearby
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class NearbyItem(
     @SerializedName("addr1")
     val addr1: String,
@@ -45,4 +48,4 @@ data class NearbyItem(
     val tel: String,
     @SerializedName("title")
     val title: String
-)
+): Parcelable

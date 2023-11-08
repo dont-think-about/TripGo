@@ -99,9 +99,18 @@ interface TourApiService {
         @Query("areaCode") areaCode: String,
         @Query("numOfRows") numOfRows: Int = 100,
         @Query("pageNo") currentPage: Int
-
     ): Response<AreaResponseModel>
 
+    @GET("KorService1/locationBasedList1")
+    suspend fun getNearbyPlaceByPage(
+        @QueryMap defaultQuerySet: HashMap<String, String> = DEFAULT_QUERY_SET,
+        @Query("mapY") latitude: String,
+        @Query("mapX") longitude: String,
+        @Query("radius") radius: String,
+        @Query("contentTypeId") typeId: String = "12",
+        @Query("numOfRows") responseCount: Int,
+        @Query("pageNo") pageNumber: String
+    ): Response<NearbyPlaceResponseModel>
 
     companion object {
         val DEFAULT_QUERY_SET = hashMapOf(
