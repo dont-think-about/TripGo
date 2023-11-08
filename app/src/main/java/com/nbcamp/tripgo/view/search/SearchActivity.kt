@@ -3,9 +3,11 @@ package com.nbcamp.tripgo.view.search
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +40,8 @@ class SearchActivity : AppCompatActivity() {
     private val searchViewModel: SearchViewModel by viewModels { SearchViewModelFactory() }
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private lateinit var bottomSheetLayout: LinearLayout
+    private lateinit var progressBar: ProgressBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
@@ -47,6 +51,7 @@ class SearchActivity : AppCompatActivity() {
         binding.searchViewpager.adapter = mViewPagerAdapter
         binding.searchTabLayout.setupWithViewPager(binding.searchViewpager)
         adapter = SearchAdapter(this)
+        progressBar = findViewById(R.id.progressBar)
 
         searchViewModel.initAdapter(adapter)
 
@@ -59,6 +64,8 @@ class SearchActivity : AppCompatActivity() {
 
         // RecyclerView 어댑터에 데이터 추가
         searchViewModel.fetchViewPagerData()
+        progressBar.visibility = View.VISIBLE
+
         adapter.clearItem()
 
         val searchBackImageView = findViewById<ImageView>(R.id.search_back)
@@ -67,6 +74,8 @@ class SearchActivity : AppCompatActivity() {
         }
         searchViewModel.rankList.observe(this) { pullRankList ->
             adapter.additem(pullRankList)
+
+            progressBar.visibility = View.GONE
         }
 
         searchViewModel.pullData.observe(this) { pullDatalist ->
