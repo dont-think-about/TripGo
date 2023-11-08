@@ -56,19 +56,14 @@ class MyPageFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_my_page, container, false)
         loadingDialog = LoadingDialog(requireActivity())
-
         emailText = view.findViewById(R.id.mypage_signin_up_inpo)
         nicknameText = view.findViewById(R.id.mypage_signin_up_text)
 
-
         val reviewLayout = view.findViewById<LinearLayout>(R.id.review_layout)
         val zzimLayout = view.findViewById<LinearLayout>(R.id.mypage_zzim_layout)
-        val loginButton = view.findViewById<Button>(R.id.mypage_login_button)
         val userLayout = view.findViewById<LinearLayout>(R.id.mypage_userlayout)
         val openSourceLicenseTextView = view.findViewById<TextView>(R.id.mypage_opensource_textview)
         val appInpo = view.findViewById<TextView>(R.id.mypage_appinpo_textview)
-
-
         reviewLayout.setOnClickListener { navigateToFragment(ReviewFragment()) }
         zzimLayout.setOnClickListener { navigateToFragment(FavoriteFragment()) }
 
@@ -80,15 +75,11 @@ class MyPageFragment : Fragment() {
                 showToast("로그인이 되어 있지 않습니다")
             }
         }
-
         openSourceLicenseTextView.setOnClickListener { runOpenSourceDialog() }
         appInpo.setOnClickListener {
             val appinfodialog = MypageAppInpo()
             appinfodialog.show(parentFragmentManager, "app_info_dialog")
         }
-
-
-
         return view
     }
 
@@ -97,35 +88,25 @@ class MyPageFragment : Fragment() {
         if(UserLoggedIn()){
             userinpo()
             changetextbutton()
-            Log.d("MYPAGEONRESUME","asdasd")
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        Log.d("MYPAGEONCREATE",UserLoggedIn().toString())
-
-        if(UserLoggedIn()){
-            userinpo()
-
-        }
-        else{
-            changetextbutton()
-        }
         changetextbutton()
     }
+
     private fun UserLoggedIn(): Boolean {
         val auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
         return currentUser != null
     }
+
     private fun userinpo(){
         loadingDialog.run {
             setVisible()
             setText("로딩중 ...")
         }
-
         viewModel.email.observe(viewLifecycleOwner) { email ->
             emailText.text = "   $email"
             checkAndDismissLoadingDialog()
@@ -139,6 +120,7 @@ class MyPageFragment : Fragment() {
         viewModel.fetchDataFromFirebase()
         imageupdate()
     }
+
     private fun checkAndDismissLoadingDialog() {
         // email과 nickname이 모두 채워졌는지 확인
         if (emailText.text.isNotBlank() && nicknameText.text.isNotBlank()) {
@@ -193,7 +175,6 @@ class MyPageFragment : Fragment() {
         }
     }
 
-
     private fun loading(){
         loadingDialog.run {
             setVisible()
@@ -204,7 +185,6 @@ class MyPageFragment : Fragment() {
             loadingDialog.hide() // 로딩 화면 숨기기
         }
     }
-
 
     private fun navigateToFragment(fragment: Fragment) {
         val transaction = parentFragmentManager.beginTransaction()
@@ -226,6 +206,7 @@ class MyPageFragment : Fragment() {
             .create()
             .show()
     }
+
     companion object {
         const val TAG = "MY_PAGE_FRAGMENT"
 
