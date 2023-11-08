@@ -1,5 +1,7 @@
 package com.nbcamp.tripgo.view.mypage
 
+import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +13,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import coil.load
 import coil.transform.CircleCropTransformation
@@ -21,61 +27,57 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.R
+import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.mypage.favorite.FavoriteFragment
 import com.nbcamp.tripgo.view.mypage.favorite.MypageAppInpo
 import com.nbcamp.tripgo.view.review.mypage.ReviewFragment
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class MyPageFragment : Fragment() {
 
-    private var dbinpo: DocumentReference? = null
-
+    private val viewModel: MyPageViewModel by viewModels()
     private val dialogTag = "MyDialog"
-
     private lateinit var emailText: TextView
     private lateinit var nicknameText: TextView
+    private lateinit var loadingDialog: LoadingDialog
 
 
-
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_my_page, container, false)
+        loadingDialog = LoadingDialog(requireActivity())
 
         emailText = view.findViewById(R.id.mypage_signin_up_inpo)
-        nicknameText= view.findViewById(R.id.mypage_signin_up_text)
-
-
-
-
-
-        fetchFirebaseDataAndUIUpdate(view)
+        nicknameText = view.findViewById(R.id.mypage_signin_up_text)
 
 
         val reviewLayout = view.findViewById<LinearLayout>(R.id.review_layout)
         val zzimLayout = view.findViewById<LinearLayout>(R.id.mypage_zzim_layout)
-        val logoutButton = view.findViewById<Button>(R.id.mypage_logout_button)
+        val loginButton = view.findViewById<Button>(R.id.mypage_login_button)
         val userLayout = view.findViewById<LinearLayout>(R.id.mypage_userlayout)
         val openSourceLicenseTextView = view.findViewById<TextView>(R.id.mypage_opensource_textview)
         val appInpo = view.findViewById<TextView>(R.id.mypage_appinpo_textview)
-        val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
 
 
         reviewLayout.setOnClickListener { navigateToFragment(ReviewFragment()) }
         zzimLayout.setOnClickListener { navigateToFragment(FavoriteFragment()) }
-        logoutButton.setOnClickListener { logout() }
 
+        val auth = FirebaseAuth.getInstance()
         userLayout.setOnClickListener {
-            if (user!=null){
+            if (auth.currentUser != null) {
                 showUserDialog()
-            }else{
-                startActivity(Intent(requireContext(), LogInActivity::class.java))
+            } else {
+                showToast("로그인이 되어 있지 않습니다")
             }
         }
 
@@ -85,30 +87,83 @@ class MyPageFragment : Fragment() {
             appinfodialog.show(parentFragmentManager, "app_info_dialog")
         }
 
-        fetchFirebaseDataAndUIUpdate(view)
 
 
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(UserLoggedIn()){
+            userinpo()
+            changetextbutton()
+            Log.d("MYPAGEONRESUME","asdasd")
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d("MYPAGEONCREATE",UserLoggedIn().toString())
 
-        val email = arguments?.getString("email")
-        val nickname = arguments?.getString("nickname")
-        emailText?.text = email
-        nicknameText?.text = nickname
-        Log.d("MYPAGELELEL",email.toString())
-        Log.d("MYPAGELELEL",nickname.toString())
+        if(UserLoggedIn()){
+            userinpo()
 
-
-
-        // Firebase 정보 가져오고 UI 업데이트
-
-        imageupdate()
-
+        }
+        else{
+            changetextbutton()
+        }
         changetextbutton()
+    }
+    private fun UserLoggedIn(): Boolean {
+        val auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+        return currentUser != null
+    }
+    private fun userinpo(){
+        loadingDialog.run {
+            setVisible()
+            setText("로딩중 ...")
+        }
+
+        viewModel.email.observe(viewLifecycleOwner) { email ->
+            emailText.text = "   $email"
+            checkAndDismissLoadingDialog()
+            Log.d("MYpage값확인중","$email")
+        }
+        viewModel.nickname.observe(viewLifecycleOwner) { nickname ->
+            nicknameText.text = "   $nickname 님"
+            checkAndDismissLoadingDialog()
+            Log.d("MYpage값확인중","$nickname")
+        }
+        viewModel.fetchDataFromFirebase()
+        imageupdate()
+    }
+    private fun checkAndDismissLoadingDialog() {
+        // email과 nickname이 모두 채워졌는지 확인
+        if (emailText.text.isNotBlank() && nicknameText.text.isNotBlank()) {
+            loadingDialog.hide()
+        }
+    }
+
+    private fun changetextbutton() {
+        val loginbutton = view?.findViewById<Button>(R.id.mypage_login_button)
+
+        if (UserLoggedIn()) {
+            loginbutton?.visibility = View.GONE
+        } else {
+            loginbutton?.visibility = View.VISIBLE
+            loginbutton?.setOnClickListener {
+                loading()
+                val intent = Intent(requireContext(), LogInActivity::class.java)
+                startActivity(intent)
+            }
+        }
+    }
+
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun imageupdate() {
@@ -124,13 +179,13 @@ class MyPageFragment : Fragment() {
                 if (document != null && document.exists()) {
                     val profileImageUrl = document.getString("profileImageUrl")
                     if (!profileImageUrl.isNullOrEmpty()) {
-
-                        val imageView = view?.findViewById<ImageView>(R.id.mypage_usericon)
-
-                        Log.d("MYpageurl", profileImageUrl)
-
+                        val imageView = view?.findViewById<AppCompatImageView>(R.id.mypage_usericon)
                         imageView?.load(profileImageUrl) {
                             transformations(CircleCropTransformation())
+                            listener(onSuccess = { _, _ ->
+                                // 이미지 로드가 성공한 경우, 로딩 화면을 숨깁니다.
+                                checkAndDismissLoadingDialog()
+                            })
                         }
                     }
                 }
@@ -139,62 +194,17 @@ class MyPageFragment : Fragment() {
     }
 
 
-    private fun fetchFirebaseDataAndUIUpdate(view: View) {
-        val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
-        val userEmail = user?.email
-        val firestoredb = FirebaseFirestore.getInstance()
-
-        Log.d("mypageemail", userEmail.toString())
-
-        val kakaouser = App.kakaoUser?.email
-
-        val emailText = view.findViewById<TextView>(R.id.mypage_signin_up_inpo)
-        val nicknameText = view.findViewById<TextView>(R.id.mypage_signin_up_text)
-
-        dbinpo = when {
-            kakaouser == null -> firestoredb.collection("users").document(userEmail.toString())
-            kakaouser != null -> firestoredb.collection("users").document(kakaouser.toString())
-            else -> {
-                return
-            }
+    private fun loading(){
+        loadingDialog.run {
+            setVisible()
+            setText("로딩중 ... ")
         }
-
-        dbinpo?.get()
-            ?.addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val userdata = document.data
-                    val email = userdata?.get("email") as? String
-                    Log.d("MYPAGEDBINPO", email.toString())
-                    val nickname = userdata?.get("nickname") as? String
-                    Log.d("MYPAGEDBINPO", nickname.toString())
-
-                    nicknameText.text = nickname?.let { "   $it 님" } ?: ""
-                    emailText.text = email?.let { "   $it" } ?: ""
-                } else {
-                    Log.d("Mypagefail", "document를 찾을 수 없습니다.")
-                }
-            }
-            ?.addOnFailureListener { e ->
-                Log.d(TAG, "실 패 ! $e")
-            }
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(5500) //
+            loadingDialog.hide() // 로딩 화면 숨기기
+        }
     }
 
-    private fun changetextbutton() {
-        val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
-        val logoutButton = view?.findViewById<Button>(R.id.mypage_logout_button)
-        val withdrawalButton = view?.findViewById<TextView>(R.id.mypage_withdrawal_textivew)
-        val kakaouser = App.kakaoUser?.email
-        if (user != null || kakaouser != null) {
-            logoutButton?.visibility = View.VISIBLE
-            withdrawalButton?.visibility = View.VISIBLE
-        } else {
-            logoutButton?.visibility = View.GONE
-            withdrawalButton?.visibility = View.GONE
-        }
-
-    }
 
     private fun navigateToFragment(fragment: Fragment) {
         val transaction = parentFragmentManager.beginTransaction()
@@ -202,69 +212,6 @@ class MyPageFragment : Fragment() {
         transaction.addToBackStack(null)
         transaction.commit()
     }
-
-    private fun logout() {
-        val progressBar = view?.findViewById<ProgressBar>(R.id.mypage_progressBar)  // 프로그래스 바
-        val logoutButton = view?.findViewById<Button>(R.id.mypage_logout_button)
-
-        val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
-        val kakaouser = App.kakaoUser?.email
-
-
-        if (user != null || kakaouser != null) {
-            // 사용자가 로그인한 상태이면 로그아웃 처리
-
-            progressBar?.visibility = View.VISIBLE
-            lifecycleScope.launch {
-                delay(2000)  //  대기
-                logoutButton?.text = "로그인"
-                updateUIAfterLogout()
-                // 일정 시간 후에 프로그래스 바를 숨기고 화면을 전환
-                progressBar?.visibility = View.GONE
-
-            }
-
-            if (kakaouser != null) {
-                // 카카오 로그아웃
-                UserApiClient.instance.logout { error ->
-                    if (error != null) {
-                        Log.e("MYPAGEFRAGMENT", "I'm kakao user but failed : $error")
-                    } else {
-                        App.kakaoUser = null
-                        // 로그아웃 후 화면 갱신
-                        logoutButton?.text = "로그인"
-                        updateUIAfterLogout()
-                    }
-                }
-            } else {
-                // Firebase Auth 로그아웃
-                FirebaseAuth.getInstance().signOut()
-                App.firebaseUser = null
-                // 로그아웃 후 화면 갱신
-                logoutButton?.text = "로그인"
-                updateUIAfterLogout()
-            }
-        } else {
-            // 사용자가 로그인하지 않은 상태이면 로그인 화면으로 이동
-            val intent = Intent(requireContext(), LogInActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
-    private fun updateUIAfterLogout() {
-        val emailText = view?.findViewById<TextView>(R.id.mypage_signin_up_inpo)
-        val nicknameText = view?.findViewById<TextView>(R.id.mypage_signin_up_text)
-        val logoutbutton = view?.findViewById<Button>(R.id.mypage_logout_button)
-
-        nicknameText?.text = getString(R.string.mypage_signin_up)
-        emailText?.text = getString(R.string.mypage_signin_up_inpor)
-        logoutbutton?.text = getString(R.string.mypage_logout)
-
-        // 다른 로그아웃 관련 작업을 수행할 수 있으면 여기에 추가
-    }
-
-
 
     private fun showUserDialog() {
         val myPageDialog = MyPageDialog(requireContext())
@@ -279,7 +226,6 @@ class MyPageFragment : Fragment() {
             .create()
             .show()
     }
-
     companion object {
         const val TAG = "MY_PAGE_FRAGMENT"
 

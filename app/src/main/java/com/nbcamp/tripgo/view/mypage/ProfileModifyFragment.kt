@@ -9,9 +9,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
@@ -25,10 +28,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.kakao.sdk.user.UserApiClient
+import com.nbcamp.tripgo.util.LoadingDialog
+import com.nbcamp.tripgo.view.App
+import com.nbcamp.tripgo.view.login.LogInActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import java.util.UUID
 
 class ProfileModifyFragment : Fragment() {
     private lateinit var refreshNickText: AppCompatEditText
+    private lateinit var loadingDialog: LoadingDialog
     private var selectedImageUri: Uri? = null  // 이미지 URI를 저장할 변수
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri != null) {
@@ -43,6 +53,9 @@ class ProfileModifyFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        loadingDialog = LoadingDialog(requireActivity())
+
         val view = inflater.inflate(R.layout.fragment_profile_modify, container, false)
         refreshNickText = view.findViewById(R.id.profile_edit_username)
 
@@ -55,11 +68,13 @@ class ProfileModifyFragment : Fragment() {
         val imageButton = view?.findViewById<ImageView>(R.id.profile_edit_user_imageview)
         imageButton?.setOnClickListener { changeImage() }
 
+        val logoutButton = view?.findViewById<AppCompatButton>(R.id.profile_modify_logout_button)
+        logoutButton?.setOnClickListener { login() }
+
         imageUpdate()
 
         return view
     }
-
     private fun updateProfile() {
         val editNickname = refreshNickText.text.toString()
         if (editNickname.isEmpty()) {
@@ -191,6 +206,80 @@ class ProfileModifyFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun login() {
+
+        val loginbutton = view?.findViewById<Button>(R.id.mypage_login_button)
+
+        val auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+        val kakaouser = App.kakaoUser?.email
+
+
+        if (user != null || kakaouser != null) {
+            // 사용자가 로그인한 상태이면 로그아웃 처리
+
+            if (kakaouser != null) {
+                // 카카오 로그아웃
+                UserApiClient.instance.logout { error ->
+                    if (error != null) {
+                        Log.e("MYPAGEFRAGMENT", "I'm kakao user but failed : $error")
+                    } else {
+                        App.kakaoUser = null
+                        // 로그아웃 후 화면 갱신
+                        modifyToFragment(MyPageFragment())
+                        loginbutton?.text = "로그인"
+                        updateUIAfterLogout()
+                    }
+                }
+            } else {
+                // Firebase Auth 로그아웃
+                FirebaseAuth.getInstance().signOut()
+                App.firebaseUser = null
+                modifyToFragment(MyPageFragment())
+                // 로그아웃 후 화면 갱신
+                loginbutton?.text = "로그인"
+                updateUIAfterLogout()
+
+            }
+        } else {
+            // 사용자가 로그인하지 않은 상태이면 로그인 화면으로 이동
+            val intent = Intent(requireContext(), LogInActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun updateUIAfterLogout() {
+        val emailText = view?.findViewById<TextView>(R.id.mypage_signin_up_inpo)
+        val nicknameText = view?.findViewById<TextView>(R.id.mypage_signin_up_text)
+        val logoutbutton = view?.findViewById<Button>(R.id.mypage_login_button)
+
+        nicknameText?.text = getString(R.string.mypage_signin_up)
+        emailText?.text = getString(R.string.mypage_signin_up_inpor)
+        logoutbutton?.text = getString(R.string.mypage_logout)
+
+        loading()
+    }
+
+    private fun loading(){
+
+        loadingDialog.run {
+            setVisible()
+            setText("로딩중 ... ")
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(1500)
+            loadingDialog.hide()
+        }
+
+    }
+    private fun modifyToFragment(fragment: Fragment){
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.main_fragment_container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     companion object {

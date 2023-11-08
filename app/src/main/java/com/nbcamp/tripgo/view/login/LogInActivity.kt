@@ -34,6 +34,7 @@ import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.BuildConfig
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivityLogInBinding
+import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.main.MainActivity
 import com.nbcamp.tripgo.view.mypage.MyPageFragment
@@ -54,7 +55,9 @@ class LogInActivity : AppCompatActivity() {
     private val binding by lazy { ActivityLogInBinding.inflate(layoutInflater) }
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var startGoogleLoginForResult: ActivityResultLauncher<Intent>
-    private lateinit var progressBar: ProgressBar
+
+    //loading Dialog
+    private lateinit var loadingDialog: LoadingDialog
 
     companion object {
         const val TAG = "LogInActivity"
@@ -63,6 +66,10 @@ class LogInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        loadingDialog = LoadingDialog(this)
+
+        loadingDialog.hide() // 로딩 화면 숨기기
 
         initializeViews()
         setupListeners()
@@ -104,7 +111,7 @@ class LogInActivity : AppCompatActivity() {
             email.isBlank() -> Toast.makeText(this, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
             password.isBlank() -> Toast.makeText(this, "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
             else -> {
-                showProgressBar() // ProgressBar 표시
+                showLoadingDialog() // ProgressBar 표시
                 login(email, password)
             }
         }
@@ -112,14 +119,14 @@ class LogInActivity : AppCompatActivity() {
 
 
 
-    private fun showProgressBar() {
-        progressBar.visibility = View.VISIBLE
-        Handler().postDelayed({
-            hideProgressBar()
-        }, 5000) // 5000 밀리초 (5초)
+    private fun showLoadingDialog() {
+        loadingDialog.run{
+            setVisible()
+            setText("로딩중...")
+        }
     }
-    private fun hideProgressBar() {
-        progressBar.visibility = View.GONE
+    private fun hideLoadingDialog() {
+        loadingDialog.setInvisible()
     }
 
     private fun login(email: String, password: String) {
@@ -132,12 +139,13 @@ class LogInActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     } else {
-                        hideProgressBar()
+                        hideLoadingDialog()
                         toast("이메일 인증을 완료해 주세요")
                     }
                 } else {
-                    hideProgressBar()
+                    hideLoadingDialog()
                     Toast.makeText(this, "로그인 실패.", Toast.LENGTH_SHORT).show()
+                    Log.e(TAG, "로그인 실패: ${authResult.exception}")
                     authResult.exception?.localizedMessage?.let { Log.d(TAG, it) }
                 }
             }

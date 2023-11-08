@@ -11,15 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/mypage_progressBar"
-            android:gravity="center"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
-
         <LinearLayout
             android:id="@+id/mypage_linearlayout"
             android:layout_width="match_parent"
@@ -29,7 +20,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/myapge_text_mypage"
                 style="@style/Font.22.Bold.Black"
                 android:layout_width="match_parent"
@@ -48,7 +39,7 @@
                 android:orientation="horizontal"
                 android:padding="16dp">
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/mypage_usericon"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
@@ -62,7 +53,7 @@
                     android:layout_marginStart="16dp"
                     android:orientation="vertical">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/mypage_signin_up_text"
                         style="@style/Font.16.Normal.Black"
                         android:layout_width="match_parent"
@@ -70,7 +61,7 @@
                         android:gravity="center_vertical"
                         android:text="@string/mypage_signin_up" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/mypage_signin_up_inpo"
                         style="@style/Font.14.Normal.Black"
                         android:layout_width="match_parent"
@@ -108,14 +99,14 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/mypage_review_imageview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:src="@drawable/icon_review_my_page" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/mypage_review_textview"
                     style="@style/Font.16.Normal.Black"
                     android:layout_width="wrap_content"
@@ -133,14 +124,14 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/mypage_zzim_imageview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:src="@drawable/icon_favorite_list_my_page" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/mypage_zzim_textview"
                     style="@style/Font.16.Normal.Black"
                     android:layout_width="wrap_content"
@@ -234,7 +225,7 @@
                 android:background="#EBEBEB" />
 
             <Button
-                android:id="@+id/mypage_logout_button"
+                android:id="@+id/mypage_login_button"
                 style="@style/Font.16.Normal.Black"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -243,19 +234,7 @@
                 android:layout_marginTop="50dp"
                 android:layout_marginEnd="16dp"
                 android:backgroundTint="@color/main"
-                android:text="@string/mypage_logout" />
-
-            <TextView
-                android:id="@+id/mypage_withdrawal_textivew"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="100dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:padding="4dp"
-                android:text="@string/mypage_withdrawal"
-                android:textSize="15sp" />
+                android:text="@string/mypage_login" />
 
 
         </LinearLayout>
