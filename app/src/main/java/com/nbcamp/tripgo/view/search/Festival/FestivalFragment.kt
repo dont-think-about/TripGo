@@ -70,7 +70,7 @@ class FestivalFragment : Fragment() {
             val dateSetListener =
                 DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
                     Log.d("날짜", "$year, $month, $dayOfMonth")
-                    val monthStr = if (month < 10) "0${month + 1}" else "${month + 1}"
+                    val monthStr = if (month < 9) "0${month + 1}" else "${month + 1}"
                     val dayOfMonthStr = if (dayOfMonth < 10) "0$dayOfMonth" else "$dayOfMonth"
                     startDateString = "$year$monthStr$dayOfMonthStr"
                     binding.festivalSearchWeather.text = "$year-$monthStr-$dayOfMonthStr"
