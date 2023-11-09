@@ -3,17 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".view.mypage.favorite.FavoriteFragment">
+    tools:context=".view.review.mypage.ReviewFragment">
 
     <LinearLayout
-        android:id="@+id/favorite_layout"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/profile_favorite_back_imagebutton"
+            android:id="@+id/profile_my_page_back_imagebutton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
@@ -28,15 +28,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
-            android:text="@string/favorite_zzim" />
+            android:text="@string/my_review" />
 
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favorite_recyclerview"
+        android:id="@+id/review_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_favorite_main" />
-
+        tools:listitem="@layout/item_review_main" />
 
 </LinearLayout>
+

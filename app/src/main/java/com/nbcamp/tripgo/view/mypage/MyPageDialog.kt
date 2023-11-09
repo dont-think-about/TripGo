@@ -110,7 +110,6 @@ class MyPageDialog(private val context: Context) {
 
     }
 
-
     private fun calculateGradeAndProgress(reviewCount: Int): Triple<Int, String, Int> {
         return when {
             reviewCount <= 5 -> Triple(5 - reviewCount, "브론즈", 6)

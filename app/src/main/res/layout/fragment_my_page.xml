@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
-                    android:text="@string/mypage_review" />
+                    android:text="@string/my_review" />
             </LinearLayout>
 
             <LinearLayout
@@ -222,20 +222,8 @@
                 android:id="@+id/mypage_userinpo_logout_view"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginBottom="30dp"
                 android:background="#EBEBEB" />
-
-            <Button
-                android:id="@+id/mypage_login_button"
-                style="@style/Font.16.Normal.Black"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="16dp"
-                android:backgroundTint="@color/main"
-                android:text="@string/mypage_login" />
-
 
         </LinearLayout>
 

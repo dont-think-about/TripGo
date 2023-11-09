@@ -196,5 +196,6 @@
     <string name="go_to_check">확인 하러가기</string>
     <string name="tripRank">이번주 자주 찾는 여행지 순위</string>
     <string name="default_web_client_id">696047610679-dr938bmucn7iq2rnmul2delrveh52spa.apps.googleusercontent.com</string>
+    <string name="my_review">내 리뷰</string>
 
 </resources>

@@ -1,38 +1,31 @@
 package com.nbcamp.tripgo.view.mypage
 
 import android.annotation.SuppressLint
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.util.LoadingDialog
-import com.nbcamp.tripgo.view.App
+import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.mypage.favorite.FavoriteFragment
 import com.nbcamp.tripgo.view.mypage.favorite.MypageAppInpo
 import com.nbcamp.tripgo.view.review.mypage.ReviewFragment
+import com.nbcamp.tripgo.view.signup.RulesFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -66,13 +59,22 @@ class MyPageFragment : Fragment() {
         val appInpo = view.findViewById<TextView>(R.id.mypage_appinpo_textview)
         reviewLayout.setOnClickListener { navigateToFragment(ReviewFragment()) }
         zzimLayout.setOnClickListener { navigateToFragment(FavoriteFragment()) }
+        val userInfoTextView = view.findViewById<TextView>(R.id.mypage_userinpo_textview)
+        userInfoTextView.setOnClickListener {
+            showFullDialog("privacy")
+        }
+        val questionTextView = view.findViewById<TextView>(R.id.mypage_question_textview)
+        questionTextView.setOnClickListener {
+            requireContext().toast("추후 업데이트 예정 입니다")
+        }
 
         val auth = FirebaseAuth.getInstance()
         userLayout.setOnClickListener {
             if (auth.currentUser != null) {
                 showUserDialog()
             } else {
-                showToast("로그인이 되어 있지 않습니다")
+                loading()
+                startActivity(Intent(requireContext(), LogInActivity::class.java))
             }
         }
         openSourceLicenseTextView.setOnClickListener { runOpenSourceDialog() }
@@ -85,15 +87,13 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if(UserLoggedIn()){
+        if (UserLoggedIn()) {
             userinpo()
-            changetextbutton()
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        changetextbutton()
     }
 
     private fun UserLoggedIn(): Boolean {
@@ -102,7 +102,7 @@ class MyPageFragment : Fragment() {
         return currentUser != null
     }
 
-    private fun userinpo(){
+    private fun userinpo() {
         loadingDialog.run {
             setVisible()
             setText("로딩중 ...")
@@ -110,12 +110,12 @@ class MyPageFragment : Fragment() {
         viewModel.email.observe(viewLifecycleOwner) { email ->
             emailText.text = "   $email"
             checkAndDismissLoadingDialog()
-            Log.d("MYpage값확인중","$email")
+            Log.d("MYpage값확인중", "$email")
         }
         viewModel.nickname.observe(viewLifecycleOwner) { nickname ->
             nicknameText.text = "   $nickname 님"
             checkAndDismissLoadingDialog()
-            Log.d("MYpage값확인중","$nickname")
+            Log.d("MYpage값확인중", "$nickname")
         }
         viewModel.fetchDataFromFirebase()
         imageupdate()
@@ -126,26 +126,6 @@ class MyPageFragment : Fragment() {
         if (emailText.text.isNotBlank() && nicknameText.text.isNotBlank()) {
             loadingDialog.hide()
         }
-    }
-
-    private fun changetextbutton() {
-        val loginbutton = view?.findViewById<Button>(R.id.mypage_login_button)
-
-        if (UserLoggedIn()) {
-            loginbutton?.visibility = View.GONE
-        } else {
-            loginbutton?.visibility = View.VISIBLE
-            loginbutton?.setOnClickListener {
-                loading()
-                val intent = Intent(requireContext(), LogInActivity::class.java)
-                startActivity(intent)
-            }
-        }
-    }
-
-
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun imageupdate() {
@@ -175,7 +155,7 @@ class MyPageFragment : Fragment() {
         }
     }
 
-    private fun loading(){
+    private fun loading() {
         loadingDialog.run {
             setVisible()
             setText("로딩중 ... ")
@@ -205,6 +185,14 @@ class MyPageFragment : Fragment() {
             .setPositiveButton("확인") { _, _ -> }
             .create()
             .show()
+    }
+
+    fun showFullDialog(data: String) {
+        val dialogFragment = RulesFragment()
+        val args = Bundle()
+        args.putString("data", data)
+        dialogFragment.arguments = args
+        dialogFragment.show(parentFragmentManager, null)
     }
 
     companion object {
