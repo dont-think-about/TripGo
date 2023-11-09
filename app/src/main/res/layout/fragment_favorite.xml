@@ -33,12 +33,9 @@
             style="@style/Font.18.Bold.Black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginStart="44dp"
             android:layout_marginTop="23dp"
-
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="16dp"
 
             android:text="@string/favorite_zzim" />
 
