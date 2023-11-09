@@ -192,10 +192,11 @@
     <string name="address_title">주소:</string>
     <string name="visited_title">다녀 온 날짜:</string>
     <string name="already_written_review">리뷰 작성 됨</string>
-    <string name="to_be_updated_later">위치 정보 업데이트 중...</string>
+    <string name="to_be_updated_later">위치 정보 업데이트 중…</string>
     <string name="go_to_check">확인 하러가기</string>
     <string name="tripRank">이번주 자주 찾는 여행지 순위</string>
     <string name="default_web_client_id">696047610679-dr938bmucn7iq2rnmul2delrveh52spa.apps.googleusercontent.com</string>
     <string name="my_review">내 리뷰</string>
+    <string name="on_gps_for_location_permission">위치 권한을 위해 GPS를 켜주세요</string>
 
 </resources>

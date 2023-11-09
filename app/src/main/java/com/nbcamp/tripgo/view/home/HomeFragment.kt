@@ -2,8 +2,12 @@ package com.nbcamp.tripgo.view.home
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,6 +65,9 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // gps가 켜져있는 지 확인
+    private var isGpsOn = false
+
     // 오른쪽 끝일 때, 다음 페이지를 불러올 OnScrollListener
     private val endScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
@@ -88,16 +95,25 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkGPSStatus()
         initVariables()
         initViewModel()
         initViews()
+    }
+
+    private fun checkGPSStatus() {
+        val locationManager =
+            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        // gps가 켜져 있다면 on 상태로 바뀜
+        isGpsOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
     private fun initVariables() {
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
         cancellationTokenSource = CancellationTokenSource()
-        checkLocationPermissions()
+//        checkLocationPermissions()
     }
 
     private fun initViews() = with(binding) {
@@ -186,6 +202,12 @@ class HomeFragment : Fragment() {
         }
 
         sharedViewModel.eventSetLocation.observe(viewLifecycleOwner) {
+            if (isGpsOn.not()) {
+                // 권한 체크 했는데 gps가 꺼져 있다면 gps 설정 화면으로
+                requireActivity().toast(getString(R.string.on_gps_for_location_permission))
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                return@observe
+            }
             fusedLocationProviderClient.getCurrentLocation(
                 Priority.PRIORITY_HIGH_ACCURACY,
                 cancellationTokenSource!!.token
@@ -274,6 +296,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        checkGPSStatus()
         checkLocationPermissions()
     }
 
