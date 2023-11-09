@@ -10,6 +10,9 @@ import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.keywords.Items
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.databinding.TourRecyclerviewItemBinding
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class TourSearchAdapter(
     private val onClickItem: (KeywordItem) -> Unit // 아이템 클릭시 실행할 콜백 함수
@@ -17,6 +20,15 @@ class TourSearchAdapter(
 
     private var userLat = 0.0 // 사용자 위도
     private var userLon = 0.0 // 사용자 경도
+
+    fun calculateDistance(item: KeywordItem): Double {
+        return calculateDistanceTo(
+            item.mapx.toDouble(),
+            item.mapy.toDouble(),
+            userLat,
+            userLon
+        )
+    }
 
     fun setUserLocation(lat: Double, lon: Double) {
         userLat = lat
