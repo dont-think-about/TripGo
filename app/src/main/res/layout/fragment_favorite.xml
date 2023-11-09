@@ -5,13 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".view.mypage.favorite.FavoriteFragment">
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        tools:ignore="MissingConstraints" />
-
 
     <LinearLayout
         android:id="@+id/favorite_layout"
@@ -33,10 +26,8 @@
             style="@style/Font.18.Bold.Black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="44dp"
-            android:layout_marginTop="23dp"
             android:layout_gravity="center_vertical"
-
+            android:layout_marginStart="16dp"
             android:text="@string/favorite_zzim" />
 
     </LinearLayout>
@@ -45,7 +36,6 @@
         android:id="@+id/favorite_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="15dp"
         tools:listitem="@layout/item_favorite_main" />
 
 
