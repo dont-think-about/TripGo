@@ -1,15 +1,13 @@
 package com.nbcamp.tripgo.view.mypage
 
-import android.app.Activity
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -18,22 +16,20 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.nbcamp.tripgo.R
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.kakao.sdk.user.UserApiClient
+import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.login.LogInActivity
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 class ProfileModifyFragment : Fragment() {
@@ -48,6 +44,7 @@ class ProfileModifyFragment : Fragment() {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,13 +60,18 @@ class ProfileModifyFragment : Fragment() {
         saveButton.setOnClickListener { updateProfile() }
 
         val backButton = view.findViewById<AppCompatImageView>(R.id.profile_back_imagebutton)
-        backButton.setOnClickListener{ navigateToMyPageFragment() }
+        backButton.setOnClickListener { navigateToMyPageFragment() }
 
         val imageButton = view?.findViewById<ImageView>(R.id.profile_edit_user_imageview)
         imageButton?.setOnClickListener { changeImage() }
 
         val logoutButton = view?.findViewById<AppCompatButton>(R.id.profile_modify_logout_button)
         logoutButton?.setOnClickListener { login() }
+
+        val deleteUserButton = view.findViewById<TextView>(R.id.profile_modify_withdrawal_textivew)
+        deleteUserButton.setOnClickListener {
+            //회원탈퇴 코드를 여기에 넣어주세요
+        }
 
         imageUpdate()
 
@@ -199,7 +201,7 @@ class ProfileModifyFragment : Fragment() {
 
                         Log.d("MYpageurl", profileImageUrl)
 
-                        modifyImageView?.load(profileImageUrl){
+                        modifyImageView?.load(profileImageUrl) {
                             transformations(CircleCropTransformation())
                         }
                     }
@@ -209,8 +211,6 @@ class ProfileModifyFragment : Fragment() {
     }
 
     private fun login() {
-
-        val loginbutton = view?.findViewById<Button>(R.id.mypage_login_button)
 
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
@@ -229,7 +229,6 @@ class ProfileModifyFragment : Fragment() {
                         App.kakaoUser = null
                         // 로그아웃 후 화면 갱신
                         modifyToFragment(MyPageFragment())
-                        loginbutton?.text = "로그인"
                         updateUIAfterLogout()
                     }
                 }
@@ -239,7 +238,6 @@ class ProfileModifyFragment : Fragment() {
                 App.firebaseUser = null
                 modifyToFragment(MyPageFragment())
                 // 로그아웃 후 화면 갱신
-                loginbutton?.text = "로그인"
                 updateUIAfterLogout()
 
             }
@@ -253,16 +251,14 @@ class ProfileModifyFragment : Fragment() {
     private fun updateUIAfterLogout() {
         val emailText = view?.findViewById<TextView>(R.id.mypage_signin_up_inpo)
         val nicknameText = view?.findViewById<TextView>(R.id.mypage_signin_up_text)
-        val logoutbutton = view?.findViewById<Button>(R.id.mypage_login_button)
 
         nicknameText?.text = getString(R.string.mypage_signin_up)
         emailText?.text = getString(R.string.mypage_signin_up_inpor)
-        logoutbutton?.text = getString(R.string.mypage_logout)
 
         loading()
     }
 
-    private fun loading(){
+    private fun loading() {
 
         loadingDialog.run {
             setVisible()
@@ -275,7 +271,8 @@ class ProfileModifyFragment : Fragment() {
         }
 
     }
-    private fun modifyToFragment(fragment: Fragment){
+
+    private fun modifyToFragment(fragment: Fragment) {
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.main_fragment_container, fragment)
         transaction.addToBackStack(null)

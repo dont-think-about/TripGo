@@ -3,10 +3,8 @@ package com.nbcamp.tripgo.view.login
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -15,17 +13,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.kakao.sdk.auth.model.OAuthToken
@@ -39,8 +34,6 @@ import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.main.MainActivity
 import com.nbcamp.tripgo.view.mypage.MyPageFragment
 import com.nbcamp.tripgo.view.signup.SignUpActivity
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class LogInActivity : AppCompatActivity() {
 
@@ -75,6 +68,11 @@ class LogInActivity : AppCompatActivity() {
         setupListeners()
         configureGoogleLogin()
         configureKakaoLogin()
+
+        val snackbarMessage = intent.getStringExtra("snackbarMessage")
+        if (snackbarMessage != null) {
+            Snackbar.make(binding.root, snackbarMessage, Snackbar.LENGTH_LONG).show()
+        }
     }
 
     private fun initializeViews() {
@@ -118,13 +116,13 @@ class LogInActivity : AppCompatActivity() {
     }
 
 
-
     private fun showLoadingDialog() {
-        loadingDialog.run{
+        loadingDialog.run {
             setVisible()
             setText("로딩중...")
         }
     }
+
     private fun hideLoadingDialog() {
         loadingDialog.setInvisible()
     }
@@ -160,53 +158,54 @@ class LogInActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        startGoogleLoginForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == RESULT_OK) {
-                result.data?.let { data ->
-                    val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                    try {
-                        val account = task.getResult(ApiException::class.java)!!
-                        Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-                        firebaseAuthWithGoogle(account.idToken!!)
-                        startGoogleSignIn()
-                        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-                        auth.signInWithCredential(credential)
-                            .addOnCompleteListener { authResult ->
-                                if (authResult.isSuccessful) {
-                                    val user = auth.currentUser
-                                    if (user != null) {
-                                        val email = user.email
-                                        val nickname = user.displayName
-                                        onLoginSuccess(email.toString(), nickname.toString())
+        startGoogleLoginForResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                if (result.resultCode == RESULT_OK) {
+                    result.data?.let { data ->
+                        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                        try {
+                            val account = task.getResult(ApiException::class.java)!!
+                            Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+                            firebaseAuthWithGoogle(account.idToken!!)
+                            startGoogleSignIn()
+                            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                            auth.signInWithCredential(credential)
+                                .addOnCompleteListener { authResult ->
+                                    if (authResult.isSuccessful) {
+                                        val user = auth.currentUser
+                                        if (user != null) {
+                                            val email = user.email
+                                            val nickname = user.displayName
+                                            onLoginSuccess(email.toString(), nickname.toString())
 
-                                        val userDocument = hashMapOf(
-                                            "email" to user.email,
-                                            "nickname" to user.displayName,
-                                            "profileImage" to null,
-                                            "reviewCount" to 0
-                                        )
-                                        firestore.collection("users").document(user.email.toString())
-                                            .set(userDocument)
-                                            .addOnSuccessListener {
+                                            val userDocument = hashMapOf(
+                                                "email" to user.email,
+                                                "nickname" to user.displayName,
+                                                "profileImage" to null,
+                                                "reviewCount" to 0
+                                            )
+                                            firestore.collection("users").document(user.email.toString())
+                                                .set(userDocument)
+                                                .addOnSuccessListener {
 
-                                                finish()
-                                            }
-                                            .addOnFailureListener { e ->
-                                                Log.w(TAG, "Firestore에 사용자 정보 저장 실패", e)
-                                            }
+                                                    finish()
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Log.w(TAG, "Firestore에 사용자 정보 저장 실패", e)
+                                                }
+                                        }
+                                    } else {
+                                        Log.w(TAG, "Firebase에 Google 로그인 실패", authResult.exception)
                                     }
-                                } else {
-                                    Log.w(TAG, "Firebase에 Google 로그인 실패", authResult.exception)
                                 }
-                            }
-                    } catch (e: ApiException) {
-                        Log.w(TAG, "Google sign in failed", e)
+                        } catch (e: ApiException) {
+                            Log.w(TAG, "Google sign in failed", e)
+                        }
                     }
+                } else {
+                    Log.e(TAG, "Google Result Error $result")
                 }
-            } else {
-                Log.e(TAG, "Google Result Error $result")
             }
-        }
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
@@ -253,7 +252,7 @@ class LogInActivity : AppCompatActivity() {
                                 .addOnSuccessListener {
                                     Log.d(ContentValues.TAG, "사용자 정보 Firestore에 저장 성공")
                                     val intent = Intent(this, MainActivity::class.java)
-                                    onLoginSuccess(email,nickname.toString())
+                                    onLoginSuccess(email, nickname.toString())
                                     startActivity(intent)
                                 }
                                 .addOnFailureListener { e ->
@@ -290,6 +289,7 @@ class LogInActivity : AppCompatActivity() {
         val intent = Intent(this, SignUpActivity::class.java)
         startActivity(intent)
     }
+
     private fun onLoginSuccess(email: String, nickname: String) {
         // 로그인 성공 후 데이터를 설정
         val myPageFragment = MyPageFragment.newInstance()

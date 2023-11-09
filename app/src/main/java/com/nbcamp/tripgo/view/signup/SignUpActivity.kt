@@ -217,7 +217,7 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun showFullDialog(data: String) {
+    fun showFullDialog(data: String) {
         val dialogFragment = RulesFragment()
         val args = Bundle()
         args.putString("data", data)
