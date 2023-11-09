@@ -62,7 +62,7 @@ class LogInActivity : AppCompatActivity() {
 
         loadingDialog = LoadingDialog(this)
 
-        loadingDialog.hide() // 로딩 화면 숨기기
+        loadingDialog.setInvisible() // 로딩 화면 숨기기
 
         initializeViews()
         setupListeners()
@@ -133,6 +133,7 @@ class LogInActivity : AppCompatActivity() {
                 if (authResult.isSuccessful) {
                     val user = auth.currentUser
                     if (user != null && user.isEmailVerified) {
+                        hideLoadingDialog()
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                         finish()

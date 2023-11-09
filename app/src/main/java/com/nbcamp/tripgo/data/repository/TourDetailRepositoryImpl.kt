@@ -58,6 +58,11 @@ class TourDetailRepositoryImpl(
         }
 
         fireStore.runTransaction { transaction ->
+            // 하위 문서를 위한 더미데이터
+            fireStore.collection("reviews")
+                .document(userInfo)
+                .set(mapOf("dummy" to ""))
+
             val calendarScheduleReference =
                 fireStore.collection("calendar")
                     .document(email)
@@ -110,6 +115,11 @@ class TourDetailRepositoryImpl(
     ) {
         getUserInfo()
         fireStore.runTransaction { transaction ->
+            // 하위 문서를 위한 더미데이터
+            fireStore.collection("liked")
+                .document(userInfo)
+                .set(mapOf("dummy" to ""))
+
             val likedReference = fireStore.collection("liked")
                 .document(userInfo)
                 .collection("like")

@@ -3,7 +3,6 @@ package com.nbcamp.tripgo.view.mypage
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil.load
 import coil.transform.CircleCropTransformation
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp.tripgo.R
@@ -110,12 +108,10 @@ class MyPageFragment : Fragment() {
         viewModel.email.observe(viewLifecycleOwner) { email ->
             emailText.text = "   $email"
             checkAndDismissLoadingDialog()
-            Log.d("MYpage값확인중", "$email")
         }
         viewModel.nickname.observe(viewLifecycleOwner) { nickname ->
             nicknameText.text = "   $nickname 님"
             checkAndDismissLoadingDialog()
-            Log.d("MYpage값확인중", "$nickname")
         }
         viewModel.fetchDataFromFirebase()
         imageupdate()
@@ -124,7 +120,7 @@ class MyPageFragment : Fragment() {
     private fun checkAndDismissLoadingDialog() {
         // email과 nickname이 모두 채워졌는지 확인
         if (emailText.text.isNotBlank() && nicknameText.text.isNotBlank()) {
-            loadingDialog.hide()
+            loadingDialog.setInvisible()
         }
     }
 
@@ -162,7 +158,7 @@ class MyPageFragment : Fragment() {
         }
         CoroutineScope(Dispatchers.Main).launch {
             delay(5500) //
-            loadingDialog.hide() // 로딩 화면 숨기기
+            loadingDialog.setInvisible() // 로딩 화면 숨기기
         }
     }
 
