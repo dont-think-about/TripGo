@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.tour.adapter
 
+import android.location.Location
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -16,6 +17,20 @@ class TourNearAdapter(
 
     private var userLat = 0.0 // 사용자 위도
     private var userLon = 0.0 // 사용자 경도
+
+    fun addAndSortByDistance(newItems: List<NearbyItem>, userLat: Double, userLon: Double) {
+        val allItems = currentList + newItems
+        val uniqueItems = allItems.distinctBy { it.contentid }
+        val sortedItems = uniqueItems.sortedBy {
+            calculateDistanceTo(
+                it.mapx.toDouble(),
+                it.mapy.toDouble(),
+                userLat,
+                userLon
+            )
+        }
+        submitList(sortedItems)
+    }
 
     fun setUserLocation(lat: Double, lon: Double) {
         userLat = lat

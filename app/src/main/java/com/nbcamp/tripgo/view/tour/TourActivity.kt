@@ -190,29 +190,34 @@ class TourActivity : AppCompatActivity() {
             TourTheme.FAMILY.themeId -> {
                 binding.tourOfTheMonth.text = "가족 여행"
                 theme = "가족"
+                updateButtonColors(isDistanceSelected = true)
                 retrofitThemeSearch(theme)
             }
 
             TourTheme.HEALING.themeId -> {
                 binding.tourOfTheMonth.text = "힐링"
                 theme = "힐링"
+                updateButtonColors(isDistanceSelected = true)
                 retrofitThemeSearch(theme)
             }
 
             TourTheme.CAMPING.themeId -> {
                 binding.tourOfTheMonth.text = "캠핑"
                 theme = "캠핑"
+                updateButtonColors(isDistanceSelected = true)
                 retrofitThemeSearch(theme)
             }
 
             TourTheme.TASTY.themeId -> {
                 binding.tourOfTheMonth.text = "맛집"
                 theme = "맛"
+                updateButtonColors(isDistanceSelected = true)
                 retrofitThemeSearch(theme)
             }
 
             TourTheme.POPULAR.themeId -> {
                 binding.tourOfTheMonth.text = "이달의 축제"
+                updateButtonColors(isDistanceSelected = false)
                 retrofitFestival()
             }
 
@@ -232,7 +237,6 @@ class TourActivity : AppCompatActivity() {
         }
         lifecycleScope.launch {
             val service = RetrofitModule.createTourApiService()
-
             try {
                 val response = service.getPlaceSearchByPage(
                     keyword = keyword,
@@ -241,12 +245,19 @@ class TourActivity : AppCompatActivity() {
                     currentPage = currentPage
                 )
                 if (response.isSuccessful && response.body() != null) {
-                    val festivals = response.body()?.response?.body?.items?.item
-                    if (festivals != null) {
-                        if (festivals.size < 20) {
+                    val newFestivals = response.body()?.response?.body?.items?.item.orEmpty()
+                        .distinctBy { it.contentid }
+                    val currentIds = tourSearchAdapter.currentList.map { it.contentid }.toSet()
+                    val nonDuplicateFestivals = newFestivals.filter { it.contentid !in currentIds }
+                    if (nonDuplicateFestivals.isNotEmpty()) {
+                        if (nonDuplicateFestivals.size < 20) {
                             isLastPage = true
                         }
-                        tourSearchAdapter.submitList(festivals.toMutableList())
+                        val totalList = tourSearchAdapter.currentList + nonDuplicateFestivals
+                        val sortedByDistance = totalList.sortedBy { festivalItem ->
+                            tourSearchAdapter.calculateDistance(festivalItem)
+                        }
+                        tourSearchAdapter.submitList(sortedByDistance.toMutableList())
                     }
                 } else {
                     showError(getString(R.string.tour_error))
@@ -283,29 +294,37 @@ class TourActivity : AppCompatActivity() {
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
-                val userLat = location.latitude.toString()
-                val userLon = location.longitude.toString()
+                val userLat = location.latitude
+                val userLon = location.longitude
                 val radius = "20000"
                 val pageNumber = currentPage.toString()
-
                 lifecycleScope.launch {
                     val service = RetrofitModule.createTourApiService()
                     try {
                         val response = service.getNearbyPlaceByPage(
-                            latitude = userLat,
-                            longitude = userLon,
+                            latitude = userLat.toString(),
+                            longitude = userLon.toString(),
                             radius = radius,
                             pageNumber = pageNumber,
                             responseCount = 20
                         )
-
                         if (response.isSuccessful && response.body() != null) {
-                            val nearbyPlaces = response.body()?.response?.body?.items?.item
-                            if (nearbyPlaces != null) {
-                                if (nearbyPlaces.size < 20) {
+                            val newNearbyPlaces =
+                                response.body()?.response?.body?.items?.item.orEmpty()
+                            val currentIds =
+                                tourNearAdapter.currentList.map { it.contentid }.toSet()
+                            val nonDuplicateNearbyPlaces =
+                                newNearbyPlaces.filter { it.contentid !in currentIds }
+
+                            if (nonDuplicateNearbyPlaces.isNotEmpty()) {
+                                if (nonDuplicateNearbyPlaces.size < 20) {
                                     isLastPage = true
                                 }
-                                tourNearAdapter.submitList(nearbyPlaces)
+                                tourNearAdapter.addAndSortByDistance(
+                                    nonDuplicateNearbyPlaces,
+                                    userLat,
+                                    userLon
+                                )
                             }
                         } else {
                             showError(getString(R.string.tour_error))
@@ -342,12 +361,18 @@ class TourActivity : AppCompatActivity() {
                     currentPage = currentPage
                 )
                 if (response.isSuccessful && response.body() != null) {
-                    val festivals = response.body()?.response?.body?.items?.item
-                    if (festivals != null) {
-                        if (festivals.size < 20) {
+                    val newFestivals = response.body()?.response?.body?.items?.item.orEmpty()
+                    val currentIds = tourAdapter.currentList.map { it.contentid }.toSet()
+                    val nonDuplicateFestivals = newFestivals.filter { it.contentid !in currentIds }
+
+                    if (nonDuplicateFestivals.isNotEmpty()) {
+                        val totalList = ArrayList(tourAdapter.currentList) + nonDuplicateFestivals
+                        val sortedFestivals = totalList.sortedBy { it.eventstartdate }
+                        tourAdapter.submitList(sortedFestivals)
+
+                        if (nonDuplicateFestivals.size < 20) {
                             isLastPage = true
                         }
-                        tourAdapter.submitList(festivals)
                     }
                 } else {
                     showError(getString(R.string.tour_error))

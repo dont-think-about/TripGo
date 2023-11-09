@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.area.AreaItem
+import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.databinding.AttractionRecyclerviewItemBinding
 
 class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
@@ -22,7 +23,24 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         notifyDataSetChanged()
     } // 위치 정보 변경 후 , RecyclerView 갱신
 
+    fun calculateDistance(item: AreaItem): Double {
+        return calculateDistanceTo(
+            item.mapx.toDouble(),
+            item.mapy.toDouble(),
+            userLat,
+            userLon
+        )
+    }
 
+    fun updateListWithDistanceSorting(newItems: List<AreaItem>) {
+        val totalList = ArrayList(currentList).apply {
+            addAll(newItems)
+        }.distinctBy { it.contentid }
+        val sortedByDistance = totalList.sortedBy { item ->
+            calculateDistance(item)
+        }
+        submitList(sortedByDistance)
+    }
 
     private fun calculateDistanceTo(
         mapx: Double,
@@ -31,17 +49,14 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         userLon: Double
     ): Double {
         val R = 6371.0
-
         val dLat = Math.toRadians(mapy - userLat)
         val dLon = Math.toRadians(mapx - userLon)
-
         val a =
             Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                     Math.cos(Math.toRadians(userLat)) *
                     Math.cos(Math.toRadians(mapy)) *
                     Math.sin(dLon / 2) * Math.sin(dLon / 2)
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-
         return R * c
     } // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 

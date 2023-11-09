@@ -35,7 +35,7 @@ import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 
 class AttractionsActivity : AppCompatActivity() {
     companion object {
-        const val MAX_ROWS = 20
+        const val MAX_ROWS = 100
         const val REQUEST_CHECK_SETTINGS = 1001
         const val LOCATION_PERMISSION_REQUEST_CODE = 1234
     } // numOfRows
@@ -108,6 +108,8 @@ class AttractionsActivity : AppCompatActivity() {
             attractionsAdapter.attractionDate(binding.attractionRecyclerview)
             updateButtonColors(isDistanceSelected = false)
         }
+
+        updateButtonColors(isDistanceSelected = true)
 
         // 위치 권한 체크 후 처리
         if (ContextCompat.checkSelfPermission(
@@ -186,12 +188,15 @@ class AttractionsActivity : AppCompatActivity() {
                     )
                 }
                 if (response.isSuccessful && response.body() != null) {
-                    val area = response.body()?.response?.body?.items?.item
-                    if (area != null) {
-                        if (area.size < MAX_ROWS) {
+                    val newAreas = response.body()?.response?.body?.items?.item.orEmpty()
+                    val currentIds = attractionsAdapter.currentList.map { it.contentid }.toSet()
+                    val nonDuplicateAreas = newAreas.filter { it.contentid !in currentIds }
+
+                    if (nonDuplicateAreas.isNotEmpty()) {
+                        if (nonDuplicateAreas.size < MAX_ROWS) {
                             isLastPage = true
                         }
-                        attractionsAdapter.submitList(area)
+                        attractionsAdapter.updateListWithDistanceSorting(nonDuplicateAreas)
                     }
                 } else {
                     showError(getString(R.string.tour_error))
