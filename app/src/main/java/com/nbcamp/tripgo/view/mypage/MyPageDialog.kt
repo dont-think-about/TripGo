@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import coil.load
 import coil.transform.CircleCropTransformation
@@ -110,7 +109,6 @@ class MyPageDialog(private val context: Context) {
         }
 
     }
-
 
     private fun calculateGradeAndProgress(reviewCount: Int): Triple<Int, String, Int> {
         return when {

@@ -53,9 +53,16 @@ class AttractionsFragment : Fragment() {
         // 검색 버튼(ImageView) 클릭 시 동작 설정
         binding.attractionsSearchOk.setOnClickListener {
             val searchText = binding.attractionsSearchEdit.text.toString()
-            viewModel.fetchSearchResult(keyword = searchText)
-            hideKeyboard() // 키보드 숨김
+
+            // 텍스트의 길이가 최소 두 글자인지 확인
+            if (searchText.length >= 2) {
+                viewModel.fetchSearchResult(keyword = searchText)
+                hideKeyboard() // 키보드 숨김
+            } else {
+                requireActivity().toast("두 글자 이상을 입력하십시오.")
+            }
         }
+
 
         // 'attractionsSearchCloseImage' 클릭 시 EditText 내용을 지웁니다.
         binding.attractionsSearchCloseImage.setOnClickListener {

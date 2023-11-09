@@ -58,19 +58,23 @@ class FestivalFragment : Fragment() {
         // 검색 버튼(ImageView) 클릭 시 동작 설정
         binding.festivalSearchOk.setOnClickListener {
             val searchText = binding.festivalSearchEdit.text.toString()
-            if (::startDateString.isInitialized.not()) {
+            if (::startDateString.isInitialized) {
+                if (searchText.length >= 2) {
+                    viewModel.fetchSearchResult(keyword = searchText, startDate = startDateString)
+                    hideKeyboard() // 키보드 숨김
+                } else {
+                    Toast.makeText(context, "두 글자 이상의 검색어를 입력해주세요!", Toast.LENGTH_SHORT).show()
+                }
+            } else {
                 Toast.makeText(context, "날짜를 입력해주세요!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
             }
-            viewModel.fetchSearchResult(keyword = searchText, startDate = startDateString)
-            hideKeyboard() // 키보드 숨김
         }
         binding.festivalSearchWeather.setOnClickListener {
             val cal = Calendar.getInstance()
             val dateSetListener =
                 DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
                     Log.d("날짜", "$year, $month, $dayOfMonth")
-                    val monthStr = if (month < 10) "0${month + 1}" else "${month + 1}"
+                    val monthStr = if (month < 9) "0${month + 1}" else "${month + 1}"
                     val dayOfMonthStr = if (dayOfMonth < 10) "0$dayOfMonth" else "$dayOfMonth"
                     startDateString = "$year$monthStr$dayOfMonthStr"
                     binding.festivalSearchWeather.text = "$year-$monthStr-$dayOfMonthStr"

@@ -20,6 +20,7 @@ class TourViewModel(
 
     // ViewModel의 fetchSearchResult 함수
     fun fetchSearchResult(keyword: String) {
+        _searchUiState.value = SearchKeywordUiState.initialize()
         viewModelScope.launch {
             runCatching {
                 val searchResult = searchRepository.getPlaceBySearch(

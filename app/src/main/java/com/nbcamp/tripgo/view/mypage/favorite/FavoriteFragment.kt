@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +24,21 @@ class FavoriteFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_favorite, container, false)
         favoritedata(view)
+
+        val callback = object  : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                parentFragmentManager.popBackStack()
+            }
+        }
+
+        val favoriteBackButton = view.findViewById<ImageView>(R.id.profile_favorite_back_imagebutton)
+
+        favoriteBackButton.setOnClickListener {
+            callback.handleOnBackPressed()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
         return view
     }
 
@@ -31,8 +48,6 @@ class FavoriteFragment : Fragment() {
         fun newInstance() = FavoriteFragment()
 
     }
-
-
 
     private fun favoritedata(view: View) {
         val auth = FirebaseAuth.getInstance()

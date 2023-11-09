@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.tour.adapter
 
+import android.location.Location
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -7,27 +8,28 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.nbcamp.tripgo.R
-import com.nbcamp.tripgo.data.model.keywords.Items
-import com.nbcamp.tripgo.data.model.keywords.KeywordItem
+import com.nbcamp.tripgo.data.model.nearby.NearbyItem
 import com.nbcamp.tripgo.databinding.TourRecyclerviewItemBinding
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Locale
 
-class TourSearchAdapter(
-    private val onClickItem: (KeywordItem) -> Unit // 아이템 클릭시 실행할 콜백 함수
-) : ListAdapter<KeywordItem, TourSearchAdapter.TourViewHolder>(TourViewHolder.TourDiffCallback) {
+class TourNearAdapter(
+    private val onClickItem: (NearbyItem) -> Unit // 아이템 클릭시 실행할 콜백 함수
+) : ListAdapter<NearbyItem, TourNearAdapter.TourViewHolder>(TourViewHolder.TourDiffCallback) {
 
     private var userLat = 0.0 // 사용자 위도
     private var userLon = 0.0 // 사용자 경도
 
-    fun calculateDistance(item: KeywordItem): Double {
-        return calculateDistanceTo(
-            item.mapx.toDouble(),
-            item.mapy.toDouble(),
-            userLat,
-            userLon
-        )
+    fun addAndSortByDistance(newItems: List<NearbyItem>, userLat: Double, userLon: Double) {
+        val allItems = currentList + newItems
+        val uniqueItems = allItems.distinctBy { it.contentid }
+        val sortedItems = uniqueItems.sortedBy {
+            calculateDistanceTo(
+                it.mapx.toDouble(),
+                it.mapy.toDouble(),
+                userLat,
+                userLon
+            )
+        }
+        submitList(sortedItems)
     }
 
     fun setUserLocation(lat: Double, lon: Double) {
@@ -81,11 +83,11 @@ class TourSearchAdapter(
 
     class TourViewHolder(
         private val binding: TourRecyclerviewItemBinding,
-        private val onClickItem: (KeywordItem) -> Unit,
+        private val onClickItem: (NearbyItem) -> Unit,
         private val calculateDistance: (Double, Double, Double, Double) -> Double
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: KeywordItem, userLat: Double, userLon: Double) {
+        fun bind(item: NearbyItem, userLat: Double, userLon: Double) {
             itemView.setOnClickListener { onClickItem(item) }
             with(binding) {
                 tourTitle.text = item.title
@@ -105,14 +107,14 @@ class TourSearchAdapter(
         }
 
         companion object {
-            val TourDiffCallback = object : DiffUtil.ItemCallback<KeywordItem>() {
-                override fun areItemsTheSame(oldItem: KeywordItem, newItem: KeywordItem): Boolean {
+            val TourDiffCallback = object : DiffUtil.ItemCallback<NearbyItem>() {
+                override fun areItemsTheSame(oldItem: NearbyItem, newItem: NearbyItem): Boolean {
                     return oldItem.contentid == newItem.contentid
                 }
 
                 override fun areContentsTheSame(
-                    oldItem: KeywordItem,
-                    newItem: KeywordItem
+                    oldItem: NearbyItem,
+                    newItem: NearbyItem
                 ): Boolean {
                     return oldItem == newItem
                 }

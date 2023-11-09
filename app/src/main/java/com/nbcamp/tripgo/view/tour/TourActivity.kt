@@ -24,12 +24,14 @@ import com.google.android.gms.location.SettingsClient
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
+import com.nbcamp.tripgo.data.model.nearby.NearbyItem
 import com.nbcamp.tripgo.data.service.RetrofitModule
 import com.nbcamp.tripgo.databinding.ActivityTourBinding
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.attraction.AttractionsActivity
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.tour.adapter.TourAdapter
+import com.nbcamp.tripgo.view.tour.adapter.TourNearAdapter
 import com.nbcamp.tripgo.view.tour.adapter.TourSearchAdapter
 import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 import kotlinx.coroutines.launch
@@ -44,11 +46,15 @@ class TourActivity : AppCompatActivity() {
     }
 
     private val tourSearchAdapter: TourSearchAdapter by lazy {
-        TourSearchAdapter { tourItem -> gotoDetailActivity(null, tourItem) }
+        TourSearchAdapter { tourItem -> gotoDetailActivity(null, tourItem, null) }
     }
 
     private val tourAdapter: TourAdapter by lazy {
-        TourAdapter { festivalItem -> gotoDetailActivity(festivalItem, null) }
+        TourAdapter { festivalItem -> gotoDetailActivity(festivalItem, null, null) }
+    }
+
+    private val tourNearAdapter: TourNearAdapter by lazy {
+        TourNearAdapter { nearbyItem -> gotoDetailActivity(null, null, nearbyItem) }
     }
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -72,6 +78,7 @@ class TourActivity : AppCompatActivity() {
                     }
                     when (tourTheme) {
                         TourTheme.POPULAR.themeId -> getFestivalSearch(++currentPage)
+                        TourTheme.NEARBY.themeId -> getThemeNear(++currentPage)
                         else -> getThemeSearch(theme, ++currentPage)
                     }
                 }
@@ -88,12 +95,14 @@ class TourActivity : AppCompatActivity() {
         binding.distance.setOnClickListener {
             tourSearchAdapter.tourDistance(binding.tourRecyclerview)
             tourAdapter.popularDistance(binding.tourRecyclerview)
+            tourNearAdapter.tourDistance(binding.tourRecyclerview)
             updateButtonColors(isDistanceSelected = true)
         }
 
         binding.date.setOnClickListener {
             tourSearchAdapter.tourDate(binding.tourRecyclerview)
             tourAdapter.popularDate(binding.tourRecyclerview)
+            tourNearAdapter.tourDate(binding.tourRecyclerview)
             updateButtonColors(isDistanceSelected = false)
         }
 
@@ -181,37 +190,42 @@ class TourActivity : AppCompatActivity() {
             TourTheme.FAMILY.themeId -> {
                 binding.tourOfTheMonth.text = "가족 여행"
                 theme = "가족"
+                updateButtonColors(isDistanceSelected = true)
                 retrofitThemeSearch(theme)
             }
 
             TourTheme.HEALING.themeId -> {
                 binding.tourOfTheMonth.text = "힐링"
                 theme = "힐링"
+                updateButtonColors(isDistanceSelected = true)
                 retrofitThemeSearch(theme)
             }
 
             TourTheme.CAMPING.themeId -> {
                 binding.tourOfTheMonth.text = "캠핑"
                 theme = "캠핑"
+                updateButtonColors(isDistanceSelected = true)
                 retrofitThemeSearch(theme)
             }
 
             TourTheme.TASTY.themeId -> {
                 binding.tourOfTheMonth.text = "맛집"
                 theme = "맛"
+                updateButtonColors(isDistanceSelected = true)
                 retrofitThemeSearch(theme)
             }
 
             TourTheme.POPULAR.themeId -> {
                 binding.tourOfTheMonth.text = "이달의 축제"
+                updateButtonColors(isDistanceSelected = false)
                 retrofitFestival()
             }
 
             TourTheme.NEARBY.themeId -> {
                 binding.tourOfTheMonth.text = "주변에 있는 관광지"
+                updateButtonColors(isDistanceSelected = true)
+                retrofitNearSearch()
             }
-
-            TourTheme.SEARCH.themeId -> Unit
         }
     }
 
@@ -223,7 +237,6 @@ class TourActivity : AppCompatActivity() {
         }
         lifecycleScope.launch {
             val service = RetrofitModule.createTourApiService()
-
             try {
                 val response = service.getPlaceSearchByPage(
                     keyword = keyword,
@@ -232,12 +245,19 @@ class TourActivity : AppCompatActivity() {
                     currentPage = currentPage
                 )
                 if (response.isSuccessful && response.body() != null) {
-                    val festivals = response.body()?.response?.body?.items?.item
-                    if (festivals != null) {
-                        if (festivals.size < 20) {
+                    val newFestivals = response.body()?.response?.body?.items?.item.orEmpty()
+                        .distinctBy { it.contentid }
+                    val currentIds = tourSearchAdapter.currentList.map { it.contentid }.toSet()
+                    val nonDuplicateFestivals = newFestivals.filter { it.contentid !in currentIds }
+                    if (nonDuplicateFestivals.isNotEmpty()) {
+                        if (nonDuplicateFestivals.size < 20) {
                             isLastPage = true
                         }
-                        tourSearchAdapter.submitList(festivals.toMutableList())
+                        val totalList = tourSearchAdapter.currentList + nonDuplicateFestivals
+                        val sortedByDistance = totalList.sortedBy { festivalItem ->
+                            tourSearchAdapter.calculateDistance(festivalItem)
+                        }
+                        tourSearchAdapter.submitList(sortedByDistance.toMutableList())
                     }
                 } else {
                     showError(getString(R.string.tour_error))
@@ -254,9 +274,73 @@ class TourActivity : AppCompatActivity() {
         }
     }
 
-    private fun retrofitThemeSearch(keyword: String) {
-        binding.tourRecyclerview.adapter = tourSearchAdapter
-        getThemeSearch(keyword, 1)
+    private fun getThemeNear(currentPage: Int) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                AttractionsActivity.LOCATION_PERMISSION_REQUEST_CODE
+            )
+            return
+        }
+        if (currentPage == 1) {
+            showProgressBar(true)
+        } else {
+            showSmallProgressBar(true)
+        }
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                val userLat = location.latitude
+                val userLon = location.longitude
+                val radius = "20000"
+                val pageNumber = currentPage.toString()
+                lifecycleScope.launch {
+                    val service = RetrofitModule.createTourApiService()
+                    try {
+                        val response = service.getNearbyPlaceByPage(
+                            latitude = userLat.toString(),
+                            longitude = userLon.toString(),
+                            radius = radius,
+                            pageNumber = pageNumber,
+                            responseCount = 20
+                        )
+                        if (response.isSuccessful && response.body() != null) {
+                            val newNearbyPlaces =
+                                response.body()?.response?.body?.items?.item.orEmpty()
+                            val currentIds =
+                                tourNearAdapter.currentList.map { it.contentid }.toSet()
+                            val nonDuplicateNearbyPlaces =
+                                newNearbyPlaces.filter { it.contentid !in currentIds }
+
+                            if (nonDuplicateNearbyPlaces.isNotEmpty()) {
+                                if (nonDuplicateNearbyPlaces.size < 20) {
+                                    isLastPage = true
+                                }
+                                tourNearAdapter.addAndSortByDistance(
+                                    nonDuplicateNearbyPlaces,
+                                    userLat,
+                                    userLon
+                                )
+                            }
+                        } else {
+                            showError(getString(R.string.tour_error))
+                        }
+                    } catch (e: Exception) {
+                        showError(getString(R.string.tour_exception_error))
+                    } finally {
+                        if (currentPage == 1) {
+                            showProgressBar(false)
+                        } else {
+                            showSmallProgressBar(false)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun getFestivalSearch(currentPage: Int) {
@@ -277,12 +361,18 @@ class TourActivity : AppCompatActivity() {
                     currentPage = currentPage
                 )
                 if (response.isSuccessful && response.body() != null) {
-                    val festivals = response.body()?.response?.body?.items?.item
-                    if (festivals != null) {
-                        if (festivals.size < 20) {
+                    val newFestivals = response.body()?.response?.body?.items?.item.orEmpty()
+                    val currentIds = tourAdapter.currentList.map { it.contentid }.toSet()
+                    val nonDuplicateFestivals = newFestivals.filter { it.contentid !in currentIds }
+
+                    if (nonDuplicateFestivals.isNotEmpty()) {
+                        val totalList = ArrayList(tourAdapter.currentList) + nonDuplicateFestivals
+                        val sortedFestivals = totalList.sortedBy { it.eventstartdate }
+                        tourAdapter.submitList(sortedFestivals)
+
+                        if (nonDuplicateFestivals.size < 20) {
                             isLastPage = true
                         }
-                        tourAdapter.submitList(festivals)
                     }
                 } else {
                     showError(getString(R.string.tour_error))
@@ -305,6 +395,16 @@ class TourActivity : AppCompatActivity() {
         getFestivalSearch(1)
     }
 
+    private fun retrofitThemeSearch(keyword: String) {
+        binding.tourRecyclerview.adapter = tourSearchAdapter
+        getThemeSearch(keyword, 1)
+    }
+
+    private fun retrofitNearSearch() {
+        binding.tourRecyclerview.adapter = tourNearAdapter
+        getThemeNear(1)
+    }
+
     private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
@@ -319,11 +419,16 @@ class TourActivity : AppCompatActivity() {
         }
     }
 
-    private fun gotoDetailActivity(festivalItem: FestivalItem?, keywordItem: KeywordItem?) {
+    private fun gotoDetailActivity(
+        festivalItem: FestivalItem?,
+        keywordItem: KeywordItem?,
+        nearbyItem: NearbyItem?
+    ) {
         val myIntent = Intent(this, TourDetailActivity::class.java)
             .apply {
                 putExtra("festivalItem", festivalItem)
                 putExtra("keywordItem", keywordItem)
+                putExtra("contentId", nearbyItem?.contentid)
             }
         startActivity(myIntent)
     } // Detail Activity로 넘어 가는 함수
@@ -349,6 +454,7 @@ class TourActivity : AppCompatActivity() {
                     val userLon = location.longitude
                     tourSearchAdapter.setUserLocation(userLat, userLon)
                     tourAdapter.setUserLocation(userLat, userLon)
+                    tourNearAdapter.setUserLocation(userLat, userLon)
                     initView()
                 } else {
                     showError(getString(R.string.tour_location_error))

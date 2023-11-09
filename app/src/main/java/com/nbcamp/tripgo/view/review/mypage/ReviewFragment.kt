@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,20 +29,32 @@ class ReviewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_review, container, false)
+        val view = inflater.inflate(R.layout.fragment_review_mypage, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.review_recycler_view)
         val reviewAdapter = ReviewAdapter()
         recyclerView.adapter = reviewAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         fetchReviewData()
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                parentFragmentManager.popBackStack()
+            }
+        }
+        val favoriteBackButton = view.findViewById<ImageView>(R.id.profile_my_page_back_imagebutton)
+
+        favoriteBackButton.setOnClickListener {
+            callback.handleOnBackPressed()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<ChipGroup>(R.id.horizontal_chip_group).isVisible = false
-        view.findViewById<ImageView>(R.id.review_detail_restore).isVisible = false
-        view.findViewById<TextView>(R.id.review_title_text_view).text = "내 후기"
+
     }
 
     private fun fetchReviewData() {

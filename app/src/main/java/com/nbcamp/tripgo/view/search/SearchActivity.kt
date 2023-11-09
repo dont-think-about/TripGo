@@ -3,9 +3,13 @@ package com.nbcamp.tripgo.view.search
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +30,8 @@ import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ActivitySearchBinding
+import com.nbcamp.tripgo.util.LoadingDialog
+import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.search.adapters.ViewPagerAdapter
 import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 
@@ -38,15 +44,20 @@ class SearchActivity : AppCompatActivity() {
     private val searchViewModel: SearchViewModel by viewModels { SearchViewModelFactory() }
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private lateinit var bottomSheetLayout: LinearLayout
+    private lateinit var progressBar: ProgressBar
+    private lateinit var loadingDialog: LoadingDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
+        loadingDialog = LoadingDialog(this)
         setContentView(binding.root)
 
         mViewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
         binding.searchViewpager.adapter = mViewPagerAdapter
         binding.searchTabLayout.setupWithViewPager(binding.searchViewpager)
         adapter = SearchAdapter(this)
+        progressBar = findViewById(R.id.progressBar)
 
         searchViewModel.initAdapter(adapter)
 
@@ -59,6 +70,8 @@ class SearchActivity : AppCompatActivity() {
 
         // RecyclerView 어댑터에 데이터 추가
         searchViewModel.fetchViewPagerData()
+        progressBar.visibility = View.VISIBLE
+
         adapter.clearItem()
 
         val searchBackImageView = findViewById<ImageView>(R.id.search_back)
@@ -67,9 +80,24 @@ class SearchActivity : AppCompatActivity() {
         }
         searchViewModel.rankList.observe(this) { pullRankList ->
             adapter.additem(pullRankList)
+
+            progressBar.visibility = View.GONE
         }
 
         searchViewModel.pullData.observe(this) { pullDatalist ->
+            if(pullDatalist.isEmpty()) {
+                loadingDialog.setVisible()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if(loadingDialog.isShowing) {
+                        toast("검색 결과가 없습니다.")
+                        loadingDialog.setInvisible()
+                        return@postDelayed
+                    }
+                },5000)
+            } else {
+                loadingDialog.setInvisible()
+            }
+            progressBar.visibility = View.GONE
             val totalLatitude = pullDatalist.map { it.latitude.toDouble() }.sum()
             val totalLongitude = pullDatalist.map { it.longitude.toDouble() }.sum()
             val centerLatitude = totalLatitude / pullDatalist.size
