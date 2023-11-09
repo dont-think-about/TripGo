@@ -12,10 +12,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
@@ -24,13 +26,15 @@ import com.google.firebase.storage.FirebaseStorage
 import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.util.LoadingDialog
+import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.login.LogInActivity
+import com.nbcamp.tripgo.view.main.MainActivity
+import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class ProfileModifyFragment : Fragment() {
     private lateinit var refreshNickText: AppCompatEditText
@@ -43,6 +47,8 @@ class ProfileModifyFragment : Fragment() {
             imageView?.setImageURI(selectedImageUri)
         }
     }
+    private val profileModifyViewModel: ProfileModifyViewModel by viewModels()
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -69,14 +75,61 @@ class ProfileModifyFragment : Fragment() {
         logoutButton?.setOnClickListener { login() }
 
         val deleteUserButton = view.findViewById<TextView>(R.id.profile_modify_withdrawal_textivew)
-        deleteUserButton.setOnClickListener {
-            //회원탈퇴 코드를 여기에 넣어주세요
-        }
+        deleteUserButton.setOnClickListener { withDrawlUser() }
 
         imageUpdate()
 
         return view
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViewModel()
+    }
+
+    private fun initViewModel() {
+        profileModifyViewModel.deleteStatus.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UserDeleteStatus.Initialize -> {
+                    loadingDialog.setVisible()
+                }
+
+                is UserDeleteStatus.Error -> {
+                    loadingDialog.setInvisible()
+                    requireActivity().toast("회원 탈퇴에 실패하였습니다.")
+                }
+
+                is UserDeleteStatus.Success -> {
+                    loadingDialog.setVisible()
+                    loadingDialog.setText(state.message)
+                    if (state.message == "모든 정보 삭제 완료") {
+                        loadingDialog.setInvisible()
+                        requireActivity().toast("회원 탈퇴가 완료되었습니다.")
+                        startActivity(
+                            Intent(
+                                requireActivity(),
+                                MainActivity::class.java
+                            ).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun withDrawlUser() {
+        AlertDialog.Builder(requireActivity())
+            .setTitle("회원 탈퇴")
+            .setMessage("회원 탈퇴를 하시겠습니까?")
+            .setPositiveButton("예") { _, _ ->
+                profileModifyViewModel.withDrawlUser()
+            }.setNegativeButton("아니오") { _, _ -> }
+            .create()
+            .show()
+    }
+
     private fun updateProfile() {
         val editNickname = refreshNickText.text.toString()
         if (editNickname.isEmpty()) {
@@ -267,7 +320,7 @@ class ProfileModifyFragment : Fragment() {
 
         CoroutineScope(Dispatchers.Main).launch {
             delay(1500)
-            loadingDialog.hide()
+            loadingDialog.setInvisible()
         }
 
     }

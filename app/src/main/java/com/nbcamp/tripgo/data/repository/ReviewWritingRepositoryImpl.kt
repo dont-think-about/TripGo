@@ -67,6 +67,11 @@ class ReviewWritingRepositoryImpl : ReviewWritingRepository {
     ) {
         // 데이터 무결성을 위해 트랜잭션 사용
         fireStore.runTransaction { transaction ->
+            // 하위 문서를 위한 더미데이터
+            fireStore.collection("reviews")
+                .document(userInfo)
+                .set(mapOf("dummy" to ""))
+
             val userReference =
                 fireStore.collection("users").document(userInfo)
             val reviewReference =
