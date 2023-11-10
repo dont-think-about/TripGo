@@ -2,43 +2,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:gravity="top"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:orientation="horizontal"
         android:background="@drawable/search_rounded_edit"
-        android:padding="8dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <ImageView
             android:id="@+id/tour_search_ok"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/icon_search_magnify"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/icon_search_magnify" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/tour_search_edit"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="지역 검색"
             android:background="@android:color/transparent"
+            android:completionThreshold="1"
+            android:hint="지역 검색"
             android:inputType="text"
-            android:textSize="15sp"/>
+            android:textSize="15sp" />
 
         <ImageView
             android:id="@+id/tour_search_close_image"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/icon_search_close"
-            android:visibility="gone"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginStart="8dp" />
+            android:src="@drawable/icon_search_close"
+            android:visibility="gone" />
 
     </LinearLayout>
 

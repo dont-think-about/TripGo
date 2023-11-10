@@ -163,7 +163,11 @@ class SearchActivity : AppCompatActivity() {
                         centerLongitude
                     )
                     val cameraUpdate = CameraUpdateFactory.newCenterPosition(position)
-                    kakaoMap.moveCamera(cameraUpdate)
+                    val zoomLevel = CameraUpdateFactory.zoomTo(10)
+                    kakaoMap.run {
+                        moveCamera(zoomLevel)
+                        moveCamera(cameraUpdate)
+                    }
 
                     for ((idx, entity) in pullDatalist.withIndex()) {
                         val latitude = entity.latitude.toDouble()
