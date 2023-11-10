@@ -11,11 +11,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentSearchFestivalBinding
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
@@ -30,6 +33,8 @@ class FestivalFragment : Fragment() {
     private val searchViewModel: SearchViewModel by activityViewModels()
     private var _binding: FragmentSearchFestivalBinding? = null
     private val binding get() = _binding!!
+    private var autoCompleteCityList: List<String>? = null
+    private lateinit var searchText: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,11 +42,27 @@ class FestivalFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentSearchFestivalBinding.inflate(inflater, container, false)
+        autoCompleteCityList = getJsonDataFromAsset()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        autoCompleteCityList?.let {
+            val autoCompleteAdapter =
+                ArrayAdapter(
+                    requireActivity(),
+                    R.layout.simple_list,
+                    R.id.auto_complete_text_view,
+                    it.toMutableList()
+                )
+            binding.festivalSearchEdit.run {
+                setAdapter(autoCompleteAdapter)
+                setOnItemClickListener { _, _, _, _->
+                    searchText = binding.festivalSearchEdit.text.toString()
+                }
+            }
+        }
 
         // EditText의 텍스트 변경을 감지하는 TextWatcher를 추가합니다.
         binding.festivalSearchEdit.addTextChangedListener(object : TextWatcher {
@@ -57,9 +78,9 @@ class FestivalFragment : Fragment() {
 
         // 검색 버튼(ImageView) 클릭 시 동작 설정
         binding.festivalSearchOk.setOnClickListener {
-            val searchText = binding.festivalSearchEdit.text.toString()
+            searchText = binding.festivalSearchEdit.text.toString()
             if (::startDateString.isInitialized) {
-                if (searchText.length >= 2) {
+                if (::searchText.isInitialized && searchText.length >= 2) {
                     viewModel.fetchSearchResult(keyword = searchText, startDate = startDateString)
                     hideKeyboard() // 키보드 숨김
                 } else {
@@ -112,6 +133,20 @@ class FestivalFragment : Fragment() {
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.festivalSearchEdit.windowToken, 0)
     }
+
+    private fun getJsonDataFromAsset(): List<String>? {
+        val str: List<String>
+        try {
+            val jsonObject = requireActivity().assets.open("city_name.json")
+                .reader().readText()
+            val strListType = object : TypeToken<List<String>>() {}.type
+            str = Gson().fromJson(jsonObject, strListType)
+        } catch (e: Exception) {
+            return null
+        }
+        return str
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
