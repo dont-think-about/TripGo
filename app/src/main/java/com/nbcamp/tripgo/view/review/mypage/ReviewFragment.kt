@@ -11,7 +11,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.chip.ChipGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp.tripgo.R
@@ -85,6 +84,7 @@ class ReviewFragment : Fragment() {
                     )
                     reviewItems.add(reviewItem)
                 }
+                view?.findViewById<TextView>(R.id.notice_no_review)?.isVisible = reviewItems.isEmpty()
                 (view?.findViewById<RecyclerView>(R.id.review_recycler_view)?.adapter as? ReviewAdapter)?.setData(
                     reviewItems
                 )

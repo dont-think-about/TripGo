@@ -2,6 +2,7 @@ package com.nbcamp.tripgo.view.mypage
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.mypage.favorite.FavoriteFragment
 import com.nbcamp.tripgo.view.mypage.favorite.MypageAppInpo
@@ -55,8 +57,20 @@ class MyPageFragment : Fragment() {
         val userLayout = view.findViewById<LinearLayout>(R.id.mypage_userlayout)
         val openSourceLicenseTextView = view.findViewById<TextView>(R.id.mypage_opensource_textview)
         val appInpo = view.findViewById<TextView>(R.id.mypage_appinpo_textview)
-        reviewLayout.setOnClickListener { navigateToFragment(ReviewFragment()) }
-        zzimLayout.setOnClickListener { navigateToFragment(FavoriteFragment()) }
+        reviewLayout.setOnClickListener {
+            if(App.kakaoUser == null && App.firebaseUser == null) {
+                requireActivity().toast("로그인을 해주세요")
+                return@setOnClickListener
+            }
+            navigateToFragment(ReviewFragment())
+        }
+        zzimLayout.setOnClickListener {
+            if(App.kakaoUser == null && App.firebaseUser == null) {
+                requireActivity().toast("로그인을 해주세요")
+                return@setOnClickListener
+            }
+            navigateToFragment(FavoriteFragment())
+        }
         val userInfoTextView = view.findViewById<TextView>(R.id.mypage_userinpo_textview)
         userInfoTextView.setOnClickListener {
             showFullDialog("privacy")
@@ -64,6 +78,10 @@ class MyPageFragment : Fragment() {
         val questionTextView = view.findViewById<TextView>(R.id.mypage_question_textview)
         questionTextView.setOnClickListener {
             requireContext().toast("추후 업데이트 예정 입니다")
+        }
+        questionTextView.setOnLongClickListener {
+            runFeedBackDialog()
+            true
         }
 
         val auth = FirebaseAuth.getInstance()
@@ -189,6 +207,24 @@ class MyPageFragment : Fragment() {
         args.putString("data", data)
         dialogFragment.arguments = args
         dialogFragment.show(parentFragmentManager, null)
+    }
+
+    private fun runFeedBackDialog() {
+        AlertDialog.Builder(requireActivity())
+            .setTitle(getString(R.string.send_feedback_now))
+            .setMessage(getString(R.string.your_feedback_is_helpful))
+            .setPositiveButton(getString(R.string.send_feedback)) { view, _ ->
+                view.dismiss()
+                // 5번 종료할 때 마다 피드백 다이얼로그 실행
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(getString(R.string.feedback_link))
+                    )
+                )
+            }.setNegativeButton(getString(R.string.out_of_application)) { _, _ -> }
+            .create()
+            .show()
     }
 
     companion object {
