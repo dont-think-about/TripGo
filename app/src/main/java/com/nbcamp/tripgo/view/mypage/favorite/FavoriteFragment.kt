@@ -5,16 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.view.App
-import com.nbcamp.tripgo.view.mypage.MyPageFragment
 
 class FavoriteFragment : Fragment() {
     override fun onCreateView(
@@ -86,6 +86,7 @@ class FavoriteFragment : Fragment() {
                     )
                     favoriteItems.add(favoriteItem)
                 }
+                view.findViewById<TextView>(R.id.notice_no_favorite)?.isVisible = favoriteItems.isEmpty()
 
                 val favorite_recyclerview = view.findViewById<RecyclerView>(R.id.favorite_recyclerview)
                 val favoriteAdapter = FavoriteAdapter()

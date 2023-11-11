@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.mypage.favorite.FavoriteFragment
 import com.nbcamp.tripgo.view.mypage.favorite.MypageAppInpo
@@ -55,8 +56,20 @@ class MyPageFragment : Fragment() {
         val userLayout = view.findViewById<LinearLayout>(R.id.mypage_userlayout)
         val openSourceLicenseTextView = view.findViewById<TextView>(R.id.mypage_opensource_textview)
         val appInpo = view.findViewById<TextView>(R.id.mypage_appinpo_textview)
-        reviewLayout.setOnClickListener { navigateToFragment(ReviewFragment()) }
-        zzimLayout.setOnClickListener { navigateToFragment(FavoriteFragment()) }
+        reviewLayout.setOnClickListener {
+            if(App.kakaoUser == null && App.firebaseUser == null) {
+                requireActivity().toast("로그인을 해주세요")
+                return@setOnClickListener
+            }
+            navigateToFragment(ReviewFragment())
+        }
+        zzimLayout.setOnClickListener {
+            if(App.kakaoUser == null && App.firebaseUser == null) {
+                requireActivity().toast("로그인을 해주세요")
+                return@setOnClickListener
+            }
+            navigateToFragment(FavoriteFragment())
+        }
         val userInfoTextView = view.findViewById<TextView>(R.id.mypage_userinpo_textview)
         userInfoTextView.setOnClickListener {
             showFullDialog("privacy")

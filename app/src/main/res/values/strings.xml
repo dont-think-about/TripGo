@@ -198,5 +198,7 @@
     <string name="default_web_client_id">696047610679-dr938bmucn7iq2rnmul2delrveh52spa.apps.googleusercontent.com</string>
     <string name="my_review">내 리뷰</string>
     <string name="on_gps_for_location_permission">위치 권한을 위해 GPS를 켜주세요</string>
+    <string name="no_my_review">작성 된 리뷰가 없습니다.</string>
+    <string name="no_my_favorite">좋아요한 여행지가 없습니다.</string>
 
 </resources>
