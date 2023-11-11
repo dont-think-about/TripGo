@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="LockedOrientationActivity">
 
     <queries>
         <package android:name="net.daum.android.map" />
@@ -44,44 +45,57 @@
         </activity>
         <activity
             android:name=".view.signup.SignUpActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".view.login.LogInActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".view.attraction.detail.AttractionsDetailActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".view.attraction.AttractionsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".view.festival.detail.FestivalDetailActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".view.tour.detail.TourDetailActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".view.calendar.modify.TourModifyDetailActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".view.search.SearchActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name=".view.festival.FestivalActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".view.tour.TourActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
 
         <activity
             android:name=".view.reviewwriting.gallery.GalleryActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".view.main.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
 
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

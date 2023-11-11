@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +11,10 @@
         android:id="@+id/favorite_layout"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/profile_favorite_back_imagebutton"
@@ -35,8 +39,23 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/favorite_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_favorite_main" />
+        android:layout_height="0dp"
+        tools:listitem="@layout/item_favorite_main"
+        app:layout_constraintTop_toBottomOf="@id/favorite_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
+    <TextView
+        android:id="@+id/notice_no_favorite"
+        style="@style/Font.16.Bold.Black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_my_favorite"
+        app:layout_constraintBottom_toBottomOf="@id/favorite_recyclerview"
+        app:layout_constraintEnd_toEndOf="@id/favorite_recyclerview"
+        app:layout_constraintStart_toStartOf="@id/favorite_recyclerview"
+        app:layout_constraintTop_toTopOf="@id/favorite_recyclerview" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
