@@ -57,7 +57,7 @@ class CalendarFragment : Fragment() {
             onClickItem = { model ->
                 runDialogForReviewWriting(model)
             },
-            // 길게 클릭 하면 리뷰 삭제
+            // 길게 클릭 하면 일정 삭제
             onLongClickItem = { model ->
                 runDialogForScheduleDelete(model)
             }
@@ -220,6 +220,7 @@ class CalendarFragment : Fragment() {
             calendarNoticeTextView.isVisible = true
             calendarProgressBar.isVisible = state.isLoading
             calendarNoticeTextView.text = state.message
+            scheduleListAdapter.submitList(emptyList())
             return
         }
         calendarNoticeTextView.isVisible = false
