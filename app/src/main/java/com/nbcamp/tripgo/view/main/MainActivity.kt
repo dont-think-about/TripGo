@@ -2,10 +2,13 @@ package com.nbcamp.tripgo.view.main
 
 import android.Manifest
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -74,12 +77,24 @@ class MainActivity : AppCompatActivity() {
     } else {
         Manifest.permission.READ_EXTERNAL_STORAGE
     }
+    private val callback = object  : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            ++App.prefs.feedbackCount
+            if(App.prefs.feedbackCount % 4 == 0) {
+                runFeedBackDialog()
+                return
+            }
+            finish()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println(App.prefs.feedbackCount)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         loadingDialog = LoadingDialog(this)
+        this.onBackPressedDispatcher.addCallback(this, callback)
 
         initViews()
         initViewModels()
@@ -321,5 +336,24 @@ class MainActivity : AppCompatActivity() {
                 permissionLocationLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         ).show()
+    }
+
+    private fun runFeedBackDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.send_feedback_now))
+            .setMessage(getString(R.string.your_feedback_is_helpful))
+            .setPositiveButton(getString(R.string.send_feedback)) { view, _ ->
+                view.dismiss()
+                // 5번 종료할 때 마다 피드백 다이얼로그 실행
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(getString(R.string.feedback_link))
+                    )
+                )
+            }.setNegativeButton(getString(R.string.out_of_application)) { _, _ ->
+                finish()
+            }.create()
+            .show()
     }
 }

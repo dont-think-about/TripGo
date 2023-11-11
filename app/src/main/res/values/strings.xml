@@ -200,5 +200,10 @@
     <string name="on_gps_for_location_permission">위치 권한을 위해 GPS를 켜주세요</string>
     <string name="no_my_review">작성 된 리뷰가 없습니다.</string>
     <string name="no_my_favorite">좋아요한 여행지가 없습니다.</string>
+    <string name="send_feedback_now">피드백을 남겨주세요</string>
+    <string name="send_feedback">피드백 남기기</string>
+    <string name="your_feedback_is_helpful">여러분의 피드백은 앱 개선에 굉장한 도움이 됩니다!!!</string>
+    <string name="feedback_link">"https://forms.gle/bBztzT9xKoZWKTrd8 "</string>
+    <string name="out_of_application">나가기</string>
 
 </resources>
