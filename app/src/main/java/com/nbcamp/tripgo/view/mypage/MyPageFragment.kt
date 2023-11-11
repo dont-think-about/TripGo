@@ -2,6 +2,7 @@ package com.nbcamp.tripgo.view.mypage
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -77,6 +78,10 @@ class MyPageFragment : Fragment() {
         val questionTextView = view.findViewById<TextView>(R.id.mypage_question_textview)
         questionTextView.setOnClickListener {
             requireContext().toast("추후 업데이트 예정 입니다")
+        }
+        questionTextView.setOnLongClickListener {
+            runFeedBackDialog()
+            true
         }
 
         val auth = FirebaseAuth.getInstance()
@@ -202,6 +207,24 @@ class MyPageFragment : Fragment() {
         args.putString("data", data)
         dialogFragment.arguments = args
         dialogFragment.show(parentFragmentManager, null)
+    }
+
+    private fun runFeedBackDialog() {
+        AlertDialog.Builder(requireActivity())
+            .setTitle(getString(R.string.send_feedback_now))
+            .setMessage(getString(R.string.your_feedback_is_helpful))
+            .setPositiveButton(getString(R.string.send_feedback)) { view, _ ->
+                view.dismiss()
+                // 5번 종료할 때 마다 피드백 다이얼로그 실행
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(getString(R.string.feedback_link))
+                    )
+                )
+            }.setNegativeButton(getString(R.string.out_of_application)) { _, _ -> }
+            .create()
+            .show()
     }
 
     companion object {
