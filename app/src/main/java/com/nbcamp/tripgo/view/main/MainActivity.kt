@@ -90,7 +90,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println(App.prefs.feedbackCount)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         loadingDialog = LoadingDialog(this)
@@ -112,7 +111,6 @@ class MainActivity : AppCompatActivity() {
                 FragmentManager.POP_BACK_STACK_INCLUSIVE
             )
             sharedViewModel.setCurrentPage(item.itemId)
-//            sharedViewModel.onClickBackButton()
             true
         }
         setUserState()
