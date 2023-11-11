@@ -85,7 +85,9 @@ class MyPageFragment : Fragment() {
             if (auth.currentUser != null || App.kakaoUser != null) {
                 showUserDialog()
             } else {
+                loading()
                 startActivity(Intent(requireContext(), LogInActivity::class.java))
+                loadingDialog.setInvisible()
             }
         }
         openSourceLicenseTextView.setOnClickListener { runOpenSourceDialog() }
