@@ -9,6 +9,8 @@ import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 
 object DetailMapper {
     fun DetailCommonItem.toDetailCommonEntity() = DetailCommonEntity(
+        contentId = contentid,
+        address = addr1 + addr2,
         title = title,
         description = Html.fromHtml(overview, Html.FROM_HTML_MODE_LEGACY).toString(),
         telPhoneNumber = tel.ifEmpty { "정보가 없습니다." },
@@ -52,6 +54,22 @@ object DetailMapper {
         telPhone = detailInfo.telPhoneNumber,
         address = addr1 + addr2,
         homePage = detailInfo.homePage,
+        isReviewed = false
+    )
+
+    fun DetailCommonEntity.toCalendarEntity(
+        startDate: String,
+        endDate: String,
+    ) = CalendarEntity(
+        id = null,
+        contentId = this.contentId,
+        startDate = startDate,
+        endDate = endDate,
+        title = title,
+        description = this.description,
+        telPhone = this.telPhoneNumber,
+        address = this.address,
+        homePage = this.homePage,
         isReviewed = false
     )
 }

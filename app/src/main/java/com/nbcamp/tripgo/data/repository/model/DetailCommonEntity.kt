@@ -1,6 +1,8 @@
 package com.nbcamp.tripgo.data.repository.model
 
 data class DetailCommonEntity(
+    val contentId: String,
+    val address: String,
     val title: String,
     val description: String,
     val telPhoneNumber: String,

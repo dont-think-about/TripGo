@@ -52,14 +52,18 @@ class TourDetailRepositoryImpl(
             startDate,
             endDate,
             detailInfo
+        ) ?: detailInfo.toCalendarEntity(
+            startDate,
+            endDate
         )
+
         if (email == null || plan == null) {
             return
         }
 
         fireStore.runTransaction { transaction ->
             // 하위 문서를 위한 더미데이터
-            fireStore.collection("reviews")
+            fireStore.collection("calendar")
                 .document(userInfo)
                 .set(mapOf("dummy" to ""))
 

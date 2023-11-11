@@ -26,10 +26,6 @@ import com.nbcamp.tripgo.view.mypage.favorite.FavoriteFragment
 import com.nbcamp.tripgo.view.mypage.favorite.MypageAppInpo
 import com.nbcamp.tripgo.view.review.mypage.ReviewFragment
 import com.nbcamp.tripgo.view.signup.RulesFragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 class MyPageFragment : Fragment() {
@@ -86,11 +82,12 @@ class MyPageFragment : Fragment() {
 
         val auth = FirebaseAuth.getInstance()
         userLayout.setOnClickListener {
-            if (auth.currentUser != null) {
+            if (auth.currentUser != null || App.kakaoUser != null) {
                 showUserDialog()
             } else {
                 loading()
                 startActivity(Intent(requireContext(), LogInActivity::class.java))
+                loadingDialog.setInvisible()
             }
         }
         openSourceLicenseTextView.setOnClickListener { runOpenSourceDialog() }
@@ -103,7 +100,7 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (UserLoggedIn()) {
+        if (userLoggedIn()) {
             userinpo()
         }
     }
@@ -112,10 +109,11 @@ class MyPageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun UserLoggedIn(): Boolean {
+    private fun userLoggedIn(): Boolean {
         val auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
-        return currentUser != null
+        val kakaoUser = App.kakaoUser
+        return currentUser != null || kakaoUser != null
     }
 
     private fun userinpo() {
@@ -174,10 +172,10 @@ class MyPageFragment : Fragment() {
             setVisible()
             setText("로딩중 ... ")
         }
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(5500) //
-            loadingDialog.setInvisible() // 로딩 화면 숨기기
-        }
+//        CoroutineScope(Dispatchers.Main).launch {
+//            delay(5500) //
+//            loadingDialog.setInvisible() // 로딩 화면 숨기기
+//        }
     }
 
     private fun navigateToFragment(fragment: Fragment) {
