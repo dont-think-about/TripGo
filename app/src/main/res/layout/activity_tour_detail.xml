@@ -254,13 +254,12 @@
 
             <Space
                 android:layout_width="0dp"
-                android:layout_height="150dp" />
+                android:layout_height="15dp" />
 
             <com.nbcamp.tripgo.util.KaKaoMapFrameLayout
                 android:id="@+id/route_map"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
+                android:layout_height="500dp" />
 
         </LinearLayout>
 
