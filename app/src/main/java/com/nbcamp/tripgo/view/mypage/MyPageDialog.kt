@@ -166,7 +166,7 @@ class MyPageDialog(private val context: Context) {
             if (task.isSuccessful) {
                 val document = task.result
                 if (document != null && document.exists()) {
-                    val profileImageUrl = document.getString("profileImageUrl")
+                    val profileImageUrl = document.getString("profileImage")
                     if (!profileImageUrl.isNullOrEmpty()) {
 
                         val dialogimageView =
