@@ -96,6 +96,7 @@
                     app:rippleColor="@color/deactivated" />
 
             </com.google.android.material.chip.ChipGroup>
+
         </HorizontalScrollView>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -130,8 +131,9 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/review_detail_notice_text_view"
             style="@style/Font.18.Bold.Black"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/update_reviews_layout"
             app:layout_constraintEnd_toEndOf="@id/update_reviews_layout"

@@ -187,7 +187,7 @@
     <string name="twelve_more">20 ~ 개</string>
     <string name="somewhere">어딘가</string>
     <string name="badge_of_review_count">리뷰 개수별 뱃지</string>
-    <string name="no_review_so_write_review">아직 작성 된 리뷰가 없어요.. 첫 리뷰를 작성해보세요 :)</string>
+    <string name="no_review_so_write_review">아직 작성 된 리뷰가 없어요.. \n\n 첫 리뷰를 작성해보세요 :)</string>
     <string name="no_exist_condition_review">조건에 맞는 리뷰가 존재 하지 않습니다.. :)</string>
     <string name="address_title">주소:</string>
     <string name="visited_title">다녀 온 날짜:</string>
