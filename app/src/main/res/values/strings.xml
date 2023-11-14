@@ -205,5 +205,13 @@
     <string name="your_feedback_is_helpful">여러분의 피드백은 앱 개선에 굉장한 도움이 됩니다!!!</string>
     <string name="feedback_link">"https://forms.gle/bBztzT9xKoZWKTrd8 "</string>
     <string name="out_of_application">나가기</string>
+    <string name="appname">고민말GO 트립GO</string>
+    <string name="appversion">버전: 1.2</string>
+    <string name="developteam">개발자: 스파르타 9 팀</string>
+    <string name="minjong_email">alswhddkdl@gmail.com</string>
+    <string name="suhyun_email">missu0119@gmail.com</string>
+    <string name="jaemin_email">n94n@naver.com</string>
+    <string name="sunho_email">sunho@gmail.com</string>
+    <string name="sungjin_email">asdsad86642@gmail.com</string>
 
 </resources>

@@ -141,16 +141,19 @@ class ProfileModifyFragment : Fragment() {
             return
         }
 
+        val auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+        val kakaoUser = App.kakaoUser
+
         val firestore = FirebaseFirestore.getInstance()
         val userId = userEmail()
+        Log.d("ProfileModify",userId + user)
         val userRef = firestore.collection("users").document(userId)
 
         userRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val document = task.result
                 if (document != null && document.exists()) {
-                    val currentNickname = document.getString("nickname")
-
                     checkIfNicknameExists(editNickname) { nicknameExists ->
                         if (!nicknameExists) {
                             val data = hashMapOf("nickname" to editNickname)
