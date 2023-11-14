@@ -177,22 +177,37 @@ class LogInActivity : AppCompatActivity() {
                                         if (user != null) {
                                             val email = user.email
                                             val nickname = user.displayName
-                                            onLoginSuccess(email.toString(), nickname.toString())
 
-                                            val userDocument = hashMapOf(
-                                                "email" to user.email,
-                                                "nickname" to user.displayName,
-                                                "profileImage" to null,
-                                                "reviewCount" to 0
-                                            )
-                                            firestore.collection("users").document(user.email.toString())
-                                                .set(userDocument)
-                                                .addOnSuccessListener {
-
-                                                    finish()
-                                                }
-                                                .addOnFailureListener { e ->
-                                                    Log.w(TAG, "Firestore에 사용자 정보 저장 실패", e)
+                                            // Firestore에서 해당 이메일이 이미 존재하는지 확인
+                                            firestore.collection("users").document(email.toString())
+                                                .get()
+                                                .addOnSuccessListener { documentSnapshot ->
+                                                    if (documentSnapshot.exists()) {
+                                                        // 이미 존재하는 경우
+                                                        Toast.makeText(
+                                                            this,
+                                                            "기존 회원으로 로그인합니다.",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                        finish()
+                                                    } else {
+                                                        // 존재하지 않는 경우, Firestore에 새로운 사용자 정보 추가
+                                                        val userDocument = hashMapOf(
+                                                            "email" to email,
+                                                            "nickname" to nickname,
+                                                            "profileImage" to null,
+                                                            "reviewCount" to 0
+                                                        )
+                                                        firestore.collection("users").document(email.toString())
+                                                            .set(userDocument)
+                                                            .addOnSuccessListener {
+                                                                // 새로운 사용자 정보가 Firestore에 추가된 경우
+                                                                finish()
+                                                            }
+                                                            .addOnFailureListener { e ->
+                                                                Log.w(TAG, "Firestore에 사용자 정보 저장 실패", e)
+                                                            }
+                                                    }
                                                 }
                                         }
                                     } else {

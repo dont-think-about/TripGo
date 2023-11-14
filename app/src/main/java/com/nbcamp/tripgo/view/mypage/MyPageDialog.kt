@@ -95,7 +95,7 @@ class MyPageDialog(private val context: Context) {
 
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
-        val kakaoUser = App.kakaoUser
+        val kakaoUser = App.kakaoUser?.email
 
         if( user != null || kakaoUser != null){
             val transaction = fragmentManager.beginTransaction()
@@ -107,6 +107,7 @@ class MyPageDialog(private val context: Context) {
         }
         else{
             Toast.makeText(context, "프로필 데이터가 없습니다.\n프로필을 먼저 설정해주세요.", Toast.LENGTH_SHORT).show()
+            dismissDialog()
         }
 
     }
