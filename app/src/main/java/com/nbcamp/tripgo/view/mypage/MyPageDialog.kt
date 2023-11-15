@@ -95,8 +95,9 @@ class MyPageDialog(private val context: Context) {
 
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
+        val kakaoUser = App.kakaoUser
 
-        if( user != null ){
+        if( user != null || kakaoUser != null){
             val transaction = fragmentManager.beginTransaction()
             val newFragment = ProfileModifyFragment()
             transaction.replace(R.id.main_fragment_container, newFragment)
@@ -165,7 +166,7 @@ class MyPageDialog(private val context: Context) {
             if (task.isSuccessful) {
                 val document = task.result
                 if (document != null && document.exists()) {
-                    val profileImageUrl = document.getString("profileImageUrl")
+                    val profileImageUrl = document.getString("profileImage")
                     if (!profileImageUrl.isNullOrEmpty()) {
 
                         val dialogimageView =

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
@@ -151,7 +153,8 @@ class MyPageFragment : Fragment() {
             if (task.isSuccessful) {
                 val document = task.result
                 if (document != null && document.exists()) {
-                    val profileImageUrl = document.getString("profileImageUrl")
+                    val profileImageUrl = document.getString("profileImage")
+                    Log.d("MypageFragment",profileImageUrl.toString())
                     if (!profileImageUrl.isNullOrEmpty()) {
                         val imageView = view?.findViewById<AppCompatImageView>(R.id.mypage_usericon)
                         imageView?.load(profileImageUrl) {
@@ -159,7 +162,11 @@ class MyPageFragment : Fragment() {
                             listener(onSuccess = { _, _ ->
                                 // 이미지 로드가 성공한 경우, 로딩 화면을 숨깁니다.
                                 checkAndDismissLoadingDialog()
-                            })
+                            },
+                                onError = { _, error ->
+                                    Log.e("MyPageFragment", "Coil Image Loading Error: ${error.throwable}")
+                                }
+                            )
                         }
                     }
                 }

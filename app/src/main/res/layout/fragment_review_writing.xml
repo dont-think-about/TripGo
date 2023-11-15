@@ -320,6 +320,7 @@
                     android:id="@+id/review_writing_text_input_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:gravity="top"
                     android:lines="4"
                     android:maxLength="100"
 

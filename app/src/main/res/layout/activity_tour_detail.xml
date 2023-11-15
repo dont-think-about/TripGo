@@ -77,8 +77,8 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_view_main_photo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_height="300dp"
+                android:layout_marginTop="20dp"
                 android:scaleType="fitXY"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@tools:sample/avatars" />

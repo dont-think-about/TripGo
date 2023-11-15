@@ -16,7 +16,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="고민말GO 트립GO"
+        android:text="@string/appname"
     android:textSize="24sp"
     android:layout_gravity="center_horizontal"
     android:layout_marginBottom="8dp" />
@@ -24,7 +24,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="버전: 1.0"
+        android:text="@string/appversion"
     android:textSize="16sp"
     android:layout_gravity="center_horizontal"
     android:layout_marginBottom="16dp" />
@@ -32,7 +32,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="개발자: 스파르타 9 팀"
+        android:text="@string/developteam"
     android:textSize="16sp"
     android:layout_gravity="center_horizontal"
     android:layout_marginBottom="16dp" />
@@ -40,7 +40,35 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="이메일 입력하기"
-    android:textSize="16sp"
-    android:layout_gravity="center_horizontal" />
+        android:text="@string/minjong_email"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/suhyun_email"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/jaemin_email"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/sunho_email"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/sungjin_email"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>
