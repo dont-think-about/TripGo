@@ -187,8 +187,15 @@ class ProfileModifyFragment : Fragment() {
 
     private fun userEmail(): String {
         val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
-        return user?.email ?: ""
+        val kakaoUser = App.kakaoUser != null
+
+        return if (kakaoUser) {
+            App.kakaoUser?.email ?: ""
+        } else {
+            // 일반 Firebase 로그인일 경우
+            val user = auth.currentUser
+            user?.email ?: ""
+        }
     }
 
     private fun checkIfNicknameExists(newNickname: String, callback: (Boolean) -> Unit) {
@@ -295,12 +302,30 @@ class ProfileModifyFragment : Fragment() {
                 modifyToFragment(MyPageFragment())
                 // 로그아웃 후 화면 갱신
                 updateUIAfterLogout()
+                // 로그아웃버튼클릭시 firestore 불러온정보 클리어
+                clearFirestoreUserData()
 
             }
         } else {
             // 사용자가 로그인하지 않은 상태이면 로그인 화면으로 이동
             val intent = Intent(requireContext(), LogInActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun clearFirestoreUserData() {
+        val firestore = FirebaseFirestore.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser?.email
+
+        if( userId != null ) {
+            val userDocumentRef = firestore.collection("users").document(userId)
+
+            userDocumentRef.delete().addOnSuccessListener {
+                Log.d("ProFileModify", "Success")
+            }
+                .addOnFailureListener { e ->
+                    Log.w("ProFileModify", "Fail")
+                }
         }
     }
 

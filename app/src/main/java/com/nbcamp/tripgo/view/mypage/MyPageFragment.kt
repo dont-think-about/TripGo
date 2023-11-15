@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
@@ -102,9 +103,7 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (userLoggedIn()) {
-            userinpo()
-        }
+         observeUserData()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -117,23 +116,21 @@ class MyPageFragment : Fragment() {
         val kakaoUser = App.kakaoUser
         return currentUser != null || kakaoUser != null
     }
-
-    private fun userinpo() {
-        loadingDialog.run {
-            setVisible()
-            setText("로딩중 ...")
-        }
-        viewModel.email.observe(viewLifecycleOwner) { email ->
-            emailText.text = "   $email"
+    private fun observeUserData() {
+        if (userLoggedIn()) {
+            viewModel.email.observe(viewLifecycleOwner) { email ->
+                emailText.text = "   $email"
+                checkAndDismissLoadingDialog()
+            }
+            viewModel.nickname.observe(viewLifecycleOwner) { nickname ->
+                nicknameText.text = "   $nickname 님"
+                checkAndDismissLoadingDialog()
+            }
+            imageupdate()
             checkAndDismissLoadingDialog()
         }
-        viewModel.nickname.observe(viewLifecycleOwner) { nickname ->
-            nicknameText.text = "   $nickname 님"
-            checkAndDismissLoadingDialog()
-        }
-        viewModel.fetchDataFromFirebase()
-        imageupdate()
     }
+
 
     private fun checkAndDismissLoadingDialog() {
         // email과 nickname이 모두 채워졌는지 확인
@@ -154,7 +151,7 @@ class MyPageFragment : Fragment() {
                 val document = task.result
                 if (document != null && document.exists()) {
                     val profileImageUrl = document.getString("profileImage")
-                    Log.d("MypageFragment",profileImageUrl.toString())
+                    Log.d("MypageFragment", profileImageUrl.toString())
                     if (!profileImageUrl.isNullOrEmpty()) {
                         val imageView = view?.findViewById<AppCompatImageView>(R.id.mypage_usericon)
                         imageView?.load(profileImageUrl) {
@@ -173,6 +170,7 @@ class MyPageFragment : Fragment() {
             }
         }
     }
+
 
     private fun loading() {
         loadingDialog.run {

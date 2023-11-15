@@ -47,7 +47,7 @@ class MyPageViewModel : ViewModel() {
                 .addOnFailureListener { e ->
                     Log.d(TAG, "실패! $e")
                 }
-            }
+        }
     }
 }
 
