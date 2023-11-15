@@ -54,7 +54,7 @@ class ReviewDetailFragment : Fragment() {
         } else {
             reviewDetailUserImageView.load(model?.userImageUrl)
         }
-        reviewDetailUserName.text = model?.userImageUrl
+        reviewDetailUserName.text = model?.userNickName
         reviewDetailImageView.load(model?.reviewImageUrl)
         reviewDetailTitleTextView.text = model?.tourTitle
         reviewDetailAddressTextView.text =
@@ -96,12 +96,6 @@ class ReviewDetailFragment : Fragment() {
         if (model == null) {
             return@with
         }
-        if (model.profileImage.isNullOrEmpty() || model.profileImage == "") {
-            reviewDetailUserImageView.load(R.drawable.icon_user)
-        } else {
-            reviewDetailUserImageView.load(model.profileImage)
-        }
-        reviewDetailUserName.text = model.nickname
         reviewDetailMedal.setOnClickListener {
             AlertDialog.Builder(requireActivity())
                 .setTitle(getString(R.string.badge_of_review_count))
