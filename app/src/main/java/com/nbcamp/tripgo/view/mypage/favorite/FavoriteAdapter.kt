@@ -78,8 +78,8 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
                         }
                 }
 
-                else {
 
+                else {
                 }
             }
         }
