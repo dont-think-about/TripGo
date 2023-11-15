@@ -101,7 +101,8 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.fetchDataFromFirebase()
+        if(App.kakaoUser != null || App.firebaseUser != null)
+            viewModel.fetchDataFromFirebase()
         observeUserData()
     }
 
