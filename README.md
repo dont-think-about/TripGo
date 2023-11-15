@@ -18,6 +18,11 @@
 - 팀원 정선호 - 프로젝트 서포트 , 검색 로직 , PPT 제작
 - 팀원 이성진 - 프로젝트 서포트 , 관광 목록 관련 로직 , README 작성
 
+###  🛠️ 사용 기술
+<img src="https://img.shields.io/badge/Kotlin-7F52FF?style=flat&logo=Kotlin&logoColor=white"/>
+<img src="https://img.shields.io/badge/android-3DDC84?style=flat&logo=android&logoColor=white"/>
+<img src="https://img.shields.io/badge/androidstudio-3DDC84?style=flat&logo=androidstudio&logoColor=white"/>
+<img src="https://img.shields.io/badge/github-181717?style=flat&logo=github&logoColor=white"/>
 
 
 ### 🖥️ 개발 환경
