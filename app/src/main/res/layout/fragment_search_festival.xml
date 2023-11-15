@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/festival_search_ok"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/icon_search_magnify" />
 
@@ -28,10 +28,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
+            android:completionThreshold="1"
             android:hint="지역 검색"
-            android:inputType="text"
-            android:textSize="15sp"
-            android:completionThreshold="1"/>
+            android:imeOptions="actionDone"
+            android:inputType="textCapSentences|textAutoCorrect"
+            android:textSize="15sp" />
 
         <ImageView
             android:id="@+id/festival_search_close_image"
@@ -57,8 +58,8 @@
         android:padding="8dp">
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/icon_calendar_button" />
 

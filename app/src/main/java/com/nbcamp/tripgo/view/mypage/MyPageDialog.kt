@@ -95,8 +95,9 @@ class MyPageDialog(private val context: Context) {
 
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
+        val kakaoUser = App.kakaoUser?.email
 
-        if( user != null ){
+        if( user != null || kakaoUser != null){
             val transaction = fragmentManager.beginTransaction()
             val newFragment = ProfileModifyFragment()
             transaction.replace(R.id.main_fragment_container, newFragment)
@@ -106,6 +107,7 @@ class MyPageDialog(private val context: Context) {
         }
         else{
             Toast.makeText(context, "프로필 데이터가 없습니다.\n프로필을 먼저 설정해주세요.", Toast.LENGTH_SHORT).show()
+            dismissDialog()
         }
 
     }
@@ -165,7 +167,7 @@ class MyPageDialog(private val context: Context) {
             if (task.isSuccessful) {
                 val document = task.result
                 if (document != null && document.exists()) {
-                    val profileImageUrl = document.getString("profileImageUrl")
+                    val profileImageUrl = document.getString("profileImage")
                     if (!profileImageUrl.isNullOrEmpty()) {
 
                         val dialogimageView =

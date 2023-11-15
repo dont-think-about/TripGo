@@ -105,13 +105,15 @@
             app:behavior_skipCollapsed="true"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-            <!-- persistent bottom sheet의 Content -->
             <ImageView
                 android:id="@+id/map_item_image"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxHeight="250dp"
-                android:src="@drawable/icon_logo_title" />
+                android:layout_height="200dp"
+                android:src="@drawable/icon_no_image" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="20dp"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/map_item_title"

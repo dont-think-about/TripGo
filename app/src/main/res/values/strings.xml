@@ -187,7 +187,7 @@
     <string name="twelve_more">20 ~ 개</string>
     <string name="somewhere">어딘가</string>
     <string name="badge_of_review_count">리뷰 개수별 뱃지</string>
-    <string name="no_review_so_write_review">아직 작성 된 리뷰가 없어요.. 첫 리뷰를 작성해보세요 :)</string>
+    <string name="no_review_so_write_review">아직 작성 된 리뷰가 없어요.. \n\n 첫 리뷰를 작성해보세요 :)</string>
     <string name="no_exist_condition_review">조건에 맞는 리뷰가 존재 하지 않습니다.. :)</string>
     <string name="address_title">주소:</string>
     <string name="visited_title">다녀 온 날짜:</string>
@@ -205,5 +205,14 @@
     <string name="your_feedback_is_helpful">여러분의 피드백은 앱 개선에 굉장한 도움이 됩니다!!!</string>
     <string name="feedback_link">"https://forms.gle/bBztzT9xKoZWKTrd8 "</string>
     <string name="out_of_application">나가기</string>
+    <string name="appname">고민말GO 트립GO</string>
+    <string name="appversion">버전: 1.2</string>
+    <string name="developteam">개발자: 스파르타 9 팀</string>
+    <string name="minjong_email">alswhddkdl@gmail.com</string>
+    <string name="suhyun_email">missu0119@gmail.com</string>
+    <string name="jaemin_email">n94n@naver.com</string>
+    <string name="sunho_email">sunho@gmail.com</string>
+    <string name="sungjin_email">asdsad86642@gmail.com</string>
+    <string name="press_back_toast">\'뒤로\' 버튼을 한번 더 누르면 종료됩니다.</string>
 
 </resources>

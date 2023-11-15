@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +14,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
@@ -100,9 +103,7 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (userLoggedIn()) {
-            userinpo()
-        }
+         observeUserData()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,23 +116,21 @@ class MyPageFragment : Fragment() {
         val kakaoUser = App.kakaoUser
         return currentUser != null || kakaoUser != null
     }
-
-    private fun userinpo() {
-        loadingDialog.run {
-            setVisible()
-            setText("로딩중 ...")
-        }
-        viewModel.email.observe(viewLifecycleOwner) { email ->
-            emailText.text = "   $email"
+    private fun observeUserData() {
+        if (userLoggedIn()) {
+            viewModel.email.observe(viewLifecycleOwner) { email ->
+                emailText.text = "   $email"
+                checkAndDismissLoadingDialog()
+            }
+            viewModel.nickname.observe(viewLifecycleOwner) { nickname ->
+                nicknameText.text = "   $nickname 님"
+                checkAndDismissLoadingDialog()
+            }
+            imageupdate()
             checkAndDismissLoadingDialog()
         }
-        viewModel.nickname.observe(viewLifecycleOwner) { nickname ->
-            nicknameText.text = "   $nickname 님"
-            checkAndDismissLoadingDialog()
-        }
-        viewModel.fetchDataFromFirebase()
-        imageupdate()
     }
+
 
     private fun checkAndDismissLoadingDialog() {
         // email과 nickname이 모두 채워졌는지 확인
@@ -151,7 +150,8 @@ class MyPageFragment : Fragment() {
             if (task.isSuccessful) {
                 val document = task.result
                 if (document != null && document.exists()) {
-                    val profileImageUrl = document.getString("profileImageUrl")
+                    val profileImageUrl = document.getString("profileImage")
+                    Log.d("MypageFragment", profileImageUrl.toString())
                     if (!profileImageUrl.isNullOrEmpty()) {
                         val imageView = view?.findViewById<AppCompatImageView>(R.id.mypage_usericon)
                         imageView?.load(profileImageUrl) {
@@ -159,13 +159,18 @@ class MyPageFragment : Fragment() {
                             listener(onSuccess = { _, _ ->
                                 // 이미지 로드가 성공한 경우, 로딩 화면을 숨깁니다.
                                 checkAndDismissLoadingDialog()
-                            })
+                            },
+                                onError = { _, error ->
+                                    Log.e("MyPageFragment", "Coil Image Loading Error: ${error.throwable}")
+                                }
+                            )
                         }
                     }
                 }
             }
         }
     }
+
 
     private fun loading() {
         loadingDialog.run {
