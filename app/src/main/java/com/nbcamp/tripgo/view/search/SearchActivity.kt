@@ -111,7 +111,7 @@ class SearchActivity : AppCompatActivity() {
                     override fun onMapError(error: Exception) {
                     }
                 },
-                                object : KakaoMapReadyCallback() {
+                object : KakaoMapReadyCallback() {
                     override fun onMapReady(kakaoMap: KakaoMap) {
                         kakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
                             val clickedItem = pullDatalist.find {
