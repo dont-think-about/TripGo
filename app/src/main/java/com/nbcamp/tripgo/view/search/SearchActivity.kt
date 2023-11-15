@@ -129,7 +129,7 @@ class SearchActivity : AppCompatActivity() {
                             val imageUrl = clickedItem.imageUrl
                             mapImage.load(imageUrl) {
                                 placeholder(R.drawable.icon_main)
-                                error(R.drawable.icon_main)
+                                error(R.drawable.icon_no_image)
                             }
 
                             val titleTextView = findViewById<AppCompatTextView>(R.id.map_item_title)
