@@ -36,6 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+
 class ProfileModifyFragment : Fragment() {
     private lateinit var refreshNickText: AppCompatEditText
     private lateinit var loadingDialog: LoadingDialog
@@ -48,7 +49,6 @@ class ProfileModifyFragment : Fragment() {
         }
     }
     private val profileModifyViewModel: ProfileModifyViewModel by viewModels()
-
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -148,7 +148,7 @@ class ProfileModifyFragment : Fragment() {
 
         val firestore = FirebaseFirestore.getInstance()
         val userId = userEmail()
-        Log.d("ProfileModify",userId + user)
+        Log.d("ProfileModify", userId + user)
         val userRef = firestore.collection("users").document(userId)
 
         userRef.get().addOnCompleteListener { task ->
@@ -263,11 +263,8 @@ class ProfileModifyFragment : Fragment() {
                 if (document != null && document.exists()) {
                     val profileImageUrl = document.getString("profileImageUrl")
                     if (!profileImageUrl.isNullOrEmpty()) {
-
                         val modifyImageView = view?.findViewById<ImageView>(R.id.profile_edit_user_imageview)
-
                         Log.d("MYpageurl", profileImageUrl)
-
                         modifyImageView?.load(profileImageUrl) {
                             transformations(CircleCropTransformation())
                         }
@@ -282,7 +279,6 @@ class ProfileModifyFragment : Fragment() {
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
         val kakaouser = App.kakaoUser?.email
-
 
         if (user != null || kakaouser != null) {
             // 사용자가 로그인한 상태이면 로그아웃 처리
@@ -323,7 +319,6 @@ class ProfileModifyFragment : Fragment() {
 
         if( userId != null ) {
             val userDocumentRef = firestore.collection("users").document(userId)
-
             userDocumentRef.delete().addOnSuccessListener {
                 Log.d("ProFileModify", "Success")
             }
@@ -336,25 +331,20 @@ class ProfileModifyFragment : Fragment() {
     private fun updateUIAfterLogout() {
         val emailText = view?.findViewById<TextView>(R.id.mypage_signin_up_inpo)
         val nicknameText = view?.findViewById<TextView>(R.id.mypage_signin_up_text)
-
         nicknameText?.text = getString(R.string.mypage_signin_up)
         emailText?.text = getString(R.string.mypage_signin_up_inpor)
-
         loading()
     }
 
     private fun loading() {
-
         loadingDialog.run {
             setVisible()
             setText("로딩중 ... ")
         }
-
         CoroutineScope(Dispatchers.Main).launch {
             delay(1500)
             loadingDialog.setInvisible()
         }
-
     }
 
     private fun modifyToFragment(fragment: Fragment) {

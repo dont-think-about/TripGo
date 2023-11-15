@@ -43,11 +43,9 @@ class FavoriteFragment : Fragment() {
     }
 
     companion object {
-
         const val TAG = "Favorite_FRAGMENT"
         fun newInstance() = FavoriteFragment()
-
-    }
+        }
 
     private fun favoritedata(view: View) {
         val auth = FirebaseAuth.getInstance()

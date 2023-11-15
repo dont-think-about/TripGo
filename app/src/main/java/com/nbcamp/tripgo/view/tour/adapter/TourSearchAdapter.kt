@@ -7,13 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.nbcamp.tripgo.R
-import com.nbcamp.tripgo.data.model.keywords.Items
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.databinding.TourRecyclerviewItemBinding
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Locale
-
 class TourSearchAdapter(
     private val onClickItem: (KeywordItem) -> Unit // 아이템 클릭시 실행할 콜백 함수
 ) : ListAdapter<KeywordItem, TourSearchAdapter.TourViewHolder>(TourViewHolder.TourDiffCallback) {

@@ -69,8 +69,7 @@ class TourActivity : AppCompatActivity() {
         object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE
-                    && !binding.tourRecyclerview.canScrollVertically(1)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && !binding.tourRecyclerview.canScrollVertically(1)
                 ) {
                     if (isLastPage) {
                         toast("마지막 페이지 입니다.")
@@ -152,7 +151,6 @@ class TourActivity : AppCompatActivity() {
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }  // 위치 요청 설정
-
         val builder = LocationSettingsRequest.Builder()  // 위치 설정 요청 빌더 생성
             .addLocationRequest(locationRequest)
 

@@ -23,8 +23,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.floor
@@ -34,6 +32,8 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
 import kotlin.random.Random
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val homeRepository: HomeRepository

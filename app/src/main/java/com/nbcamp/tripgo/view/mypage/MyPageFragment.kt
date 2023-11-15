@@ -28,7 +28,6 @@ import com.nbcamp.tripgo.view.mypage.favorite.MypageAppInpo
 import com.nbcamp.tripgo.view.review.mypage.ReviewFragment
 import com.nbcamp.tripgo.view.signup.RulesFragment
 
-
 class MyPageFragment : Fragment() {
 
     private val viewModel: MyPageViewModel by viewModels()
@@ -36,7 +35,6 @@ class MyPageFragment : Fragment() {
     private lateinit var emailText: TextView
     private lateinit var nicknameText: TextView
     private lateinit var loadingDialog: LoadingDialog
-
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -55,14 +53,14 @@ class MyPageFragment : Fragment() {
         val openSourceLicenseTextView = view.findViewById<TextView>(R.id.mypage_opensource_textview)
         val appInpo = view.findViewById<TextView>(R.id.mypage_appinpo_textview)
         reviewLayout.setOnClickListener {
-            if(App.kakaoUser == null && App.firebaseUser == null) {
+            if( App.kakaoUser == null && App.firebaseUser == null) {
                 requireActivity().toast("로그인을 해주세요")
                 return@setOnClickListener
             }
             navigateToFragment(ReviewFragment())
         }
         zzimLayout.setOnClickListener {
-            if(App.kakaoUser == null && App.firebaseUser == null) {
+            if( App.kakaoUser == null && App.firebaseUser == null) {
                 requireActivity().toast("로그인을 해주세요")
                 return@setOnClickListener
             }
@@ -131,7 +129,6 @@ class MyPageFragment : Fragment() {
         }
     }
 
-
     private fun checkAndDismissLoadingDialog() {
         // email과 nickname이 모두 채워졌는지 확인
         if (emailText.text.isNotBlank() && nicknameText.text.isNotBlank()) {
@@ -170,7 +167,6 @@ class MyPageFragment : Fragment() {
             }
         }
     }
-
 
     private fun loading() {
         loadingDialog.run {

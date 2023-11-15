@@ -48,4 +48,4 @@ data class NearbyItem(
     val tel: String,
     @SerializedName("title")
     val title: String
-): Parcelable
+) : Parcelable

@@ -67,7 +67,6 @@ class SearchViewModel(
             // 이미 필터링된 글자를 한 번 더 필터링
             val filteredPlaceName = placeName
                 .replace("특별자치시", "")  // "특별자치시" 제거
-
             val formattedPlaceName =
                 if (filteredPlaceName.endsWith("시") || filteredPlaceName.endsWith("군")) {
                     filteredPlaceName.substring(0, filteredPlaceName.length - 1)

@@ -1,7 +1,6 @@
 package com.nbcamp.tripgo.data.repository
 
 import com.nbcamp.tripgo.data.model.festivals.FestivalItem
-import com.nbcamp.tripgo.data.model.festivals.FestivalResponseModel
 import com.nbcamp.tripgo.data.model.travelerssegmentation.SegmentationItem
 import com.nbcamp.tripgo.data.repository.mapper.HomeMapper.toKeywordSearchEntity
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity

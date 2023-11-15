@@ -85,15 +85,15 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchViewModel.pullData.observe(this) { pullDatalist ->
-            if(pullDatalist.isEmpty()) {
+            if (pullDatalist.isEmpty()) {
                 loadingDialog.setVisible()
                 Handler(Looper.getMainLooper()).postDelayed({
-                    if(loadingDialog.isShowing) {
+                    if (loadingDialog.isShowing) {
                         toast("검색 결과가 없습니다.")
                         loadingDialog.setInvisible()
                         return@postDelayed
                     }
-                },5000)
+                }, 5000)
             } else {
                 loadingDialog.setInvisible()
             }
@@ -117,14 +117,13 @@ class SearchActivity : AppCompatActivity() {
                             it.latitude.toDouble() == label.position.latitude && it.longitude.toDouble() == label.position.longitude
                         }
                         if (clickedItem != null) {
-                            // 마커 클릭 시 처리
-                            // 바텀 시트 열기
+                            // Handle marker click
                             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
                             val message = "${clickedItem.title} 클릭되었습니다."
                             Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
 
-                            // 바텀 시트 내의 뷰들을 업데이트
+                            // Update views inside the bottom sheet
                             val mapImage = findViewById<ImageView>(R.id.map_item_image)
                             val imageUrl = clickedItem.imageUrl
                             mapImage.load(imageUrl) {
@@ -151,7 +150,7 @@ class SearchActivity : AppCompatActivity() {
                                 findViewById<AppCompatTextView>(R.id.map_item_address)
                             addressTextView.text = clickedItem.address
 
-                            // 나머지 처리 (예: 버튼 이벤트 처리 등)
+                            // Other processing (e.g., button click events, etc.)
                         } else {
                             val message = "클릭한 라벨에 대한 정보를 찾을 수 없음"
                             Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
@@ -175,11 +174,11 @@ class SearchActivity : AppCompatActivity() {
                         val markerLatLng = LatLng.from(latitude, longitude)
 
                         val options = LabelOptions.from(markerLatLng)
-
                         options.setStyles(
                             LabelStyle.from(R.drawable.icon_end_marker).setZoomLevel(10)
                         )
-                        // 텍스트 레이블 스타일 설정 (모든 레벨에서 표시)
+
+                        // Text label style configuration (display at all levels)
                         val labelStyles = LabelStyles.from(
                             LabelStyle.from(R.drawable.icon_end_marker)
                                 .setTextStyles(32, Color.BLACK, 1, Color.GRAY)

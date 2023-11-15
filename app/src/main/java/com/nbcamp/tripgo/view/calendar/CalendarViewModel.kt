@@ -8,15 +8,15 @@ import com.google.firebase.auth.FirebaseUser
 import com.kakao.sdk.user.model.Account
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
-import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarLogInUiState
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
 import com.nbcamp.tripgo.view.calendar.uistate.RunDialogUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import java.util.Calendar
-import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.Locale
+
 
 class CalendarViewModel(
     private val calendarRepository: CalendarRepository
@@ -254,6 +254,7 @@ class CalendarViewModel(
         // 유효하지 않으면 리뷰를 작성 못하게 함
         _runDialogState.call()
     }
+
 
     // documentId 값을 통해 리뷰 삭제
     fun deleteMySchedule(model: CalendarEntity) {
