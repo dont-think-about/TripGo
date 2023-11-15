@@ -77,8 +77,7 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
                             e.printStackTrace()
                         }
                 }
-                else{
-
+                else {
                 }
             }
         }

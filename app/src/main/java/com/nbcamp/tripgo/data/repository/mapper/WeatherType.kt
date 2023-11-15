@@ -10,4 +10,3 @@ enum class WeatherType(type: String) {
     SNOW_FLYING("7"),
     UNDEFINED("-1")
 }
-

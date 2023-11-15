@@ -25,6 +25,7 @@ class SearchRepositoryImpl(
             val list = arrayListOf<KeywordSearchEntity>()
             response.body()?.let { keywordSearchResponseModel ->
                 val resultCode = keywordSearchResponseModel.response.header.resultCode
+                val totalCount = keywordSearchResponseModel.response.body.totalCount
                 val items = keywordSearchResponseModel.response.body.items.item
                 if (resultCode != "0000") {
                     return null
