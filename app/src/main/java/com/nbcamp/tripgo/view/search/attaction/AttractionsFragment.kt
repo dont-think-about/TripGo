@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
@@ -55,7 +56,7 @@ class AttractionsFragment : Fragment() {
                 )
             binding.attractionsSearchEdit.run {
                 setAdapter(autoCompleteAdapter)
-                setOnItemClickListener { _, _, _, _->
+                setOnItemClickListener { _, _, _, _ ->
                     searchText = binding.attractionsSearchEdit.text.toString()
                 }
             }
@@ -85,7 +86,22 @@ class AttractionsFragment : Fragment() {
                 requireActivity().toast("두 글자 이상을 입력하십시오.")
             }
         }
+        // 키보드 완료 버튼 클릭시
+        binding.attractionsSearchEdit.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                searchText = binding.attractionsSearchEdit.text.toString()
 
+                // 텍스트의 길이가 최소 두 글자 인지 확인
+                if (::searchText.isInitialized && searchText.length >= 2) {
+                    viewModel.fetchSearchResult(keyword = searchText)
+                    hideKeyboard() // 키보드 숨김
+                } else {
+                    requireActivity().toast("두 글자 이상을 입력하십시오.")
+                }
+                return@setOnEditorActionListener true
+            }
+            false
+        }
 
         // 'attractionsSearchCloseImage' 클릭 시 EditText 내용을 지웁니다.
         binding.attractionsSearchCloseImage.setOnClickListener {
