@@ -111,10 +111,18 @@ class WholeReviewFragment : Fragment() {
             reviewChipGender.text = getString(R.string.gender)
             reviewChipCompanion.text = getString(R.string.companion)
             reviewDetailNoticeTextView.isVisible = false
+            refreshFilterTag()
             reviewViewModel.setFilteredReview(mutableMapOf())
         }
 
         updateReviewsLayout.setOnRefreshListener {
+            reviewChipRegion.text = getString(R.string.region)
+            reviewChipAge.text = getString(R.string.age)
+            reviewChipGender.text = getString(R.string.gender)
+            reviewChipCompanion.text = getString(R.string.companion)
+            reviewDetailNoticeTextView.isVisible = false
+            refreshFilterTag()
+            reviewViewModel.setFilteredReview(mutableMapOf())
             reviewViewModel.getAllReviews()
         }
 
@@ -242,6 +250,13 @@ class WholeReviewFragment : Fragment() {
                 reviewChipCompanion.text = category
             }
         }
+    }
+
+    private fun refreshFilterTag() {
+        filterTags[getString(R.string.region)] = ""
+        filterTags[getString(R.string.gender)] = ""
+        filterTags[getString(R.string.age)] = ""
+        filterTags[getString(R.string.companion)] = ""
     }
 
     override fun onDestroy() {
