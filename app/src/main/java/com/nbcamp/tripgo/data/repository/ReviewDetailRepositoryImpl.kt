@@ -13,14 +13,14 @@ class ReviewDetailRepositoryImpl : ReviewDetailRepository {
         if (userInfo == null) {
             return null
         }
-
         val userDocuments = fireStore.collection("users")
+            .whereEqualTo("email", userInfo)
             .get()
             .await()
 
         userDocuments.documents.forEach { documents ->
             val model = documents.data?.toModelMap<UserModel>()
-            if (model?.nickname == userInfo) {
+            if (model?.email == userInfo) {
                 return UserStatus(
                     email = model.email,
                     nickname = model.nickname,

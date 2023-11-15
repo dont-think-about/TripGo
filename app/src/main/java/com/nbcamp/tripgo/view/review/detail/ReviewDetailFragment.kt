@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import coil.load
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentReviewDetailBinding
+import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.main.MainActivity
 import com.nbcamp.tripgo.view.main.MainViewModel
 import com.nbcamp.tripgo.view.reviewwriting.ReviewWritingModel
@@ -43,7 +44,7 @@ class ReviewDetailFragment : Fragment() {
             initViews(it)
         }
         reviewDetailViewModel.userStatus.observe(viewLifecycleOwner) { model ->
-            initUserReviewGrade(model)
+            initUser(model)
         }
     }
 
@@ -53,7 +54,7 @@ class ReviewDetailFragment : Fragment() {
         } else {
             reviewDetailUserImageView.load(model?.userImageUrl)
         }
-        reviewDetailUserName.text = model?.userNickName
+        reviewDetailUserName.text = model?.userImageUrl
         reviewDetailImageView.load(model?.reviewImageUrl)
         reviewDetailTitleTextView.text = model?.tourTitle
         reviewDetailAddressTextView.text =
@@ -61,7 +62,7 @@ class ReviewDetailFragment : Fragment() {
         reviewDetailFestivalDateTextView.text = model?.schedule
         reviewDetailDescriptionTextView.text = model?.reviewText
         reviewDetailRatingBar.rating = model?.rating ?: 0f
-        reviewDetailViewModel.getUserStatus(model?.userNickName)
+        reviewDetailViewModel.getUserStatus(if(App.kakaoUser == null) App.firebaseUser?.email else App.kakaoUser?.email)
 
         // 칩그룹 세팅
         "#${model?.generation}".also { generationChip.text = it }
@@ -91,10 +92,16 @@ class ReviewDetailFragment : Fragment() {
     }
 
     // 리뷰 갯수에 따라 뱃지 다르게 보여주기
-    private fun initUserReviewGrade(model: UserStatus?) = with(binding) {
+    private fun initUser(model: UserStatus?) = with(binding) {
         if (model == null) {
             return@with
         }
+        if (model.profileImage.isNullOrEmpty() || model.profileImage == "") {
+            reviewDetailUserImageView.load(R.drawable.icon_user)
+        } else {
+            reviewDetailUserImageView.load(model.profileImage)
+        }
+        reviewDetailUserName.text = model.nickname
         reviewDetailMedal.setOnClickListener {
             AlertDialog.Builder(requireActivity())
                 .setTitle(getString(R.string.badge_of_review_count))

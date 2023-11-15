@@ -21,6 +21,7 @@ import com.nbcamp.tripgo.databinding.ActivityMainBinding
 import com.nbcamp.tripgo.util.DetectNetwork
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.checkPermission
+import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.util.setFancyDialog
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.attraction.AttractionsActivity
@@ -37,6 +38,7 @@ import com.nbcamp.tripgo.view.tour.TourActivity
 import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
 
 class MainActivity : AppCompatActivity() {
+    private var backPressedTime: Long = 0
     private lateinit var binding: ActivityMainBinding
     private val sharedViewModel: MainViewModel by viewModels()
     private val calendarViewModel: CalendarViewModel by viewModels {
@@ -84,7 +86,12 @@ class MainActivity : AppCompatActivity() {
                 runFeedBackDialog()
                 return
             }
-            finish()
+            if (System.currentTimeMillis() > backPressedTime + 2000) {
+                backPressedTime = System.currentTimeMillis()
+                toast(getString(R.string.press_back_toast))
+            } else if (System.currentTimeMillis() <= backPressedTime + 2000) {
+                finish()
+            }
         }
     }
 
@@ -353,5 +360,10 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }.create()
             .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setUserState()
     }
 }
