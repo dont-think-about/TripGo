@@ -38,7 +38,7 @@ class ProfileModifyViewModel : ViewModel() {
                                 }
                             }
                         } else {
-                            println("fail: "+it.result)
+                            println("fail: " + it.result)
                             // 탈퇴 실패
                             _deleteStatus.postValue(UserDeleteStatus.Error("삭제 실패"))
                         }
@@ -46,7 +46,7 @@ class ProfileModifyViewModel : ViewModel() {
             } else {
                 // 카카오 회원 탈퇴
                 UserApiClient.instance.unlink { error ->
-                    if(error != null) {
+                    if (error != null) {
                         App.kakaoUser?.email?.let { email ->
                             viewModelScope.launch(Dispatchers.IO) {
                                 deleteUserInfo(email)
@@ -64,7 +64,6 @@ class ProfileModifyViewModel : ViewModel() {
     }
 
     private suspend fun deleteUserInfo(email: String) {
-        println("delete: $email")
         firebaseStore.runTransaction {
             firebaseStore.collection("users").document(email)
                 .delete()
@@ -88,5 +87,29 @@ class ProfileModifyViewModel : ViewModel() {
 
         _deleteStatus.postValue(UserDeleteStatus.Success("모든 정보 삭제 완료"))
     }
-}
 
+    fun updateReviewNickName(userId: String, selectedImageUri: String, editNickname: String) {
+        runCatching {
+            val fireStore = FirebaseFirestore.getInstance()
+            viewModelScope.launch {
+                val reviewList = fireStore.collection("reviews")
+                    .document(userId)
+                    .collection("review")
+                    .get()
+                    .await()
+
+                reviewList.documents.forEach {
+                    fireStore.runTransaction { transaction ->
+                        transaction.update(
+                            it.reference,
+                            mapOf(
+                                "userNickName" to editNickname,
+                                "userImageUrl" to selectedImageUri
+                            )
+                        )
+                    }.await()
+                }
+            }
+        }
+    }
+}

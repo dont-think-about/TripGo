@@ -14,12 +14,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
@@ -103,7 +101,8 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-         observeUserData()
+        viewModel.fetchDataFromFirebase()
+        observeUserData()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
