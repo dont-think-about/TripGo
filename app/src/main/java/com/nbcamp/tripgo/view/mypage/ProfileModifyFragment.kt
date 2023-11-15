@@ -36,7 +36,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
 class ProfileModifyFragment : Fragment() {
     private lateinit var refreshNickText: AppCompatEditText
     private lateinit var loadingDialog: LoadingDialog
@@ -304,7 +303,6 @@ class ProfileModifyFragment : Fragment() {
                 updateUIAfterLogout()
                 // 로그아웃버튼클릭시 firestore 불러온정보 클리어
                 clearFirestoreUserData()
-
             }
         } else {
             // 사용자가 로그인하지 않은 상태이면 로그인 화면으로 이동
@@ -317,7 +315,7 @@ class ProfileModifyFragment : Fragment() {
         val firestore = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser?.email
 
-        if( userId != null ) {
+        if (userId != null) {
             val userDocumentRef = firestore.collection("users").document(userId)
             userDocumentRef.delete().addOnSuccessListener {
                 Log.d("ProFileModify", "Success")

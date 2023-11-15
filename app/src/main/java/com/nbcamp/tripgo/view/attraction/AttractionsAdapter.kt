@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.area.AreaItem
-import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.databinding.AttractionRecyclerviewItemBinding
 
 class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
@@ -58,7 +57,8 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
                     Math.sin(dLon / 2) * Math.sin(dLon / 2)
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
         return R * c
-    } // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
+    }
+    // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 
     fun attractionDistance(recyclerView: RecyclerView) {
         val sortedList = currentList.sortedBy { item ->

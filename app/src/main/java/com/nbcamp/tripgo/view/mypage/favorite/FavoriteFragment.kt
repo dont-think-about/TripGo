@@ -25,7 +25,7 @@ class FavoriteFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_favorite, container, false)
         favoritedata(view)
 
-        val callback = object  : OnBackPressedCallback(true) {
+        val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 parentFragmentManager.popBackStack()
             }
@@ -45,7 +45,7 @@ class FavoriteFragment : Fragment() {
     companion object {
         const val TAG = "Favorite_FRAGMENT"
         fun newInstance() = FavoriteFragment()
-        }
+    }
 
     private fun favoritedata(view: View) {
         val auth = FirebaseAuth.getInstance()

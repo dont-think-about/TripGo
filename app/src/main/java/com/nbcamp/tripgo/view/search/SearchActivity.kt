@@ -191,7 +191,8 @@ class SearchActivity : AppCompatActivity() {
                         val label: Label = layer!!.addLabel(options)
                     }
                 }
-            })
+            }
+            )
         }
     }
 }

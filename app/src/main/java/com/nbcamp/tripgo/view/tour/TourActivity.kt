@@ -150,12 +150,12 @@ class TourActivity : AppCompatActivity() {
 
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }  // 위치 요청 설정
-        val builder = LocationSettingsRequest.Builder()  // 위치 설정 요청 빌더 생성
+        } // 위치 요청 설정
+        val builder = LocationSettingsRequest.Builder() // 위치 설정 요청 빌더 생성
             .addLocationRequest(locationRequest)
 
         val settingsClient: SettingsClient =
-            LocationServices.getSettingsClient(this)  // 위치 설정 client 생성
+            LocationServices.getSettingsClient(this) // 위치 설정 client 생성
 
         val locationSettingsResponseTask =
             settingsClient.checkLocationSettings(builder.build()) // 위치 설정 체크
@@ -350,8 +350,7 @@ class TourActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val service = RetrofitModule.createTourApiService()
             val currentDate = Calendar.getInstance()
-            val startDate = "${currentDate.get(Calendar.YEAR)}" +
-                    "${String.format("%02d", currentDate.get(Calendar.MONTH) + 1)}01"
+            val startDate = "${currentDate.get(Calendar.YEAR)}" + "${String.format("%02d", currentDate.get(Calendar.MONTH) + 1)}01"
             try {
                 val response = service.getFestivalInThisMonthByPage(
                     startDate = startDate,

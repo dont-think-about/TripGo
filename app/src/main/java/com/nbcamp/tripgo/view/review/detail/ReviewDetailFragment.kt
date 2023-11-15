@@ -63,9 +63,11 @@ class ReviewDetailFragment : Fragment() {
         reviewDetailDescriptionTextView.text = model?.reviewText
         reviewDetailRatingBar.rating = model?.rating ?: 0f
         reviewDetailViewModel.getUserStatus(
-            if ( App.kakaoUser == null)
+            if (App.kakaoUser == null)
                 App.firebaseUser?.email
-            else App.kakaoUser?.email)
+            else
+                App.kakaoUser?.email
+        )
 
         // 칩그룹 세팅
         "#${model?.generation}".also { generationChip.text = it }

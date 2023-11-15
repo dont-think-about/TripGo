@@ -53,14 +53,14 @@ class MyPageFragment : Fragment() {
         val openSourceLicenseTextView = view.findViewById<TextView>(R.id.mypage_opensource_textview)
         val appInpo = view.findViewById<TextView>(R.id.mypage_appinpo_textview)
         reviewLayout.setOnClickListener {
-            if( App.kakaoUser == null && App.firebaseUser == null) {
+            if (App.kakaoUser == null && App.firebaseUser == null) {
                 requireActivity().toast("로그인을 해주세요")
                 return@setOnClickListener
             }
             navigateToFragment(ReviewFragment())
         }
         zzimLayout.setOnClickListener {
-            if( App.kakaoUser == null && App.firebaseUser == null) {
+            if (App.kakaoUser == null && App.firebaseUser == null) {
                 requireActivity().toast("로그인을 해주세요")
                 return@setOnClickListener
             }
@@ -99,7 +99,7 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if(App.kakaoUser != null || App.firebaseUser != null)
+        if (App.kakaoUser != null || App.firebaseUser != null)
             viewModel.fetchDataFromFirebase()
         observeUserData()
     }
@@ -153,7 +153,7 @@ class MyPageFragment : Fragment() {
                         val imageView = view?.findViewById<AppCompatImageView>(R.id.mypage_usericon)
                         imageView?.load(profileImageUrl) {
                             transformations(CircleCropTransformation())
-                            listener(onSuccess = { _, _ ->
+                            listener( onSuccess = { _, _ ->
                                 // 이미지 로드가 성공한 경우, 로딩 화면을 숨깁니다.
                                 checkAndDismissLoadingDialog()
                             },

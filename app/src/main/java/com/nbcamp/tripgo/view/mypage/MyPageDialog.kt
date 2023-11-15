@@ -86,7 +86,7 @@ class MyPageDialog(private val context: Context) {
             }
 
         val editbutton = dialogView.findViewById<Button>(R.id.mypage_dialog_edit_userinpo_button)
-        editbutton.setOnClickListener { userinfo(fragmentManager)  }
+        editbutton.setOnClickListener { userinfo(fragmentManager) }
     }
 
     private fun userinfo(fragmentManager: FragmentManager) {
@@ -113,7 +113,7 @@ class MyPageDialog(private val context: Context) {
             reviewCount <= 10 -> Triple(10 - reviewCount, "실버", 10)
             reviewCount <= 20 -> Triple(20 - reviewCount, "골드", 20)
             else -> Triple(0, "다이아몬드", 20)
-       }
+        }
     }
 
     private fun getUserDocumentReference(
