@@ -354,4 +354,9 @@ class MainActivity : AppCompatActivity() {
             }.create()
             .show()
     }
+
+    override fun onResume() {
+        super.onResume()
+        setUserState()
+    }
 }
