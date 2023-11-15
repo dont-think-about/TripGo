@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
             }
             if (System.currentTimeMillis() > backPressedTime + 2000) {
                 backPressedTime = System.currentTimeMillis()
-                toast("\'뒤로\' 버튼을 한번 더 누르면 종료됩니다.")
+                toast(getString(R.string.press_back_toast))
             } else if (System.currentTimeMillis() <= backPressedTime + 2000) {
                 finish()
             }
