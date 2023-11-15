@@ -13,10 +13,9 @@ class HomeViewModelFactory : ViewModelProvider.Factory {
                 RetrofitModule.createTourApiService(),
                 RetrofitModule.createWeatherApiService()
             )
-            HomeViewModel(repository) as? T
-                ?: throw IllegalArgumentException("Unknown ViewModel class")
+            return HomeViewModel(repository) as T
         } else {
-            throw IllegalArgumentException("Unknown ViewModel class")
+            throw IllegalArgumentException()
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.nbcamp.tripgo.data.repository.mapper
 
-enum class WeatherType(val type: String) {
+enum class WeatherType(type: String) {
     SUNNY("0"),
     RAIN("1"),
     RAIN_OR_SNOW("2"),
