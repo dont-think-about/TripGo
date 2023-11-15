@@ -104,8 +104,7 @@ class SearchActivity : AppCompatActivity() {
             val centerLongitude = totalLongitude / pullDatalist.size
 
             val mapView: MapView = findViewById(R.id.map_view)
-            mapView.start(
-                object : MapLifeCycleCallback() {
+            mapView.start(object : MapLifeCycleCallback() {
                 override fun onMapDestroy() {
                 }
 
@@ -114,87 +113,80 @@ class SearchActivity : AppCompatActivity() {
             },
 
                 object : KakaoMapReadyCallback() {
-                override fun onMapReady(kakaoMap: KakaoMap) {
-                    kakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
-                        val clickedItem = pullDatalist.find {
-                            it.latitude.toDouble() == label.position.latitude && it.longitude.toDouble() == label.position.longitude
-                        }
-                        if (clickedItem != null) {
-                            // Handle marker click
-                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    override fun onMapReady(kakaoMap: KakaoMap) {
+                        kakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
+                            val clickedItem = pullDatalist.find {
+                                it.latitude.toDouble() == label.position.latitude && it.longitude.toDouble() == label.position.longitude
+                                }
+                            if (clickedItem != null) {
+                                // Handle marker click
+                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-                            val message = "${clickedItem.title} 클릭되었습니다."
-                            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                                val message = "${clickedItem.title} 클릭되었습니다."
+                                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
 
-                            // Update views inside the bottom sheet
-                            val mapImage = findViewById<ImageView>(R.id.map_item_image)
-                            val imageUrl = clickedItem.imageUrl
-                            mapImage.load(imageUrl) {
-                                placeholder(R.drawable.icon_main)
-                                error(R.drawable.icon_no_image)
-                            }
+                                // Update views inside the bottom sheet
+                                val mapImage = findViewById<ImageView>(R.id.map_item_image)
+                                val imageUrl = clickedItem.imageUrl
+                                mapImage.load(imageUrl) {
+                                    placeholder(R.drawable.icon_main)
+                                    error(R.drawable.icon_no_image)
+                                }
 
-                            val titleTextView = findViewById<AppCompatTextView>(R.id.map_item_title)
-                            titleTextView.text = clickedItem.title
+                                val titleTextView = findViewById<AppCompatTextView>(R.id.map_item_title)
+                                titleTextView.text = clickedItem.title
 
-                            val detailMoveButton = findViewById<Button>(R.id.move_to_detail_button)
-                            detailMoveButton.setOnClickListener {
-                                startActivity(
-                                    Intent(
-                                        this@SearchActivity,
-                                        TourDetailActivity::class.java
-                                    ).apply {
+                                val detailMoveButton = findViewById<Button>(R.id.move_to_detail_button)
+                                detailMoveButton.setOnClickListener {
+                                    startActivity(Intent(
+                                        this@SearchActivity, TourDetailActivity::class.java
+                                        ).apply {
                                         putExtra("contentId", clickedItem.contentId)
-                                    }
-                                )
+                                        }
+                                    )
+                                }
+
+                                val addressTextView = findViewById<AppCompatTextView>(R.id.map_item_address)
+                                addressTextView.text = clickedItem.address
+                                // Other processing (e.g., button click events, etc.)
+                            } else {
+                                val message = "클릭한 라벨에 대한 정보를 찾을 수 없음"
+                                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                                }
                             }
 
-                            val addressTextView =
-                                findViewById<AppCompatTextView>(R.id.map_item_address)
-                            addressTextView.text = clickedItem.address
-
-                            // Other processing (e.g., button click events, etc.)
-                        } else {
-                            val message = "클릭한 라벨에 대한 정보를 찾을 수 없음"
-                            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                        val position = LatLng.from(
+                            centerLatitude, centerLongitude
+                        )
+                        val cameraUpdate = CameraUpdateFactory.newCenterPosition(position)
+                        val zoomLevel = CameraUpdateFactory.zoomTo(10)
+                        kakaoMap.run {
+                            moveCamera(zoomLevel)
+                            moveCamera(cameraUpdate)
                         }
-                    }
 
-                    val position = LatLng.from(
-                        centerLatitude,
-                        centerLongitude
-                    )
-                    val cameraUpdate = CameraUpdateFactory.newCenterPosition(position)
-                    val zoomLevel = CameraUpdateFactory.zoomTo(10)
-                    kakaoMap.run {
-                        moveCamera(zoomLevel)
-                        moveCamera(cameraUpdate)
-                    }
+                        for ((idx, entity) in pullDatalist.withIndex()) {
+                            val latitude = entity.latitude.toDouble()
+                            val longitude = entity.longitude.toDouble()
+                            val markerLatLng = LatLng.from(latitude, longitude)
 
-                    for ((idx, entity) in pullDatalist.withIndex()) {
-                        val latitude = entity.latitude.toDouble()
-                        val longitude = entity.longitude.toDouble()
-                        val markerLatLng = LatLng.from(latitude, longitude)
+                            val options = LabelOptions.from(markerLatLng)
+                            options.setStyles(
+                                LabelStyle.from(R.drawable.icon_end_marker).setZoomLevel(10)
+                            )
 
-                        val options = LabelOptions.from(markerLatLng)
-                        options.setStyles(
-                            LabelStyle.from(R.drawable.icon_end_marker).setZoomLevel(10)
-                        )
-
-                        // Text label style configuration (display at all levels)
-                        val labelStyles = LabelStyles.from(
-                            LabelStyle.from(R.drawable.icon_end_marker)
-                                .setTextStyles(32, Color.BLACK, 1, Color.GRAY)
-                        )
-
-                        options.setStyles(labelStyles)
-                        options.setTexts(entity.title)
-
-                        val layer = kakaoMap.labelManager?.layer
-                        val label: Label = layer!!.addLabel(options)
+                            // Text label style configuration (display at all levels)
+                            val labelStyles = LabelStyles.from(
+                                LabelStyle.from(R.drawable.icon_end_marker).setTextStyles(32, Color.BLACK, 1, Color.GRAY)
+                            )
+                            options.setStyles(labelStyles)
+                            options.setTexts(entity.title)
+                            val layer = kakaoMap.labelManager?.layer
+                            val label: Label = layer!!.addLabel(options)
+                        }
                     }
                 }
-            })
+            )
         }
     }
 }
