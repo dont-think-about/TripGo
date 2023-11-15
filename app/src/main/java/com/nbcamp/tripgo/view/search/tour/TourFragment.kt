@@ -56,7 +56,7 @@ class TourFragment : Fragment() {
                 )
             binding.tourSearchEdit.run {
                 setAdapter(autoCompleteAdapter)
-                setOnItemClickListener { _, _, _, _->
+                setOnItemClickListener { _, _, _, _ ->
                     searchText = binding.tourSearchEdit.text.toString()
                 }
             }

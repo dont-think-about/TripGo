@@ -29,7 +29,8 @@
             android:background="@android:color/transparent"
             android:completionThreshold="1"
             android:hint="지역 검색"
-            android:inputType="text"
+            android:imeOptions="actionDone"
+            android:inputType="textCapSentences|textAutoCorrect"
             android:textSize="15sp" />
 
         <ImageView

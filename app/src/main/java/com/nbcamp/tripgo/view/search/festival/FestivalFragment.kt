@@ -23,8 +23,6 @@ import com.google.gson.reflect.TypeToken
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentSearchFestivalBinding
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
-import com.nbcamp.tripgo.view.search.Festival.FestivalViewModel
-import com.nbcamp.tripgo.view.search.Festival.FestivalViewModelFactory
 import com.nbcamp.tripgo.view.search.SearchKeywordUiState
 import com.nbcamp.tripgo.view.search.SearchViewModel
 import java.util.Calendar

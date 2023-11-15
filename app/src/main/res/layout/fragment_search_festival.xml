@@ -28,10 +28,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
+            android:completionThreshold="1"
             android:hint="지역 검색"
-            android:inputType="text"
-            android:textSize="15sp"
-            android:completionThreshold="1"/>
+            android:imeOptions="actionDone"
+            android:inputType="textCapSentences|textAutoCorrect"
+            android:textSize="15sp" />
 
         <ImageView
             android:id="@+id/festival_search_close_image"
