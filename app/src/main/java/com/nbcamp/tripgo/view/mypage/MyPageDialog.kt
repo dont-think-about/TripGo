@@ -22,7 +22,7 @@ class MyPageDialog(private val context: Context) {
 
     private var dialog: AlertDialog? = null
 
-    fun show(fragmentManager: FragmentManager, dialogTag: String) {
+    fun show(fragmentManager: FragmentManager) {
         val builder = AlertDialog.Builder(context)
         val inflater = LayoutInflater.from(context)
         val dialogView = inflater.inflate(R.layout.dialog_mypage, null)
@@ -47,7 +47,7 @@ class MyPageDialog(private val context: Context) {
 
         if (!userId.isNullOrBlank()) {
             getReviewCount(userId) { reviewCount ->
-                val (remainCount, grade, maxProgress) = calculateGradeAndProgress(reviewCount)
+                val (reviewCount, grade, maxProgress) = calculateGradeAndProgress(reviewCount)
                 countText.text = "$reviewCount 개"
                 mygrade.text = "내 등급 ($grade)"
                 progressBar.max = maxProgress
@@ -102,7 +102,7 @@ class MyPageDialog(private val context: Context) {
             transaction.commit()
             dismissDialog()
         } else {
-            Toast.makeText(context, "프로필 데이터가 없습니다.\n프로필을 먼저 설정해주세요.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.profile_data_not_found, Toast.LENGTH_SHORT).show()
             dismissDialog()
         }
     }
@@ -113,7 +113,7 @@ class MyPageDialog(private val context: Context) {
             reviewCount <= 10 -> Triple(10 - reviewCount, "실버", 10)
             reviewCount <= 20 -> Triple(20 - reviewCount, "골드", 20)
             else -> Triple(0, "다이아몬드", 20)
-        }
+       }
     }
 
     private fun getUserDocumentReference(

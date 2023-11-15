@@ -137,7 +137,7 @@ class MainViewModel : ViewModel() {
         _eventSetUser.value = SetUserEvent.Loading("회원 정보 로딩 증..")
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
-                UserApiClient.instance.me { user, error ->
+                UserApiClient.instance.me { user, _ ->
                     user?.let {
                         _eventSetUser.postValue(
                             SetUserEvent.Success(

@@ -62,8 +62,6 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
                 val collectionPath = favoriteItem.collectionPath
 
                 if (collectionPath != null) {
-                    val userEmail = findUserEmail()?.id
-
                     val deletePath = firestore.document(collectionPath)
                     deletePath.delete()
                         .addOnSuccessListener {
@@ -78,6 +76,9 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
                         .addOnFailureListener { e ->
                             e.printStackTrace()
                         }
+                }
+                else{
+
                 }
             }
         }

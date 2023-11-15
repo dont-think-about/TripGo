@@ -104,14 +104,13 @@ class SearchActivity : AppCompatActivity() {
             val centerLongitude = totalLongitude / pullDatalist.size
 
             val mapView: MapView = findViewById(R.id.map_view)
-            mapView.start(object : MapLifeCycleCallback() {
-                override fun onMapDestroy() {
-                }
-
-                override fun onMapError(error: Exception) {
-                }
-            },
-
+            mapView.start(
+                object : MapLifeCycleCallback() {
+                    override fun onMapDestroy() {
+                        }
+                    override fun onMapError(error: Exception) {
+                        }
+                    },
                 object : KakaoMapReadyCallback() {
                     override fun onMapReady(kakaoMap: KakaoMap) {
                         kakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
@@ -138,13 +137,14 @@ class SearchActivity : AppCompatActivity() {
 
                                 val detailMoveButton = findViewById<Button>(R.id.move_to_detail_button)
                                 detailMoveButton.setOnClickListener {
-                                    startActivity(Intent(
-                                        this@SearchActivity, TourDetailActivity::class.java
-                                        ).apply {
-                                        putExtra("contentId", clickedItem.contentId)
-                                        }
-                                    )
-                                }
+                                    startActivity(
+                                        Intent(
+                                            this@SearchActivity, TourDetailActivity::class.java
+                                            ).apply {
+                                            putExtra("contentId", clickedItem.contentId)
+                                            }
+                                        )
+                                    }
 
                                 val addressTextView = findViewById<AppCompatTextView>(R.id.map_item_address)
                                 addressTextView.text = clickedItem.address

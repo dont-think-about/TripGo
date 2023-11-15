@@ -143,7 +143,6 @@ class ProfileModifyFragment : Fragment() {
         loadingDialog.setText("수정 중..")
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
-        val kakaoUser = App.kakaoUser
 
         val firestore = FirebaseFirestore.getInstance()
         val userId = userEmail()
@@ -238,7 +237,7 @@ class ProfileModifyFragment : Fragment() {
 
         val uploadTask = storageReference.putFile(imageUri!!)
 
-        uploadTask.addOnSuccessListener { taskSnapshot ->
+        uploadTask.addOnSuccessListener { _ ->
             storageReference.downloadUrl.addOnSuccessListener { uri ->
                 val imageUrl = uri.toString()
                 callback(imageUrl)
@@ -320,7 +319,7 @@ class ProfileModifyFragment : Fragment() {
             userDocumentRef.delete().addOnSuccessListener {
                 Log.d("ProFileModify", "Success")
             }
-                .addOnFailureListener { e ->
+                .addOnFailureListener { _ ->
                     Log.w("ProFileModify", "Fail")
                 }
         }

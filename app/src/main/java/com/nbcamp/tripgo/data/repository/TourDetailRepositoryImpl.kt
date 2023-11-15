@@ -44,24 +44,27 @@ class TourDetailRepositoryImpl(
         endDate: String,
         email: String?
     ) {
-        val plan = festivalItem?.toCalendarEntity(
-            startDate,
-            endDate,
-            detailInfo
-        ) ?: keywordItem?.toCalendarEntity(
-            startDate,
-            endDate,
-            detailInfo
-        ) ?: detailInfo.toCalendarEntity(
-            startDate,
-            endDate
-        )
+        val plan = festivalItem?.toCalendarEntity(startDate, endDate, detailInfo)
+            ?: keywordItem?.toCalendarEntity(startDate, endDate, detailInfo)
+            ?: detailInfo.toCalendarEntity(startDate, endDate)
 
-        if (email == null || plan == null) {
-            return
+        if (email != null && plan != null) {
+            fireStore.runTransaction { transaction ->
+                // 하위 문서를 위한 더미데이터
+                fireStore.collection("calendar")
+                    .document(userInfo)
+                    .set(mapOf("dummy" to ""))
+
+                val calendarScheduleReference =
+                    fireStore.collection("calendar")
+                        .document(email)
+                        .collection("plans")
+                        .document()
+                transaction.set(calendarScheduleReference, plan)
+            }.await()
         }
-
-        fireStore.runTransaction { transaction ->
+    // 재민 수정했는데 오류발생할수있음 !
+    fireStore.runTransaction { transaction ->
             // 하위 문서를 위한 더미데이터
             fireStore.collection("calendar")
                 .document(userInfo)
@@ -69,7 +72,7 @@ class TourDetailRepositoryImpl(
 
             val calendarScheduleReference =
                 fireStore.collection("calendar")
-                    .document(email)
+                    .document(email.toString())
                     .collection("plans")
                     .document()
             transaction.set(

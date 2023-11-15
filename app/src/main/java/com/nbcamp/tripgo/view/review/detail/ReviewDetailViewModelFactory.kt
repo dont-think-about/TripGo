@@ -9,9 +9,10 @@ class ReviewDetailViewModelFactory : ViewModelProvider.Factory {
         return if (modelClass.isAssignableFrom(ReviewDetailViewModel::class.java)) {
             val reviewDetailRepository = ReviewDetailRepositoryImpl()
 
-            return ReviewDetailViewModel(reviewDetailRepository) as T
+            ReviewDetailViewModel(reviewDetailRepository) as? T
         } else {
-            throw IllegalArgumentException()
-        }
+            throw IllegalArgumentException("Unknown ViewModel class: $modelClass")
+        } ?: throw IllegalArgumentException("Unknown ViewModel class: $modelClass")
     }
 }
+
