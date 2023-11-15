@@ -1,4 +1,4 @@
-package com.nbcamp.tripgo.view.search.Festival
+package com.nbcamp.tripgo.view.search.festival
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
