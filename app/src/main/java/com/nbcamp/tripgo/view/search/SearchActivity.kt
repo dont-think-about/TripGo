@@ -107,16 +107,16 @@ class SearchActivity : AppCompatActivity() {
             mapView.start(
                 object : MapLifeCycleCallback() {
                     override fun onMapDestroy() {
-                        }
+                    }
                     override fun onMapError(error: Exception) {
-                        }
-                    },
-                object : KakaoMapReadyCallback() {
+                    }
+                },
+                                object : KakaoMapReadyCallback() {
                     override fun onMapReady(kakaoMap: KakaoMap) {
                         kakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
                             val clickedItem = pullDatalist.find {
                                 it.latitude.toDouble() == label.position.latitude && it.longitude.toDouble() == label.position.longitude
-                                }
+                            }
                             if (clickedItem != null) {
                                 // Handle marker click
                                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -140,11 +140,11 @@ class SearchActivity : AppCompatActivity() {
                                     startActivity(
                                         Intent(
                                             this@SearchActivity, TourDetailActivity::class.java
-                                            ).apply {
+                                        ).apply {
                                             putExtra("contentId", clickedItem.contentId)
-                                            }
-                                        )
-                                    }
+                                        }
+                                    )
+                                }
 
                                 val addressTextView = findViewById<AppCompatTextView>(R.id.map_item_address)
                                 addressTextView.text = clickedItem.address
@@ -152,8 +152,8 @@ class SearchActivity : AppCompatActivity() {
                             } else {
                                 val message = "클릭한 라벨에 대한 정보를 찾을 수 없음"
                                 Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
-                                }
                             }
+                        }
 
                         val position = LatLng.from(
                             centerLatitude, centerLongitude
