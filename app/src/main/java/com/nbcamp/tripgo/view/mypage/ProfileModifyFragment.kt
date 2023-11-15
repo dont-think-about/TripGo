@@ -187,8 +187,15 @@ class ProfileModifyFragment : Fragment() {
 
     private fun userEmail(): String {
         val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
-        return user?.email ?: ""
+        val kakaoUser = App.kakaoUser != null
+
+        return if (kakaoUser) {
+            App.kakaoUser?.email ?: ""
+        } else {
+            // 일반 Firebase 로그인일 경우
+            val user = auth.currentUser
+            user?.email ?: ""
+        }
     }
 
     private fun checkIfNicknameExists(newNickname: String, callback: (Boolean) -> Unit) {
