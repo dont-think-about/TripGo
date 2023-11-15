@@ -19,8 +19,8 @@ android {
         minSdk 26
         compileSdk 33
         targetSdk 33
-        versionCode 7
-        versionName "1.0.5"
+        versionCode 8
+        versionName "1.0.6"
 
         buildConfigField "String", "KAKAO_API_KEY", properties['KAKAO_API_KEY']
         buildConfigField "String", "SK_OPEN_API_KEY", properties['SK_OPEN_API_KEY']
