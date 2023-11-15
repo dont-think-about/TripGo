@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/attractions_search_ok"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/icon_search_magnify" />
 
@@ -29,7 +29,8 @@
             android:background="@android:color/transparent"
             android:completionThreshold="1"
             android:hint="지역 검색"
-            android:inputType="text"
+            android:imeOptions="actionDone"
+            android:inputType="textCapSentences|textAutoCorrect"
             android:textSize="15sp" />
 
         <ImageView

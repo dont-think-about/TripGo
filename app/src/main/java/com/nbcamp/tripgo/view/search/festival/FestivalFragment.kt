@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -58,7 +59,7 @@ class FestivalFragment : Fragment() {
                 )
             binding.festivalSearchEdit.run {
                 setAdapter(autoCompleteAdapter)
-                setOnItemClickListener { _, _, _, _->
+                setOnItemClickListener { _, _, _, _ ->
                     searchText = binding.festivalSearchEdit.text.toString()
                 }
             }
@@ -89,6 +90,25 @@ class FestivalFragment : Fragment() {
             } else {
                 Toast.makeText(context, "날짜를 입력해주세요!", Toast.LENGTH_SHORT).show()
             }
+        }
+        binding.festivalSearchEdit.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                searchText = binding.festivalSearchEdit.text.toString()
+                if (::startDateString.isInitialized) {
+                    if (::searchText.isInitialized && searchText.length >= 2) {
+                        viewModel.fetchSearchResult(
+                            keyword = searchText,
+                            startDate = startDateString
+                        )
+                        hideKeyboard() // 키보드 숨김
+                    } else {
+                        Toast.makeText(context, "두 글자 이상의 검색어를 입력해주세요!", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(context, "날짜를 입력해주세요!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            false
         }
         binding.festivalSearchWeather.setOnClickListener {
             val cal = Calendar.getInstance()
