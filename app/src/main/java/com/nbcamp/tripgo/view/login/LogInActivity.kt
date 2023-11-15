@@ -161,6 +161,8 @@ class LogInActivity : AppCompatActivity() {
 
         startGoogleLoginForResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                loadingDialog.setVisible()
+                loadingDialog.setText("로그인 중..")
                 if (result.resultCode == RESULT_OK) {
                     result.data?.let { data ->
                         val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -189,6 +191,7 @@ class LogInActivity : AppCompatActivity() {
                                                             "기존 회원으로 로그인합니다.",
                                                             Toast.LENGTH_SHORT
                                                         ).show()
+                                                        loadingDialog.setInvisible()
                                                         finish()
                                                     } else {
                                                         // 존재하지 않는 경우, Firestore에 새로운 사용자 정보 추가
@@ -202,6 +205,7 @@ class LogInActivity : AppCompatActivity() {
                                                             .set(userDocument)
                                                             .addOnSuccessListener {
                                                                 // 새로운 사용자 정보가 Firestore에 추가된 경우
+                                                                loadingDialog.setInvisible()
                                                                 finish()
                                                             }
                                                             .addOnFailureListener { e ->
@@ -249,6 +253,8 @@ class LogInActivity : AppCompatActivity() {
                 Log.d("Kakao Login Failure", "Kakao login failed: $error")
                 setKakaoLoginButtonVisible(true)
             } else if (token != null) {
+                loadingDialog.setVisible()
+                loadingDialog.setText("로그인 중..")
                 UserApiClient.instance.me { user, userError ->
                     if (userError != null) {
                         Log.e("Error fetching user info", userError.toString())
@@ -267,6 +273,7 @@ class LogInActivity : AppCompatActivity() {
                                 .set(userDocument)
                                 .addOnSuccessListener {
                                     Log.d(ContentValues.TAG, "사용자 정보 Firestore에 저장 성공")
+                                    loadingDialog.setInvisible()
                                     val intent = Intent(this, MainActivity::class.java)
                                     onLoginSuccess(email, nickname.toString())
                                     startActivity(intent)
