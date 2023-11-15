@@ -153,14 +153,12 @@ class MyPageFragment : Fragment() {
                         val imageView = view?.findViewById<AppCompatImageView>(R.id.mypage_usericon)
                         imageView?.load(profileImageUrl) {
                             transformations(CircleCropTransformation())
-                            listener( onSuccess = { _, _ ->
+                            listener(onSuccess = { _, _ ->
                                 // 이미지 로드가 성공한 경우, 로딩 화면을 숨깁니다.
                                 checkAndDismissLoadingDialog()
-                            },
-                                onError = { _, error ->
-                                    Log.e("MyPageFragment", "Coil Image Loading Error: ${error.throwable}")
-                                }
-                            )
+                            }, onError = { _, error ->
+                                Log.e("MyPageFragment", "Coil Image Loading Error: ${error.throwable}")
+                            })
                         }
                     }
                 }

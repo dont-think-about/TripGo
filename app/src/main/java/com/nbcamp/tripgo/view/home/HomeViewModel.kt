@@ -35,7 +35,6 @@ import kotlin.math.sqrt
 import kotlin.math.tan
 import kotlin.random.Random
 
-
 class HomeViewModel(
     private val homeRepository: HomeRepository
 ) : ViewModel() {

@@ -20,7 +20,7 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         userLat = lat
         userLon = lon
         notifyDataSetChanged()
-    } // 위치 정보 변경 후 , RecyclerView 갱신
+    } // 위치 정보 변경 후, RecyclerView 갱신
 
     fun calculateDistance(item: AreaItem): Double {
         return calculateDistanceTo(
@@ -67,14 +67,14 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         submitList(sortedList.toList()) {
             recyclerView.scrollToPosition(0)
         }
-    } // Tour 아이템 거리순 으로 정렬
+    } // Tour 아이템 거리순으로 정렬
 
     fun attractionDate(recyclerView: RecyclerView) {
         val sortedByDate = currentList.sortedBy { it.createdtime }
         submitList(sortedByDate) {
             recyclerView.scrollToPosition(0)
         }
-    } // Tour 아이템 날짜순 으로 정렬
+    } // Tour 아이템 날짜순으로 정렬
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttractionViewHolder {
         val binding = AttractionRecyclerviewItemBinding.inflate(

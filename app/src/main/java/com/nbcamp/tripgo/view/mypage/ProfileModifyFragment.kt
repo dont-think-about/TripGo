@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 class ProfileModifyFragment : Fragment() {
     private lateinit var refreshNickText: AppCompatEditText
     private lateinit var loadingDialog: LoadingDialog
-    private var selectedImageUri: Uri? = null  // 이미지 URI를 저장할 변수
+    private var selectedImageUri: Uri? = null // 이미지 URI를 저장할 변수
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri != null) {
             selectedImageUri = uri
@@ -163,7 +163,7 @@ class ProfileModifyFragment : Fragment() {
                                 if (imageUrl.isNotEmpty()) {
                                     // 리뷰의 유저 정보도 함께 바꿈
                                     profileModifyViewModel.updateReviewNickName(userId, imageUrl, editNickname)
-                                    data["profileImage"] = imageUrl  // 이미지 URL을 데이터에 추가
+                                    data["profileImage"] = imageUrl // 이미지 URL을 데이터에 추가
                                     userRef.update(data as Map<String, Any>).addOnSuccessListener {
                                         showToast("프로필이 업데이트되었습니다.")
                                         navigateToMyPageFragment()

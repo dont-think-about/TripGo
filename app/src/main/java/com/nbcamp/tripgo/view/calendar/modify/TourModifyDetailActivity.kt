@@ -40,7 +40,6 @@ import com.nbcamp.tripgo.view.tour.detail.TourDetailViewModelFactory
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
 
-
 class TourModifyDetailActivity : AppCompatActivity() {
     private var startDate: CalendarDay? = null
     private var endDate: CalendarDay? = null

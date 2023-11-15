@@ -104,13 +104,16 @@ class SearchActivity : AppCompatActivity() {
             val centerLongitude = totalLongitude / pullDatalist.size
 
             val mapView: MapView = findViewById(R.id.map_view)
-            mapView.start(object : MapLifeCycleCallback() {
+            mapView.start(
+                object : MapLifeCycleCallback() {
                 override fun onMapDestroy() {
                 }
 
                 override fun onMapError(error: Exception) {
                 }
-            }, object : KakaoMapReadyCallback() {
+            },
+
+                object : KakaoMapReadyCallback() {
                 override fun onMapReady(kakaoMap: KakaoMap) {
                     kakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
                         val clickedItem = pullDatalist.find {
@@ -191,8 +194,7 @@ class SearchActivity : AppCompatActivity() {
                         val label: Label = layer!!.addLabel(options)
                     }
                 }
-            }
-            )
+            })
         }
     }
 }
