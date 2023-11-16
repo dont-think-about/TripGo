@@ -43,7 +43,7 @@ class MyPageDialog(private val context: Context) {
         val progressBar = dialogView.findViewById<ProgressBar>(R.id.mypage_dialog_progressbar)
         val mygrade = dialogView.findViewById<TextView>(R.id.mypage_dialog_usergrade_textview)
 
-        imageupdate()
+        imageUpdate()
 
         if (!userId.isNullOrBlank()) {
             getReviewCount(userId) { reviewCount ->
@@ -150,12 +150,13 @@ class MyPageDialog(private val context: Context) {
             }
     }
 
-    private fun imageupdate() {
+    private fun imageUpdate() {
         val firestore = FirebaseFirestore.getInstance()
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
         val userEmail = user?.email
-        val userRef = firestore.collection("users").document(userEmail.toString())
+        val kakaoUser = App.kakaoUser?.email
+        val userRef = firestore.collection("users").document(kakaoUser ?: userEmail.toString())
 
         userRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {

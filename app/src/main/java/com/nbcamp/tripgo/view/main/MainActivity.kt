@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             ++App.prefs.feedbackCount
-            if (App.prefs.feedbackCount % 4 == 0) {
+            if (App.prefs.feedbackCount % 10 == 0) {
                 runFeedBackDialog()
                 return
             }
