@@ -415,7 +415,6 @@ class TourDetailActivity : AppCompatActivity() {
             imageViewMainPhoto.setImageResource(R.drawable.icon_no_image)
         } else {
             imageViewMainPhoto.load(info.imageUrl)
-
         }
         tourMainTitle.text = info.title.ifEmpty { getString(R.string.no_detail_info) }
         "${info.mainAddress}\n${info.subAddress}".also {
