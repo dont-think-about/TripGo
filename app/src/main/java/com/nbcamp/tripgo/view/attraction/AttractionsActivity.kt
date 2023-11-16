@@ -7,31 +7,29 @@ import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.nbcamp.tripgo.R
-import com.nbcamp.tripgo.data.service.RetrofitModule
-import com.nbcamp.tripgo.databinding.ActivityAttractionsBinding
-import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
-import kotlinx.coroutines.launch
-import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.SettingsClient
+import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.area.AreaItem
-import com.nbcamp.tripgo.data.model.keywords.KeywordItem
+import com.nbcamp.tripgo.data.service.RetrofitModule
+import com.nbcamp.tripgo.databinding.ActivityAttractionsBinding
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
+import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import com.nbcamp.tripgo.view.tour.detail.TourDetailActivity
+import kotlinx.coroutines.launch
 
 class AttractionsActivity : AppCompatActivity() {
     companion object {
@@ -60,8 +58,8 @@ class AttractionsActivity : AppCompatActivity() {
         object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE
-                    && !binding.attractionRecyclerview.canScrollVertically(1)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE &&
+                    !binding.attractionRecyclerview.canScrollVertically(1)
                 ) {
                     if (isLastPage) {
                         toast("마지막 페이지 입니다.")

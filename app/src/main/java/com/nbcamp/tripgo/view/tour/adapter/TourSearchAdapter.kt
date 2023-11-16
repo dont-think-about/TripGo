@@ -7,12 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.nbcamp.tripgo.R
-import com.nbcamp.tripgo.data.model.keywords.Items
 import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.databinding.TourRecyclerviewItemBinding
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class TourSearchAdapter(
     private val onClickItem: (KeywordItem) -> Unit // 아이템 클릭시 실행할 콜백 함수
@@ -34,7 +30,7 @@ class TourSearchAdapter(
         userLat = lat
         userLon = lon
         notifyDataSetChanged()
-    } // 위치 정보 변경 후 , RecyclerView 갱신
+    } // 위치 정보 변경 후, RecyclerView 갱신
 
     private fun calculateDistanceTo(
         mapx: Double,
@@ -45,12 +41,10 @@ class TourSearchAdapter(
         val R = 6371.0
         val dLat = Math.toRadians(mapy - userLat)
         val dLon = Math.toRadians(mapx - userLon)
-        val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(mapy)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(mapy)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
         return R * c
-    } // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
+    } // 사용자 위치와 주어진 좌표 간의 거리를 계산하는 함수
 
     fun tourDistance(recyclerView: RecyclerView) {
         val sortedList = currentList.sortedBy { item ->
@@ -59,14 +53,14 @@ class TourSearchAdapter(
         submitList(sortedList.toList()) {
             recyclerView.scrollToPosition(0)
         }
-    } // Tour 아이템 거리순 으로 정렬
+    } // Tour 아이템 거리순으로 정렬
 
     fun tourDate(recyclerView: RecyclerView) {
         val sortedByDate = currentList.sortedBy { it.createdtime }
         submitList(sortedByDate) {
             recyclerView.scrollToPosition(0)
         }
-    } // Tour 아이템 날짜순 으로 정렬
+    } // Tour 아이템 날짜순으로 정렬
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TourViewHolder {
         val binding =

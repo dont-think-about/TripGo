@@ -21,7 +21,6 @@ class PreferenceUtils(context: Context) {
             countPrefs.edit().putInt(COUNT_PREFS_NAME, value).apply()
         }
 
-
     fun clear() {
         userPrefs.edit().clear().apply()
         countPrefs.edit().clear().apply()

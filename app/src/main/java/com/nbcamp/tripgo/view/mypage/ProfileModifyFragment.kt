@@ -30,16 +30,16 @@ import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.main.MainActivity
-import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class ProfileModifyFragment : Fragment() {
     private lateinit var refreshNickText: AppCompatEditText
     private lateinit var loadingDialog: LoadingDialog
-    private var selectedImageUri: Uri? = null  // 이미지 URI를 저장할 변수
+    private var selectedImageUri: Uri? = null // 이미지 URI를 저장할 변수
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri != null) {
             selectedImageUri = uri
@@ -48,7 +48,6 @@ class ProfileModifyFragment : Fragment() {
         }
     }
     private val profileModifyViewModel: ProfileModifyViewModel by viewModels()
-
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -144,11 +143,10 @@ class ProfileModifyFragment : Fragment() {
         loadingDialog.setText("수정 중..")
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
-        val kakaoUser = App.kakaoUser
 
         val firestore = FirebaseFirestore.getInstance()
         val userId = userEmail()
-        Log.d("ProfileModify",userId + user)
+        Log.d("ProfileModify", userId + user)
         val userRef = firestore.collection("users").document(userId)
 
         userRef.get().addOnCompleteListener { task ->
@@ -164,7 +162,7 @@ class ProfileModifyFragment : Fragment() {
                                 if (imageUrl.isNotEmpty()) {
                                     // 리뷰의 유저 정보도 함께 바꿈
                                     profileModifyViewModel.updateReviewNickName(userId, imageUrl, editNickname)
-                                    data["profileImage"] = imageUrl  // 이미지 URL을 데이터에 추가
+                                    data["profileImage"] = imageUrl // 이미지 URL을 데이터에 추가
                                     userRef.update(data as Map<String, Any>).addOnSuccessListener {
                                         showToast("프로필이 업데이트되었습니다.")
                                         navigateToMyPageFragment()
@@ -239,7 +237,7 @@ class ProfileModifyFragment : Fragment() {
 
         val uploadTask = storageReference.putFile(imageUri!!)
 
-        uploadTask.addOnSuccessListener { taskSnapshot ->
+        uploadTask.addOnSuccessListener { _ ->
             storageReference.downloadUrl.addOnSuccessListener { uri ->
                 val imageUrl = uri.toString()
                 callback(imageUrl)
@@ -263,11 +261,8 @@ class ProfileModifyFragment : Fragment() {
                 if (document != null && document.exists()) {
                     val profileImageUrl = document.getString("profileImageUrl")
                     if (!profileImageUrl.isNullOrEmpty()) {
-
                         val modifyImageView = view?.findViewById<ImageView>(R.id.profile_edit_user_imageview)
-
                         Log.d("MYpageurl", profileImageUrl)
-
                         modifyImageView?.load(profileImageUrl) {
                             transformations(CircleCropTransformation())
                         }
@@ -282,7 +277,6 @@ class ProfileModifyFragment : Fragment() {
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
         val kakaouser = App.kakaoUser?.email
-
 
         if (user != null || kakaouser != null) {
             // 사용자가 로그인한 상태이면 로그아웃 처리
@@ -308,7 +302,6 @@ class ProfileModifyFragment : Fragment() {
                 updateUIAfterLogout()
                 // 로그아웃버튼클릭시 firestore 불러온정보 클리어
                 clearFirestoreUserData()
-
             }
         } else {
             // 사용자가 로그인하지 않은 상태이면 로그인 화면으로 이동
@@ -321,13 +314,12 @@ class ProfileModifyFragment : Fragment() {
         val firestore = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser?.email
 
-        if( userId != null ) {
+        if (userId != null) {
             val userDocumentRef = firestore.collection("users").document(userId)
-
             userDocumentRef.delete().addOnSuccessListener {
                 Log.d("ProFileModify", "Success")
             }
-                .addOnFailureListener { e ->
+                .addOnFailureListener { _ ->
                     Log.w("ProFileModify", "Fail")
                 }
         }
@@ -336,25 +328,20 @@ class ProfileModifyFragment : Fragment() {
     private fun updateUIAfterLogout() {
         val emailText = view?.findViewById<TextView>(R.id.mypage_signin_up_inpo)
         val nicknameText = view?.findViewById<TextView>(R.id.mypage_signin_up_text)
-
         nicknameText?.text = getString(R.string.mypage_signin_up)
         emailText?.text = getString(R.string.mypage_signin_up_inpor)
-
         loading()
     }
 
     private fun loading() {
-
         loadingDialog.run {
             setVisible()
             setText("로딩중 ... ")
         }
-
         CoroutineScope(Dispatchers.Main).launch {
             delay(1500)
             loadingDialog.setInvisible()
         }
-
     }
 
     private fun modifyToFragment(fragment: Fragment) {
