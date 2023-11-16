@@ -21,13 +21,13 @@ import com.nbcamp.tripgo.view.home.uistate.HomeWeatherUiState
 import com.nbcamp.tripgo.view.home.valuetype.AreaCode
 import com.nbcamp.tripgo.view.home.valuetype.LatXLngY
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.lang.Math.PI
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.floor
@@ -247,7 +247,7 @@ class HomeViewModel(
     ) = data?.filter {
         it.address.contains(
             """${manyTravelersCountList?.get(0)}|${manyTravelersCountList?.get(1)}|${
-                manyTravelersCountList?.get(2)
+            manyTravelersCountList?.get(2)
             }""".toRegex()
         )
     }
