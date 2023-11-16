@@ -25,7 +25,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.nbcamp.tripgo.BuildConfig
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.mapper.WeatherType
 import com.nbcamp.tripgo.databinding.FragmentHomeBinding
@@ -165,12 +164,11 @@ class HomeFragment : Fragment() {
     @SuppressLint("MissingPermission")
     private fun initViewModel() = with(homeViewModel) {
         // 버전 확인하고 다이얼로그 띄우기
-        versionCode.observe(viewLifecycleOwner) { versionCode ->
+        versionCode.observe(viewLifecycleOwner) { isUpdateAvailable ->
             // 같으면 아무동작안하고 리턴
-            if (versionCode == BuildConfig.VERSION_CODE) {
-                return@observe
+            if (isUpdateAvailable) {
+                runUpdateDialog()
             }
-            runUpdateDialog()
         }
 
         // viewpager 데이터 가져오기

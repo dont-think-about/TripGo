@@ -1,21 +1,5 @@
 package com.nbcamp.tripgo.view.home
 
-import java.lang.Math.PI
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.floor
-import kotlin.math.ln
-import kotlin.math.pow
-import kotlin.math.sin
-import kotlin.math.sqrt
-import kotlin.math.tan
-import kotlin.random.Random
 import android.location.Location
 import android.os.Handler
 import android.os.Looper
@@ -37,7 +21,22 @@ import com.nbcamp.tripgo.view.home.uistate.HomeWeatherUiState
 import com.nbcamp.tripgo.view.home.valuetype.AreaCode
 import com.nbcamp.tripgo.view.home.valuetype.LatXLngY
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
-
+import java.lang.Math.PI
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.floor
+import kotlin.math.ln
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
+import kotlin.math.tan
+import kotlin.random.Random
 
 class HomeViewModel(
     private val homeRepository: HomeRepository
@@ -68,9 +67,9 @@ class HomeViewModel(
     val currentPage: LiveData<Int>
         get() = _currentPage
 
-    private val _versionCode: MutableLiveData<Int> = MutableLiveData()
-    val versionCode: LiveData<Int>
-        get() = _versionCode
+    private val _isUpdateAvailable: MutableLiveData<Boolean> = MutableLiveData()
+    val versionCode: LiveData<Boolean>
+        get() = _isUpdateAvailable
 
     fun fetchViewPagerData() {
         val getPastDateString = getPastDateString()
@@ -340,17 +339,17 @@ class HomeViewModel(
                         updateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
                     ) {
                         // 앱 업데이트가 있음
-                        _versionCode.postValue(updateInfo.availableVersionCode())
+                        _isUpdateAvailable.postValue(true)
                         return@addOnSuccessListener
                     }
                     // 앱 업데이트가 없음
-                    _versionCode.postValue(0)
+                    _isUpdateAvailable.postValue(false)
                 }.addOnCanceledListener {
-                    _versionCode.postValue(0)
+                    _isUpdateAvailable.postValue(false)
                 }
             }
         }.onFailure {
-            _versionCode.postValue(0)
+            _isUpdateAvailable.postValue(false)
         }
     }
 
