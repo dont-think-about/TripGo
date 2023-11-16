@@ -57,10 +57,10 @@ class ProvincePlaceListAdapter(
             // 이미지가 없을 떄 텍스트 색 바꾸기
             when {
                 model.imageUrl.isEmpty() -> {
-                    itemMainImageView.scaleType = ImageView.ScaleType.CENTER
+                    itemMainImageView.scaleType = ImageView.ScaleType.FIT_XY
                     itemMainImageView.load(R.drawable.icon_no_image)
-                    itemTitleTextView.setTextColor(Color.BLACK)
-                    itemDescriptionTextView.setTextColor(Color.BLACK)
+                    itemTitleTextView.setTextColor(Color.WHITE)
+                    itemDescriptionTextView.setTextColor(Color.WHITE)
                 }
 
                 else -> {

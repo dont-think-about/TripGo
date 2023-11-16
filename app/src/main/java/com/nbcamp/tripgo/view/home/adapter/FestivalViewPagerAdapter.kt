@@ -38,10 +38,10 @@ class FestivalViewPagerAdapter :
             "${model.startDate} ~ ${model.endDate}".also { itemDescriptionTextView.text = it }
             when {
                 model.imageUrl.isEmpty() -> {
-                    itemMainImageView.scaleType = ImageView.ScaleType.CENTER
+                    itemMainImageView.scaleType = ImageView.ScaleType.FIT_XY
                     itemMainImageView.load(R.drawable.icon_no_image)
-                    itemTitleTextView.setTextColor(Color.BLACK)
-                    itemDescriptionTextView.setTextColor(Color.BLACK)
+                    itemTitleTextView.setTextColor(Color.WHITE)
+                    itemDescriptionTextView.setTextColor(Color.WHITE)
                 }
                 else -> {
                     itemMainImageView.scaleType = ImageView.ScaleType.FIT_XY

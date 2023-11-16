@@ -344,6 +344,7 @@
                 android:layout_height="300dp"
                 android:layout_marginTop="5dp"
                 android:scaleType="fitCenter"
+                android:src="@drawable/icon_image_add"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/review_writing_image_text_view"
                 app:layout_constraintTop_toBottomOf="@id/review_writing_image_text_view" />

@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentReviewDetailBinding
 import com.nbcamp.tripgo.view.App
@@ -63,7 +64,9 @@ class ReviewDetailFragment : Fragment() {
         if (model?.userImageUrl.isNullOrEmpty() || model?.userImageUrl == "") {
             reviewDetailUserImageView.load(R.drawable.icon_user)
         } else {
-            reviewDetailUserImageView.load(model?.userImageUrl)
+            reviewDetailUserImageView.load(model?.userImageUrl) {
+                transformations(CircleCropTransformation())
+            }
         }
         reviewDetailUserName.text = model?.userNickName
         reviewDetailImageView.load(model?.reviewImageUrl)
