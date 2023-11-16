@@ -1,5 +1,6 @@
 package com.nbcamp.tripgo.view.calendar.modify
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -7,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.Manifest
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -29,8 +29,8 @@ import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.databinding.ActivityTourDetailBinding
-import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.KaKaoMapFrameLayout
+import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.main.MainActivity
@@ -39,7 +39,6 @@ import com.nbcamp.tripgo.view.tour.detail.TourDetailViewModel
 import com.nbcamp.tripgo.view.tour.detail.TourDetailViewModelFactory
 import com.nbcamp.tripgo.view.tour.detail.uistate.DetailCommonUiState
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import java.util.ArrayList
 
 class TourModifyDetailActivity : AppCompatActivity() {
     private var startDate: CalendarDay? = null
