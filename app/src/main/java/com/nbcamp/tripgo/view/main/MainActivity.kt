@@ -89,7 +89,6 @@ class MainActivity : AppCompatActivity() {
                 backPressedTime = System.currentTimeMillis()
                 toast(getString(R.string.press_back_toast))
             } else if (System.currentTimeMillis() <= backPressedTime + 2000) {
-                ++App.prefs.feedbackCount
                 finish()
             }
         }
@@ -347,6 +346,7 @@ class MainActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.send_feedback_now))
             .setMessage(getString(R.string.your_feedback_is_helpful))
+            .setCancelable(false)
             .setPositiveButton(getString(R.string.send_feedback)) { view, _ ->
                 view.dismiss()
                 // 5번 종료할 때 마다 피드백 다이얼로그 실행
@@ -358,12 +358,18 @@ class MainActivity : AppCompatActivity() {
                 )
             }.setNegativeButton(getString(R.string.out_of_application)) { _, _ ->
                 finish()
-            }.create()
+            }.setNeutralButton(getString(R.string.stay)) { _, _ -> }
+            .create()
             .show()
     }
 
     override fun onResume() {
         super.onResume()
         setUserState()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ++App.prefs.feedbackCount
     }
 }
