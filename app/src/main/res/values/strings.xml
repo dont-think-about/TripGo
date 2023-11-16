@@ -218,5 +218,6 @@
     <string name="new_update">새로운 업데이트</string>
     <string name="new_update_available">새로운 업데이트가 있습니다.\n업데이트 하시겠습니까?</string>
     <string name="playstore_url">market://details?id=com.nbcamp.tripgo</string>
+    <string name="stay">머무르기</string>
 
 </resources>
