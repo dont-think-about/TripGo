@@ -11,6 +11,7 @@ import com.nbcamp.tripgo.data.service.RetrofitModule
 class TourDetailViewModelFactory(
     private val context: Context
 ) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(TourDetailViewModel::class.java)) {
             val tourDetailRepository = TourDetailRepositoryImpl(
@@ -20,7 +21,7 @@ class TourDetailViewModelFactory(
             val calendarRepository = CalendarRepositoryImpl(
                 context
             )
-            return TourDetailViewModel(
+            TourDetailViewModel(
                 tourDetailRepository,
                 calendarRepository
             ) as T

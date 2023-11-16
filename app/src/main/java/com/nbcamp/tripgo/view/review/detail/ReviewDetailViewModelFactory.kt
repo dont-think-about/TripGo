@@ -5,11 +5,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.nbcamp.tripgo.data.repository.ReviewDetailRepositoryImpl
 
 class ReviewDetailViewModelFactory : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(ReviewDetailViewModel::class.java)) {
             val reviewDetailRepository = ReviewDetailRepositoryImpl()
 
-            return ReviewDetailViewModel(reviewDetailRepository) as T
+            ReviewDetailViewModel(reviewDetailRepository) as T
         } else {
             throw IllegalArgumentException()
         }
