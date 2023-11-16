@@ -137,6 +137,11 @@ class ReviewDetailFragment : Fragment() {
         startActivity(sharingIntent)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        callback.remove()
+    }
+
     companion object {
         fun newInstance() = ReviewDetailFragment()
     }
