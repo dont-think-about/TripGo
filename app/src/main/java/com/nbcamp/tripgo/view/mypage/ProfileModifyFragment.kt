@@ -44,7 +44,9 @@ class ProfileModifyFragment : Fragment() {
         if (uri != null) {
             selectedImageUri = uri
             val imageView = view?.findViewById<ImageView>(R.id.profile_edit_user_imageview)
-            imageView?.setImageURI(selectedImageUri)
+            imageView?.load(selectedImageUri) {
+                transformations(CircleCropTransformation())
+            }
         }
     }
     private val profileModifyViewModel: ProfileModifyViewModel by viewModels()
@@ -148,7 +150,7 @@ class ProfileModifyFragment : Fragment() {
 
         val firestore = FirebaseFirestore.getInstance()
         val userId = userEmail()
-        Log.d("ProfileModify",userId + user)
+        Log.d("ProfileModify", userId + user)
         val userRef = firestore.collection("users").document(userId)
 
         userRef.get().addOnCompleteListener { task ->
@@ -321,7 +323,7 @@ class ProfileModifyFragment : Fragment() {
         val firestore = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser?.email
 
-        if( userId != null ) {
+        if (userId != null) {
             val userDocumentRef = firestore.collection("users").document(userId)
 
             userDocumentRef.delete().addOnSuccessListener {

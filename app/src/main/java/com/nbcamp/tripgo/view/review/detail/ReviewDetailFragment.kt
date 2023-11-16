@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentReviewDetailBinding
 import com.nbcamp.tripgo.view.App
@@ -52,7 +53,9 @@ class ReviewDetailFragment : Fragment() {
         if (model?.userImageUrl.isNullOrEmpty() || model?.userImageUrl == "") {
             reviewDetailUserImageView.load(R.drawable.icon_user)
         } else {
-            reviewDetailUserImageView.load(model?.userImageUrl)
+            reviewDetailUserImageView.load(model?.userImageUrl) {
+                transformations(CircleCropTransformation())
+            }
         }
         reviewDetailUserName.text = model?.userNickName
         reviewDetailImageView.load(model?.reviewImageUrl)
@@ -62,7 +65,7 @@ class ReviewDetailFragment : Fragment() {
         reviewDetailFestivalDateTextView.text = model?.schedule
         reviewDetailDescriptionTextView.text = model?.reviewText
         reviewDetailRatingBar.rating = model?.rating ?: 0f
-        reviewDetailViewModel.getUserStatus(if(App.kakaoUser == null) App.firebaseUser?.email else App.kakaoUser?.email)
+        reviewDetailViewModel.getUserStatus(if (App.kakaoUser == null) App.firebaseUser?.email else App.kakaoUser?.email)
 
         // 칩그룹 세팅
         "#${model?.generation}".also { generationChip.text = it }

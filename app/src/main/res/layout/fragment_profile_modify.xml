@@ -69,7 +69,7 @@
                 android:layout_height="150dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="50dp"
-                android:src="@drawable/icon_user" />
+                android:src="@drawable/icon_edit_profile" />
 
             <TextView
                 android:id="@+id/profile_username"
