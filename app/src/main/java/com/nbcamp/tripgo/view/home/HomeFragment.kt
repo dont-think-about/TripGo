@@ -6,11 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -22,6 +24,8 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.nbcamp.tripgo.BuildConfig
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.mapper.WeatherType
 import com.nbcamp.tripgo.databinding.FragmentHomeBinding
@@ -95,10 +99,16 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkNewVersion()
         checkGPSStatus()
         initVariables()
         initViewModel()
         initViews()
+    }
+
+    private fun checkNewVersion() {
+        val appUpdateManager = AppUpdateManagerFactory.create(requireActivity())
+        homeViewModel.checkNewVersion(appUpdateManager)
     }
 
     private fun checkGPSStatus() {
@@ -154,6 +164,15 @@ class HomeFragment : Fragment() {
 
     @SuppressLint("MissingPermission")
     private fun initViewModel() = with(homeViewModel) {
+        // 버전 확인하고 다이얼로그 띄우기
+        versionCode.observe(viewLifecycleOwner) { versionCode ->
+            // 같으면 아무동작안하고 리턴
+            if (versionCode == BuildConfig.VERSION_CODE) {
+                return@observe
+            }
+            runUpdateDialog()
+        }
+
         // viewpager 데이터 가져오기
         homeViewModel.run {
             fetchViewPagerData()
@@ -293,6 +312,23 @@ class HomeFragment : Fragment() {
     private fun checkLocationPermissions() {
         sharedViewModel.getLocationPermissionEvent(Manifest.permission.ACCESS_FINE_LOCATION)
     }
+
+    private fun runUpdateDialog() {
+        AlertDialog.Builder(requireActivity())
+            .setTitle(getString(R.string.new_update))
+            .setMessage(getString(R.string.new_update_available))
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(getString(R.string.playstore_url))
+                    )
+                )
+            }.setNegativeButton(getString(R.string.no)) { _, _ -> }
+            .create()
+            .show()
+    }
+
 
     override fun onResume() {
         super.onResume()
