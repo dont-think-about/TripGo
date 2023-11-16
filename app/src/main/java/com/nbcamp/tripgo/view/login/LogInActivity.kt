@@ -49,7 +49,7 @@ class LogInActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var startGoogleLoginForResult: ActivityResultLauncher<Intent>
 
-    //loading Dialog
+    // loading Dialog
     private lateinit var loadingDialog: LoadingDialog
 
     companion object {
@@ -115,7 +115,6 @@ class LogInActivity : AppCompatActivity() {
         }
     }
 
-
     private fun showLoadingDialog() {
         loadingDialog.run {
             setVisible()
@@ -149,7 +148,6 @@ class LogInActivity : AppCompatActivity() {
                 }
             }
     }
-
 
     private fun configureGoogleLogin() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -198,7 +196,7 @@ class LogInActivity : AppCompatActivity() {
                                                         val userDocument = hashMapOf(
                                                             "email" to email,
                                                             "nickname" to nickname,
-                                                            "profileImage" to null,
+                                                            "profileImage" to user.photoUrl,
                                                             "reviewCount" to 0
                                                         )
                                                         firestore.collection("users").document(email.toString())
@@ -266,7 +264,7 @@ class LogInActivity : AppCompatActivity() {
                             val userDocument = hashMapOf(
                                 "email" to email,
                                 "nickname" to nickname,
-                                "profileImage" to null,
+                                "profileImage" to user.kakaoAccount?.profile?.profileImageUrl,
                                 "reviewCount" to 0
                             )
                             firestore.collection("users").document(email)
@@ -321,5 +319,4 @@ class LogInActivity : AppCompatActivity() {
             putString("nickname", nickname)
         }
     }
-
 }

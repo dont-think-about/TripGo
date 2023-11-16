@@ -28,7 +28,6 @@ import com.nbcamp.tripgo.view.mypage.favorite.MypageAppInpo
 import com.nbcamp.tripgo.view.review.mypage.ReviewFragment
 import com.nbcamp.tripgo.view.signup.RulesFragment
 
-
 class MyPageFragment : Fragment() {
 
     private val viewModel: MyPageViewModel by viewModels()
@@ -36,7 +35,6 @@ class MyPageFragment : Fragment() {
     private lateinit var emailText: TextView
     private lateinit var nicknameText: TextView
     private lateinit var loadingDialog: LoadingDialog
-
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -55,14 +53,14 @@ class MyPageFragment : Fragment() {
         val openSourceLicenseTextView = view.findViewById<TextView>(R.id.mypage_opensource_textview)
         val appInpo = view.findViewById<TextView>(R.id.mypage_appinpo_textview)
         reviewLayout.setOnClickListener {
-            if(App.kakaoUser == null && App.firebaseUser == null) {
+            if (App.kakaoUser == null && App.firebaseUser == null) {
                 requireActivity().toast("로그인을 해주세요")
                 return@setOnClickListener
             }
             navigateToFragment(ReviewFragment())
         }
         zzimLayout.setOnClickListener {
-            if(App.kakaoUser == null && App.firebaseUser == null) {
+            if (App.kakaoUser == null && App.firebaseUser == null) {
                 requireActivity().toast("로그인을 해주세요")
                 return@setOnClickListener
             }
@@ -101,7 +99,7 @@ class MyPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if(App.kakaoUser != null || App.firebaseUser != null)
+        if (App.kakaoUser != null || App.firebaseUser != null)
             viewModel.fetchDataFromFirebase()
         observeUserData()
     }
@@ -131,7 +129,6 @@ class MyPageFragment : Fragment() {
         }
     }
 
-
     private fun checkAndDismissLoadingDialog() {
         // email과 nickname이 모두 채워졌는지 확인
         if (emailText.text.isNotBlank() && nicknameText.text.isNotBlank()) {
@@ -143,8 +140,9 @@ class MyPageFragment : Fragment() {
         val firestore = FirebaseFirestore.getInstance()
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
+        val kakaoUser = App.kakaoUser
         val userEmail = user?.email
-        val userRef = firestore.collection("users").document(userEmail.toString())
+        val userRef = firestore.collection("users").document(kakaoUser?.email ?: userEmail.toString())
 
         userRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -159,18 +157,15 @@ class MyPageFragment : Fragment() {
                             listener(onSuccess = { _, _ ->
                                 // 이미지 로드가 성공한 경우, 로딩 화면을 숨깁니다.
                                 checkAndDismissLoadingDialog()
-                            },
-                                onError = { _, error ->
-                                    Log.e("MyPageFragment", "Coil Image Loading Error: ${error.throwable}")
-                                }
-                            )
+                            }, onError = { _, error ->
+                                Log.e("MyPageFragment", "Coil Image Loading Error: ${error.throwable}")
+                            })
                         }
                     }
                 }
             }
         }
     }
-
 
     private fun loading() {
         loadingDialog.run {

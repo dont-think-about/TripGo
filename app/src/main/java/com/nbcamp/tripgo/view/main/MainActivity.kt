@@ -79,10 +79,10 @@ class MainActivity : AppCompatActivity() {
     } else {
         Manifest.permission.READ_EXTERNAL_STORAGE
     }
-    private val callback = object  : OnBackPressedCallback(true) {
+    private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             ++App.prefs.feedbackCount
-            if(App.prefs.feedbackCount % 4 == 0) {
+            if (App.prefs.feedbackCount % 4 == 0) {
                 runFeedBackDialog()
                 return
             }

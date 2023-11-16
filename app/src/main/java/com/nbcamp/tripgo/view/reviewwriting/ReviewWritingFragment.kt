@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isGone
 import androidx.core.widget.doOnTextChanged
@@ -67,12 +68,23 @@ class ReviewWritingFragment : Fragment() {
             }
         }
 
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            parentFragmentManager.popBackStackImmediate(
+                null,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentReviewWritingBinding.inflate(layoutInflater)
+        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
+
         return binding.root
     }
 
@@ -310,6 +322,11 @@ class ReviewWritingFragment : Fragment() {
             getString(R.string.solo) -> reviewWritingToggleSoloButton.isChecked = true
             getString(R.string.pet) -> reviewWritingTogglePetButton.isChecked = true
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        callback.remove()
     }
 
     companion object {

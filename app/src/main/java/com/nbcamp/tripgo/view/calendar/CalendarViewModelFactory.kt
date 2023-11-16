@@ -9,10 +9,11 @@ import com.nbcamp.tripgo.data.repository.CalendarRepositoryImpl
 class CalendarViewModelFactory(
     private val context: Context
 ) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(CalendarViewModel::class.java)) {
             val repository = CalendarRepositoryImpl(context)
-            return CalendarViewModel(repository) as T
+            CalendarViewModel(repository) as T
         } else {
             throw IllegalArgumentException()
         }

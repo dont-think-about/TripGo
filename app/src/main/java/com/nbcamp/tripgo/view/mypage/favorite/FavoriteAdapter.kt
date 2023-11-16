@@ -1,6 +1,5 @@
 package com.nbcamp.tripgo.view.mypage.favorite
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,8 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_favorite_main, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_favorite_main, parent, false)
         return ViewHolder(view)
     }
 
@@ -37,11 +37,16 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val favorite_title: AppCompatTextView = itemView.findViewById(R.id.favorite_item_region_name_textview)
-        private val favorite_imageurl: AppCompatImageView = itemView.findViewById(R.id.favorite_item_imageview)
-        private val favorite_description: AppCompatTextView = itemView.findViewById(R.id.favorite_item_region_explantion_textivew)
-        private val favorite_address: AppCompatTextView = itemView.findViewById(R.id.favorite_item_region_distance_textview)
-        private val favorite_likebt: AppCompatImageView = itemView.findViewById(R.id.favorite_item_zzim_imageview)
+        private val favorite_title: AppCompatTextView =
+            itemView.findViewById(R.id.favorite_item_region_name_textview)
+        private val favorite_imageurl: AppCompatImageView =
+            itemView.findViewById(R.id.favorite_item_imageview)
+        private val favorite_description: AppCompatTextView =
+            itemView.findViewById(R.id.favorite_item_region_explantion_textivew)
+        private val favorite_address: AppCompatTextView =
+            itemView.findViewById(R.id.favorite_item_region_distance_textview)
+        private val favorite_likebt: AppCompatImageView =
+            itemView.findViewById(R.id.favorite_item_zzim_imageview)
 
         fun bind(favoriteItem: FavoriteItem) {
             favorite_title.text = favoriteItem.title
@@ -63,8 +68,6 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
                 val collectionPath = favoriteItem.collectionPath
 
                 if (collectionPath != null) {
-                    val userEmail = findUserEmail()?.id
-
                     val deletePath = firestore.document(collectionPath)
                     deletePath.delete()
                         .addOnSuccessListener {

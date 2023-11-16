@@ -6,11 +6,12 @@ import com.nbcamp.tripgo.data.repository.ReviewRepositoryImpl
 
 // viewModel에 생성자를 추가 해야할 때 만들어야 하는 viewModelFactory
 class ReviewViewModelFactory : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(ReviewViewModel::class.java)) {
             val reviewRepository = ReviewRepositoryImpl()
 
-            return ReviewViewModel(reviewRepository) as T
+            ReviewViewModel(reviewRepository) as T
         } else {
             throw IllegalArgumentException()
         }

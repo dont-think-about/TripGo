@@ -37,6 +37,8 @@
 
 ## 🔎 주요 기능
 
+---
+
 #### 로그인 - <a href = "https://github.com/dont-think-about/TripGo/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C-(Login) "> 상세보기 - WIKI 이동 </a>
 - DB 값 검증
 - PW 찾기
@@ -54,28 +56,37 @@
 - 주변에 있는 관광지
 - 전국 관광지
 
-#### 투어 페이지 & 디테일 페이지 - <a href =""> 상세보기 - WIKI 이동 </a>
-- 해당 여행지 거리순 / 날짜순으로 정렬
-- 여행지 클릭시 상세 설명 및 평점 리뷰 정보
-- 카카오 맵으로 경로 안내 (자차 , 대중교통)
-- 구글 맵으로 지도 확인
+#### 투어 페이지 - <a href ="https://github.com/dont-think-about/TripGo/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C-(TourPage)"> 상세보기 - WIKI 이동 </a>
+- 테마 여행지 (가족여행 , 힐링 , 캠핑 , 맛집) 리스트 출력
+- 이달의 축제 리스트 출력
+- 10km 이내에 있는 주변에 있는 관광지 리스트 출력
+- 17개 전국 지역 관광지 리스트 출력
 
-#### 검색 페이지 - <a href =""> 상세보기 - WIKI 이동 </a>
+
+#### 디테일 페이지 - <a href ="https://github.com/dont-think-about/TripGo/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C-(DetailPage)"> 상세보기 - WIKI 이동 </a>
+- 여행지 상세 정보를 가져 온다
+- 해당 여행지 지도로 표시
+- 하트 버튼 클릭시 해당 축제 정보 저장
+- 캘린더를 활용하여 여행지를 내 일정에 저장
+- 길찾기 버튼을 통한 자차 , 대중교통 네비게이션
+
+
+#### 검색 페이지 - <a href ="https://github.com/dont-think-about/TripGo/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C-(SearchPage)"> 상세보기 - WIKI 이동 </a>
 - 축제 / 관광지 / 문화시설 탭에서 여행지 검색
 - 검색 후 지도에서 마커를 클릭시 해당 지점의 간단한 정보 제공
 
-#### 마이 페이지 - <a hrefm> 상세보기 - WIKI 이동 </a>
+#### 마이 페이지 - <a href = "https://github.com/dont-think-about/TripGo/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C-(MyPage)"> 상세보기 - WIKI 이동 </a>
 - 회원 정보 변경
 - 내 리뷰 관리
 - 찜한 목록 관리
 - 리뷰 갯수에 따른 등급 관리
 
-#### 리뷰 페이지 - <a hrefm> 상세보기 - WIKI 이동 </a>
+#### 리뷰 페이지 - <a href = "https://github.com/dont-think-about/TripGo/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C-(ReviewPage)"> 상세보기 - WIKI 이동 </a>
 - 내가 작성한 리뷰 수정
 - 상대방이 작성한 리뷰 보기
 - 카테고리에 맞는 리뷰 찾기
 
-#### 캘린더 페이지 - <a hrefm> 상세보기 - WIKI 이동 </a>
+#### 캘린더 페이지 - <a href = "https://github.com/dont-think-about/TripGo/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C-(CalendarPage)"> 상세보기 - WIKI 이동 </a>
 - 캘린더로 내 일정 관리하기
 - 내 여행지 리뷰 작성
 

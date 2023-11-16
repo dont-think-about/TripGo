@@ -167,7 +167,6 @@ class FestivalFragment : Fragment() {
         return str
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // ViewBinding 인스턴스를 메모리에서 해제

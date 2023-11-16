@@ -45,7 +45,6 @@ class MyPageDialog(private val context: Context) {
 
         imageupdate()
 
-
         if (!userId.isNullOrBlank()) {
             getReviewCount(userId) { reviewCount ->
                 val (remainCount, grade, maxProgress) = calculateGradeAndProgress(reviewCount)
@@ -86,30 +85,26 @@ class MyPageDialog(private val context: Context) {
                 e.printStackTrace()
             }
 
-
         val editbutton = dialogView.findViewById<Button>(R.id.mypage_dialog_edit_userinpo_button)
-        editbutton.setOnClickListener { userinfo(fragmentManager)  }
+        editbutton.setOnClickListener { userinfo(fragmentManager) }
     }
 
-    private fun userinfo(fragmentManager: FragmentManager){
-
+    private fun userinfo(fragmentManager: FragmentManager) {
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
         val kakaoUser = App.kakaoUser?.email
 
-        if( user != null || kakaoUser != null){
+        if (user != null || kakaoUser != null) {
             val transaction = fragmentManager.beginTransaction()
             val newFragment = ProfileModifyFragment()
             transaction.replace(R.id.main_fragment_container, newFragment)
             transaction.addToBackStack(null)
             transaction.commit()
             dismissDialog()
-        }
-        else{
+        } else {
             Toast.makeText(context, "프로필 데이터가 없습니다.\n프로필을 먼저 설정해주세요.", Toast.LENGTH_SHORT).show()
             dismissDialog()
         }
-
     }
 
     private fun calculateGradeAndProgress(reviewCount: Int): Triple<Int, String, Int> {
@@ -161,7 +156,6 @@ class MyPageDialog(private val context: Context) {
         val user = auth.currentUser
         val userEmail = user?.email
         val userRef = firestore.collection("users").document(userEmail.toString())
-
 
         userRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {

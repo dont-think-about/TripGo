@@ -7,6 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.nbcamp.tripgo.data.repository.mapper.WeatherType
 import com.nbcamp.tripgo.data.repository.model.FestivalEntity
 import com.nbcamp.tripgo.data.repository.model.KeywordSearchEntity
@@ -18,13 +21,13 @@ import com.nbcamp.tripgo.view.home.uistate.HomeWeatherUiState
 import com.nbcamp.tripgo.view.home.valuetype.AreaCode
 import com.nbcamp.tripgo.view.home.valuetype.LatXLngY
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.lang.Math.PI
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.floor
@@ -63,6 +66,10 @@ class HomeViewModel(
     private val _currentPage: MutableLiveData<Int> = MutableLiveData(0)
     val currentPage: LiveData<Int>
         get() = _currentPage
+
+    private val _isUpdateAvailable: MutableLiveData<Boolean> = MutableLiveData()
+    val versionCode: LiveData<Boolean>
+        get() = _isUpdateAvailable
 
     fun fetchViewPagerData() {
         val getPastDateString = getPastDateString()
@@ -321,6 +328,29 @@ class HomeViewModel(
         rs.y = floor(ro - ra * cos(theta) + YO + 0.5)
 
         return rs
+    }
+
+    fun checkNewVersion(appUpdateManager: AppUpdateManager) {
+        runCatching {
+            viewModelScope.launch(Dispatchers.IO) {
+                val info = appUpdateManager.appUpdateInfo
+                info.addOnSuccessListener { updateInfo ->
+                    if (updateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                        updateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+                    ) {
+                        // 앱 업데이트가 있음
+                        _isUpdateAvailable.postValue(true)
+                        return@addOnSuccessListener
+                    }
+                    // 앱 업데이트가 없음
+                    _isUpdateAvailable.postValue(false)
+                }.addOnCanceledListener {
+                    _isUpdateAvailable.postValue(false)
+                }
+            }
+        }.onFailure {
+            _isUpdateAvailable.postValue(false)
+        }
     }
 
     inner class PagerRunnable : Runnable {

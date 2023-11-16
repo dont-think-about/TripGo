@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.FragmentReviewDetailBinding
 import com.nbcamp.tripgo.view.App
@@ -25,12 +27,22 @@ class ReviewDetailFragment : Fragment() {
         get() = _binding!!
     private val sharedViewModel: MainViewModel by activityViewModels()
     private val reviewDetailViewModel: ReviewDetailViewModel by viewModels { ReviewDetailViewModelFactory() }
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            parentFragmentManager.popBackStackImmediate(
+                null,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentReviewDetailBinding.inflate(layoutInflater)
+        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
         return binding.root
     }
 
@@ -52,7 +64,9 @@ class ReviewDetailFragment : Fragment() {
         if (model?.userImageUrl.isNullOrEmpty() || model?.userImageUrl == "") {
             reviewDetailUserImageView.load(R.drawable.icon_user)
         } else {
-            reviewDetailUserImageView.load(model?.userImageUrl)
+            reviewDetailUserImageView.load(model?.userImageUrl) {
+                transformations(CircleCropTransformation())
+            }
         }
         reviewDetailUserName.text = model?.userNickName
         reviewDetailImageView.load(model?.reviewImageUrl)
@@ -62,7 +76,12 @@ class ReviewDetailFragment : Fragment() {
         reviewDetailFestivalDateTextView.text = model?.schedule
         reviewDetailDescriptionTextView.text = model?.reviewText
         reviewDetailRatingBar.rating = model?.rating ?: 0f
-        reviewDetailViewModel.getUserStatus(if(App.kakaoUser == null) App.firebaseUser?.email else App.kakaoUser?.email)
+        reviewDetailViewModel.getUserStatus(
+            if (App.kakaoUser == null)
+                App.firebaseUser?.email
+            else
+                App.kakaoUser?.email
+        )
 
         // 칩그룹 세팅
         "#${model?.generation}".also { generationChip.text = it }
@@ -119,6 +138,11 @@ class ReviewDetailFragment : Fragment() {
         }
         val sharingIntent = Intent.createChooser(intent, "공유하기")
         startActivity(sharingIntent)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        callback.remove()
     }
 
     companion object {

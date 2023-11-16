@@ -1,13 +1,13 @@
 package com.nbcamp.tripgo.view.mypage
 
-sealed interface UserDeleteStatus{
-    object Initialize: UserDeleteStatus
+sealed interface UserDeleteStatus {
+    object Initialize : UserDeleteStatus
 
     data class Success(
         val message: String
-    ): UserDeleteStatus
+    ) : UserDeleteStatus
 
     data class Error(
         val message: String
-    ): UserDeleteStatus
+    ) : UserDeleteStatus
 }

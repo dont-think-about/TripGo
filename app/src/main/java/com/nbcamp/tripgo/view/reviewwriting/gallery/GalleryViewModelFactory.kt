@@ -9,10 +9,11 @@ import com.nbcamp.tripgo.data.repository.GalleryRepositoryImpl
 class GalleryViewModelFactory(
     private val context: Context
 ) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(GalleryViewModel::class.java)) {
             val repository = GalleryRepositoryImpl(context)
-            return GalleryViewModel(repository) as T
+            GalleryViewModel(repository) as T
         } else {
             throw IllegalArgumentException()
         }

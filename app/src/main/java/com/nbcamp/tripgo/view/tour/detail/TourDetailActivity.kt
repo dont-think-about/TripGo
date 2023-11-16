@@ -319,7 +319,7 @@ class TourDetailActivity : AppCompatActivity() {
         }
 
         likeClickEvent.observe(this@TourDetailActivity) {
-            Snackbar.make(binding.root, getString(R.string.like_place) + it, 2000).show()
+//            Snackbar.make(binding.root, getString(R.string.like_place) + it, 2000).show()
         }
 
         likeStatus.observe(this@TourDetailActivity) {
@@ -410,7 +410,11 @@ class TourDetailActivity : AppCompatActivity() {
     }
 
     private fun bindingInfo(info: DetailCommonEntity) = with(binding) {
-        imageViewMainPhoto.load(info.imageUrl)
+        if (info.imageUrl == "") {
+            imageViewMainPhoto.setImageResource(R.drawable.icon_no_image)
+        } else {
+            imageViewMainPhoto.load(info.imageUrl)
+        }
         tourMainTitle.text = info.title.ifEmpty { getString(R.string.no_detail_info) }
         "${info.mainAddress}\n${info.subAddress}".also {
             addressTour.text = it.ifEmpty { getString(R.string.no_detail_info) }

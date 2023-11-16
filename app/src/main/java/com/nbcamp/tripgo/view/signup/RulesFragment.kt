@@ -3,6 +3,7 @@ package com.nbcamp.tripgo.view.signup
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,8 @@ class RulesFragment : DialogFragment() {
     val fireStore = Firebase.firestore
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentRulesBinding.inflate(layoutInflater)
@@ -52,12 +54,10 @@ class RulesFragment : DialogFragment() {
             if (document != null) {
                 val content = document.getString("content")
                 val contentLineSort = content?.replace("*", "\n")
-
                 binding.rulesContentTextView.text = contentLineSort
-
             }
         }?.addOnFailureListener { exception ->
-
+            Log.d("test1234555", "get failed with ", exception)
         }
 
         binding.btnBack.setOnClickListener {
@@ -69,5 +69,4 @@ class RulesFragment : DialogFragment() {
         super.onDestroyView()
         _binding = null
     }
-
 }
