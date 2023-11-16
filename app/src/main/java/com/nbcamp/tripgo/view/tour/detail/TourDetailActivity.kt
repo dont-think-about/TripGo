@@ -320,7 +320,7 @@ class TourDetailActivity : AppCompatActivity() {
         }
 
         likeClickEvent.observe(this@TourDetailActivity) {
-            Snackbar.make(binding.root, getString(R.string.like_place) + it, 2000).show()
+//            Snackbar.make(binding.root, getString(R.string.like_place) + it, 2000).show()
         }
 
         likeStatus.observe(this@TourDetailActivity) {

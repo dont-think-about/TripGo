@@ -37,7 +37,7 @@ class TourFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSearchTourBinding.inflate(inflater, container, false)
         autoCompleteCityList = getJsonDataFromAsset()
         return binding.root
@@ -58,6 +58,7 @@ class TourFragment : Fragment() {
                 setAdapter(autoCompleteAdapter)
                 setOnItemClickListener { _, _, _, _ ->
                     searchText = binding.tourSearchEdit.text.toString()
+                    viewModel.fetchSearchResult(keyword = searchText)
                 }
             }
         }

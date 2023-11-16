@@ -280,6 +280,8 @@ class CalendarFragment : Fragment() {
                 Snackbar.make(binding.root, getString(R.string.move_to_log_in), 5000)
                     .setAction("LOGIN") {
                         sharedViewModel.runLoginActivity()
+                    }.apply {
+                        anchorView = requireActivity().findViewById(R.id.main_bottom_navigation)
                     }.show()
             }
         }

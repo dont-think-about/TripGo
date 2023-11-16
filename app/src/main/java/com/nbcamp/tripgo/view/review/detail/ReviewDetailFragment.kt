@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -25,12 +26,22 @@ class ReviewDetailFragment : Fragment() {
         get() = _binding!!
     private val sharedViewModel: MainViewModel by activityViewModels()
     private val reviewDetailViewModel: ReviewDetailViewModel by viewModels { ReviewDetailViewModelFactory() }
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            parentFragmentManager.popBackStackImmediate(
+                null,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentReviewDetailBinding.inflate(layoutInflater)
+        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
         return binding.root
     }
 
@@ -124,6 +135,11 @@ class ReviewDetailFragment : Fragment() {
         }
         val sharingIntent = Intent.createChooser(intent, "공유하기")
         startActivity(sharingIntent)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        callback.remove()
     }
 
     companion object {
