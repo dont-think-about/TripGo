@@ -37,6 +37,8 @@
 
 ## 🔎 주요 기능
 
+---
+
 #### 로그인 - <a href = "https://github.com/dont-think-about/TripGo/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C-(Login) "> 상세보기 - WIKI 이동 </a>
 - DB 값 검증
 - PW 찾기
@@ -69,22 +71,22 @@
 - 길찾기 버튼을 통한 자차 , 대중교통 네비게이션
 
 
-#### 검색 페이지 - <a href =""> 상세보기 - WIKI 이동 </a>
+#### 검색 페이지 - <a href ="https://github.com/dont-think-about/TripGo/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C-(SearchPage)"> 상세보기 - WIKI 이동 </a>
 - 축제 / 관광지 / 문화시설 탭에서 여행지 검색
 - 검색 후 지도에서 마커를 클릭시 해당 지점의 간단한 정보 제공
 
-#### 마이 페이지 - <a hrefm> 상세보기 - WIKI 이동 </a>
+#### 마이 페이지 - <a href = "https://github.com/dont-think-about/TripGo/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C-(MyPage)"> 상세보기 - WIKI 이동 </a>
 - 회원 정보 변경
 - 내 리뷰 관리
 - 찜한 목록 관리
 - 리뷰 갯수에 따른 등급 관리
 
-#### 리뷰 페이지 - <a hrefm> 상세보기 - WIKI 이동 </a>
+#### 리뷰 페이지 - <a href = "https://github.com/dont-think-about/TripGo/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C-(ReviewPage)"> 상세보기 - WIKI 이동 </a>
 - 내가 작성한 리뷰 수정
 - 상대방이 작성한 리뷰 보기
 - 카테고리에 맞는 리뷰 찾기
 
-#### 캘린더 페이지 - <a hrefm> 상세보기 - WIKI 이동 </a>
+#### 캘린더 페이지 - <a href = "https://github.com/dont-think-about/TripGo/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EC%86%8C%EA%B0%9C-(CalendarPage)"> 상세보기 - WIKI 이동 </a>
 - 캘린더로 내 일정 관리하기
 - 내 여행지 리뷰 작성
 
