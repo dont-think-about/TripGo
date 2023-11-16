@@ -37,7 +37,7 @@ class AttractionsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSearchAttractionsBinding.inflate(inflater, container, false)
         autoCompleteCityList = getJsonDataFromAsset()
         return binding.root
@@ -58,6 +58,7 @@ class AttractionsFragment : Fragment() {
                 setAdapter(autoCompleteAdapter)
                 setOnItemClickListener { _, _, _, _ ->
                     searchText = binding.attractionsSearchEdit.text.toString()
+                    viewModel.fetchSearchResult(keyword = searchText)
                 }
             }
         }

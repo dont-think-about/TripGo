@@ -215,5 +215,8 @@
     <string name="sungjin_email">asdsad86642@gmail.com</string>
     <string name="press_back_toast">\'뒤로\' 버튼을 한번 더 누르면 종료됩니다.</string>
     <string name="profile_data_not_found">프로필 데이터가 없습니다.\n프로필을 먼저 설정해주세요.</string>
+    <string name="new_update">새로운 업데이트</string>
+    <string name="new_update_available">새로운 업데이트가 있습니다.\n업데이트 하시겠습니까?</string>
+    <string name="playstore_url">market://details?id=com.nbcamp.tripgo</string>
 
 </resources>

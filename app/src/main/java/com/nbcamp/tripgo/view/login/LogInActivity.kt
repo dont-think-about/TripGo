@@ -196,7 +196,7 @@ class LogInActivity : AppCompatActivity() {
                                                         val userDocument = hashMapOf(
                                                             "email" to email,
                                                             "nickname" to nickname,
-                                                            "profileImage" to null,
+                                                            "profileImage" to user.photoUrl,
                                                             "reviewCount" to 0
                                                         )
                                                         firestore.collection("users").document(email.toString())
@@ -264,7 +264,7 @@ class LogInActivity : AppCompatActivity() {
                             val userDocument = hashMapOf(
                                 "email" to email,
                                 "nickname" to nickname,
-                                "profileImage" to null,
+                                "profileImage" to user.kakaoAccount?.profile?.profileImageUrl,
                                 "reviewCount" to 0
                             )
                             firestore.collection("users").document(email)
