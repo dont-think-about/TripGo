@@ -133,7 +133,7 @@ class LogInActivity : AppCompatActivity() {
                     val user = auth.currentUser
                     if (user != null && user.isEmailVerified) {
                         hideLoadingDialog()
-                        val intent = Intent(this, MainActivity::class.java).apply{
+                        val intent = Intent(this, MainActivity::class.java).apply {
                             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         }
                         startActivity(intent)
@@ -274,7 +274,7 @@ class LogInActivity : AppCompatActivity() {
                                 .addOnSuccessListener {
                                     Log.d(ContentValues.TAG, "사용자 정보 Firestore에 저장 성공")
                                     loadingDialog.setInvisible()
-                                    val intent = Intent(this, MainActivity::class.java).apply{
+                                    val intent = Intent(this, MainActivity::class.java).apply {
                                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                     }
                                     onLoginSuccess(email, nickname.toString())
