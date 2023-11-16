@@ -11,12 +11,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import coil.load
 import coil.transform.CircleCropTransformation
@@ -51,6 +53,15 @@ class ProfileModifyFragment : Fragment() {
     }
     private val profileModifyViewModel: ProfileModifyViewModel by viewModels()
 
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            parentFragmentManager.popBackStackImmediate(
+                null,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+        }
+    }
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -80,6 +91,8 @@ class ProfileModifyFragment : Fragment() {
         deleteUserButton.setOnClickListener { withDrawlUser() }
 
         imageUpdate()
+
+        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
 
         return view
     }
@@ -364,6 +377,11 @@ class ProfileModifyFragment : Fragment() {
         transaction.replace(R.id.main_fragment_container, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        callback.remove()
     }
 
     companion object {
