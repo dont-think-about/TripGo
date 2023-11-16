@@ -81,8 +81,7 @@ class MainActivity : AppCompatActivity() {
     }
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            ++App.prefs.feedbackCount
-            if (App.prefs.feedbackCount % 10 == 0) {
+            if (App.prefs.feedbackCount % 6 == 0) {
                 runFeedBackDialog()
                 return
             }
@@ -90,6 +89,7 @@ class MainActivity : AppCompatActivity() {
                 backPressedTime = System.currentTimeMillis()
                 toast(getString(R.string.press_back_toast))
             } else if (System.currentTimeMillis() <= backPressedTime + 2000) {
+                ++App.prefs.feedbackCount
                 finish()
             }
         }
