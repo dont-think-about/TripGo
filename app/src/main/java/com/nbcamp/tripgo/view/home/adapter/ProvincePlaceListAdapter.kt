@@ -12,7 +12,6 @@ import coil.load
 import coil.request.CachePolicy
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.databinding.ItemMainProvincePlaceBinding
-import com.nbcamp.tripgo.databinding.ItemMainTourCardBinding
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
 import kotlin.math.floor

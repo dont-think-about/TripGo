@@ -29,8 +29,8 @@ import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
 import com.nbcamp.tripgo.data.repository.model.DetailCommonEntity
 import com.nbcamp.tripgo.databinding.ActivityTourDetailBinding
-import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.KaKaoMapFrameLayout
+import com.nbcamp.tripgo.util.LoadingDialog
 import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.main.MainActivity

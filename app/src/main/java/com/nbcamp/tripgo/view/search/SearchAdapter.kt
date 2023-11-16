@@ -70,3 +70,5 @@ class SearchAdapter(private val sContext: Context) :
         }
     }
 }
+
+// Add a newline character at the end of the file

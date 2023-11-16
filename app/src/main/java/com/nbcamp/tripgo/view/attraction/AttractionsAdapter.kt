@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.model.area.AreaItem
-import com.nbcamp.tripgo.data.model.keywords.KeywordItem
 import com.nbcamp.tripgo.databinding.AttractionRecyclerviewItemBinding
 
 class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
@@ -21,7 +20,7 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         userLat = lat
         userLon = lon
         notifyDataSetChanged()
-    } // 위치 정보 변경 후 , RecyclerView 갱신
+    } // 위치 정보 변경 후, RecyclerView 갱신
 
     fun calculateDistance(item: AreaItem): Double {
         return calculateDistanceTo(
@@ -51,14 +50,11 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         val R = 6371.0
         val dLat = Math.toRadians(mapy - userLat)
         val dLon = Math.toRadians(mapx - userLon)
-        val a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(Math.toRadians(userLat)) *
-                    Math.cos(Math.toRadians(mapy)) *
-                    Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(mapy)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
         return R * c
-    } // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
+    }
+    // 사용자 위치와 주어진 좌표 간의 거리를 계산 하는 함수
 
     fun attractionDistance(recyclerView: RecyclerView) {
         val sortedList = currentList.sortedBy { item ->
@@ -67,14 +63,14 @@ class AttractionsAdapter(private val onClickItem: (AreaItem) -> Unit) :
         submitList(sortedList.toList()) {
             recyclerView.scrollToPosition(0)
         }
-    } // Tour 아이템 거리순 으로 정렬
+    } // Tour 아이템 거리순으로 정렬
 
     fun attractionDate(recyclerView: RecyclerView) {
         val sortedByDate = currentList.sortedBy { it.createdtime }
         submitList(sortedByDate) {
             recyclerView.scrollToPosition(0)
         }
-    } // Tour 아이템 날짜순 으로 정렬
+    } // Tour 아이템 날짜순으로 정렬
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttractionViewHolder {
         val binding = AttractionRecyclerviewItemBinding.inflate(
