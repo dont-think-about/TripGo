@@ -21,6 +21,8 @@ import com.nbcamp.tripgo.view.home.uistate.HomeWeatherUiState
 import com.nbcamp.tripgo.view.home.valuetype.AreaCode
 import com.nbcamp.tripgo.view.home.valuetype.LatXLngY
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.lang.Math.PI
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -35,8 +37,6 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
 import kotlin.random.Random
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val homeRepository: HomeRepository
@@ -247,7 +247,7 @@ class HomeViewModel(
     ) = data?.filter {
         it.address.contains(
             """${manyTravelersCountList?.get(0)}|${manyTravelersCountList?.get(1)}|${
-            manyTravelersCountList?.get(2)
+                manyTravelersCountList?.get(2)
             }""".toRegex()
         )
     }
