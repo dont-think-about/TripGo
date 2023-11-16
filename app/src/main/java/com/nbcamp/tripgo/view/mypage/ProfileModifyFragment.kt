@@ -1,10 +1,5 @@
 package com.nbcamp.tripgo.view.mypage
 
-import java.util.UUID
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
@@ -35,6 +30,11 @@ import com.nbcamp.tripgo.util.extension.ContextExtension.toast
 import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.main.MainActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.UUID
 
 class ProfileModifyFragment : Fragment() {
     private lateinit var refreshNickText: AppCompatEditText
