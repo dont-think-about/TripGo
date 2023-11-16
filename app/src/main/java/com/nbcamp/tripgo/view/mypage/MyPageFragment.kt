@@ -140,8 +140,9 @@ class MyPageFragment : Fragment() {
         val firestore = FirebaseFirestore.getInstance()
         val auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
+        val kakaoUser = App.kakaoUser
         val userEmail = user?.email
-        val userRef = firestore.collection("users").document(userEmail.toString())
+        val userRef = firestore.collection("users").document(kakaoUser?.email ?: userEmail.toString())
 
         userRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
