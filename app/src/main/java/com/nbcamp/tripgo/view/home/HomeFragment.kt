@@ -329,7 +329,6 @@ class HomeFragment : Fragment() {
             .show()
     }
 
-
     override fun onResume() {
         super.onResume()
         checkGPSStatus()
