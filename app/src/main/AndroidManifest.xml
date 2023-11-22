@@ -37,6 +37,7 @@
             android:value="@string/KAKAO_API_KEY"/>
         <activity
             android:name=".view.SplashActivity"
+            android:noHistory="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
