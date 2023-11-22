@@ -34,7 +34,6 @@ import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.home.adapter.FestivalViewPagerAdapter
 import com.nbcamp.tripgo.view.home.adapter.NearbyPlaceAdapter
 import com.nbcamp.tripgo.view.home.adapter.ProvincePlaceListAdapter
-import com.nbcamp.tripgo.view.home.uistate.HomeFestivalUiState
 import com.nbcamp.tripgo.view.home.uistate.HomeNearbyPlaceUiState
 import com.nbcamp.tripgo.view.home.uistate.HomeWeatherUiState
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
@@ -171,25 +170,6 @@ class HomeFragment : Fragment() {
             }
         }
 
-        // viewpager 데이터 가져오기
-        homeViewModel.run {
-            fetchViewPagerData()
-            autoSlideViewPager()
-            getProvincePlace()
-        }
-
-        festivalUiState.observe(viewLifecycleOwner) { state ->
-            with(binding) {
-                if (state == HomeFestivalUiState.error()) {
-                    requireActivity().toast(getString(R.string.load_failed_data))
-                    return@observe
-                }
-                festivalProgressBar.isVisible = state.isLoading
-                mainFestivalViewPager.isVisible = state.isLoading.not()
-                viewPagerCircleIndicator.createIndicators(state.list?.size ?: 0, 0)
-                onBindFestival(state)
-            }
-        }
         currentPage.observe(viewLifecycleOwner) { currentPage ->
             binding.mainFestivalViewPager.setCurrentItem(currentPage, true)
         }
@@ -213,9 +193,16 @@ class HomeFragment : Fragment() {
             binding.nearbyProgressBar.isVisible = state.isLoading
             nearbyPlaceAdapter.setList(state.list)
         }
-        provincePlaceUiState.observe(viewLifecycleOwner) { state ->
-            binding.allTourProgressBar.isVisible = state.isLoading
-            provincePlaceListAdapter.submitList(state.list)
+
+        sharedViewModel.dataFromSplash.observe(viewLifecycleOwner) {
+            with(binding) {
+                // 인기 행사
+                viewPagerCircleIndicator.createIndicators(it.first.size, 0)
+                festivalViewPagerAdapter.submitList(it.first)
+                autoSlideViewPager()
+                // 주변 관광지
+                provincePlaceListAdapter.submitList(it.second)
+            }
         }
 
         sharedViewModel.eventSetLocation.observe(viewLifecycleOwner) {
@@ -233,7 +220,9 @@ class HomeFragment : Fragment() {
                 App.latitude = location.latitude
                 App.longitude = location.longitude
                 homeViewModel.run {
+                    // 주변 관광지 리스트 보여주기
                     getNearbyPlaceList(location, nearbyPageNumber)
+                    // 날씨에 따른 관광지 추천
                     getPlaceByTodayWeather(location)
                 }
             }
@@ -289,10 +278,6 @@ class HomeFragment : Fragment() {
 
             WeatherType.UNDEFINED -> Unit
         }
-    }
-
-    private fun onBindFestival(state: HomeFestivalUiState?) = with(binding) {
-        festivalViewPagerAdapter.submitList(state?.list)
     }
 
     private fun runThemeTourActivity(themeId: TourTheme) {

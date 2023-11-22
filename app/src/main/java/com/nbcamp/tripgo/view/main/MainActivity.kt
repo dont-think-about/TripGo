@@ -29,6 +29,8 @@ import com.nbcamp.tripgo.view.calendar.CalendarFragment
 import com.nbcamp.tripgo.view.calendar.CalendarViewModel
 import com.nbcamp.tripgo.view.calendar.CalendarViewModelFactory
 import com.nbcamp.tripgo.view.home.HomeFragment
+import com.nbcamp.tripgo.view.home.uistate.HomeFestivalUiState
+import com.nbcamp.tripgo.view.home.uistate.HomeProvincePlaceUiState
 import com.nbcamp.tripgo.view.home.valuetype.TourTheme
 import com.nbcamp.tripgo.view.login.LogInActivity
 import com.nbcamp.tripgo.view.mypage.MyPageFragment
@@ -94,6 +96,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // splash에서 미리 넘겨준 데이터 모음
+    private lateinit var homeFestivalUiState: HomeFestivalUiState
+    private lateinit var homeProvincePlaceUiState: HomeProvincePlaceUiState
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -101,8 +108,23 @@ class MainActivity : AppCompatActivity() {
         loadingDialog = LoadingDialog(this)
         this.onBackPressedDispatcher.addCallback(this, callback)
 
+        initVariables()
         initViews()
         initViewModels()
+    }
+
+    private fun initVariables() {
+        homeFestivalUiState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(FESTIVAL_EXTRA_KEY, HomeFestivalUiState::class.java)!!
+        } else {
+            intent.getParcelableExtra(FESTIVAL_EXTRA_KEY)!!
+        }
+        homeProvincePlaceUiState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(PROVINCE_EXTRA_KEY, HomeProvincePlaceUiState::class.java)!!
+        } else {
+            intent.getParcelableExtra(PROVINCE_EXTRA_KEY)!!
+        }
+        sharedViewModel.sendSplashData(homeFestivalUiState.list , homeProvincePlaceUiState.list)
     }
 
     private fun initViews() = with(binding) {
@@ -228,8 +250,6 @@ class MainActivity : AppCompatActivity() {
                         setText(setUserEvent.message)
                         setInvisible()
                     }
-                    println("firebaseUserMain:" + App.firebaseUser)
-                    println("kakaoUserMain: " + App.kakaoUser)
                 }
             }
         }
@@ -371,5 +391,10 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         ++App.prefs.feedbackCount
+    }
+
+    companion object {
+        const val FESTIVAL_EXTRA_KEY = "HomeFestivalUiState"
+        const val PROVINCE_EXTRA_KEY = "HomeProvincePlaceUiState"
     }
 }
