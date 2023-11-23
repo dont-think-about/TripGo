@@ -17,4 +17,4 @@ data class FestivalEntity(
     val imageUrl: String,
     // 시도 주소
     val address: String
-): Parcelable
+) : Parcelable

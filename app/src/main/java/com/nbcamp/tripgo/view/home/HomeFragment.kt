@@ -167,7 +167,7 @@ class HomeFragment : Fragment() {
         }
 
         isGPSAvailable.observe(viewLifecycleOwner) { status ->
-            if(status.first) {
+            if (status.first) {
                 isGpsOn = true
                 sharedViewModel.setLocationEvent()
                 return@observe
@@ -213,7 +213,7 @@ class HomeFragment : Fragment() {
         }
 
         sharedViewModel.eventSetLocation.observe(viewLifecycleOwner) {
-            if(isGpsOn.not()) {
+            if (isGpsOn.not()) {
                 return@observe
             }
             fusedLocationProviderClient.getCurrentLocation(
@@ -331,8 +331,8 @@ class HomeFragment : Fragment() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == GPS_ON) {
-            if(resultCode == Activity.RESULT_OK) {
+        if (requestCode == GPS_ON) {
+            if (resultCode == Activity.RESULT_OK) {
                 isGpsOn = true
                 sharedViewModel.setLocationEvent()
                 return

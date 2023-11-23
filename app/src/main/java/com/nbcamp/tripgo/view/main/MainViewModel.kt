@@ -178,7 +178,7 @@ class MainViewModel : ViewModel() {
         festivalList: List<FestivalEntity>?,
         provinceList: List<ProvincePlaceEntity>?
     ) {
-        if(festivalList == null || provinceList == null) {
+        if (festivalList == null || provinceList == null) {
             return
         }
         _dataFromSplash.value = festivalList to provinceList

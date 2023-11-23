@@ -47,24 +47,22 @@ class SplashActivity : AppCompatActivity() {
 
     private fun initViewModel() = with(homeViewModel) {
         festivalUiState.observe(this@SplashActivity) {
-            if(it.list.isNullOrEmpty().not())
+            if (it.list.isNullOrEmpty().not())
                 homeFestivalUiState = it
             runHomeFragment()
-
         }
         provincePlaceUiState.observe(this@SplashActivity) {
-            if(it.list.isNullOrEmpty().not())
+            if (it.list.isNullOrEmpty().not())
                 homeProvinceUiState = it
             runHomeFragment()
         }
     }
 
     private fun runHomeFragment() {
-        if(::homeFestivalUiState.isInitialized && ::homeProvinceUiState.isInitialized) {
+        if (::homeFestivalUiState.isInitialized && ::homeProvinceUiState.isInitialized) {
             val intent = Intent(this, MainActivity::class.java).apply {
                 putExtra(FESTIVAL_EXTRA_KEY, homeFestivalUiState)
                 putExtra(PROVINCE_EXTRA_KEY, homeProvinceUiState)
-
             }
             startActivity(intent)
             overridePendingTransition(R.anim.slide_up_enter, R.anim.slide_down_exit)

@@ -100,7 +100,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var homeFestivalUiState: HomeFestivalUiState
     private lateinit var homeProvincePlaceUiState: HomeProvincePlaceUiState
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -124,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             intent.getParcelableExtra(PROVINCE_EXTRA_KEY)!!
         }
-        sharedViewModel.sendSplashData(homeFestivalUiState.list , homeProvincePlaceUiState.list)
+        sharedViewModel.sendSplashData(homeFestivalUiState.list, homeProvincePlaceUiState.list)
     }
 
     private fun initViews() = with(binding) {

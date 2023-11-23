@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 data class HomeProvincePlaceUiState(
     val list: List<ProvincePlaceEntity>?,
     val isLoading: Boolean
-): Parcelable {
+) : Parcelable {
 
     companion object {
         fun initialize() = HomeProvincePlaceUiState(

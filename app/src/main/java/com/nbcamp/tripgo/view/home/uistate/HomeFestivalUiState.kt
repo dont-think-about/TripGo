@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 data class HomeFestivalUiState(
     val list: List<FestivalEntity>?,
     val isLoading: Boolean
-): Parcelable {
+) : Parcelable {
 
     companion object {
         fun initialize() = HomeFestivalUiState(
