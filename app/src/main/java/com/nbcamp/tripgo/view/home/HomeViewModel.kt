@@ -7,6 +7,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.Priority
+import com.google.android.gms.location.SettingsClient
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
@@ -70,6 +75,10 @@ class HomeViewModel(
     private val _isUpdateAvailable: MutableLiveData<Boolean> = MutableLiveData()
     val versionCode: LiveData<Boolean>
         get() = _isUpdateAvailable
+
+    private val _isGPSAvailable: MutableLiveData<Pair<Boolean, Exception?>> = MutableLiveData()
+    val isGPSAvailable: LiveData<Pair<Boolean, Exception?>>
+        get() = _isGPSAvailable
 
     fun fetchViewPagerData() {
         val getPastDateString = getPastDateString()
@@ -350,6 +359,21 @@ class HomeViewModel(
             }
         }.onFailure {
             _isUpdateAvailable.postValue(false)
+        }
+    }
+
+    fun checkGPSStatus(client: SettingsClient) {
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000L)
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest.build())
+        val task = client.checkLocationSettings(builder.build())
+        task.addOnSuccessListener {
+            _isGPSAvailable.postValue(true to null)
+            return@addOnSuccessListener
+        }.addOnFailureListener { exception ->
+            if(exception is ResolvableApiException) {
+                _isGPSAvailable.postValue(false to exception)
+                return@addOnFailureListener
+            }
         }
     }
 

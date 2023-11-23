@@ -2,13 +2,11 @@ package com.nbcamp.tripgo.view.home
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.location.Location
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +18,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -110,11 +109,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun checkGPSStatus() {
-        val locationManager =
-            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
-        // gps가 켜져 있다면 on 상태로 바뀜
-        isGpsOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val client = LocationServices.getSettingsClient(requireActivity())
+        homeViewModel.checkGPSStatus(client)
     }
 
     private fun initVariables() {
@@ -170,6 +166,17 @@ class HomeFragment : Fragment() {
             }
         }
 
+        isGPSAvailable.observe(viewLifecycleOwner) { status ->
+            if(status.first) {
+                isGpsOn = true
+                sharedViewModel.setLocationEvent()
+                return@observe
+            }
+            // GPS 가 꺼져있으면 내장 GPS 설정 다이얼로그 생성
+            requireActivity().toast(getString(R.string.on_gps_for_location_permission))
+            (status.second as ResolvableApiException).startResolutionForResult(requireActivity(), GPS_ON)
+        }
+
         currentPage.observe(viewLifecycleOwner) { currentPage ->
             binding.mainFestivalViewPager.setCurrentItem(currentPage, true)
         }
@@ -206,10 +213,7 @@ class HomeFragment : Fragment() {
         }
 
         sharedViewModel.eventSetLocation.observe(viewLifecycleOwner) {
-            if (isGpsOn.not()) {
-                // 권한 체크 했는데 gps가 꺼져 있다면 gps 설정 화면으로
-                requireActivity().toast(getString(R.string.on_gps_for_location_permission))
-                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            if(isGpsOn.not()) {
                 return@observe
             }
             fusedLocationProviderClient.getCurrentLocation(
@@ -324,9 +328,22 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == GPS_ON) {
+            if(resultCode == Activity.RESULT_OK) {
+                isGpsOn = true
+                sharedViewModel.setLocationEvent()
+                return
+            }
+        }
+    }
+
     companion object {
         fun newInstance() = HomeFragment()
 
         const val TAG = "HOME_FRAGMENT"
+        const val GPS_ON = 100
     }
 }
