@@ -2,13 +2,11 @@ package com.nbcamp.tripgo.view.home
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.location.Location
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +18,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -34,7 +33,6 @@ import com.nbcamp.tripgo.view.App
 import com.nbcamp.tripgo.view.home.adapter.FestivalViewPagerAdapter
 import com.nbcamp.tripgo.view.home.adapter.NearbyPlaceAdapter
 import com.nbcamp.tripgo.view.home.adapter.ProvincePlaceListAdapter
-import com.nbcamp.tripgo.view.home.uistate.HomeFestivalUiState
 import com.nbcamp.tripgo.view.home.uistate.HomeNearbyPlaceUiState
 import com.nbcamp.tripgo.view.home.uistate.HomeWeatherUiState
 import com.nbcamp.tripgo.view.home.valuetype.ProvincePlaceEntity
@@ -111,11 +109,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun checkGPSStatus() {
-        val locationManager =
-            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
-        // gps가 켜져 있다면 on 상태로 바뀜
-        isGpsOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val client = LocationServices.getSettingsClient(requireActivity())
+        homeViewModel.checkGPSStatus(client)
     }
 
     private fun initVariables() {
@@ -171,25 +166,17 @@ class HomeFragment : Fragment() {
             }
         }
 
-        // viewpager 데이터 가져오기
-        homeViewModel.run {
-            fetchViewPagerData()
-            autoSlideViewPager()
-            getProvincePlace()
+        isGPSAvailable.observe(viewLifecycleOwner) { status ->
+            if (status.first) {
+                isGpsOn = true
+                sharedViewModel.setLocationEvent()
+                return@observe
+            }
+            // GPS 가 꺼져있으면 내장 GPS 설정 다이얼로그 생성
+            requireActivity().toast(getString(R.string.on_gps_for_location_permission))
+            (status.second as ResolvableApiException).startResolutionForResult(requireActivity(), GPS_ON)
         }
 
-        festivalUiState.observe(viewLifecycleOwner) { state ->
-            with(binding) {
-                if (state == HomeFestivalUiState.error()) {
-                    requireActivity().toast(getString(R.string.load_failed_data))
-                    return@observe
-                }
-                festivalProgressBar.isVisible = state.isLoading
-                mainFestivalViewPager.isVisible = state.isLoading.not()
-                viewPagerCircleIndicator.createIndicators(state.list?.size ?: 0, 0)
-                onBindFestival(state)
-            }
-        }
         currentPage.observe(viewLifecycleOwner) { currentPage ->
             binding.mainFestivalViewPager.setCurrentItem(currentPage, true)
         }
@@ -213,16 +200,20 @@ class HomeFragment : Fragment() {
             binding.nearbyProgressBar.isVisible = state.isLoading
             nearbyPlaceAdapter.setList(state.list)
         }
-        provincePlaceUiState.observe(viewLifecycleOwner) { state ->
-            binding.allTourProgressBar.isVisible = state.isLoading
-            provincePlaceListAdapter.submitList(state.list)
+
+        sharedViewModel.dataFromSplash.observe(viewLifecycleOwner) {
+            with(binding) {
+                // 인기 행사
+                viewPagerCircleIndicator.createIndicators(it.first.size, 0)
+                festivalViewPagerAdapter.submitList(it.first)
+                autoSlideViewPager()
+                // 주변 관광지
+                provincePlaceListAdapter.submitList(it.second)
+            }
         }
 
         sharedViewModel.eventSetLocation.observe(viewLifecycleOwner) {
             if (isGpsOn.not()) {
-                // 권한 체크 했는데 gps가 꺼져 있다면 gps 설정 화면으로
-                requireActivity().toast(getString(R.string.on_gps_for_location_permission))
-                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 return@observe
             }
             fusedLocationProviderClient.getCurrentLocation(
@@ -233,7 +224,9 @@ class HomeFragment : Fragment() {
                 App.latitude = location.latitude
                 App.longitude = location.longitude
                 homeViewModel.run {
+                    // 주변 관광지 리스트 보여주기
                     getNearbyPlaceList(location, nearbyPageNumber)
+                    // 날씨에 따른 관광지 추천
                     getPlaceByTodayWeather(location)
                 }
             }
@@ -291,10 +284,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun onBindFestival(state: HomeFestivalUiState?) = with(binding) {
-        festivalViewPagerAdapter.submitList(state?.list)
-    }
-
     private fun runThemeTourActivity(themeId: TourTheme) {
         sharedViewModel.runThemeTourActivity(themeId)
     }
@@ -339,9 +328,22 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == GPS_ON) {
+            if (resultCode == Activity.RESULT_OK) {
+                isGpsOn = true
+                sharedViewModel.setLocationEvent()
+                return
+            }
+        }
+    }
+
     companion object {
         fun newInstance() = HomeFragment()
 
         const val TAG = "HOME_FRAGMENT"
+        const val GPS_ON = 100
     }
 }

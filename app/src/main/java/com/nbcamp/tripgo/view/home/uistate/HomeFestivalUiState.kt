@@ -1,11 +1,14 @@
 package com.nbcamp.tripgo.view.home.uistate
 
+import android.os.Parcelable
 import com.nbcamp.tripgo.data.repository.model.FestivalEntity
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class HomeFestivalUiState(
     val list: List<FestivalEntity>?,
     val isLoading: Boolean
-) {
+) : Parcelable {
 
     companion object {
         fun initialize() = HomeFestivalUiState(

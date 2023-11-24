@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.kakao.sdk.user.UserApiClient
 import com.nbcamp.tripgo.R
 import com.nbcamp.tripgo.data.repository.model.CalendarEntity
+import com.nbcamp.tripgo.data.repository.model.FestivalEntity
 import com.nbcamp.tripgo.util.SingleLiveEvent
 import com.nbcamp.tripgo.view.calendar.WritingType
 import com.nbcamp.tripgo.view.calendar.uistate.CalendarScheduleUiState
@@ -60,6 +61,11 @@ class MainViewModel : ViewModel() {
     private val _reviewDetailModel: MutableLiveData<ReviewWritingModel> = MutableLiveData()
     val reviewDetailModel: LiveData<ReviewWritingModel>
         get() = _reviewDetailModel
+
+    // 메인 화면 로딩 시간을 줄여주기 위해 스플래시에서 받아온 데이터
+    private val _dataFromSplash: MutableLiveData<Pair<List<FestivalEntity>, List<ProvincePlaceEntity>>> = MutableLiveData()
+    val dataFromSplash: MutableLiveData<Pair<List<FestivalEntity>, List<ProvincePlaceEntity>>>
+        get() = _dataFromSplash
 
     fun runThemeTourActivity(themeId: TourTheme) {
         _event.value = ThemeClickEvent.RunTourThemeActivity(themeId)
@@ -166,5 +172,15 @@ class MainViewModel : ViewModel() {
 
     fun setReviewDetailModel(model: ReviewWritingModel) {
         _reviewDetailModel.value = model
+    }
+
+    fun sendSplashData(
+        festivalList: List<FestivalEntity>?,
+        provinceList: List<ProvincePlaceEntity>?
+    ) {
+        if (festivalList == null || provinceList == null) {
+            return
+        }
+        _dataFromSplash.value = festivalList to provinceList
     }
 }
