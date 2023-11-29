@@ -298,6 +298,7 @@ class CalendarFragment : Fragment() {
     }
 
     private fun runDialogForReviewWriting(model: CalendarEntity?) {
+        // TODO 추가적인 아이콘을 통해 리뷰 로직 수정
         if (model?.isReviewed == false) {
             setFancyDialog(
                 context = requireActivity(),
